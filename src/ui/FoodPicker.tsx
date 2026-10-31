@@ -1,25 +1,41 @@
 import { useMemo, useState } from "react";
 import { parseAmount, scale } from "../domain/nutrition";
+import { searchFoods } from "../domain/search";
 import type { Container, Food, Variant } from "../domain/types";
+import { sourceOf, useReference } from "../reference";
 
 type Props = {
   foods: Map<string, Food>;
+  recentIds: string[];
   containers: Container[];
   onAdd: (food: Food, amount: number, done: boolean, variant?: Variant) => void;
   onClose: () => void;
 };
 
-/** Search-as-you-type over all foods; favourites first. */
-export function FoodPicker({ foods, containers, onAdd, onClose }: Props) {
+/**
+ * Favourites and recent foods until you type; then your foods, followed by the
+ * bundled reference tables. A reference food is copied into your foods when added.
+ */
+export function FoodPicker({ foods, recentIds, containers, onAdd, onClose }: Props) {
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<Food>();
+  const reference = useReference(true);
 
-  const matches = useMemo(() => {
-    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-    return [...foods.values()]
-      .filter((food) => words.every((word) => food.name.toLowerCase().includes(word)))
-      .sort((a, b) => Number(b.fav) - Number(a.fav) || a.name.localeCompare(b.name));
-  }, [foods, query]);
+  const sections = useMemo((): [string, Food[]][] => {
+    if (!query.trim()) {
+      const favs = [...foods.values()].filter((food) => food.fav).sort((a, b) => a.name.localeCompare(b.name));
+      const recent = recentIds.map((id) => foods.get(id)).filter((food): food is Food => !!food && !food.fav);
+      return [
+        ["Favourites", favs],
+        ["Recent", recent],
+      ];
+    }
+    const unsaved = reference.filter((food) => !foods.has(food.id));
+    return [
+      ["Your foods", searchFoods(foods.values(), query, 30)],
+      ["USDA & CIQUAL", searchFoods(unsaved, query, 40)],
+    ];
+  }, [foods, recentIds, reference, query]);
 
   return (
     <div className="fixed inset-0 z-10 flex flex-col bg-bg">
@@ -46,21 +62,42 @@ export function FoodPicker({ foods, containers, onAdd, onClose }: Props) {
           onAdd={(amount, done, variant) => onAdd(picked, amount, done, variant)}
         />
       ) : (
-        <ul className="flex-1 overflow-y-auto">
-          {matches.map((food) => (
-            <li key={food.id}>
-              <button onClick={() => setPicked(food)} className="flex w-full items-baseline gap-2 border-b border-line px-4 py-3 text-left">
-                {food.fav && <span className="text-accent">★</span>}
-                <span className="flex-1">{food.name}</span>
-                <span className="text-xs text-muted">
-                  {Math.round(food.kcal)} kcal / {food.basis === "item" ? "item" : "100 g"}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)]">
+          {sections.map(
+            ([title, list]) =>
+              list.length > 0 && (
+                <section key={title}>
+                  <h3 className="sticky top-0 bg-bg/95 px-4 pt-4 pb-1 text-xs font-medium tracking-wide text-muted uppercase">{title}</h3>
+                  <ul>
+                    {list.map((food) => (
+                      <li key={food.id}>
+                        <FoodRow food={food} onPick={() => setPicked(food)} />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ),
+          )}
+          {query.trim() && sections.every(([, list]) => !list.length) && (
+            <p className="px-4 py-6 text-center text-sm text-muted">No foods match “{query.trim()}”</p>
+          )}
+        </div>
       )}
     </div>
+  );
+}
+
+function FoodRow({ food, onPick }: { food: Food; onPick: () => void }) {
+  const source = sourceOf(food);
+  return (
+    <button onClick={onPick} className="flex w-full items-baseline gap-2 border-b border-line px-4 py-3 text-left">
+      {food.fav && <span className="text-accent">★</span>}
+      <span className="flex-1">{food.name}</span>
+      <span className="shrink-0 text-right text-xs text-muted">
+        {Math.round(food.kcal)} kcal / {food.basis === "item" ? "item" : "100 g"}
+        {source && <span className="block">{source}</span>}
+      </span>
+    </button>
   );
 }
 
