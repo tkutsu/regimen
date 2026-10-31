@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
 import type { Change } from "../domain/types";
-import { daysBetween, estimateMaintenance, weightSeries, type Estimate } from "../domain/weight";
+import { daysBetween, stretches, weightSeries, type Stretch } from "../domain/weight";
 
 type Props = { state: State; commit: (...changes: Change[]) => void };
 type Point = ReturnType<typeof weightSeries>[number];
@@ -16,7 +16,7 @@ export function Weight({ state, commit }: Props) {
   const today = localDate();
   const [range, setRange] = useState<keyof typeof RANGES>("3M");
   const series = useMemo(() => weightSeries(state), [state]);
-  const estimate = useMemo(() => estimateMaintenance(state, today), [state, today]);
+  const phases = useMemo(() => stretches(state, today), [state, today]);
   const shown = series.filter((p) => daysBetween(p.date, today) < RANGES[range]);
 
   const latest = series.at(-1);
@@ -53,7 +53,7 @@ export function Weight({ state, commit }: Props) {
         {shown.length > 1 ? <Chart points={shown} /> : <p className="py-6 text-center text-sm text-muted">Not enough weigh-ins in this range.</p>}
       </section>
 
-      <Maintenance estimate={estimate} tdee={state.settings.tdee} onUse={(tdee) => commit({ type: "settings", settings: { tdee } })} />
+      <Maintenance phases={phases} tdee={state.settings.tdee} onUse={(tdee) => commit({ type: "settings", settings: { tdee } })} />
 
       <section>
         <h2 className="mb-1 px-1 text-xs font-medium tracking-wide text-muted uppercase">Recent</h2>
@@ -83,39 +83,66 @@ export function Weight({ state, commit }: Props) {
   );
 }
 
-function Maintenance({ estimate, tdee, onUse }: { estimate?: Estimate; tdee: number; onUse: (tdee: number) => void }) {
-  const rounded = estimate && Math.round(estimate.tdee / 10) * 10;
+const kcal = (n: number) => Math.round(n / 10) * 10;
+
+/** Maintenance shifts with the phase, so each phase gets its own reading; the current one leads. */
+function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number; onUse: (tdee: number) => void }) {
+  const current = phases.at(-1);
+  if (!current) return null;
+  const reading = current.tdee && kcal(current.tdee);
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <h2 className="text-xs font-medium tracking-wide text-muted uppercase">Real maintenance</h2>
-      {estimate && rounded ? (
+      {reading && current.kgPerWeek !== undefined ? (
         <>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-3xl font-semibold">
-              ≈ {rounded}
+              ≈ {reading}
               <span className="text-base font-normal text-muted"> kcal</span>
             </span>
             <span className="text-sm text-muted">setting {tdee}</span>
           </div>
           <p className="mt-2 text-sm">
-            Eating {Math.round(estimate.intake)} kcal a day from {short(estimate.from)} to {short(estimate.to)}, weight{" "}
-            {Math.abs(estimate.kgPerWeek) < 0.005
+            <span className="capitalize">{current.phase}</span> since {short(current.from)}. Eating {Math.round(current.intake)} kcal a day from{" "}
+            {short(current.fitFrom)}, weight{" "}
+            {Math.abs(current.kgPerWeek) < 0.005
               ? "held steady"
-              : `went ${estimate.kgPerWeek > 0 ? "up" : "down"} ${Math.abs(estimate.kgPerWeek).toFixed(2)} kg a week`}
-            , leaving out the water jumps after kcal changes.
+              : `went ${current.kgPerWeek > 0 ? "up" : "down"} ${Math.abs(current.kgPerWeek).toFixed(2)} kg a week`}
+            .
           </p>
           <p className="mt-1 text-xs text-muted">
-            {estimate.logged} of {estimate.days} days logged, the rest counted as eaten to target.
-            {estimate.settlingSince && ` The change on ${short(estimate.settlingSince)} is still settling, so its days aren't counted yet.`}
+            {current.logged} of {daysBetween(current.fitFrom, current.to) + 1} days logged, the rest counted as eaten to target. The first days of a
+            phase are left out while water settles.
           </p>
-          {Math.abs(rounded - tdee) >= 30 && (
-            <button onClick={() => onUse(rounded)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
-              Use {rounded} as maintenance
+          {Math.abs(reading - tdee) >= 30 && (
+            <button onClick={() => onUse(reading)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
+              Use {reading} as maintenance
             </button>
           )}
         </>
       ) : (
-        <p className="mt-1 text-sm text-muted">Needs about two weeks of weigh-ins.</p>
+        <p className="mt-1 text-sm">
+          <span className="capitalize">{current.phase}</span> since {short(current.from)}. Maintenance shifts with the phase, so this one gets its own
+          reading around {short(current.readyOn)}.
+        </p>
+      )}
+      {phases.length > 1 && (
+        <ul className="mt-4 divide-y divide-line border-t border-line text-sm">
+          {phases
+            .slice(0, -1)
+            .reverse()
+            .map((phase) => (
+              <li key={phase.from} className="flex items-baseline justify-between gap-3 py-2">
+                <span>
+                  <span className="capitalize">{phase.phase}</span>
+                  <span className="block text-xs text-muted">
+                    {short(phase.from)} – {short(phase.to)} · {phase.days} days{phase.tdee && ` · eating ${kcal(phase.intake)}`}
+                  </span>
+                </span>
+                {phase.tdee ? <span className="font-medium">≈ {kcal(phase.tdee)}</span> : <span className="text-xs text-muted">too short</span>}
+              </li>
+            ))}
+        </ul>
       )}
     </section>
   );
