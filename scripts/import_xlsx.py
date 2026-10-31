@@ -1,9 +1,9 @@
-"""Imports the old Google Sheet (regimen tab) into events/import.jsonl.
+"""Imports the old Google Sheet (regimen tab, plus the weigh-ins of the old tab) into events/import.jsonl.
 
     python -I scripts/import_xlsx.py Regimen.xlsx 2026-10-31 ~/_shared/mobile/regimen
 
 The date is the day of the last weigh-in; weigh-ins were daily, so earlier rows
-count back from it. Event ids are fixed, so re-running replaces the import, and
+count back from it, and the old tab's block runs on into the regimen tab's first day. Event ids are fixed, so re-running replaces the import, and
 every import event is timestamped in 2000, so anything entered in the app wins.
 """
 
@@ -18,6 +18,9 @@ from datetime import date, timedelta
 NS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
 T = "2000-01-01T00:00:00.000Z"
 LAST_ROW = 160
+# The old tab's last phase block: daily kcal offset in E, weigh-in in F, the days
+# right before the regimen tab starts. Its other blocks have no offsets or dates.
+OLD_ROWS = range(1, 180)
 
 GROUPS = {
     "meat": [5, 6, 7, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52],
@@ -292,6 +295,25 @@ def read_sheet(path):
     return cells, notes
 
 
+def read_old_block(path):
+    """(kg, offset) per day from the old tab's E/F block, oldest first."""
+    cols = {"E": {}, "F": {}}
+    with zipfile.ZipFile(path) as z, z.open("xl/worksheets/sheet2.xml") as f:
+        for _, el in ET.iterparse(f):
+            if el.tag == NS + "row":
+                if int(el.get("r")) > OLD_ROWS[-1]:
+                    break
+                for c in el:
+                    ref, v = c.get("r"), c.find(NS + "v")
+                    if ref[0] in cols and ref[1].isdigit() and v is not None and c.get("t") is None:
+                        cols[ref[0]][int(ref[1:])] = float(v.text)
+                el.clear()
+    missing = [row for row in OLD_ROWS if row not in cols["F"] or row not in cols["E"]]
+    if missing:
+        sys.exit(f"old tab rows without a weigh-in or offset: {missing}")
+    return [(cols["F"][row], cols["E"][row]) for row in OLD_ROWS]
+
+
 def slug(text):
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
@@ -428,15 +450,20 @@ def main(xlsx, last_weigh_in, out_dir):
                 containers.append({"id": slug(f"{name} {grams}"), "name": name.strip(), "grams": grams})
     events.append(event("settings", "sheet", settings={"containers": containers, "tdee": SHEET_TDEE}))
 
-    weigh_ins = [row for row in range(1, LAST_ROW) if isinstance(cells.get(f"M{row}"), float)]
-    last = date.fromisoformat(last_weigh_in)
-    for row in weigh_ins:
-        day = (last - timedelta(days=weigh_ins[-1] - row)).isoformat()
-        events.append(event("weight", day, date=day, kg=cells[f"M{row}"]))
-        offset = cells.get(f"L{row}")
+    def weigh_in(day, kg, offset):
+        events.append(event("weight", day, date=day, kg=kg))
         if isinstance(offset, float):
             phase = "cut" if offset < 0 else "bulk" if offset > 0 else "maintain"
             events.append(event("day.upsert", day, day={"date": day, "phase": phase, "steps": 0, "extraKcal": 0, "offset": offset}))
+
+    weigh_ins = [row for row in range(1, LAST_ROW) if isinstance(cells.get(f"M{row}"), float)]
+    last = date.fromisoformat(last_weigh_in)
+    first = last - timedelta(days=weigh_ins[-1] - weigh_ins[0])
+    old = read_old_block(xlsx)
+    for i, (kg, offset) in enumerate(old):
+        weigh_in((first - timedelta(days=len(old) - i)).isoformat(), kg, offset)
+    for row in weigh_ins:
+        weigh_in((last - timedelta(days=weigh_ins[-1] - row)).isoformat(), cells[f"M{row}"], cells.get(f"L{row}"))
 
     path = os.path.join(os.path.expanduser(out_dir), "events")
     os.makedirs(path, exist_ok=True)
@@ -444,7 +471,7 @@ def main(xlsx, last_weigh_in, out_dir):
     with open(target + ".tmp", "w") as f:
         f.writelines(json.dumps(e, ensure_ascii=False) + "\n" for e in events)
     os.replace(target + ".tmp", target)
-    print(f"{len(foods)} foods, 2 recipes, {len(weigh_ins)} weigh-ins -> {target}")
+    print(f"{len(foods)} foods, 2 recipes, {len(old) + len(weigh_ins)} weigh-ins ({len(old)} from the old tab) -> {target}")
 
 
 if __name__ == "__main__":
