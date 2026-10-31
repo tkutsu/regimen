@@ -15,6 +15,7 @@ const oats: Food = {
   satFat: 1.5,
   unsatFat: 5,
   salt: 0,
+  sugar: 0,
 };
 
 const line = (o: object) => JSON.stringify(o);

@@ -11,6 +11,7 @@ const META: Record<Key, { label: string; unit: string; digits: number; kind: "li
   satFat: { label: "sat. fat", unit: "g", digits: 1, kind: "limit" },
   unsatFat: { label: "unsat. fat", unit: "g", digits: 0, kind: "goal" },
   salt: { label: "salt", unit: "g", digits: 1, kind: "limit" },
+  sugar: { label: "sugar", unit: "g", digits: 0, kind: "limit" },
 };
 
 export function Remaining({ target, eaten }: { target: Nutrients; eaten: Nutrients }) {
