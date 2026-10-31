@@ -3,6 +3,19 @@ import type { Food, Nutrients, Recipe } from "./types";
 
 export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt", "sugar"] as const;
 
+export const LABELS: Record<keyof Nutrients, string> = {
+  kcal: "kcal",
+  prot: "protein",
+  fiber: "fiber",
+  satFat: "sat. fat",
+  unsatFat: "unsat. fat",
+  salt: "salt",
+  sugar: "sugar",
+};
+
+/** Nutrients the food's source had no value for. */
+export const unknownNutrients = (food: Food) => NUTRIENTS.filter((key) => food[key] === undefined);
+
 export const zero = (): Nutrients => ({ kcal: 0, prot: 0, fiber: 0, satFat: 0, unsatFat: 0, salt: 0, sugar: 0 });
 
 export function add(a: Nutrients, b: Nutrients): Nutrients {

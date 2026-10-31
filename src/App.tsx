@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useRegimen } from "./store";
+import { Foods } from "./ui/Foods";
 import { Settings } from "./ui/Settings";
 import { Today } from "./ui/Today";
 
-const TABS = { today: Today, settings: Settings };
+const TABS = { today: Today, foods: Foods, settings: Settings };
 
 export default function App() {
   const { state, error, commit } = useRegimen();
