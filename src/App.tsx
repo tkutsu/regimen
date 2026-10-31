@@ -3,8 +3,9 @@ import { useRegimen } from "./store";
 import { Foods } from "./ui/Foods";
 import { Settings } from "./ui/Settings";
 import { Today } from "./ui/Today";
+import { Weight } from "./ui/Weight";
 
-const TABS = { today: Today, foods: Foods, settings: Settings };
+const TABS = { today: Today, weight: Weight, foods: Foods, settings: Settings };
 
 export default function App() {
   const { state, error, commit } = useRegimen();
