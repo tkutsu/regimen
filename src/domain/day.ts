@@ -60,6 +60,6 @@ export function intake(state: State, date: string): Nutrients {
   const foods = allFoods(state);
   return entriesOn(state, date).reduce((sum, entry) => {
     const food = foods.get(entry.foodId);
-    return food ? add(sum, scale(food, entry.amount)) : sum;
+    return food ? add(sum, scale(food, entry.amount, entry.factor)) : sum;
   }, zero());
 }

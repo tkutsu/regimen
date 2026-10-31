@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { dayOf, entriesOn, intake, localDate, shiftDate, targets } from "../domain/day";
-import { allFoods, scale } from "../domain/nutrition";
+import { dayOf, entriesOn, intake, localDate, shiftDate, targets, trendWeight } from "../domain/day";
+import { allFoods, parseAmount, scale } from "../domain/nutrition";
 import { newId, type State } from "../domain/state";
-import type { Change, Day, Entry, Food, Phase } from "../domain/types";
+import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
+import { NumberField } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { Remaining } from "./Remaining";
 
@@ -16,19 +17,20 @@ export function Today({ state, commit }: Props) {
   const day = dayOf(state, date);
   const entries = entriesOn(state, date).sort((a, b) => Number(a.done) - Number(b.done));
   const yesterday = entriesOn(state, shiftDate(date, -1));
+  const trend = trendWeight(state, date);
 
   const setDay = (patch: Partial<Day>) => commit({ type: "day.upsert", day: { ...day, ...patch } });
   const putEntry = (entry: Entry) =>
     commit(entry.amount > 0 ? { type: "entry.upsert", entry } : { type: "entry.delete", entryId: entry.id });
-  const add = (food: Food, amount: number, done: boolean) => {
-    putEntry({ id: newId(), date, foodId: food.id, amount, done });
+  const add = (food: Food, amount: number, done: boolean, variant?: Variant) => {
+    putEntry({ id: newId(), date, foodId: food.id, amount, done, variant: variant?.name, factor: variant?.factor });
     setPicking(false);
   };
   const copyYesterday = () =>
     commit(...yesterday.map((entry): Change => ({ type: "entry.upsert", entry: { ...entry, id: newId(), date, done: false } })));
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-4 p-4 pb-24">
+    <div className="flex flex-col gap-4 pb-24">
       <DateNav date={date} onChange={setDate} />
 
       <div className="flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
@@ -43,12 +45,21 @@ export function Today({ state, commit }: Props) {
         ))}
       </div>
       {day.offset !== undefined && day.offset !== state.settings.phaseOffsets[day.phase] && (
-        <p className="-mt-2 text-center text-xs text-muted">custom offset {day.offset > 0 ? "+" : ""}{day.offset} kcal</p>
+        <p className="-mt-2 text-center text-xs text-muted">
+          custom offset {day.offset > 0 ? "+" : ""}
+          {day.offset} kcal
+        </p>
       )}
 
       <Remaining target={targets(state, date)} eaten={intake(state, date)} />
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
+        <NumberField
+          label="weight (kg)"
+          value={state.weights.get(date)}
+          placeholder={trend?.toFixed(1)}
+          onCommit={(kg) => kg > 0 && commit({ type: "weight", date, kg })}
+        />
         <NumberField label="steps (k)" value={day.steps / 1000} onCommit={(k) => setDay({ steps: Math.round(k * 1000) })} />
         <NumberField label="extra kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} />
       </div>
@@ -75,7 +86,9 @@ export function Today({ state, commit }: Props) {
       >
         Add food
       </button>
-      {picking && <FoodPicker foods={foods} onAdd={add} onClose={() => setPicking(false)} />}
+      {picking && (
+        <FoodPicker foods={foods} containers={state.settings.containers} onAdd={add} onClose={() => setPicking(false)} />
+      )}
     </div>
   );
 }
@@ -104,57 +117,71 @@ function DateNav({ date, onChange }: { date: string; onChange: (date: string) =>
 }
 
 function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChange: (entry: Entry) => void }) {
-  const item = food?.basis === "item";
-  const kcal = food ? scale(food, entry.amount).kcal : 0;
+  const [open, setOpen] = useState(false);
+  const unit = food?.basis === "item" ? "×" : "g";
+  const kcal = food ? scale(food, entry.amount, entry.factor).kcal : 0;
   return (
-    <li className={`flex items-center gap-3 border-b border-line px-3 py-2 last:border-b-0 ${entry.done ? "" : "text-muted"}`}>
-      <button
-        onClick={() => onChange({ ...entry, done: !entry.done })}
-        aria-label={entry.done ? "Mark planned" : "Mark eaten"}
-        className={`size-5 shrink-0 rounded-full border-2 ${entry.done ? "border-accent bg-accent" : "border-line"}`}
-      />
-      <span className="min-w-0 flex-1 truncate">{food?.name ?? "unknown food"}</span>
-      <AmountInput value={entry.amount} unit={item ? "×" : "g"} onCommit={(amount) => onChange({ ...entry, amount })} />
-      <span className="w-12 text-right text-sm text-muted">{Math.round(kcal)}</span>
-      <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label="Remove" className="px-1 text-muted">
-        ×
-      </button>
+    <li className="border-b border-line last:border-b-0">
+      <div className={`flex items-center gap-3 px-3 py-2 ${entry.done ? "" : "text-muted"}`}>
+        <button
+          onClick={() => onChange({ ...entry, done: !entry.done })}
+          aria-label={entry.done ? "Mark planned" : "Mark eaten"}
+          className={`size-5 shrink-0 rounded-full border-2 ${entry.done ? "border-accent bg-accent" : "border-line"}`}
+        />
+        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left">
+          <span className="truncate">
+            {food?.name ?? "unknown food"}
+            {entry.variant && <span className="text-muted"> · {entry.variant}</span>}
+          </span>
+          <span className="ml-auto shrink-0 text-sm">
+            {+entry.amount.toFixed(1)}
+            <span className="text-muted">{unit}</span>
+          </span>
+        </button>
+        <span className="w-12 text-right text-sm text-muted">{Math.round(kcal)}</span>
+        <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label="Remove" className="px-1 text-muted">
+          ×
+        </button>
+      </div>
+      {open && (
+        <AmountEditor
+          amount={entry.amount}
+          unit={unit}
+          onCommit={(amount) => {
+            onChange({ ...entry, amount });
+            setOpen(false);
+          }}
+        />
+      )}
     </li>
   );
 }
 
-/** Edits locally and commits on blur or Enter, so typing doesn't write an event per keystroke. */
-function useDraft(value: number, onCommit: (value: number) => void) {
-  const [draft, setDraft] = useState<string>();
-  const commit = () => {
-    const parsed = Number((draft ?? "").replace(",", "."));
-    if (draft !== undefined && Number.isFinite(parsed) && parsed !== value) onCommit(parsed);
-    setDraft(undefined);
-  };
-  return {
-    inputMode: "decimal" as const,
-    value: draft ?? String(value),
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value),
-    onFocus: (e: React.FocusEvent<HTMLInputElement>) => e.target.select(),
-    onBlur: commit,
-    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && e.currentTarget.blur(),
-  };
-}
-
-function AmountInput({ value, unit, onCommit }: { value: number; unit: string; onCommit: (value: number) => void }) {
+/** Adds to, removes from, or replaces an entry's amount. "+50" / "-20" typed directly also work. */
+function AmountEditor({ amount, unit, onCommit }: { amount: number; unit: string; onCommit: (amount: number) => void }) {
+  const [text, setText] = useState("");
+  const value = parseAmount(text);
+  const apply = (next: number | undefined) => next !== undefined && onCommit(Math.max(0, next));
   return (
-    <label className="flex items-baseline gap-0.5 text-sm">
-      <input {...useDraft(value, onCommit)} className="w-12 bg-transparent text-right outline-none focus:text-accent" />
-      <span className="text-muted">{unit}</span>
-    </label>
-  );
-}
-
-function NumberField({ label, value, onCommit }: { label: string; value: number; onCommit: (value: number) => void }) {
-  return (
-    <label className="rounded-xl border border-line bg-surface px-3 py-2">
-      <span className="block text-xs text-muted">{label}</span>
-      <input {...useDraft(value, onCommit)} className="w-full bg-transparent text-lg outline-none" />
-    </label>
+    <div className="flex items-center gap-2 px-3 pb-3">
+      <input
+        autoFocus
+        inputMode="decimal"
+        value={text}
+        placeholder={unit}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && apply(parseAmount(text, amount))}
+        className="w-20 rounded-lg border border-line bg-bg px-2 py-1.5 text-right outline-none focus:border-accent"
+      />
+      <button disabled={value === undefined} onClick={() => apply(amount - value!)} className="flex-1 rounded-lg border border-line py-1.5 text-sm disabled:opacity-40">
+        − Remove
+      </button>
+      <button disabled={value === undefined} onClick={() => apply(amount + value!)} className="flex-1 rounded-lg border border-line py-1.5 text-sm disabled:opacity-40">
+        + Add
+      </button>
+      <button disabled={value === undefined} onClick={() => apply(value)} className="flex-1 rounded-lg border border-line py-1.5 text-sm disabled:opacity-40">
+        Set
+      </button>
+    </div>
   );
 }

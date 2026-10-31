@@ -1,14 +1,16 @@
 import { useMemo, useState } from "react";
-import type { Food } from "../domain/types";
+import { parseAmount, scale } from "../domain/nutrition";
+import type { Container, Food, Variant } from "../domain/types";
 
 type Props = {
   foods: Map<string, Food>;
-  onAdd: (food: Food, amount: number, done: boolean) => void;
+  containers: Container[];
+  onAdd: (food: Food, amount: number, done: boolean, variant?: Variant) => void;
   onClose: () => void;
 };
 
 /** Search-as-you-type over all foods; favourites first. */
-export function FoodPicker({ foods, onAdd, onClose }: Props) {
+export function FoodPicker({ foods, containers, onAdd, onClose }: Props) {
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<Food>();
 
@@ -25,7 +27,10 @@ export function FoodPicker({ foods, onAdd, onClose }: Props) {
         <input
           autoFocus
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setPicked(undefined);
+          }}
           placeholder="Search foods"
           className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
         />
@@ -34,7 +39,12 @@ export function FoodPicker({ foods, onAdd, onClose }: Props) {
         </button>
       </header>
       {picked ? (
-        <Amount food={picked} onBack={() => setPicked(undefined)} onAdd={(amount, done) => onAdd(picked, amount, done)} />
+        <Amount
+          food={picked}
+          containers={containers}
+          onBack={() => setPicked(undefined)}
+          onAdd={(amount, done, variant) => onAdd(picked, amount, done, variant)}
+        />
       ) : (
         <ul className="flex-1 overflow-y-auto">
           {matches.map((food) => (
@@ -54,38 +64,87 @@ export function FoodPicker({ foods, onAdd, onClose }: Props) {
   );
 }
 
-function Amount({ food, onBack, onAdd }: { food: Food; onBack: () => void; onAdd: (amount: number, done: boolean) => void }) {
+type AmountProps = {
+  food: Food;
+  containers: Container[];
+  onBack: () => void;
+  onAdd: (amount: number, done: boolean, variant?: Variant) => void;
+};
+
+function Amount({ food, containers, onBack, onAdd }: AmountProps) {
   const item = food.basis === "item";
   const [text, setText] = useState(item ? "1" : "100");
-  const amount = Number(text.replace(",", "."));
-  const valid = amount > 0;
-  const kcal = valid ? food.kcal * (item ? amount : amount / 100) : 0;
+  const [variant, setVariant] = useState<Variant>();
+  const [containerId, setContainerId] = useState("");
+
+  const container = containers.find((c) => c.id === containerId);
+  const weighed = parseAmount(text);
+  const amount = weighed === undefined ? 0 : Math.max(0, weighed - (container?.grams ?? 0));
+  const kcal = scale(food, amount, variant?.factor).kcal;
+  const submit = (done: boolean) => amount > 0 && onAdd(amount, done, variant);
 
   return (
-    <div className="p-4">
-      <button onClick={onBack} className="text-sm text-muted">
-        ‹ back
-      </button>
-      <h2 className="mt-2 text-lg font-medium">{food.name}</h2>
-      {food.note && <p className="mt-1 whitespace-pre-line text-sm text-muted">{food.note}</p>}
-      <label className="mt-4 flex items-center gap-2">
+    <div className="flex flex-col gap-4 p-4">
+      <div>
+        <button onClick={onBack} className="text-sm text-muted">
+          ‹ back
+        </button>
+        <h2 className="mt-2 text-lg font-medium">{food.name}</h2>
+        {food.note && <p className="mt-1 whitespace-pre-line text-sm text-muted">{food.note}</p>}
+      </div>
+
+      {food.variants && (
+        <div className="flex flex-wrap gap-2 text-sm">
+          {[undefined, ...food.variants].map((v) => (
+            <button
+              key={v?.name ?? ""}
+              onClick={() => setVariant(v)}
+              className={`rounded-full border px-3 py-1 ${variant === v ? "border-accent text-accent" : "border-line text-muted"}`}
+            >
+              {v ? `${v.name} ×${v.factor}` : "as listed"}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <label className="flex items-center gap-2">
         <input
           autoFocus
           inputMode="decimal"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onFocus={(e) => e.target.select()}
-          onKeyDown={(e) => e.key === "Enter" && valid && onAdd(amount, true)}
+          onKeyDown={(e) => e.key === "Enter" && submit(true)}
           className="w-28 rounded-xl border border-line bg-surface px-3 py-2 text-right text-lg outline-none focus:border-accent"
         />
         <span className="text-muted">{item ? "×" : "g"}</span>
         <span className="ml-auto text-muted">{Math.round(kcal)} kcal</span>
       </label>
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <button disabled={!valid} onClick={() => onAdd(amount, false)} className="rounded-xl border border-line py-3 disabled:opacity-40">
+
+      {!item && containers.length > 0 && (
+        <label className="flex items-center gap-2 text-sm text-muted">
+          weighed in
+          <select
+            value={containerId}
+            onChange={(e) => setContainerId(e.target.value)}
+            className="flex-1 rounded-lg border border-line bg-surface px-2 py-1.5 text-fg"
+          >
+            <option value="">no container</option>
+            {containers.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name} · {c.grams} g
+              </option>
+            ))}
+          </select>
+          {container && <span>= {Math.round(amount)} g</span>}
+        </label>
+      )}
+
+      <div className="grid grid-cols-2 gap-2">
+        <button disabled={!amount} onClick={() => submit(false)} className="rounded-xl border border-line py-3 disabled:opacity-40">
           Plan
         </button>
-        <button disabled={!valid} onClick={() => onAdd(amount, true)} className="rounded-xl bg-accent py-3 font-medium text-bg disabled:opacity-40">
+        <button disabled={!amount} onClick={() => submit(true)} className="rounded-xl bg-accent py-3 font-medium text-bg disabled:opacity-40">
           Eaten
         </button>
       </div>
