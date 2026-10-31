@@ -32,10 +32,19 @@ export function trendWeight(state: State, date: string): number | undefined {
   return before ? state.weights.get(before) : undefined;
 }
 
+/**
+ * Maintenance as it was set on that date, so past targets stay what they were
+ * when the setting changes. Before the first change, the first value set.
+ */
+export function tdeeOn(state: State, date: string): number {
+  const history = state.tdeeHistory;
+  return history.findLast((change) => change.date <= date)?.tdee ?? history[0]?.tdee ?? state.settings.tdee;
+}
+
 export function kcalTarget(state: State, day: Day): number {
-  const { tdee, phaseOffsets, kcalPer1kSteps } = state.settings;
+  const { phaseOffsets, kcalPer1kSteps } = state.settings;
   const offset = day.offset ?? phaseOffsets[day.phase];
-  return tdee + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal;
+  return tdeeOn(state, day.date) + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal;
 }
 
 /** Daily targets, carried over from the sheet; sugar is a share of kcal at 4 kcal/g. */

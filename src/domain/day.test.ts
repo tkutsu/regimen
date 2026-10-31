@@ -65,6 +65,13 @@ describe("targets", () => {
     expect(targets(s, "2026-10-31").kcal).toBe(1500);
   });
 
+  it("keeps past days on the maintenance set at the time", () => {
+    const at = (date: string, tdee: number) => stamp({ type: "settings", settings: { tdee } }, "desktop", new Date(`${date}T12:00:00`));
+    const s = fold([at("2026-10-10", 2200), at("2026-10-20", 2400)]);
+    const maintain = (date: string) => targets(s, date).kcal;
+    expect([maintain("2026-10-01"), maintain("2026-10-15"), maintain("2026-10-20"), maintain("2026-10-31")]).toEqual([2200, 2200, 2400, 2400]);
+  });
+
   it("bases protein on the 7-day average weight", () => {
     const s = state(
       { type: "weight", date: "2026-10-24", kg: 99 },

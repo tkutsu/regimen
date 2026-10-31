@@ -55,6 +55,9 @@ FROM_REFERENCE = {
     92: "usda-170271",  # dark chocolate 45-59%
 }
 LABELS = {"usda": "USDA FDC", "ciqual": "CIQUAL", "off": "Open Food Facts"}
+# The maintenance the sheet's offsets (column L) were planned against. Past days keep
+# it as their target when maintenance is changed in the app.
+SHEET_TDEE = 2300
 
 # Rows that lumped several foods together, split with researched values per 100 g:
 # (name, (kcal, prot, fiber, satFat, unsatFat, salt), source). USDA ids are SR Legacy.
@@ -423,7 +426,7 @@ def main(xlsx, last_weigh_in, out_dir):
             grams = int(re.sub(r"\D", "", weight.split("g")[0]) or 0)
             if grams:
                 containers.append({"id": slug(f"{name} {grams}"), "name": name.strip(), "grams": grams})
-    events.append(event("settings", "containers", settings={"containers": containers}))
+    events.append(event("settings", "sheet", settings={"containers": containers, "tdee": SHEET_TDEE}))
 
     weigh_ins = [row for row in range(1, LAST_ROW) if isinstance(cells.get(f"M{row}"), float)]
     last = date.fromisoformat(last_weigh_in)
