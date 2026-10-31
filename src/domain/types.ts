@@ -33,6 +33,8 @@ export type Day = {
   phase: Phase;
   steps: number;
   extraKcal: number;
+  /** kcal offset from TDEE for this day; falls back to the phase's offset. */
+  offset?: number;
 };
 
 export type Recipe = {
