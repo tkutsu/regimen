@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { NUTRIENTS } from "./domain/nutrition";
 import type { Food } from "./domain/types";
 
-type Row = [source: string, id: string, name: string, group: string, ...values: number[]];
+type Row = [source: string, id: string, name: string, group: string, kcal: number, ...values: (number | null)[]];
 type Data = { sources: Record<string, string>; foods: Row[] };
 
-const LABELS: Record<string, string> = { usda: "USDA FDC", ciqual: "CIQUAL" };
+const LABELS: Record<string, string> = { usda: "USDA FDC", ciqual: "CIQUAL", off: "Open Food Facts" };
 
 let loading: Promise<Food[]> | undefined;
 
@@ -13,20 +14,13 @@ function loadReference(): Promise<Food[]> {
   loading ??= fetch("/reference.json")
     .then((response) => response.json() as Promise<Data>)
     .then((data) =>
-      data.foods.map(([source, id, name, group, kcal, prot, fiber, satFat, unsatFat, salt]) => ({
-        id: `${source}-${id}`,
-        name,
-        basis: "100g" as const,
-        group,
-        fav: false,
-        note: `source: ${LABELS[source] ?? source} ${id}`,
-        kcal,
-        prot,
-        fiber,
-        satFat,
-        unsatFat,
-        salt,
-      })),
+      data.foods.map(([source, id, name, group, kcal, ...values]): Food => {
+        const note = `source: ${LABELS[source] ?? source} ${id}`;
+        const food: Food = { id: `${source}-${id}`, name, basis: "100g", group, fav: false, note, kcal };
+        // null (no value in the source) stays unknown rather than becoming 0
+        NUTRIENTS.slice(1).forEach((key, i) => values[i] != null && (food[key] = values[i]!));
+        return food;
+      }),
     );
   return loading;
 }

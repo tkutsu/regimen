@@ -15,6 +15,7 @@ const food = (name: string, fav = false): Food => ({
   satFat: 0,
   unsatFat: 0,
   salt: 0,
+  sugar: 0,
 });
 
 const names = (foods: Food[]) => foods.map((f) => f.name);
@@ -24,6 +25,12 @@ describe("searchFoods", () => {
     const foods = [food("Peppers, sweet, red, raw"), food("Pepper, black"), food("Crème fraîche")];
     expect(names(searchFoods(foods, "red pepper"))).toEqual(["Peppers, sweet, red, raw"]);
     expect(names(searchFoods(foods, "creme"))).toEqual(["Crème fraîche"]);
+  });
+
+  it("matches Greek without tonos or final-sigma differences", () => {
+    const foods = [food("Τραχανάς γλυκός"), food("Γιαούρτι 2%")];
+    expect(names(searchFoods(foods, "τραχανασ"))).toEqual(["Τραχανάς γλυκός"]);
+    expect(names(searchFoods(foods, "γιαουρτι"))).toEqual(["Γιαούρτι 2%"]);
   });
 
   it("ranks whole-word starts over substrings, then shorter names", () => {

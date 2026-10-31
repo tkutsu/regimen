@@ -56,7 +56,7 @@ SPLITS = {
     ],
     18: [
         ("oats, rolled", (379, 13.2, 10.1, 1.1, 4.3, 0.01), "USDA FDC 173904"),
-        ("trahanas, sour", (365, 12.0, 3.0, 1.7, 1.3, 2.08), "Vlaha label (Open Food Facts 5201418000094); fiber estimated"),
+        ("trahanas, sour", (365, 12.0, None, 1.7, 1.3, 2.08), "Vlaha label (Open Food Facts 5201418000094)"),
     ],
     19: [
         ("amaranth, popped", (371, 13.6, 6.7, 1.5, 4.5, 0.01), "USDA FDC 170682 (dry grain)"),
@@ -118,7 +118,8 @@ SPLITS = {
         ("lamb, lean, braised", (223, 33.7, 0, 3.1, 4.3, 0.17), "USDA FDC 172509"),
         ("beef chuck, lean, braised", (216, 30.5, 0, 4.0, 5.6, 0.16), "USDA FDC 169444"),
     ],
-    51: [
+    51: [  # "leaf beef" in the sheet: lean beef
+        ("beef, lean, raw", (138, 22.1, 0, 2.2, 2.9, 0.15), "USDA FDC 174760"),
         ("beef liver, raw", (135, 20.4, 0, 1.2, 0.9, 0.17), "USDA FDC 169451"),
     ],
     63: [
@@ -185,6 +186,73 @@ DERIVED = [
 ]
 WHISKEY = ("whiskey", (250, 0, 0, 0, 0, 0), "sheet note on white wine")
 
+# The sheet had no sugar column. Values point into public/reference.json (per 100 g,
+# or (key, grams per item)), or are known numbers. Foods split with a USDA source use
+# that source; meat and fish without an entry here have none; anything else is unknown.
+SUGAR = {
+    "yogurt-2": "off-5201054001240",  # Fage Total 2%: same kcal and protein as the sheet
+    "yogurt-0": "usda-170894",
+    "cottage": "usda-172182",
+    "milk-2": "usda-171267",
+    "mozzarella-low-moisture": "usda-171244",
+    "feta": "usda-173420",
+    "egg": "usda-171287",
+    "yolk": ("usda-172184", 17),  # 55 kcal yolk ≈ 17 g
+    "honey": "usda-169640",
+    "potato": "usda-170026",
+    "loaf-bread": "usda-172688",
+    "pita": "usda-174915",
+    "arabic-pita": ("usda-174915", 88),  # 241 kcal pita ≈ 88 g
+    "wonderbread-24-g-toast-slice": ("usda-174924", 24),
+    "finncrisps": "usda-172744",
+    "sandwich-roll": "usda-172796",
+    "raspberries": "usda-167755",
+    "avocado": "usda-171705",
+    "apricot-verikoko": "usda-171697",
+    "plum-vanilia-damaskino": "usda-169949",
+    "cherry": "usda-171719",
+    "cocoa": "usda-169593",
+    "garlic": "usda-169230",
+    "peanut-butter": "usda-172430",  # unsweetened: the peanuts' own sugar
+    "walnut": "usda-170187",
+    "chia-seeds": "usda-170554",
+    "pasta-boiled": "usda-169737",
+    "buckwheat-fagopiro-boiled": "usda-170686",
+    "rice-cooked": "usda-168878",
+    "quinoa-cooked": "usda-168917",
+    "flour": "usda-168894",
+    "noodles-raw": "usda-171822",
+    "sugar": "usda-169655",
+    "chickpea-revithi-boiled": "usda-173757",
+    "white-beans-fasolia-raw": "usda-175202",
+    "lentils-dry": "usda-172420",
+    "lentils-cooked": "usda-172421",
+    "split-pea-fava-cooked": "usda-172429",
+    "spinach": "usda-168462",
+    "leek": "usda-169246",
+    "lettuce": "usda-169249",
+    "beets-steamed": "usda-169146",
+    "mushroom-raw": "usda-169251",
+    "glikopata": "usda-168483",  # sweet potato, baked
+    "chocolate": "usda-170271",  # 45-59% cacao matches its kcal and fiber
+    "white-wine": "usda-174837",
+    "vinegar": "usda-172237",
+    "mayo-light": "usda-173594",
+    "soy-sauce-low-salt": "usda-172473",
+    "miso-paste": "usda-172442",
+    "butter-light": "usda-172344",
+    "pizza": "usda-170317",
+    "trahanas-sour": "off-5201418000094",
+    "tahini-cocoa-recipe": 1.0,  # from its recipe: tahini 0.5, peanuts 4.7, cocoa 1.8 g/100 g
+    "nutritional-yeast": 0,  # Bob's Red Mill label
+    "salt": 0,
+    "olive-oil": 0,
+    "omega3": 0,
+    "pulled-beef": 0,
+    "frankfurter-sausage": None,
+}
+UNKNOWN = object()
+
 
 def read_sheet(path):
     with zipfile.ZipFile(path) as z:
@@ -225,6 +293,7 @@ def food_name(raw):
 
 
 def make_food(name, basis, group, fav, note, values):
+    """None values are left out: the app reads a missing nutrient as unknown."""
     return {
         "id": slug(name),
         "name": name,
@@ -232,8 +301,29 @@ def make_food(name, basis, group, fav, note, values):
         "group": group,
         "fav": fav,
         "note": note,
-        **{key: round(value, 2) for key, value in zip(NUTRIENTS, values)},
+        **{key: round(value, 2) for key, value in zip(NUTRIENTS, values) if value is not None},
     }
+
+
+def load_reference():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public", "reference.json")
+    with open(path) as f:
+        return {f"{row[0]}-{row[1]}": row for row in json.load(f)["foods"]}
+
+
+def sugar_for(food, source, reference):
+    spec = SUGAR.get(food["id"], UNKNOWN)
+    if spec is UNKNOWN:
+        usda = re.match(r"USDA FDC (\d+)", source or "")
+        if usda:
+            spec = f"usda-{usda[1]}"
+        else:
+            return 0 if food["group"] in ("meat", "fish") else None
+    if spec is None or isinstance(spec, (int, float)):
+        return spec
+    key, grams = spec if isinstance(spec, tuple) else (spec, 100)
+    sugar = reference[key][10]
+    return None if sugar is None else round(sugar * grams / 100, 2)
 
 
 def join(*lines):
@@ -246,7 +336,8 @@ def event(kind, key, **payload):
 
 def main(xlsx, last_weigh_in, out_dir):
     cells, notes = read_sheet(xlsx)
-    foods_by_row = {}
+    reference = load_reference()
+    foods_by_row, sources = {}, {}
 
     for row in range(2, 120):
         raw = cells.get(f"E{row}")
@@ -261,18 +352,28 @@ def main(xlsx, last_weigh_in, out_dir):
                 make_food(part, basis, group, fav, join(note if only in (None, part) else "", f"source: {source}"), values)
                 for part, values, source in SPLITS[row]
             ]
+            sources.update({slug(part): source for part, _, source in SPLITS[row]})
         else:
             values = [cells.get(f"{col}{row}", 0.0) for col in "FGHIJK"]
             foods_by_row[row] = [make_food(NAMES.get(row, name), basis, group, fav, note, values)]
 
     foods = {food["id"]: food for parts in foods_by_row.values() for food in parts}
+    for food in foods.values():
+        sugar = sugar_for(food, sources.get(food["id"]), reference)
+        if sugar is not None:
+            food["sugar"] = sugar
     for name, group, bases in DERIVED:
-        values = [sum(foods[base][key] * factor for base, factor in bases) for key in NUTRIENTS]
+        keys = [*NUTRIENTS, "sugar"]
+        known = lambda key: all(key in foods[base] for base, _ in bases)
+        values = [sum(foods[base][key] * factor for base, factor in bases) if known(key) else None for key in keys]
         recipe = " + ".join(f"{foods[base]['name']} ×{factor:.3g}" for base, factor in bases)
-        food = make_food(name, "100g", group, False, f"derived: {recipe}", values)
+        food = make_food(name, "100g", group, False, f"derived: {recipe}", values[:-1])
+        if values[-1] is not None:
+            food["sugar"] = round(values[-1], 2)
         foods[food["id"]] = food
     name, values, source = WHISKEY
     foods[slug(name)] = make_food(name, "100g", "drinks", False, f"source: {source}", values)
+    foods[slug(name)]["sugar"] = 0
     for food_id, variants in VARIANTS.items():
         foods[food_id]["variants"] = [{"name": name, "factor": factor} for name, factor in variants]
 
