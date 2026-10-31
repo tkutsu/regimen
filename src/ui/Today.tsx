@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, shiftDate, targets, trendWeight } from "../domain/day";
-import { allFoods, parseAmount, scale } from "../domain/nutrition";
+import { allFoods, parseAmount, pickableFoods, scale } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
@@ -15,6 +15,7 @@ export function Today({ state, commit }: Props) {
   const [picking, setPicking] = useState(false);
 
   const foods = useMemo(() => allFoods(state), [state]);
+  const pickable = useMemo(() => pickableFoods(state), [state]);
   const day = dayOf(state, date);
   const entries = entriesOn(state, date).sort((a, b) => Number(a.done) - Number(b.done));
   const yesterday = entriesOn(state, shiftDate(date, -1));
@@ -92,7 +93,7 @@ export function Today({ state, commit }: Props) {
       </button>
       {picking && (
         <FoodPicker
-          foods={foods}
+          foods={pickable}
           recentIds={recentFoodIds(state)}
           containers={state.settings.containers}
           onAdd={add}

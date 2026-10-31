@@ -60,6 +60,8 @@ export type Recipe = {
   /** Weighed pot including the container; the difference is the cooked food. */
   totalG: number;
   containerG: number;
+  /** An old batch: kept for the days that ate it, left out of the picker. */
+  archived?: boolean;
 };
 
 export type Settings = {

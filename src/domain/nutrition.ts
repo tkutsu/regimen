@@ -36,29 +36,41 @@ export function scale(food: Food, amount: number, variantFactor = 1): Nutrients 
 }
 
 /**
- * A recipe as a per-100g food. The cooked weight is the weighed pot minus its
- * container; without a weighing it falls back to the raw ingredient weight.
+ * What a batch adds up to. The cooked weight is the weighed pot minus its container;
+ * without a weighing it falls back to the raw weight of the ingredients counted in grams.
  */
-export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
+export function recipeTotals(recipe: Recipe, foods: Map<string, Food>) {
   let total = zero();
-  let rawGrams = 0;
+  let rawG = 0;
   for (const { foodId, amount } of recipe.ingredients) {
     const food = foods.get(foodId);
     if (!food) continue;
     total = add(total, scale(food, amount));
-    if (food.basis === "100g") rawGrams += amount;
+    if (food.basis === "100g") rawG += amount;
   }
-  const cooked = recipe.totalG - recipe.containerG;
-  const grams = cooked > 0 ? cooked : rawGrams;
+  const cookedG = recipe.totalG - recipe.containerG;
+  return { total, rawG, cookedG: cookedG > 0 ? cookedG : rawG, weighed: cookedG > 0 };
+}
+
+/** A recipe as a per-100g food; old batches stop being favourites. */
+export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
+  const { total, cookedG } = recipeTotals(recipe, foods);
   const per100 = zero();
-  for (const key of NUTRIENTS) per100[key] = grams ? (total[key] / grams) * 100 : 0;
-  return { ...per100, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav: true, note: "" };
+  for (const key of NUTRIENTS) per100[key] = cookedG ? (total[key] / cookedG) * 100 : 0;
+  return { ...per100, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav: !recipe.archived, note: "" };
 }
 
 /** Foods plus recipes, which can be eaten like any other food. */
 export function allFoods(state: State): Map<string, Food> {
   const foods = new Map(state.foods);
   for (const recipe of state.recipes.values()) foods.set(recipe.id, recipeAsFood(recipe, state.foods));
+  return foods;
+}
+
+/** Foods that can be added to a day: all but replaced recipe batches. */
+export function pickableFoods(state: State): Map<string, Food> {
+  const foods = allFoods(state);
+  for (const recipe of state.recipes.values()) if (recipe.archived) foods.delete(recipe.id);
   return foods;
 }
 
