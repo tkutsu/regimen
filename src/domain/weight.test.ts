@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { shiftDate } from "./day";
 import { fold, stamp } from "./state";
-import type { Change, Food } from "./types";
-import { estimateMaintenance, KCAL_PER_KG, weightSeries } from "./weight";
+import type { Change, Food, Phase } from "./types";
+import { daysBetween, KCAL_PER_KG, stretches, weightSeries } from "./weight";
 
 const END = "2026-10-31";
 const meal: Food = { id: "meal", name: "meal", basis: "item", group: "", fav: false, note: "", kcal: 2000 };
@@ -11,58 +11,71 @@ let clock = 0;
 const state = (...changes: Change[]) =>
   fold(changes.map((change) => stamp(change, "desktop", new Date(Date.UTC(2026, 0, 1, 0, 0, clock++)))));
 
-/** Daily weigh-ins over the last `days` days, falling by `kgPerDay`. */
-const weighIns = (days: number, kgPerDay: number): Change[] =>
-  Array.from({ length: days }, (_, i) => ({
-    type: "weight",
-    date: shiftDate(END, i - days + 1),
-    kg: 80 + (i - days + 1) * kgPerDay,
-  }));
-
 const settings: Change = { type: "settings", settings: { tdee: 2500, phaseOffsets: { cut: -500, maintain: 0, bulk: 200 } } };
+const since = (date: string, phase: Phase): Change => ({ type: "day.upsert", day: { date, phase, steps: 0, extraKcal: 0 } });
 
-describe("estimateMaintenance", () => {
-  const since = (date: string, phase: "cut" | "maintain"): Change => ({ type: "day.upsert", day: { date, phase, steps: 0, extraKcal: 0 } });
+/** Daily weigh-ins for the last `days` days, from a function of the date. */
+const weighIns = (days: number, kg: (date: string) => number): Change[] =>
+  Array.from({ length: days }, (_, i) => {
+    const date = shiftDate(END, i - days + 1);
+    return { type: "weight", date, kg: kg(date) };
+  });
 
-  it("is intake minus the weight trend in kcal", () => {
-    const s = state(settings, since("2026-08-01", "cut"), ...weighIns(60, -0.05));
-    const estimate = estimateMaintenance(s, END)!;
-    expect(estimate.days).toBe(42);
-    expect(estimate.intake).toBeCloseTo(2000);
-    expect(estimate.kgPerWeek).toBeCloseTo(-0.35);
-    expect(estimate.tdee).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
+describe("stretches", () => {
+  it("reads maintenance as intake minus the weight trend", () => {
+    const s = state(settings, since("2026-08-01", "cut"), ...weighIns(60, (d) => 80 + daysBetween(d, END) * 0.05));
+    const [cut] = stretches(s, END);
+    expect(cut.days).toBe(60);
+    expect(cut.fitFrom).toBe(shiftDate(END, -41));
+    expect(cut.intake).toBeCloseTo(2000);
+    expect(cut.kgPerWeek).toBeCloseTo(-0.35);
+    expect(cut.tdee).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
   });
 
   it("uses logged intake and takes earned steps kcal out", () => {
-    const today: Change[] = [
+    const s = state(
+      settings,
+      since("2026-08-01", "maintain"),
+      ...weighIns(60, () => 80),
       { type: "food.upsert", food: meal },
       { type: "entry.upsert", entry: { id: "1", date: END, foodId: "meal", amount: 1.5, done: true } },
       { type: "day.upsert", day: { date: END, phase: "maintain", steps: 10_000, extraKcal: 0, offset: 0 } },
-    ];
-    const s = state(settings, since("2026-08-01", "maintain"), ...weighIns(60, 0), ...today);
-    const estimate = estimateMaintenance(s, END)!;
-    expect(estimate.logged).toBe(1);
+    );
+    const [maintain] = stretches(s, END);
+    expect(maintain.logged).toBe(1);
     // 41 days at 2500, one logged day at 3000 minus 370 earned
-    expect(estimate.intake).toBeCloseTo((41 * 2500 + 3000 - 370) / 42);
+    expect(maintain.intake).toBeCloseTo((41 * 2500 + 3000 - 370) / 42);
   });
 
-  it("reads a water drop after a kcal change as water, not fat", () => {
-    // maintenance 2500: flat on maintain, then a 1 kg water drop and real loss on cut
-    const cutFrom = "2026-10-11";
-    const weights = Array.from({ length: 60 }, (_, i): Change => {
-      const date = shiftDate(END, i - 59);
-      const d = Math.round((Date.parse(date) - Date.parse(cutFrom)) / 86_400_000);
-      const kg = d < 0 ? 80 : 80 - Math.min(1, (d + 1) / 3) - (d * 500) / KCAL_PER_KG;
-      return { type: "weight", date, kg };
-    });
-    const s = state(settings, since("2026-08-01", "maintain"), since(cutFrom, "cut"), ...weights);
-    expect(estimateMaintenance(s, END)!.tdee).toBeCloseTo(2500);
-    expect(estimateMaintenance(s, END)!.settlingSince).toBeUndefined();
-    expect(estimateMaintenance(s, "2026-10-13")!.settlingSince).toBe(cutFrom);
+  it("gives each phase its own maintenance and leaves out the water drop", () => {
+    // maintenance 2500 while maintaining, 2200 once cutting, plus a 1 kg water drop
+    const cutFrom = "2026-10-01";
+    const s = state(
+      settings,
+      since("2026-08-01", "maintain"),
+      since(cutFrom, "cut"),
+      ...weighIns(60, (date) => {
+        const d = daysBetween(cutFrom, date);
+        return d < 0 ? 80 : 80 - Math.min(1, (d + 1) / 3) - (d * (2200 - 2000)) / KCAL_PER_KG;
+      }),
+    );
+    const [maintain, cut] = stretches(s, END);
+    expect([maintain.phase, maintain.to, cut.phase, cut.from]).toEqual(["maintain", "2026-09-30", "cut", cutFrom]);
+    expect(maintain.tdee).toBeCloseTo(2500);
+    expect(cut.tdee).toBeCloseTo(2200);
   });
 
-  it("needs a couple of weeks of weigh-ins", () => {
-    expect(estimateMaintenance(state(settings, ...weighIns(9, 0)), END)).toBeUndefined();
+  it("doesn't split a phase for a refeed shorter than a week", () => {
+    const s = state(settings, since("2026-08-01", "cut"), since("2026-10-10", "maintain"), since("2026-10-13", "cut"), ...weighIns(60, () => 80));
+    expect(stretches(s, END).map((st) => st.phase)).toEqual(["cut"]);
+  });
+
+  it("waits for two weeks of weigh-ins after a phase starts", () => {
+    const s = state(settings, since("2026-08-01", "maintain"), since("2026-10-14", "bulk"), ...weighIns(60, () => 80));
+    const early = stretches(s, "2026-10-30").at(-1)!;
+    expect(early.tdee).toBeUndefined();
+    expect(early.readyOn).toBe(END);
+    expect(stretches(s, END).at(-1)!.tdee).toBeCloseTo(2700);
   });
 });
 

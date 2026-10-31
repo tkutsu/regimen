@@ -1,102 +1,97 @@
 import { dayOf, entriesOn, intake, kcalTarget, shiftDate } from "./day";
 import type { State } from "./state";
+import type { Phase } from "./types";
 
 export const KCAL_PER_KG = 7700;
+/** The fit reads the last six weeks of a phase, so a long cut shows where maintenance ended up. */
 const WINDOW = 42;
-/** Days after a kcal change when water and glycogen still move the scale. */
+/** Days after a phase starts when water and glycogen still move the scale. */
 const SETTLE = 4;
+/** A phase shorter than this between two of the same kind (a refeed, a diet break) doesn't split them. */
+const BREAK = 7;
+/** Weigh-ins needed, and the days they must span, before a phase gets a reading. */
+const MIN_WEIGH_INS = 10;
+const MIN_SPAN = 13;
 
-export type Estimate = {
-  /** Maintenance before steps and extra kcal, comparable to settings.tdee. */
-  tdee: number;
-  /** The weight trend the estimate implies, water jumps left out. */
-  kgPerWeek: number;
-  /** Mean daily intake over the window, steps and extra kcal taken out. */
-  intake: number;
+/** A run of days in one phase, with the maintenance its weigh-ins imply. */
+export type Stretch = {
+  phase: Phase;
   from: string;
   to: string;
   days: number;
+  /** Maintenance before steps and extra kcal, comparable to settings.tdee; missing until enough weigh-ins. */
+  tdee?: number;
+  /** The weight trend the reading implies. */
+  kgPerWeek?: number;
+  /** The days the reading covers: the last WINDOW of the phase, settling days left out. */
+  fitFrom: string;
+  /** Mean daily intake over those days, steps and extra kcal taken out. */
+  intake: number;
   logged: number;
-  weighIns: number;
-  /** The kcal target changed on this date, less than SETTLE days ago. */
-  settlingSince?: string;
+  /** When a phase still too short for a reading should first get one. */
+  readyOn: string;
 };
 
 export const daysBetween = (from: string, to: string) =>
   Math.round((Date.parse(`${to}T12:00:00Z`) - Date.parse(`${from}T12:00:00Z`)) / 86_400_000);
 
-const offsetOn = (state: State, date: string) => {
-  const day = dayOf(state, date);
-  return day.offset ?? state.settings.phaseOffsets[day.phase];
-};
-
-/** The latest date on or before `date` whose kcal offset differs from the day before. */
-function lastChange(state: State, date: string, lookBack: number): string | undefined {
-  for (let d = date, i = 0; i < lookBack; d = shiftDate(d, -1), i++) {
-    if (offsetOn(state, d) !== offsetOn(state, shiftDate(d, -1))) return d;
+/** Phases from the first weigh-in to `to`, oldest first. */
+export function stretches(state: State, to: string): Stretch[] {
+  const first = [...state.weights.keys()].sort()[0];
+  if (!first || first > to) return [];
+  const runs: { phase: Phase; from: string; to: string }[] = [];
+  for (let d = first; d <= to; d = shiftDate(d, 1)) {
+    const phase = dayOf(state, d).phase;
+    const [before, short] = [runs.at(-2), runs.at(-1)!];
+    if (short?.phase === phase) short.to = d;
+    else if (before?.phase === phase && daysBetween(short.from, short.to) + 1 < BREAK) {
+      runs.pop();
+      before.to = d;
+    } else runs.push({ phase, from: d, to: d });
   }
+  return runs.map((run) => read(state, run.phase, run.from, run.to));
 }
 
 /**
- * Real maintenance from what was eaten and what the scale did over the last weeks.
- *
- * Weight should follow cumulative intake minus maintenance, at 7700 kcal per kg:
- * kg − Σintake / 7700 = c − maintenance / 7700 × day. Each stretch between kcal
- * changes gets its own c, so a water jump at a change shifts c instead of reading
- * as fat, and the first days after a change are left out while water still moves.
- * One maintenance is fitted across all stretches. Days with nothing logged count as
- * eaten to target, as in the sheet; steps and extra kcal are taken out of intake.
+ * Weight follows cumulative intake minus maintenance, at 7700 kcal per kg:
+ * kg − Σintake / 7700 = c − maintenance / 7700 × day, so maintenance is the slope.
+ * Days with nothing logged count as eaten to target, as in the sheet.
  */
-export function estimateMaintenance(state: State, date: string, window = WINDOW, settle = SETTLE): Estimate | undefined {
-  const from = shiftDate(date, -(window - 1));
+function read(state: State, phase: Phase, from: string, to: string): Stretch {
+  const fitFrom = [shiftDate(from, SETTLE), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
   const { kcalPer1kSteps } = state.settings;
-  const rows: { stretch: number; t: number; y: number }[] = [];
-  let changedOn = lastChange(state, from, settle);
-  let offset = offsetOn(state, from);
-  let stretch = 0;
+  const rows: { t: number; y: number }[] = [];
   let eaten = 0;
   let logged = 0;
-
-  for (let d = from, t = 0; d <= date; d = shiftDate(d, 1), t++) {
+  for (let d = fitFrom, t = 0; d <= to; d = shiftDate(d, 1), t++) {
     const day = dayOf(state, d);
-    const dayOffset = day.offset ?? state.settings.phaseOffsets[day.phase];
-    if (dayOffset !== offset) [offset, changedOn, stretch] = [dayOffset, d, stretch + 1];
     // a morning weigh-in reflects what was eaten up to the day before
     const kg = state.weights.get(d);
-    if (kg !== undefined && !(changedOn && daysBetween(changedOn, d) < settle)) rows.push({ stretch, t, y: kg - eaten / KCAL_PER_KG });
+    if (kg !== undefined) rows.push({ t, y: kg - eaten / KCAL_PER_KG });
     const isLogged = entriesOn(state, d).length > 0;
     logged += Number(isLogged);
     eaten += (isLogged ? intake(state, d).kcal : kcalTarget(state, day)) - ((day.steps / 1000) * kcalPer1kSteps + day.extraKcal);
   }
 
-  // common slope with an intercept per stretch: centre t and y within each stretch
-  const means = new Map<number, { t: number; y: number; n: number }>();
-  for (const { stretch, t, y } of rows) {
-    const m = means.get(stretch) ?? { t: 0, y: 0, n: 0 };
-    means.set(stretch, { t: m.t + t, y: m.y + y, n: m.n + 1 });
-  }
-  let num = 0;
-  let den = 0;
-  for (const { stretch, t, y } of rows) {
-    const m = means.get(stretch)!;
-    num += (t - m.t / m.n) * (y - m.y / m.n);
-    den += (t - m.t / m.n) ** 2;
-  }
-  if (rows.length < 10 || den < 100) return undefined;
-
-  const days = daysBetween(from, date) + 1;
-  const tdee = (-num / den) * KCAL_PER_KG;
-  return {
-    tdee,
-    kgPerWeek: ((eaten / days - tdee) * 7) / KCAL_PER_KG,
-    intake: eaten / days,
+  const days = Math.max(0, daysBetween(fitFrom, to) + 1);
+  const stretch: Stretch = {
+    phase,
     from,
-    to: date,
-    days,
+    to,
+    days: daysBetween(from, to) + 1,
+    fitFrom,
+    intake: days ? eaten / days : 0,
     logged,
-    weighIns: rows.length,
-    settlingSince: changedOn && daysBetween(changedOn, date) < settle ? changedOn : undefined,
+    readyOn: shiftDate(from, SETTLE + MIN_SPAN),
   };
+  if (rows.length < MIN_WEIGH_INS || rows.at(-1)!.t - rows[0].t < MIN_SPAN) return stretch;
+
+  const t0 = rows.reduce((sum, r) => sum + r.t, 0) / rows.length;
+  const y0 = rows.reduce((sum, r) => sum + r.y, 0) / rows.length;
+  const num = rows.reduce((sum, r) => sum + (r.t - t0) * (r.y - y0), 0);
+  const den = rows.reduce((sum, r) => sum + (r.t - t0) ** 2, 0);
+  const tdee = (-num / den) * KCAL_PER_KG;
+  return { ...stretch, tdee, kgPerWeek: ((stretch.intake - tdee) * 7) / KCAL_PER_KG };
 }
 
 /** Each weigh-in with the mean of the weigh-ins in the 7 days ending on it. */
