@@ -1,3 +1,4 @@
+import { localDate } from "./day";
 import type { Change, Day, Entry, Event, Food, Recipe, Settings } from "./types";
 
 export type State = {
@@ -7,6 +8,8 @@ export type State = {
   weights: Map<string, number>;
   recipes: Map<string, Recipe>;
   settings: Settings;
+  /** Every maintenance change with the local date it was made, oldest first. */
+  tdeeHistory: { date: string; tdee: number }[];
 };
 
 export const defaultSettings: Settings = {
@@ -47,6 +50,7 @@ export function fold(events: Event[]): State {
     weights: new Map(),
     recipes: new Map(),
     settings: defaultSettings,
+    tdeeHistory: [],
   };
   for (const event of events) apply(state, event);
   return state;
@@ -80,6 +84,8 @@ export function apply(state: State, event: Event): void {
       break;
     case "settings":
       state.settings = { ...state.settings, ...event.settings };
+      if (event.settings.tdee !== undefined)
+        state.tdeeHistory.push({ date: localDate(new Date(event.t)), tdee: event.settings.tdee });
       break;
   }
 }
