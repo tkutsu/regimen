@@ -101,6 +101,30 @@ function FoodRow({ food, onPick }: { food: Food; onPick: () => void }) {
   );
 }
 
+const PARTS = [
+  ["prot", "protein"],
+  ["fiber", "fiber"],
+  ["satFat", "sat. fat"],
+  ["unsatFat", "unsat. fat"],
+  ["salt", "salt"],
+  ["sugar", "sugar"],
+] as const;
+
+/** What the chosen amount contains; "?" where the food's source had no value. */
+function Breakdown({ food, amount, factor }: { food: Food; amount: number; factor?: number }) {
+  const scaled = scale(food, amount, factor);
+  return (
+    <dl className="grid grid-cols-3 gap-x-4 gap-y-1 text-sm">
+      {PARTS.map(([key, label]) => (
+        <div key={key} className="flex justify-between">
+          <dt className="text-muted">{label}</dt>
+          <dd>{food[key] === undefined ? "?" : `${scaled[key].toFixed(key === "salt" ? 2 : 1)}g`}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 type AmountProps = {
   food: Food;
   containers: Container[];
@@ -157,6 +181,7 @@ function Amount({ food, containers, onBack, onAdd }: AmountProps) {
         <span className="text-muted">{item ? "×" : "g"}</span>
         <span className="ml-auto text-muted">{Math.round(kcal)} kcal</span>
       </label>
+      <Breakdown food={food} amount={amount} factor={variant?.factor} />
 
       {!item && containers.length > 0 && (
         <label className="flex items-center gap-2 text-sm text-muted">

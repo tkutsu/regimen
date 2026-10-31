@@ -5,7 +5,8 @@ const normalize = (text: string) =>
   text
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/ς/g, "σ");
 
 /**
  * Foods whose name contains every word of the query. Favourites come first, then
@@ -19,9 +20,10 @@ export function searchFoods(foods: Iterable<Food>, query: string, limit = 50): F
   for (const food of foods) {
     const name = normalize(food.name);
     if (!words.every((word) => name.includes(word))) continue;
-    const count = (pattern: (word: string) => string) => words.filter((word) => new RegExp(pattern(escape(word))).test(name)).length;
-    const wholeWords = count((word) => `(^|[^a-z0-9])${word}($|[^a-z0-9])`);
-    const wordStarts = count((word) => `(^|[^a-z0-9])${word}`);
+    const count = (pattern: (word: string) => string) =>
+      words.filter((word) => new RegExp(pattern(escape(word)), "u").test(name)).length;
+    const wholeWords = count((word) => `(^|[^\\p{L}\\p{N}])${word}($|[^\\p{L}\\p{N}])`);
+    const wordStarts = count((word) => `(^|[^\\p{L}\\p{N}])${word}`);
     const leads = name.startsWith(words[0]) ? 1 : 0;
     const score = Number(food.fav) * 100 + wholeWords * 10 + wordStarts * 10 + leads * 5 - name.length / 100;
     scored.push({ food, score });

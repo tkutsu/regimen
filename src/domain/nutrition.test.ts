@@ -39,6 +39,7 @@ describe("scale", () => {
     satFat: 0.2,
     unsatFat: 0.8,
     salt: 0,
+    sugar: 0,
     variants: [{ name: "raw", factor: 2.4 }],
   };
 

@@ -38,7 +38,7 @@ export function kcalTarget(state: State, day: Day): number {
   return tdee + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal;
 }
 
-/** Daily targets, carried over from the sheet. */
+/** Daily targets, carried over from the sheet; sugar is a share of kcal at 4 kcal/g. */
 export function targets(state: State, date: string): Nutrients {
   const kcal = kcalTarget(state, dayOf(state, date));
   return {
@@ -48,6 +48,7 @@ export function targets(state: State, date: string): Nutrients {
     satFat: (kcal * 0.07) / 9,
     unsatFat: (kcal * 0.25) / 9,
     salt: 4.5,
+    sugar: (kcal * state.settings.sugarPct) / 100 / 4,
   };
 }
 

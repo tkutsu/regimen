@@ -24,6 +24,9 @@ export function Settings({ state, commit }: Props) {
         <Row label="Protein" unit="g/kg">
           <NumberInput value={settings.proteinPerKg} onCommit={(proteinPerKg) => set({ proteinPerKg })} className="w-20 text-right" />
         </Row>
+        <Row label="Sugar limit" unit="% kcal">
+          <NumberInput value={settings.sugarPct} onCommit={(sugarPct) => set({ sugarPct })} className="w-20 text-right" />
+        </Row>
         <Row label="Steps" unit="kcal/1k">
           <NumberInput value={settings.kcalPer1kSteps} onCommit={(kcalPer1kSteps) => set({ kcalPer1kSteps })} className="w-20 text-right" />
         </Row>

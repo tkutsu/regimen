@@ -17,6 +17,7 @@ const food = (id: string, basis: Food["basis"], kcal: number, prot = 0): Food =>
   satFat: 0,
   unsatFat: 0,
   salt: 0,
+  sugar: 0,
 });
 
 const oats = food("oats", "100g", 374, 13);

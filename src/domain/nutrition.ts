@@ -1,9 +1,9 @@
 import type { State } from "./state";
 import type { Food, Nutrients, Recipe } from "./types";
 
-export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt"] as const;
+export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt", "sugar"] as const;
 
-export const zero = (): Nutrients => ({ kcal: 0, prot: 0, fiber: 0, satFat: 0, unsatFat: 0, salt: 0 });
+export const zero = (): Nutrients => ({ kcal: 0, prot: 0, fiber: 0, satFat: 0, unsatFat: 0, salt: 0, sugar: 0 });
 
 export function add(a: Nutrients, b: Nutrients): Nutrients {
   const sum = zero();
@@ -11,11 +11,14 @@ export function add(a: Nutrients, b: Nutrients): Nutrients {
   return sum;
 }
 
-/** Nutrients in an amount of food: grams for "100g" foods, a count for "item" foods. */
+/**
+ * Nutrients in an amount of food: grams for "100g" foods, a count for "item" foods.
+ * A nutrient the food was saved without (sugar, before it was tracked) counts as 0.
+ */
 export function scale(food: Food, amount: number, variantFactor = 1): Nutrients {
   const factor = (food.basis === "item" ? amount : amount / 100) * variantFactor;
   const out = zero();
-  for (const key of NUTRIENTS) out[key] = food[key] * factor;
+  for (const key of NUTRIENTS) out[key] = (food[key] ?? 0) * factor;
   return out;
 }
 
