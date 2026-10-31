@@ -12,8 +12,8 @@ export function add(a: Nutrients, b: Nutrients): Nutrients {
 }
 
 /** Nutrients in an amount of food: grams for "100g" foods, a count for "item" foods. */
-export function scale(food: Food, amount: number): Nutrients {
-  const factor = food.basis === "item" ? amount : amount / 100;
+export function scale(food: Food, amount: number, variantFactor = 1): Nutrients {
+  const factor = (food.basis === "item" ? amount : amount / 100) * variantFactor;
   const out = zero();
   for (const key of NUTRIENTS) out[key] = food[key] * factor;
   return out;
@@ -44,4 +44,15 @@ export function allFoods(state: State): Map<string, Food> {
   const foods = new Map(state.foods);
   for (const recipe of state.recipes.values()) foods.set(recipe.id, recipeAsFood(recipe, state.foods));
   return foods;
+}
+
+/**
+ * Reads an amount the way a calculator would: "120", "120+30-10". A leading sign
+ * adjusts the current amount instead of replacing it: "+50" adds, "-20" removes.
+ */
+export function parseAmount(text: string, current = 0): number | undefined {
+  const s = text.replace(/,/g, ".").replace(/\s+/g, "");
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)([+-](\d+\.?\d*|\.\d+))*$/.test(s)) return undefined;
+  const sum = s.match(/[+-]?(\d+\.?\d*|\.\d+)/g)!.reduce((total, term) => total + Number(term), 0);
+  return Math.max(0, /^[+-]/.test(s) ? current + sum : sum);
 }
