@@ -14,7 +14,7 @@ type Props = {
   onClose: () => void;
 };
 
-const box = "rounded-xl border bg-surface px-3 py-2 outline-none focus:border-accent";
+export const box = "rounded-xl border bg-surface px-3 py-2 outline-none focus:border-accent";
 const border = (text: string) => (Number.isNaN(readValue(text)) ? "border-bad" : "border-line");
 
 /** Edits a food, or creates one when none is given. Nothing is written until Save. */
@@ -167,7 +167,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
   );
 }
 
-function Heading({ hint, children }: { hint?: string; children: React.ReactNode }) {
+export function Heading({ hint, children }: { hint?: string; children: React.ReactNode }) {
   return (
     <h3 className="mb-2 flex justify-between px-1 text-xs text-muted">
       <span className="font-medium tracking-wide uppercase">{children}</span>
