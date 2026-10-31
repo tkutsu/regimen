@@ -14,6 +14,7 @@ export const defaultSettings: Settings = {
   phaseOffsets: { bulk: 100, maintain: 0, cut: -600 },
   proteinPerKg: 1.6,
   kcalPer1kSteps: 37,
+  containers: [],
 };
 
 /**

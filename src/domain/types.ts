@@ -9,6 +9,9 @@ export type Nutrients = {
   salt: number;
 };
 
+/** Another state of the same food, e.g. raw pasta is the boiled values × 2.4. */
+export type Variant = { name: string; factor: number };
+
 /** Nutrients are per 100 g, or per item when basis is "item". */
 export type Food = Nutrients & {
   id: string;
@@ -17,16 +20,24 @@ export type Food = Nutrients & {
   group: string;
   fav: boolean;
   note: string;
+  variants?: Variant[];
 };
 
-/** amount is grams, or a count for "item" foods. Planned entries have done = false. */
+/**
+ * amount is grams, or a count for "item" foods. Planned entries have done = false.
+ * A variant's factor is copied in, so later edits to the food leave history alone.
+ */
 export type Entry = {
   id: string;
   date: string;
   foodId: string;
   amount: number;
   done: boolean;
+  variant?: string;
+  factor?: number;
 };
+
+export type Container = { id: string; name: string; grams: number };
 
 export type Day = {
   date: string;
@@ -51,6 +62,7 @@ export type Settings = {
   phaseOffsets: Record<Phase, number>;
   proteinPerKg: number;
   kcalPer1kSteps: number;
+  containers: Container[];
 };
 
 type Meta = { id: string; t: string; dev: string };
