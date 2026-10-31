@@ -1,17 +1,17 @@
-import { NUTRIENTS } from "../domain/nutrition";
+import { LABELS, NUTRIENTS } from "../domain/nutrition";
 import type { Nutrients } from "../domain/types";
 
 type Key = keyof Nutrients;
 
 /** Limits should stay under target; goals should reach it. */
-const META: Record<Key, { label: string; unit: string; digits: number; kind: "limit" | "goal" }> = {
-  kcal: { label: "kcal", unit: "", digits: 0, kind: "limit" },
-  prot: { label: "protein", unit: "g", digits: 0, kind: "goal" },
-  fiber: { label: "fiber", unit: "g", digits: 0, kind: "goal" },
-  satFat: { label: "sat. fat", unit: "g", digits: 1, kind: "limit" },
-  unsatFat: { label: "unsat. fat", unit: "g", digits: 0, kind: "goal" },
-  salt: { label: "salt", unit: "g", digits: 1, kind: "limit" },
-  sugar: { label: "sugar", unit: "g", digits: 0, kind: "limit" },
+const META: Record<Key, { unit: string; digits: number; kind: "limit" | "goal" }> = {
+  kcal: { unit: "", digits: 0, kind: "limit" },
+  prot: { unit: "g", digits: 0, kind: "goal" },
+  fiber: { unit: "g", digits: 0, kind: "goal" },
+  satFat: { unit: "g", digits: 1, kind: "limit" },
+  unsatFat: { unit: "g", digits: 0, kind: "goal" },
+  salt: { unit: "g", digits: 1, kind: "limit" },
+  sugar: { unit: "g", digits: 0, kind: "limit" },
 };
 
 export function Remaining({ target, eaten }: { target: Nutrients; eaten: Nutrients }) {
@@ -35,7 +35,8 @@ export function Remaining({ target, eaten }: { target: Nutrients; eaten: Nutrien
 }
 
 function Macro({ name, target, eaten }: { name: Key; target: number; eaten: number }) {
-  const { label, unit, digits, kind } = META[name];
+  const { unit, digits, kind } = META[name];
+  const label = LABELS[name];
   const left = target - eaten;
   const tone = left >= 0 ? "" : kind === "limit" ? "text-bad" : "text-good";
   return (
