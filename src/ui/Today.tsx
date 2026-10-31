@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, shiftDate, targets, trendWeight } from "../domain/day";
 import { allFoods, parseAmount, scale } from "../domain/nutrition";
+import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
 import { NumberField } from "./fields";
@@ -23,7 +24,10 @@ export function Today({ state, commit }: Props) {
   const putEntry = (entry: Entry) =>
     commit(entry.amount > 0 ? { type: "entry.upsert", entry } : { type: "entry.delete", entryId: entry.id });
   const add = (food: Food, amount: number, done: boolean, variant?: Variant) => {
-    putEntry({ id: newId(), date, foodId: food.id, amount, done, variant: variant?.name, factor: variant?.factor });
+    const entry = { id: newId(), date, foodId: food.id, amount, done, variant: variant?.name, factor: variant?.factor };
+    // A reference-table food becomes one of yours, synced like any other.
+    const save: Change[] = foods.has(food.id) ? [] : [{ type: "food.upsert", food }];
+    commit(...save, { type: "entry.upsert", entry });
     setPicking(false);
   };
   const copyYesterday = () =>
@@ -87,7 +91,13 @@ export function Today({ state, commit }: Props) {
         Add food
       </button>
       {picking && (
-        <FoodPicker foods={foods} containers={state.settings.containers} onAdd={add} onClose={() => setPicking(false)} />
+        <FoodPicker
+          foods={foods}
+          recentIds={recentFoodIds(state)}
+          containers={state.settings.containers}
+          onAdd={add}
+          onClose={() => setPicking(false)}
+        />
       )}
     </div>
   );
