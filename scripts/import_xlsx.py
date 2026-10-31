@@ -23,7 +23,7 @@ GROUPS = {
     "meat": [5, 6, 7, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52],
     "fish": [8, 9, 10, 11, 12, 13, 53, 54, 55, 56, 57, 58],
     "dairy & eggs": [2, 3, 4, 37, 38, 39, 40, 42, 101, 115],
-    "carbs": [16, 17, 18, 19, 20, 21, 64, 65, 66, 67, 68, 69, 70, 71, 73, 74, 80, 102, 110],
+    "carbs": [16, 17, 18, 20, 21, 64, 65, 66, 67, 68, 69, 70, 71, 73, 74, 80, 102, 110],
     "legumes": [81, 83, 84, 85, 116],
     "veg": [22, 23, 24, 35, 82, 86, 87, 88, 89, 90, 99],
     "fruit": [25, 26, 27, 28, 29, 30, 75, 76, 77, 78, 79],
@@ -35,13 +35,26 @@ GROUPS = {
     "supplements": [114, 119],
 }
 GROUP_OF = {row: group for group, rows in GROUPS.items() for row in rows}
-SKIP = {36, 103}  # nutritional yeast (merged into row 91), sugar (duplicate of row 72)
+# nutritional yeast (merged into row 91), sugar (duplicate of row 72), puffed grains (unused)
+SKIP = {19, 36, 103}
 NOTE_FROM = {91: 36}  # row 36 held the vitamin label for nutritional yeast
 FAVS = {15, 17, 21, 37, 112, 118, 119}  # what was on the plan when exported
 NAMES = {
     73: "wonderbread (24 g toast slice)",
 }
 NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt"]
+# Rows whose sheet values were wrong (macros not adding up to the kcal, total fat in the
+# unsaturated column), replaced by a reference.json entry: key, or (key, grams per item).
+FROM_REFERENCE = {
+    5: "usda-173627",  # chicken thigh, meat only, raw
+    33: "usda-169593",  # cocoa, unsweetened
+    40: "usda-173420",  # feta
+    48: "usda-174030",  # ground beef 90/10, raw
+    58: "ciqual-27031",  # gilthead seabream, baked
+    74: ("usda-174915", 88),  # pita, white
+    92: "usda-170271",  # dark chocolate 45-59%
+}
+LABELS = {"usda": "USDA FDC", "ciqual": "CIQUAL", "off": "Open Food Facts"}
 
 # Rows that lumped several foods together, split with researched values per 100 g:
 # (name, (kcal, prot, fiber, satFat, unsatFat, salt), source). USDA ids are SR Legacy.
@@ -57,11 +70,6 @@ SPLITS = {
     18: [
         ("oats, rolled", (379, 13.2, 10.1, 1.1, 4.3, 0.01), "USDA FDC 173904"),
         ("trahanas, sour", (365, 12.0, None, 1.7, 1.3, 2.08), "Vlaha label (Open Food Facts 5201418000094)"),
-    ],
-    19: [
-        ("amaranth, popped", (371, 13.6, 6.7, 1.5, 4.5, 0.01), "USDA FDC 170682 (dry grain)"),
-        ("buckwheat, puffed", (343, 13.2, 10.0, 0.7, 2.1, 0), "USDA FDC 170286 (dry grain)"),
-        ("wheat, puffed", (364, 14.7, 4.4, 0.2, 0, 0.01), "USDA FDC 173913"),
     ],
     22: [
         ("bell pepper, red", (26, 1.0, 2.1, 0.1, 0.2, 0.01), "USDA FDC 170108"),
@@ -179,7 +187,6 @@ DERIVED = [
     ("ketchup, stevia", "condiments", [("ketchup", 0.6)]),
     ("arla hard cheese", "dairy & eggs", [("cheddar", 0.8)]),
     ("sardines (sardela), baked", "fish", [("mackerel-skoubri-baked", 1)]),
-    ("barracuda (loutsos), baked", "fish", [("mackerel-skoubri-baked", 1)]),
     ("lentils, red, dry", "legumes", [("lentils-dry", 0.92)]),
     ("mayo, regular", "condiments", [("mayo-light", 1 / 0.38)]),
     ("whole chicken, roasted", "meat", [("chicken-breast-baked", 0.4), ("chicken-thigh-roasted", 0.6)]),
@@ -353,6 +360,13 @@ def main(xlsx, last_weigh_in, out_dir):
                 for part, values, source in SPLITS[row]
             ]
             sources.update({slug(part): source for part, _, source in SPLITS[row]})
+        elif row in FROM_REFERENCE:
+            spec = FROM_REFERENCE[row]
+            key, grams = spec if isinstance(spec, tuple) else (spec, 100)
+            source, ref_id, ref_name, *_ = reference[key]
+            values = [None if v is None else v * grams / 100 for v in reference[key][4:10]]
+            sourced = f"source: {LABELS[source]} {ref_id} ({ref_name}{f', {grams} g' if grams != 100 else ''})"
+            foods_by_row[row] = [make_food(NAMES.get(row, name), basis, group, fav, join(note, sourced), values)]
         else:
             values = [cells.get(f"{col}{row}", 0.0) for col in "FGHIJK"]
             foods_by_row[row] = [make_food(NAMES.get(row, name), basis, group, fav, note, values)]
