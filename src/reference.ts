@@ -11,7 +11,7 @@ let loading: Promise<Food[]> | undefined;
 
 /** The bundled reference tables (public/reference.json), loaded once on first search. */
 function loadReference(): Promise<Food[]> {
-  loading ??= fetch("/reference.json")
+  loading ??= fetch(`${import.meta.env.BASE_URL}reference.json`)
     .then((response) => response.json() as Promise<Data>)
     .then((data) =>
       data.foods.map(([source, id, name, group, kcal, ...values]): Food => {
