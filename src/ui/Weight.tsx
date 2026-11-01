@@ -16,9 +16,10 @@ const AVERAGES = [3, 7, 14];
 /** Weigh-ins listed under Recent, and how many more each Show more adds. */
 const RECENT = 14;
 const MORE = 30;
-const PHASES: Phase[] = ["cut", "maintain", "bulk"];
-const PHASE_FILL: Record<Phase, string> = { cut: "fill-cut", maintain: "fill-maintain", bulk: "fill-bulk" };
-const PHASE_BG: Record<Phase, string> = { cut: "bg-cut", maintain: "bg-maintain", bulk: "bg-bulk" };
+/** Phases marked under the chart; maintenance is the unmarked baseline. */
+const MARKED = ["cut", "bulk"] as const;
+const PHASE_FILL: Partial<Record<Phase, string>> = { cut: "fill-cut", bulk: "fill-bulk" };
+const PHASE_BG: Partial<Record<Phase, string>> = { cut: "bg-cut", bulk: "bg-bulk" };
 
 const short = (date: string, weekday = false) =>
   new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", ...(weekday && { weekday: "short" }) });
@@ -191,11 +192,13 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
 }
 
 const H = 180;
-const PAD = { top: 12, right: 8, bottom: 22, left: 34 };
+const PAD = { top: 12, right: 8, bottom: 30, left: 34 };
+/** The phase strip sits between the plot and the date labels. */
+const STRIP = { gap: 4, height: 5 };
 
 type Band = { phase: Phase; from: string; to: string };
 
-/** Daily weigh-ins as dots, the average as a line, each day's phase as a band behind; hover or touch reads a day. */
+/** Daily weigh-ins as dots, the average as a line, cut and bulk days as a strip underneath; hover or touch reads a day. */
 function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: number }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number>();
@@ -239,20 +242,22 @@ function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: 
       </p>
       {width > 0 && (
         <svg width={width} height={H} onPointerMove={onPointer} onPointerDown={onPointer} onPointerLeave={() => setHover(undefined)} className="touch-pan-y select-none">
-          {bands.map((band) => {
-            const x1 = clampX(x(band.from) - halfDay);
-            return (
-              <rect
-                key={band.from}
-                x={x1}
-                width={clampX(x(band.to) + halfDay) - x1}
-                y={PAD.top}
-                height={H - PAD.top - PAD.bottom}
-                className={PHASE_FILL[band.phase]}
-                opacity={0.14}
-              />
-            );
-          })}
+          {bands
+            .filter((band) => PHASE_FILL[band.phase])
+            .map((band) => {
+              const x1 = clampX(x(band.from) - halfDay);
+              return (
+                <rect
+                  key={band.from}
+                  x={x1}
+                  width={clampX(x(band.to) + halfDay) - x1}
+                  y={H - PAD.bottom + STRIP.gap}
+                  height={STRIP.height}
+                  rx={1.5}
+                  className={PHASE_FILL[band.phase]}
+                />
+              );
+            })}
           {yTicks.map((v) => (
             <g key={v}>
               <line x1={PAD.left} x2={width - PAD.right} y1={y(v)} y2={y(v)} className="stroke-line" strokeWidth={1} />
@@ -281,9 +286,9 @@ function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: 
         <span className="flex items-center gap-1.5">
           <span className="h-0.5 w-3 rounded-full bg-accent" /> {days}-day average
         </span>
-        {PHASES.filter((phase) => bands.some((band) => band.phase === phase)).map((phase) => (
+        {MARKED.filter((phase) => bands.some((band) => band.phase === phase)).map((phase) => (
           <span key={phase} className="flex items-center gap-1.5">
-            <span className={`size-2.5 rounded-sm opacity-40 ${PHASE_BG[phase]}`} /> {phase}
+            <span className={`h-1.5 w-3 rounded-sm ${PHASE_BG[phase]}`} /> {phase}
           </span>
         ))}
       </div>
