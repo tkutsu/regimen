@@ -1,5 +1,5 @@
 import type { State } from "./state";
-import type { Food, Nutrients, Recipe } from "./types";
+import type { Food, Nutrients, Recipe, Values } from "./types";
 
 export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt", "sugar"] as const;
 
@@ -52,12 +52,19 @@ export function recipeTotals(recipe: Recipe, foods: Map<string, Food>) {
   return { total, rawG, cookedG: cookedG > 0 ? cookedG : rawG, weighed: cookedG > 0 };
 }
 
-/** A recipe as a per-100g food; old batches stop being favourites. */
-export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
+/** Per 100 g: the ingredients' sum, or the values written by hand while there are none. */
+function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
+  if (!recipe.ingredients.length && recipe.values) return recipe.values;
   const { total, cookedG } = recipeTotals(recipe, foods);
   const per100 = zero();
   for (const key of NUTRIENTS) per100[key] = cookedG ? (total[key] / cookedG) * 100 : 0;
-  return { ...per100, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav: !recipe.archived, note: "" };
+  return per100;
+}
+
+/** A recipe as a per-100g food; old batches stop being favourites. */
+export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
+  const values = recipeValues(recipe, foods);
+  return { ...values, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav: !recipe.archived, note: recipe.note ?? "" };
 }
 
 /** Foods plus recipes, which can be eaten like any other food. */

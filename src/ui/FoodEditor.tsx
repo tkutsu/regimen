@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fromForm, readValue, toForm, type FoodForm } from "../domain/foodForm";
+import { fromForm, readValue, toForm, type FoodForm, type ValueTexts } from "../domain/foodForm";
 import { LABELS, NUTRIENTS } from "../domain/nutrition";
 import { newId } from "../domain/state";
 import type { Food } from "../domain/types";
@@ -87,23 +87,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
 
           <section>
             <Heading hint="blank = unknown">{form.basis === "item" ? "Per item" : "Per 100 g"}</Heading>
-            <div className="grid grid-cols-2 gap-2">
-              {NUTRIENTS.map((key) => (
-                <label key={key} className={`${box} ${border(form.values[key])}`}>
-                  <span className="block text-xs text-muted">
-                    {LABELS[key]}
-                    {key !== "kcal" && " (g)"}
-                  </span>
-                  <input
-                    inputMode="decimal"
-                    value={form.values[key]}
-                    onChange={(e) => patch({ values: { ...form.values, [key]: e.target.value } })}
-                    placeholder={key === "kcal" ? "required" : "?"}
-                    className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
-                  />
-                </label>
-              ))}
-            </div>
+            <ValueFields values={form.values} onChange={(values) => patch({ values })} />
             {food && uses > 0 && <p className="mt-2 text-xs text-muted">Changes also apply to past days that use it.</p>}
           </section>
 
@@ -163,6 +147,29 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Nutrients typed one by one; blank is unknown, kcal is required. */
+export function ValueFields({ values, onChange }: { values: ValueTexts; onChange: (values: ValueTexts) => void }) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {NUTRIENTS.map((key) => (
+        <label key={key} className={`${box} ${border(values[key])}`}>
+          <span className="block text-xs text-muted">
+            {LABELS[key]}
+            {key !== "kcal" && " (g)"}
+          </span>
+          <input
+            inputMode="decimal"
+            value={values[key]}
+            onChange={(e) => onChange({ ...values, [key]: e.target.value })}
+            placeholder={key === "kcal" ? "required" : "?"}
+            className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
+          />
+        </label>
+      ))}
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { readValues, valueTexts, type ValueTexts } from "./foodForm";
 import { parseAmount } from "./nutrition";
 import type { Recipe } from "./types";
 
@@ -8,6 +9,9 @@ export type RecipeForm = {
   /** The weighed pot, container included; blank until cooked. */
   totalG: string;
   containerG: number;
+  /** Per 100 g by hand, for a recipe without ingredients. */
+  values: ValueTexts;
+  note: string;
 };
 
 export function toRecipeForm(recipe?: Recipe): RecipeForm {
@@ -16,17 +20,30 @@ export function toRecipeForm(recipe?: Recipe): RecipeForm {
     ingredients: (recipe?.ingredients ?? []).map(({ foodId, amount }) => ({ foodId, amount: String(amount) })),
     totalG: recipe?.totalG ? String(recipe.totalG) : "",
     containerG: recipe?.containerG ?? 0,
+    values: valueTexts(recipe?.values),
+    note: recipe?.note ?? "",
   };
 }
 
-/** The edited recipe, or undefined while it has no name, no ingredients, or a bad number. */
+/**
+ * The edited recipe, or undefined while it has no name, a bad number, or neither
+ * ingredients nor kcal written by hand. Hand-written values are dropped once it has ingredients.
+ */
 export function fromRecipeForm(form: RecipeForm, id: string): Recipe | undefined {
   const name = form.name.trim();
+  const note = form.note.trim();
   const ingredients = form.ingredients.map(({ foodId, amount }) => ({ foodId, amount: parseAmount(amount) ?? 0 }));
   const totalG = form.totalG.trim() ? parseAmount(form.totalG) : 0;
-  if (!name || !ingredients.length || ingredients.some((i) => i.amount <= 0)) return undefined;
+  if (!name || ingredients.some((i) => i.amount <= 0)) return undefined;
   if (totalG === undefined || (totalG > 0 && totalG <= form.containerG)) return undefined;
-  return { id, name, ingredients, totalG, containerG: form.containerG };
+  const recipe: Recipe = { id, name, ingredients, totalG, containerG: form.containerG };
+  if (!ingredients.length) {
+    const values = readValues(form.values);
+    if (!values) return undefined;
+    recipe.values = values;
+  }
+  if (note) recipe.note = note;
+  return recipe;
 }
 
 /** The next cook of a recipe: same ingredients to adjust, not weighed yet. */
