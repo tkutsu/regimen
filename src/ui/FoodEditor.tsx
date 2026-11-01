@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useRef, useState } from "react";
 import { fromForm, readValue, toForm, type FoodForm, type ValueTexts } from "../domain/foodForm";
 import { LABELS, NUTRIENTS } from "../domain/nutrition";
 import { newId } from "../domain/state";
@@ -62,18 +62,11 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
           </div>
 
           <div className="flex gap-2">
-            <input
-              list="food-groups"
+            <GroupInput
               value={form.group}
-              onChange={(e) => patch({ group: e.target.value })}
-              placeholder="Group"
-              className={`${box} min-w-0 flex-1 border-line`}
+              onChange={(group) => patch({ group })}
+              groups={groups}
             />
-            <datalist id="food-groups">
-              {groups.map((group) => (
-                <option key={group} value={group} />
-              ))}
-            </datalist>
             <div className="flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
               {(["100g", "item"] as const).map((basis) => (
                 <button
@@ -150,6 +143,70 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
         </div>
       </div>
     </Dialog>
+  );
+}
+
+/** Suggestions stay in the page: Android's native datalist can lose its background while editing. */
+export function GroupInput({ value, onChange, groups }: { value: string; onChange: (value: string) => void; groups: string[] }) {
+  const id = useId();
+  const input = useRef<HTMLInputElement>(null);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const matches = groups.filter((group) => group.toLowerCase().includes(value.trim().toLowerCase()));
+  const shown = open && matches.length > 0;
+  const choose = (group: string) => {
+    onChange(group);
+    input.current?.focus();
+    setOpen(false);
+    setActive(-1);
+  };
+  return (
+    <div className="relative min-w-0 flex-1" onBlur={(e) => {
+      if (!e.currentTarget.contains(e.relatedTarget)) setOpen(false);
+    }}>
+      <input
+        ref={input}
+        role="combobox"
+        aria-label="Group"
+        aria-expanded={shown}
+        aria-controls={id}
+        aria-autocomplete="list"
+        aria-activedescendant={shown && active >= 0 ? `${id}-${active}` : undefined}
+        autoComplete="off"
+        value={value}
+        onFocus={() => setOpen(true)}
+        onChange={(e) => { onChange(e.target.value); setOpen(true); setActive(-1); }}
+        onKeyDown={(e) => {
+          if ((e.key === "ArrowDown" || e.key === "ArrowUp") && matches.length) {
+            e.preventDefault();
+            setOpen(true);
+            const next = active < 0 ? (e.key === "ArrowDown" ? 0 : matches.length - 1) : (active + (e.key === "ArrowDown" ? 1 : -1) + matches.length) % matches.length;
+            setActive(next);
+            document.getElementById(`${id}-${next}`)?.scrollIntoView({ block: "nearest" });
+          } else if (e.key === "Enter" && shown && active >= 0) {
+            e.preventDefault();
+            choose(matches[active]);
+          } else if (e.key === "Escape" && shown) {
+            e.preventDefault();
+            e.stopPropagation();
+            setOpen(false);
+          }
+        }}
+        placeholder="Group"
+        className={`${box} w-full border-line`}
+      />
+      {shown && (
+        <div id={id} role="listbox" aria-label="Groups" className="absolute inset-x-0 top-full z-20 mt-1 max-h-40 overflow-y-auto rounded-xl border border-line bg-surface py-1 text-fg shadow-lg">
+          {matches.map((group, index) => (
+            <button key={group} id={`${id}-${index}`} role="option" aria-selected={active === index} tabIndex={-1}
+              onMouseDown={(e) => e.preventDefault()} onClick={() => choose(group)}
+              className={`block w-full px-3 py-2 text-left ${active === index ? "bg-line" : "hover:bg-line"}`}>
+              {group}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 

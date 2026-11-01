@@ -25,8 +25,8 @@ import zipfile
 
 # Each food starts with source, id, name, group, followed by the nutrient columns.
 # Existing macro columns keep their positions; micronutrients follow sugar.
-# null means the source has no value. A value is only filled in when it follows from
-# another: no carbohydrate means no sugar, no fat means no fat of either kind.
+# null means the source has no value. Unsaturated fat may be estimated from total
+# minus saturated fat; estimated rows are identified in the database metadata.
 FIELDS = ["kcal", "prot", "fiber", "sat", "mufa", "pufa", "unsat", "fat", "carbs", "salt", "sugar"]
 MACRO_UNITS = {"kcal": "kcal", "prot": "g", "fiber": "g", "satFat": "g",
                "unsatFat": "g", "salt": "g", "sugar": "g"}
@@ -93,7 +93,7 @@ def clean_name(name):
     return " ".join(html.unescape(name).split())
 
 
-def normalize(source, food_id, name, group, v):
+def normalize(source, food_id, name, group, v, estimates=None):
     """Validate source values and preserve unknowns; return None for unusable foods."""
     name = clean_name(name)
     if v.get("kcal") is None or not name or not any(c.isalpha() for c in name) or "\ufffd" in name:
@@ -116,17 +116,22 @@ def normalize(source, food_id, name, group, v):
         unsat = v["mufa"] + v["pufa"]
     if unsat is None and none_if(fat):
         unsat = 0.0
+    estimated = unsat is None and fat is not None and sat is not None and fat >= sat
+    if estimated:
+        unsat = fat - sat
     if (unsat is not None and unsat > 100) or (sat or 0) + (unsat or 0) > 100.5:
         return None
     if fat is not None and (sat or 0) + (unsat or 0) > fat + max(0.5, fat * 0.05):
         return None
+    if estimated and estimates is not None:
+        estimates.add(f"{source}-{food_id}")
     values = [v["kcal"], v.get("prot"), v.get("fiber"), sat, unsat, v.get("salt"), pick("sugar", v.get("carbs"))]
     return [source, food_id, name, group,
             *[None if x is None else round(x, 2 if i == 5 else 1) for i, x in enumerate(values)],
             *micronutrients(v)]
 
 
-def usda(path):
+def usda(path, estimates=None):
     prefix = "FoodData_Central_sr_legacy_food_csv_2018-04/"
     ids = {"1008": "kcal", "1003": "prot", "1079": "fiber", "1258": "sat", "1292": "mufa", "1293": "pufa",
            "1004": "fat", "1005": "carbs", "2000": "sugar", **USDA_MICROS}
@@ -145,10 +150,10 @@ def usda(path):
         v = values.get(fdc_id, {})
         if "sodium" in v:
             v["salt"] = v["sodium"] * 2.5 / 1000
-        yield normalize("usda", fdc_id, name, group, v)
+        yield normalize("usda", fdc_id, name, group, v, estimates)
 
 
-def ciqual(path):
+def ciqual(path, estimates=None):
     """Read CIQUAL's cp1252 XML; bounds and traces have no exact value."""
     ids = {"328": "kcal", "333": "jones", "25000": "prot", "34100": "fiber", "40302": "sat", "40303": "mufa",
            "40304": "pufa", "40000": "fat", "31000": "carbs", "10004": "salt", "32000": "sugar",
@@ -174,10 +179,10 @@ def ciqual(path):
         v = values.get(code, {})
         if v.get("kcal") is None:  # the Jones-factor kcal stands in for the EU-regulation one
             v["kcal"] = v.get("jones")
-        yield normalize("ciqual", code, name, groups.get(group, ""), v)
+        yield normalize("ciqual", code, name, groups.get(group, ""), v, estimates)
 
 
-def off(path):
+def off(path, estimates=None):
     """Products tagged as sold in Greece. The export is tab-separated and unquoted."""
     columns = {"energy-kcal_100g": "kcal", "proteins_100g": "prot", "fiber_100g": "fiber", "saturated-fat_100g": "sat",
                "monounsaturated-fat_100g": "mufa", "polyunsaturated-fat_100g": "pufa", "unsaturated-fat_100g": "unsat",
@@ -228,7 +233,7 @@ def off(path):
             if not usable(name):
                 continue
             label = f"{name} ({brand})" if brand and brand.lower() not in name.lower() else name
-            products[row[at["code"]]] = normalize("off", row[at["code"]], label, "packaged (Greece)", v)
+            products[row[at["code"]]] = normalize("off", row[at["code"]], label, "packaged (Greece)", v, estimates)
     return products.values()
 
 
@@ -242,7 +247,9 @@ def deduplicate(foods):
 
 
 def main(usda_zip, ciqual_zip, off_csv, out):
-    foods = deduplicate([food for food in (*usda(usda_zip), *ciqual(ciqual_zip), *off(off_csv)) if food])
+    estimates = set()
+    foods = deduplicate([food for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates), *off(off_csv, estimates)) if food])
+    kept_ids = {f"{food[0]}-{food[1]}" for food in foods}
     data = {
         "sources": {
             "usda": "USDA FoodData Central, SR Legacy 2018-04 (public domain)",
@@ -250,6 +257,7 @@ def main(usda_zip, ciqual_zip, off_csv, out):
             "off": "Open Food Facts, products sold in Greece (ODbL)",
         },
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
+        "estimatedUnsatFat": sorted(estimates & kept_ids),
         "foods": foods,
     }
     with open(out, "w") as f:
