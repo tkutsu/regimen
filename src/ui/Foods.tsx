@@ -3,11 +3,12 @@ import { recipeAsFood, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
 import { recentFoodIds, searchFoods } from "../domain/search";
 import { newId, type State } from "../domain/state";
-import type { Change, Food, Recipe } from "../domain/types";
+import type { Food, Recipe } from "../domain/types";
+import type { Commit } from "../store";
 import { FoodEditor } from "./FoodEditor";
 import { RecipeEditor } from "./RecipeEditor";
 
-type Props = { state: State; commit: (...changes: Change[]) => void };
+type Props = { state: State; commit: Commit };
 
 /** Your recipes, then your foods: favourites, then by group, or search results while typing. */
 export function Foods({ state, commit }: Props) {
@@ -98,13 +99,11 @@ export function Foods({ state, commit }: Props) {
           food={food}
           groups={groups}
           uses={food ? (uses.get(food.id) ?? 0) : 0}
-          onSave={(saved) => {
-            commit({ type: "food.upsert", food: saved });
-            close();
+          onSave={async (saved) => {
+            if (await commit({ type: "food.upsert", food: saved })) close();
           }}
-          onDelete={() => {
-            if (food) commit({ type: "food.delete", foodId: food.id });
-            close();
+          onDelete={async () => {
+            if (food && (await commit({ type: "food.delete", foodId: food.id }))) close();
           }}
           onClose={close}
         />
@@ -119,15 +118,14 @@ export function Foods({ state, commit }: Props) {
           recentIds={recent}
           containers={state.settings.containers}
           uses={uses.get(cooking.recipe.id) ?? 0}
-          onSave={(recipe) => {
+          onSave={async (recipe) => {
             const old = cooking.replaces;
-            commit(...(old ? [{ type: "recipe.upsert" as const, recipe: { ...old, archived: true } }] : []), { type: "recipe.upsert", recipe });
-            setCooking(undefined);
+            const archive = old ? [{ type: "recipe.upsert" as const, recipe: { ...old, archived: true } }] : [];
+            if (await commit(...archive, { type: "recipe.upsert", recipe })) setCooking(undefined);
           }}
           onNewBatch={() => setCooking({ recipe: newBatch(cooking.recipe, newId()), replaces: cooking.recipe })}
-          onDelete={() => {
-            commit({ type: "recipe.delete", recipeId: cooking.recipe.id });
-            setCooking(undefined);
+          onDelete={async () => {
+            if (await commit({ type: "recipe.delete", recipeId: cooking.recipe.id })) setCooking(undefined);
           }}
           onClose={() => setCooking(undefined)}
         />
@@ -167,11 +165,12 @@ function byGroup(foods: Food[]): [string, Food[]][] {
   return [["favourites", sorted.filter((food) => food.fav)], ...[...groups].sort(([a], [b]) => a.localeCompare(b))];
 }
 
-/** How many entries and recipe ingredients point at each food. */
+/** How many entries, recipe ingredients and staples point at each food. */
 function usage(state: State): Map<string, number> {
   const counts = new Map<string, number>();
   const count = (foodId: string) => counts.set(foodId, (counts.get(foodId) ?? 0) + 1);
   for (const entry of state.entries.values()) count(entry.foodId);
   for (const recipe of state.recipes.values()) recipe.ingredients.forEach((ingredient) => count(ingredient.foodId));
+  for (const staple of state.settings.staples) count(staple.foodId);
   return counts;
 }

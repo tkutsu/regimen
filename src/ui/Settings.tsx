@@ -3,8 +3,8 @@ import { LIMIT_UNITS, localDate } from "../domain/day";
 import { allFoods, LABELS, pickableFoods } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
-import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, Staple, Theme } from "../domain/types";
-import type { Config, Peers } from "../store";
+import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, SettingsPatch, Staple, Theme } from "../domain/types";
+import type { Commit, Config, Peers } from "../store";
 import { NumberInput, OptionalNumberInput } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { applyLook } from "./look";
@@ -12,13 +12,14 @@ import { Devices, SyncForm } from "./Sync";
 
 type Props = {
   state: State;
-  commit: (...changes: Change[]) => void;
+  commit: Commit;
   config: Config;
   peers: Peers;
   onSaveConfig: (config: Config) => Promise<void>;
 };
 
-type Set = (patch: Partial<SettingsT>) => void;
+/** Writes only what changed, so another device's edit to the rest stays. */
+type Set = (patch: SettingsPatch) => Promise<boolean>;
 
 export function Settings({ state, commit, config, peers, onSaveConfig }: Props) {
   const settings = state.settings;
@@ -60,7 +61,7 @@ const LIMITED: Limited[] = ["prot", "fiber", "satFat", "unsatFat", "salt", "suga
 
 /** A lower and an upper bound per nutrient; either can be blank. */
 function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {
-  const setRange = (key: Limited, patch: Range) => set({ limits: { ...limits, [key]: { ...limits[key], ...patch } } });
+  const setRange = (key: Limited, patch: Range) => set({ limits: { [key]: { ...limits[key], ...patch } } });
   return (
     <Section
       title="Limits"
@@ -85,7 +86,7 @@ function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {
 }
 
 /** Foods planned on every day from now on. Removing one from a day on Today leaves the others alone. */
-function Staples({ state, commit }: { state: State; commit: (...changes: Change[]) => void }) {
+function Staples({ state, commit }: { state: State; commit: Commit }) {
   const [picking, setPicking] = useState(false);
   const foods = useMemo(() => allFoods(state), [state]);
   const pickable = useMemo(() => pickableFoods(state), [state]);
@@ -121,11 +122,10 @@ function Staples({ state, commit }: { state: State; commit: (...changes: Change[
           recentIds={recentFoodIds(state)}
           containers={containers}
           addLabel="Add staple"
-          onAdd={(food, amount, _, variant) => {
+          onAdd={async (food, amount, _, variant) => {
             const staple = { id: newId(), foodId: food.id, amount, variant: variant?.name, factor: variant?.factor, from: localDate() };
             // A reference-table food becomes one of yours, as on Today.
-            save([...staples, staple], ...(foods.has(food.id) ? [] : [{ type: "food.upsert", food } as Change]));
-            setPicking(false);
+            if (await save([...staples, staple], ...(foods.has(food.id) ? [] : [{ type: "food.upsert", food } as Change]))) setPicking(false);
           }}
           onClose={() => setPicking(false)}
         />
@@ -144,9 +144,8 @@ function Containers({ containers, set }: { containers: Container[]; set: Set }) 
   const edit = (id: string, patch: Partial<Container>) => set({ containers: containers.map((c) => (c.id === id ? { ...c, ...patch } : c)) });
   const shown = drag?.order ?? containers;
 
-  const add = () => {
-    if (!valid) return;
-    set({ containers: [...containers, { id: newId(), name: name.trim(), grams: weight }] });
+  const add = async () => {
+    if (!valid || !(await set({ containers: [...containers, { id: newId(), name: name.trim(), grams: weight }] }))) return;
     setName("");
     setGrams("");
   };
