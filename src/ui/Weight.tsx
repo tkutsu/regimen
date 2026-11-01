@@ -155,7 +155,7 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
             .
           </p>
           <p className="mt-1 text-xs text-muted">
-            {current.logged} of {daysBetween(current.fitFrom, current.to) + 1} days logged, the rest counted as eaten to target. The first days of a
+            {current.logged} of {daysBetween(current.fitFrom, current.to) + 1} days with food ticked as eaten, the rest counted as eaten to target. The first days of a
             phase are left out while water settles.
           </p>
           {Math.abs(reading - tdee) >= 30 && (
