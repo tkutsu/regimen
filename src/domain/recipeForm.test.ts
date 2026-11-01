@@ -18,6 +18,13 @@ describe("recipe values", () => {
     expect(recipeTotals({ ...recipe, totalG: 0 }, foods).cookedG).toBe(320);
   });
 
+  it("uses the values written by hand while it has no ingredients", () => {
+    const byHand: Recipe = { ...recipe, ingredients: [], values: { kcal: 245, prot: 12 }, note: "350 g a slice" };
+    const food = recipeAsFood(byHand, foods);
+    expect([food.kcal, food.prot, food.sugar, food.note]).toEqual([245, 12, undefined, "350 g a slice"]);
+    expect(recipeAsFood({ ...byHand, ingredients: recipe.ingredients }, foods).kcal).toBeCloseTo((1370 / 800) * 100);
+  });
+
   it("stops listing an old batch as a favourite", () => {
     expect(recipeAsFood({ ...recipe, archived: true }, foods).fav).toBe(false);
   });
@@ -37,6 +44,13 @@ describe("recipe form", () => {
     expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "" }] }, "r")).toBeUndefined();
     expect(fromRecipeForm({ ...form, totalG: "400" }, "r")).toBeUndefined();
     expect(fromRecipeForm({ ...form, totalG: "" }, "r")?.totalG).toBe(0);
+  });
+
+  it("saves values by hand without ingredients, and drops them once it has some", () => {
+    const form = { ...toRecipeForm(recipe), ingredients: [], totalG: "", values: { ...toRecipeForm().values, kcal: "245", sugar: "3,6" }, note: " thin " };
+    expect(fromRecipeForm(form, "r")).toEqual({ id: "r", name: "rice", ingredients: [], totalG: 0, containerG: 500, values: { kcal: 245, sugar: 3.6 }, note: "thin" });
+    expect(fromRecipeForm({ ...form, values: toRecipeForm().values }, "r")).toBeUndefined();
+    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "300" }] }, "r")?.values).toBeUndefined();
   });
 
   it("starts a new batch unweighed", () => {
