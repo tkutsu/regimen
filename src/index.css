@@ -31,3 +31,13 @@ body {
   font-variant-numeric: tabular-nums;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* Edge to edge on Android: keep scrolled content from showing behind the status bar. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: env(safe-area-inset-top);
+  background: var(--color-bg);
+}
