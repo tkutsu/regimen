@@ -89,5 +89,6 @@ export function parseAmount(text: string, current = 0): number | undefined {
   const s = text.replace(/,/g, ".").replace(/\s+/g, "");
   if (!/^[+-]?(\d+\.?\d*|\.\d+)([+-](\d+\.?\d*|\.\d+))*$/.test(s)) return undefined;
   const sum = s.match(/[+-]?(\d+\.?\d*|\.\d+)/g)!.reduce((total, term) => total + Number(term), 0);
+  if (!Number.isFinite(sum)) return undefined;
   return Math.max(0, /^[+-]/.test(s) ? current + sum : sum);
 }

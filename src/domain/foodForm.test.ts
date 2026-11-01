@@ -26,6 +26,12 @@ describe("food form", () => {
     expect(fromForm(form, "feta")).toEqual(feta);
   });
 
+  it("refuses numbers too big to save", () => {
+    const form = toForm(feta);
+    expect(fromForm({ ...form, values: { ...form.values, kcal: "Infinity" } }, "feta")).toBeUndefined();
+    expect(fromForm({ ...form, values: { ...form.values, salt: "1e309" } }, "feta")).toBeUndefined();
+  });
+
   it("reads decimal commas and leaves blanks unknown", () => {
     const form = toForm();
     form.name = " chia jam ";
