@@ -48,6 +48,23 @@ key and unit of every numeric column, in order. Micronutrients use `mg` or `ug`
 specified in its [nutrition schema](https://openfoodfacts.github.io/documentation/docs/Product-Opener/schemas/schemas/product_nutrition/).
 The current UI continues to read only the original seven nutrients.
 
+Food names stay separate from comma-separated search keywords. Keywords can
+include Greek names, alternate spellings and other terms; the food picker and
+Foods tab use the same fuzzy matching for both fields. Accents and final sigma
+do not affect Greek matching. Keywords are saved and synced with the food.
+
+The reference catalogue includes Greek keywords from
+`scripts/food_keywords.el.json`, attached by exact source name during a rebuild.
+These are machine translations supplemented with reviewed common food terms.
+For brand-only names, source-reported food categories can supply Greek keywords.
+Uncommon names may need correction; keywords are editable after adding a food.
+Translations are bundled, so searching needs no network connection.
+Brand-only and unclear source names are flagged in the picker and in the Foods
+tab's "names to review" filter, which includes reference foods. Open a flagged
+food, correct its name and keywords, and clear "Name needs review" to save a
+reviewed copy in your foods. The review status syncs with that copy.
+New source names without bundled translations are also flagged after a rebuild.
+
 Distinct vitamin forms stay separate: vitamin A as reported, vitamin A RAE,
 retinol and beta-carotene; vitamin E as reported and alpha-tocopherol; vitamin K
 as reported, K1 and K2; total folate, folic acid, food folate and folate DFE.

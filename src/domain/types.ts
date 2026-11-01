@@ -20,6 +20,10 @@ export type Values = Pick<Nutrients, "kcal"> & Partial<Nutrients>;
 export type Food = Values & {
   id: string;
   name: string;
+  /** Alternate names and search terms, including translations. */
+  keywords?: string[];
+  /** The source supplies only a brand or an unclear food name. */
+  nameNeedsReview?: boolean;
   basis: "100g" | "item";
   group: string;
   fav: boolean;

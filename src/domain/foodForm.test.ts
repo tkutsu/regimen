@@ -19,6 +19,31 @@ const feta: Food = {
 };
 
 describe("food form", () => {
+  it("preserves a source-name review flag until it is cleared explicitly", () => {
+    const flagged = { ...feta, nameNeedsReview: true };
+    const form = toForm(flagged);
+    expect(fromForm(form, feta.id)).toEqual(flagged);
+    form.nameNeedsReview = false;
+    expect(fromForm(form, feta.id)).toEqual(feta);
+  });
+
+  it("saves comma-separated keywords separately from the display name", () => {
+    const form = toForm(feta);
+    form.keywords = " φέτα, white cheese, , φέτα, τυρί ";
+    const saved = fromForm(form, feta.id)!;
+    expect(saved.name).toBe("feta");
+    expect(saved.keywords).toEqual(["φέτα", "white cheese", "τυρί"]);
+    expect(fromForm(toForm(saved), feta.id)).toEqual(saved);
+  });
+
+  it("allows keywords to be removed and keeps old foods compatible", () => {
+    expect(toForm().keywords).toBe("");
+    expect(toForm(feta).keywords).toBe("");
+    const form = toForm({ ...feta, keywords: ["φέτα"] });
+    form.keywords = " , ";
+    expect(fromForm(form, feta.id)).toEqual(feta);
+  });
+
   it("round-trips a food, keeping unknown apart from 0", () => {
     const form = toForm(feta);
     expect(form.values.sugar).toBe("");

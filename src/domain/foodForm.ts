@@ -6,6 +6,8 @@ type Key = keyof Nutrients;
 /** A food being edited, numbers kept as typed so a blank (unknown) stays apart from 0. */
 export type FoodForm = {
   name: string;
+  keywords: string;
+  nameNeedsReview: boolean;
   group: string;
   basis: Food["basis"];
   fav: boolean;
@@ -23,6 +25,8 @@ export const valueTexts = (values?: Partial<Values>) =>
 export function toForm(food?: Food): FoodForm {
   return {
     name: food?.name ?? "",
+    keywords: food?.keywords?.join(", ") ?? "",
+    nameNeedsReview: food?.nameNeedsReview ?? false,
     group: food?.group ?? "",
     basis: food?.basis ?? "100g",
     fav: food?.fav ?? false,
@@ -59,6 +63,9 @@ export function fromForm(form: FoodForm, id: string): Food | undefined {
   if (!name || !values) return undefined;
 
   const food: Food = { id, name, basis: form.basis, group: form.group.trim(), fav: form.fav, note: form.note.trim(), ...values };
+  const keywords = [...new Set(form.keywords.split(",").map((word) => word.trim()).filter(Boolean))];
+  if (keywords.length) food.keywords = keywords;
+  if (form.nameNeedsReview) food.nameNeedsReview = true;
 
   const variants = form.variants
     .filter((v) => v.name.trim() || v.factor.trim())
