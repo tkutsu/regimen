@@ -13,12 +13,11 @@ export type Nutrients = {
 /** Another state of the same food, e.g. raw pasta is the boiled values × 2.4. */
 export type Variant = { name: string; factor: number };
 
-/**
- * Nutrients are per 100 g, or per item when basis is "item". Only kcal is always
- * known; a missing nutrient means the source had no value for it.
- */
-export type Food = Pick<Nutrients, "kcal"> &
-  Partial<Nutrients> & {
+/** Only kcal is always known; a missing nutrient means the source had no value for it. */
+export type Values = Pick<Nutrients, "kcal"> & Partial<Nutrients>;
+
+/** Nutrients are per 100 g, or per item when basis is "item". */
+export type Food = Values & {
   id: string;
   name: string;
   basis: "100g" | "item";
@@ -76,6 +75,9 @@ export type Recipe = {
   /** Weighed pot including the container; the difference is the cooked food. */
   totalG: number;
   containerG: number;
+  /** Per 100 g, written by hand: what the recipe counts while it has no ingredients. */
+  values?: Values;
+  note?: string;
   /** An old batch: kept for the days that ate it, left out of the picker. */
   archived?: boolean;
 };

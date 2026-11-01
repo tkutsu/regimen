@@ -3,7 +3,7 @@ import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale } fro
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
 import { searchFoods } from "../domain/search";
 import type { Container, Food, Recipe } from "../domain/types";
-import { box, Heading } from "./FoodEditor";
+import { box, Heading, ValueFields } from "./FoodEditor";
 
 type Props = {
   recipe: Recipe;
@@ -21,7 +21,10 @@ type Props = {
   onClose: () => void;
 };
 
-/** Ingredients by raw weight; the weighed total minus its container gives the values per 100 g. */
+/**
+ * Ingredients by raw weight; the weighed total minus its container gives the values per 100 g.
+ * Without ingredients, the values are written by hand.
+ */
 export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses, onSave, onNewBatch, onDelete, onClose }: Props) {
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [query, setQuery] = useState("");
@@ -40,6 +43,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses,
   const totals = recipeTotals(draft, foods);
   const per100 = recipeAsFood(draft, foods);
   const matches = useMemo(() => searchFoods(foods.values(), query, 6), [foods, query]);
+  const byHand = !form.ingredients.length;
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
 
   return (
@@ -121,59 +125,78 @@ export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses,
             </ul>
           </section>
 
-          <section>
-            <Heading hint="weigh it all when it's done">Cooked</Heading>
-            <div className="flex items-center gap-2">
-              <label className={`${box} w-28 shrink-0 ${parseAmount(form.totalG) === undefined && form.totalG.trim() ? "border-bad" : "border-line"}`}>
-                <span className="block text-xs text-muted">total (g)</span>
-                <input
-                  inputMode="decimal"
-                  value={form.totalG}
-                  onChange={(e) => patch({ totalG: e.target.value })}
-                  placeholder="not yet"
-                  className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
-                />
-              </label>
-              <span className="text-muted">−</span>
-              <select
-                value={form.containerG}
-                onChange={(e) => patch({ containerG: Number(e.target.value) })}
-                className="min-w-0 flex-1 self-stretch rounded-xl border border-line bg-surface px-2 text-fg"
-              >
-                <option value={0}>no container</option>
-                {presets.map((c) => (
-                  <option key={c.id} value={c.grams}>
-                    {c.name} · {c.grams} g
-                  </option>
-                ))}
-              </select>
-            </div>
-            {totals.weighed ? (
-              <p className="mt-2 px-1 text-sm text-muted">
-                = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g raw (×{(totals.cookedG / totals.rawG).toFixed(2)})
-              </p>
-            ) : (
-              <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the raw weight.</p>
-            )}
-            {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The total weighs less than its container.</p>}
-          </section>
-
-          <section className="rounded-2xl border border-line bg-surface p-4">
-            <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-semibold">
-                {Math.round(per100.kcal)}
-                <span className="text-base font-normal text-muted"> kcal / 100 g</span>
-              </span>
-              <span className="text-sm text-muted">batch {Math.round(totals.total.kcal)} kcal</span>
-            </div>
-            <dl className="mt-2 grid grid-cols-3 gap-x-4 gap-y-1 text-sm">
-              {NUTRIENTS.slice(1).map((key) => (
-                <div key={key} className="flex justify-between">
-                  <dt className="text-muted">{LABELS[key]}</dt>
-                  <dd>{(per100[key] ?? 0).toFixed(key === "salt" ? 2 : 1)}g</dd>
+          {byHand ? (
+            <section>
+              <Heading hint="by hand, until it has ingredients">Per 100 g</Heading>
+              <ValueFields values={form.values} onChange={(values) => patch({ values })} />
+            </section>
+          ) : (
+            <>
+              <section>
+                <Heading hint="weigh it all when it's done">Cooked</Heading>
+                <div className="flex items-center gap-2">
+                  <label className={`${box} w-28 shrink-0 ${parseAmount(form.totalG) === undefined && form.totalG.trim() ? "border-bad" : "border-line"}`}>
+                    <span className="block text-xs text-muted">total (g)</span>
+                    <input
+                      inputMode="decimal"
+                      value={form.totalG}
+                      onChange={(e) => patch({ totalG: e.target.value })}
+                      placeholder="not yet"
+                      className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
+                    />
+                  </label>
+                  <span className="text-muted">−</span>
+                  <select
+                    value={form.containerG}
+                    onChange={(e) => patch({ containerG: Number(e.target.value) })}
+                    className="min-w-0 flex-1 self-stretch rounded-xl border border-line bg-surface px-2 text-fg"
+                  >
+                    <option value={0}>no container</option>
+                    {presets.map((c) => (
+                      <option key={c.id} value={c.grams}>
+                        {c.name} · {c.grams} g
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              ))}
-            </dl>
+                {totals.weighed ? (
+                  <p className="mt-2 px-1 text-sm text-muted">
+                    = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g raw (×{(totals.cookedG / totals.rawG).toFixed(2)})
+                  </p>
+                ) : (
+                  <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the raw weight.</p>
+                )}
+                {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The total weighs less than its container.</p>}
+              </section>
+
+              <section className="rounded-2xl border border-line bg-surface p-4">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-2xl font-semibold">
+                    {Math.round(per100.kcal)}
+                    <span className="text-base font-normal text-muted"> kcal / 100 g</span>
+                  </span>
+                  <span className="text-sm text-muted">batch {Math.round(totals.total.kcal)} kcal</span>
+                </div>
+                <dl className="mt-2 grid grid-cols-3 gap-x-4 gap-y-1 text-sm">
+                  {NUTRIENTS.slice(1).map((key) => (
+                    <div key={key} className="flex justify-between">
+                      <dt className="text-muted">{LABELS[key]}</dt>
+                      <dd>{(per100[key] ?? 0).toFixed(key === "salt" ? 2 : 1)}g</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            </>
+          )}
+
+          <section>
+            <Heading>Note</Heading>
+            <textarea
+              value={form.note}
+              onChange={(e) => patch({ note: e.target.value })}
+              rows={3}
+              className={`${box} w-full resize-y border-line text-sm`}
+            />
           </section>
 
           {saved && uses > 0 && (

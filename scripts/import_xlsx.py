@@ -38,13 +38,19 @@ GROUPS = {
     "supplements": [114, 119],
 }
 GROUP_OF = {row: group for group, rows in GROUPS.items() for row in rows}
-# nutritional yeast (merged into row 91), sugar (duplicate of row 72), puffed grains (unused)
-SKIP = {19, 36, 103}
+# nutritional yeast (merged into row 91), sugar (duplicate of row 72), puffed grains (unused),
+# trumpets (recipe B, which replaces it)
+SKIP = {19, 36, 103, 108}
 NOTE_FROM = {91: 36}  # row 36 held the vitamin label for nutritional yeast
 FAVS = {15, 17, 21, 37, 112, 118, 119}  # what was on the plan when exported
 NAMES = {
+    15: "tahini cocoa",
     73: "wonderbread (24 g toast slice)",
 }
+# Rows that were dishes, imported as recipes with the sheet's values written by hand.
+DISHES = [15, 104, 105, 106, 107, 109, 111, 112, 113]
+# What the sheet's recipe columns cooked.
+RECIPE_NAMES = {"A": "favameat", "B": "trumpets"}
 NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt"]
 # Rows whose sheet values were wrong (macros not adding up to the kcal, total fat in the
 # unsaturated column), replaced by a reference.json entry: key, or (key, grams per item).
@@ -256,7 +262,7 @@ SUGAR = {
     "butter-light": "usda-172344",
     "pizza": "usda-170317",
     "trahanas-sour": "off-5201418000094",
-    "tahini-cocoa-recipe": 1.0,  # from its recipe: tahini 0.5, peanuts 4.7, cocoa 1.8 g/100 g
+    "tahini-cocoa": 1.0,  # from its recipe: tahini 0.5, peanuts 4.7, cocoa 1.8 g/100 g
     "nutritional-yeast": 0,  # Bob's Red Mill label
     "salt": 0,
     "olive-oil": 0,
@@ -416,7 +422,17 @@ def main(xlsx, last_weigh_in, out_dir):
     for food_id, variants in VARIANTS.items():
         foods[food_id]["variants"] = [{"name": name, "factor": factor} for name, factor in variants]
 
+    dishes = []
+    for row in DISHES:
+        food = foods.pop(foods_by_row[row][0]["id"])
+        values = {key: food[key] for key in [*NUTRIENTS, "sugar"] if key in food}
+        recipe = {"id": food["id"], "name": food["name"], "ingredients": [], "totalG": 0, "containerG": 0, "values": values}
+        if food["note"]:
+            recipe["note"] = food["note"]
+        dishes.append(recipe)
+
     events = [event("food.upsert", food["id"], food=food) for food in foods.values()]
+    events += [event("recipe.upsert", recipe["id"], recipe=recipe) for recipe in dishes]
 
     for col in "AB":
         ingredients = []
@@ -432,8 +448,8 @@ def main(xlsx, last_weigh_in, out_dir):
                     grams = amount * shares[part["name"]] * (100 if part["basis"] == "100g" else 1)
                     ingredients.append({"foodId": part["id"], "amount": round(grams, 1)})
         recipe = {
-            "id": f"recipe-{col.lower()}",
-            "name": f"recipe {col}",
+            "id": slug(RECIPE_NAMES[col]),
+            "name": RECIPE_NAMES[col],
             "ingredients": ingredients,
             "totalG": cells.get(f"{col}130", 0.0),
             "containerG": cells.get(f"{col}131", 0.0),
@@ -471,7 +487,7 @@ def main(xlsx, last_weigh_in, out_dir):
     with open(target + ".tmp", "w") as f:
         f.writelines(json.dumps(e, ensure_ascii=False) + "\n" for e in events)
     os.replace(target + ".tmp", target)
-    print(f"{len(foods)} foods, 2 recipes, {len(old) + len(weigh_ins)} weigh-ins ({len(old)} from the old tab) -> {target}")
+    print(f"{len(foods)} foods, {len(dishes) + 2} recipes, {len(old) + len(weigh_ins)} weigh-ins ({len(old)} from the old tab) -> {target}")
 
 
 if __name__ == "__main__":
