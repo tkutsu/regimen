@@ -21,7 +21,7 @@ type Props = {
   onClose: () => void;
 };
 
-/** Ingredients by raw weight; the weighed pot minus its container gives the values per 100 g. */
+/** Ingredients by raw weight; the weighed total minus its container gives the values per 100 g. */
 export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses, onSave, onNewBatch, onDelete, onClose }: Props) {
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [query, setQuery] = useState("");
@@ -43,7 +43,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses,
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
 
   return (
-    <div className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <div role="dialog" aria-modal="true" aria-label="Recipe" className="fixed inset-0 z-10 flex flex-col bg-bg">
       <header className="flex items-center justify-between border-b border-line p-3">
         <button onClick={onClose} className="px-2 py-2 text-muted">
           Cancel
@@ -122,10 +122,10 @@ export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses,
           </section>
 
           <section>
-            <Heading hint="weigh the pot when it's done">Cooked</Heading>
+            <Heading hint="weigh it all when it's done">Cooked</Heading>
             <div className="flex items-center gap-2">
               <label className={`${box} w-28 shrink-0 ${parseAmount(form.totalG) === undefined && form.totalG.trim() ? "border-bad" : "border-line"}`}>
-                <span className="block text-xs text-muted">pot (g)</span>
+                <span className="block text-xs text-muted">total (g)</span>
                 <input
                   inputMode="decimal"
                   value={form.totalG}
@@ -155,7 +155,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses,
             ) : (
               <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the raw weight.</p>
             )}
-            {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The pot weighs less than its container.</p>}
+            {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The total weighs less than its container.</p>}
           </section>
 
           <section className="rounded-2xl border border-line bg-surface p-4">
