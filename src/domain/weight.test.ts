@@ -39,6 +39,9 @@ describe("stretches", () => {
       ...weighIns(60, () => 80),
       { type: "food.upsert", food: meal },
       { type: "entry.upsert", entry: { id: "1", date: END, foodId: "meal", amount: 1.5, done: true } },
+      // planned and never ticked: not eaten, on either day
+      { type: "entry.upsert", entry: { id: "2", date: END, foodId: "meal", amount: 0.25, done: false } },
+      { type: "entry.upsert", entry: { id: "3", date: shiftDate(END, -1), foodId: "meal", amount: 1, done: false } },
       { type: "day.upsert", day: { date: END, phase: "maintain", steps: 10_000, extraKcal: 0, offset: 0 } },
     );
     const [maintain] = stretches(s, END);

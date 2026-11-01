@@ -36,7 +36,7 @@ export type Stretch = {
 export const daysBetween = (from: string, to: string) =>
   Math.round((Date.parse(`${to}T12:00:00Z`) - Date.parse(`${from}T12:00:00Z`)) / 86_400_000);
 
-/** Each day from the first weigh-in on, with the kcal logged on it; none when nothing was. */
+/** Each day from the first weigh-in on, with the kcal eaten on it; none when nothing was ticked as eaten. */
 type Log = { day: Day; kcal?: number }[];
 
 /** Phases from the first weigh-in to `to`, oldest first. */
@@ -54,8 +54,9 @@ export function stretches(state: State, to: string): Stretch[] {
     } else runs.push({ phase, from: d, to: d });
   }
 
+  // Only what was eaten: a plan left unticked doesn't count.
   const byDate = new Map<string, Entry[]>();
-  for (const entry of state.entries.values()) byDate.set(entry.date, [...(byDate.get(entry.date) ?? []), entry]);
+  for (const entry of state.entries.values()) if (entry.done) byDate.set(entry.date, [...(byDate.get(entry.date) ?? []), entry]);
   const foods = allFoods(state);
   const log: Log = days.map((day) => {
     const entries = byDate.get(day.date);
@@ -67,7 +68,7 @@ export function stretches(state: State, to: string): Stretch[] {
 /**
  * Weight follows cumulative intake minus maintenance, at 7700 kcal per kg:
  * kg − Σintake / 7700 = c − maintenance / 7700 × day, so maintenance is the slope.
- * Days with nothing logged count as eaten to target, as in the sheet.
+ * Only entries ticked as eaten count; days with none count as eaten to target, as in the sheet.
  */
 function read(state: State, phase: Phase, from: string, to: string, log: Log): Stretch {
   const fitFrom = [shiftDate(from, SETTLE), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
