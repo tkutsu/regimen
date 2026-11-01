@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { newId, type State } from "../domain/state";
 import type { Change, Phase, Settings as SettingsT } from "../domain/types";
+import type { Config } from "../store";
 import { NumberInput } from "./fields";
+import { SyncForm } from "./Sync";
 
-type Props = { state: State; commit: (...changes: Change[]) => void };
+type Props = {
+  state: State;
+  commit: (...changes: Change[]) => void;
+  config: Config;
+  onSaveConfig: (config: Config) => Promise<void>;
+};
 
-export function Settings({ state, commit }: Props) {
+export function Settings({ state, commit, config, onSaveConfig }: Props) {
   const settings = state.settings;
   const set = (patch: Partial<SettingsT>) => commit({ type: "settings", settings: patch });
   const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
@@ -33,6 +40,11 @@ export function Settings({ state, commit }: Props) {
       </Section>
 
       <Containers state={state} set={set} />
+
+      <section>
+        <h2 className="mb-2 px-1 text-xs font-medium tracking-wide text-muted uppercase">Sync</h2>
+        <SyncForm key={`${config.dir}|${config.device}`} saved={config} initial={config} action="Save" onSave={onSaveConfig} />
+      </section>
     </div>
   );
 }
