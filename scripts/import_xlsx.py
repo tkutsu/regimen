@@ -223,7 +223,8 @@ SUGAR = {
     "pita": "usda-174915",
     "arabic-pita": ("usda-174915", 88),  # 241 kcal pita ≈ 88 g
     "wonderbread-24-g-toast-slice": ("usda-174924", 24),
-    "finncrisps": "usda-172744",
+    "finncrisps": "off-6410500090014",  # product matches the sheet's known nutrients
+    "cocopops": "off-5059319024592",  # Chocos: matches kcal, protein, fiber, saturated fat and salt
     "sandwich-roll": "usda-172796",
     "raspberries": "usda-167755",
     "avocado": "usda-171705",
@@ -235,6 +236,9 @@ SUGAR = {
     "peanut-butter": "usda-172430",  # unsweetened: the peanuts' own sugar
     "walnut": "usda-170187",
     "chia-seeds": "usda-170554",
+    "couscous-dry": "ciqual-9681",  # generic estimate; USDA's dry entry lacks sugar
+    "dill": "ciqual-11093",  # generic estimate, fresh
+    "semolina-simigdali-dry": "ciqual-9610",  # generic estimate, dry durum wheat
     "pasta-boiled": "usda-169737",
     "buckwheat-fagopiro-boiled": "usda-170686",
     "rice-cooked": "usda-168878",
@@ -269,6 +273,13 @@ SUGAR = {
     "omega3": 0,
     "pulled-beef": 0,
     "frankfurter-sausage": None,
+}
+SUGAR_NOTES = {
+    "finncrisps": "sugar source: Open Food Facts 6410500090014 (Finn Crisp; matching product nutrients)",
+    "cocopops": "sugar source: Open Food Facts 5059319024592 (Coco Pops Chocos; matching product nutrients)",
+    "couscous-dry": "sugar estimate: CIQUAL 9681 (couscous, raw; generic food)",
+    "dill": "sugar estimate: CIQUAL 11093 (dill, fresh; generic food)",
+    "semolina-simigdali-dry": "sugar estimate: CIQUAL 9610 (durum wheat semolina, raw; generic food)",
 }
 UNKNOWN = object()
 
@@ -407,6 +418,7 @@ def main(xlsx, last_weigh_in, out_dir):
         sugar = sugar_for(food, sources.get(food["id"]), reference)
         if sugar is not None:
             food["sugar"] = sugar
+            food["note"] = join(food["note"], SUGAR_NOTES.get(food["id"]))
     for name, group, bases in DERIVED:
         keys = [*NUTRIENTS, "sugar"]
         known = lambda key: all(key in foods[base] for base, _ in bases)

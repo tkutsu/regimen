@@ -1,4 +1,4 @@
-import type { Targets } from "../domain/day";
+import type { Intake, Targets } from "../domain/day";
 import { LABELS } from "../domain/nutrition";
 import type { Limited, Nutrients, Range } from "../domain/types";
 
@@ -7,8 +7,8 @@ const DIGITS: Record<Limited, number> = { prot: 0, fiber: 0, satFat: 1, unsatFat
 
 type Props = {
   target: Targets;
-  eaten: Nutrients;
-  planned: Nutrients;
+  eaten: Intake;
+  planned: Intake;
   /** The total whose share each food shows, picked by tapping it. */
   shown?: keyof Nutrients;
   onShow: (key: keyof Nutrients) => void;
@@ -18,6 +18,7 @@ type Props = {
 export function Remaining({ target, eaten, planned, shown, onShow }: Props) {
   const total = eaten.kcal + planned.kcal;
   const left = target.kcal - total;
+  const sugarIncomplete = eaten.sugarIncomplete || planned.sugarIncomplete;
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <button onClick={() => onShow("kcal")} aria-pressed={shown === "kcal"} className="block w-full text-left">
@@ -34,15 +35,16 @@ export function Remaining({ target, eaten, planned, shown, onShow }: Props) {
       </button>
       <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
         {LIMITED.map((key) => (
-          <Macro key={key} name={key} range={target[key]} eaten={eaten[key]} planned={planned[key]} shown={shown === key} onShow={() => onShow(key)} />
+          <Macro key={key} name={key} range={target[key]} eaten={eaten[key]} planned={planned[key]} incomplete={key === "sugar" && sugarIncomplete} shown={shown === key} onShow={() => onShow(key)} />
         ))}
       </div>
+      {sugarIncomplete && <p className="mt-3 text-xs text-muted">Sugar total is incomplete. Some foods or recipe ingredients have unknown sugar.</p>}
     </section>
   );
 }
 
 /** A nutrient's name and amount over its bar; the bar's colour says over or enough. */
-function Macro({ name, range, eaten, planned, shown, onShow }: { name: Limited; range: Range; eaten: number; planned: number; shown: boolean; onShow: () => void }) {
+function Macro({ name, range, eaten, planned, incomplete, shown, onShow }: { name: Limited; range: Range; eaten: number; planned: number; incomplete: boolean; shown: boolean; onShow: () => void }) {
   const total = eaten + planned;
   const { min, max } = range;
   const bounds = [min, max].filter((n) => n !== undefined).map((n) => n.toFixed(DIGITS[name]));
@@ -51,6 +53,7 @@ function Macro({ name, range, eaten, planned, shown, onShow }: { name: Limited; 
       <span className={`flex justify-between text-xs transition-colors ${shown ? "text-accent" : "text-muted"}`}>
         <span>{LABELS[name]}</span>
         <span>
+          {incomplete && "at least "}
           {total.toFixed(DIGITS[name])}
           {bounds.length > 0 && ` / ${bounds.join("–")}`}g
         </span>
