@@ -144,12 +144,12 @@ describe("drop sets", () => {
     expect(startSession(old, [], "2026-11-01", "s").sets.map((s) => s.drop)).toEqual([undefined, true]);
   });
 
-  it("stay last when a set is added, and can be added", () => {
+  it("are added in turn with sets, each set like the last that wasn't a drop", () => {
     const sets = [set("curl", 10, 16, false), drop("curl", 12, 10), set("dips", 8)];
     expect(addSet(sets, "curl").map((s) => [s.exerciseId, s.kg, s.drop])).toEqual([
       ["curl", 16, undefined],
-      ["curl", 16, undefined],
       ["curl", 10, true],
+      ["curl", 16, undefined],
       ["dips", undefined, undefined],
     ]);
     expect(addDrop(sets, "dips").at(-1)).toEqual({ exerciseId: "dips", reps: 8, kg: undefined, done: false, drop: true });

@@ -147,12 +147,15 @@ function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, o
         {at.map((i, n) => {
           const set = session.sets[i];
           // Drop sets aren't counted: "set 3" stays set 3 with a drop after it.
-          const name = set.drop ? `${label} drop set` : `${label} set ${at.slice(0, n + 1).filter((j) => !session.sets[j].drop).length}`;
+          const number = at.slice(0, n + 1).filter((j) => !session.sets[j].drop).length;
+          const name = set.drop ? `${label} drop set` : `${label} set ${number}`;
           return (
-            <li key={i} className={`flex items-center gap-3 py-1.5 pr-4 ${set.drop ? "pl-8" : "pl-4"} ${set.done ? "" : "text-muted"}`}>
+            <li key={i} className={`flex items-center gap-2 py-1.5 pr-4 pl-4 ${set.done ? "" : "text-muted"}`}>
+              <span aria-hidden className={`w-7 shrink-0 text-xs ${set.drop ? "font-medium text-accent" : "text-muted"}`}>
+                {set.drop ? "drop" : number}
+              </span>
               <Tick done={set.done} onClick={() => onEditSet(i, { done: !set.done })} label={`${set.done ? "Unmark" : "Mark"} ${name} done`} className="size-6" />
-              <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-1">
-                {set.drop && <span className="text-xs font-medium text-accent">drop</span>}
+              <div className="ml-1 flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-1">
                 <AmountFields amount={set} onChange={(amount) => onEditSet(i, amount)} label={name} />
               </div>
               <Remove label={name} onClick={() => onRemoveSet(i)} />
