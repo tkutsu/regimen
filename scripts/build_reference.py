@@ -22,6 +22,7 @@ import math
 import re
 import sys
 import zipfile
+from pathlib import Path
 
 # Each food starts with source, id, name, group, followed by the nutrient columns.
 # Existing macro columns keep their positions; micronutrients follow sugar.
@@ -250,6 +251,8 @@ def main(usda_zip, ciqual_zip, off_csv, out):
     estimates = set()
     foods = deduplicate([food for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates), *off(off_csv, estimates)) if food])
     kept_ids = {f"{food[0]}-{food[1]}" for food in foods}
+    aliases = json.loads(Path(__file__).with_name("food_keywords.el.json").read_text())
+    translations = aliases["foods"]
     data = {
         "sources": {
             "usda": "USDA FoodData Central, SR Legacy 2018-04 (public domain)",
@@ -258,12 +261,19 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         },
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
         "estimatedUnsatFat": sorted(estimates & kept_ids),
+        "keywords": reference_keywords(foods, translations),
+        "namesToReview": [f"{row[0]}-{row[1]}" for row in foods if row[2] not in translations or row[2] in aliases.get("review", {})],
         "foods": foods,
     }
     with open(out, "w") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     counts = {source: sum(food[0] == source for food in foods) for source in data["sources"]}
     print(f"{len(foods)} foods {counts} -> {out}")
+
+
+def reference_keywords(foods, translations):
+    """Attach checked-in translations by exact source name, keeping nutrient rows untouched."""
+    return {f"{row[0]}-{row[1]}": translations[row[2]] for row in foods if row[2] in translations}
 
 
 if __name__ == "__main__":

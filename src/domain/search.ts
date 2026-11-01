@@ -21,7 +21,7 @@ const parse = (name: string): Name => {
 };
 
 /**
- * Foods whose name matches every word of the query, in any order. A word matches
+ * Foods whose name or keywords match every word of the query, in any order. A word matches
  * anywhere in the name or, from four letters on, the start of a name's word with
  * a typo past the first letter (two typos from seven letters). Favourites come
  * first, then foods used recently, then names where the words are whole words or
@@ -37,11 +37,12 @@ export function searchFoods(foods: Iterable<Food>, query: string, limit = 50, re
   const scored: { food: Food; score: number }[] = [];
   for (const food of foods) {
     const name = parse(food.name);
+    const candidates = [name, ...(food.keywords ?? []).map(parse)];
     let score = Number(food.fav) * 100 + (recency.get(food.id) ?? 0) - name.text.length / 100;
-    if (name.text.startsWith(words[0].word)) score += 5;
+    if (candidates.some((candidate) => candidate.text.startsWith(words[0].word))) score += 5;
     for (const word of words) {
-      const points = word.score(name);
-      if (points === undefined) {
+      const points = Math.max(...candidates.map((candidate) => word.score(candidate) ?? -Infinity));
+      if (points === -Infinity) {
         score = -Infinity;
         break;
       }

@@ -13,6 +13,14 @@ import build_reference as build
 
 
 class ReferenceImportTests(unittest.TestCase):
+    def test_keywords_follow_exact_names_without_modifying_rows(self):
+        rows = [['usda', '1', 'Milk', 'dairy', 60], ['off', '2', 'Milk', 'packaged', 61],
+                ['ciqual', '3', 'Milk chocolate', 'sweets', 530]]
+        before = [row[:] for row in rows]
+        self.assertEqual(build.reference_keywords(rows, {'Milk': ['γάλα']}),
+                         {'usda-1': ['γάλα'], 'off-2': ['γάλα']})
+        self.assertEqual(rows, before)
+
     def values(self):
         return dict(kcal=100, prot=5, fiber=1, sat=1, mufa=.6, pufa=.3,
                     fat=2, carbs=15, salt=.5, sugar=4)

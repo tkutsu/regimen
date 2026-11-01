@@ -12,7 +12,7 @@ type Props = {
   /** Entries, recipe ingredients and staples that use the food. */
   uses: number;
   onSave: (food: Food) => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   onClose: () => void;
 };
 
@@ -49,6 +49,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
               value={form.name}
               onChange={(e) => patch({ name: e.target.value })}
               placeholder="Name"
+              aria-label="Name"
               className={`${box} min-w-0 flex-1 border-line text-lg`}
             />
             <button
@@ -60,6 +61,28 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
               ★
             </button>
           </div>
+
+          <label className="flex flex-col gap-1 text-sm">
+            Search keywords
+            <textarea
+              value={form.keywords}
+              onChange={(e) => patch({ keywords: e.target.value })}
+              placeholder="κοτόπουλο, στήθος, poultry"
+              rows={2}
+              className={`${box} w-full resize-y border-line`}
+            />
+            <span className="text-xs text-muted">Separate names and terms with commas. Include the Greek name here.</span>
+          </label>
+
+          {food?.nameNeedsReview && (
+            <label className="flex items-start gap-2 text-sm">
+              <input type="checkbox" checked={form.nameNeedsReview} onChange={(e) => patch({ nameNeedsReview: e.target.checked })} className="mt-1 accent-accent" />
+              <span>
+                Name needs review
+                <span className="block text-xs text-muted">Check the name and keywords, then clear this flag when ready.</span>
+              </span>
+            </label>
+          )}
 
           <div className="flex gap-2">
             <GroupInput
@@ -130,7 +153,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             />
           </section>
 
-          {food &&
+          {food && onDelete &&
             (uses > 0 ? (
               <p className="text-center text-sm text-muted">
                 Used {uses} {uses === 1 ? "time" : "times"} in your log, recipes or staples, so it can't be deleted.

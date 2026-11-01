@@ -107,7 +107,10 @@ function FoodRow({ food, onPick, onToggleFav }: { food: Food; onPick: () => void
     <div className="flex items-baseline border-b border-line">
       {onToggleFav && <Star fav={food.fav} name={food.name} onToggle={onToggleFav} className="py-3 pr-2 pl-4" />}
       <button onClick={onPick} className={`flex min-w-0 flex-1 items-baseline gap-2 py-3 pr-4 text-left ${onToggleFav ? "" : "pl-4"}`}>
-        <span className="flex-1">{food.name}</span>
+        <span className="flex-1">
+          {food.name}
+          {food.nameNeedsReview && <span className="block text-xs text-accent">Name needs review</span>}
+        </span>
         <span className="shrink-0 text-right text-xs text-muted">
           {Math.round(food.kcal)} kcal / {food.basis === "item" ? "item" : "100 g"}
           {source && <span className="block">{source}</span>}
