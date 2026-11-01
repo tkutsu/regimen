@@ -205,7 +205,9 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
             Another device already writes as “{name}”. Keep it only if this is that device{renamed && `: “${saved.device}” merges into it`}.
           </Note>
         ) : renamed ? (
-          <Note>Saving renames this device's log from “{saved.device}” to “{name}”.</Note>
+          <Note>
+            Saving renames this device's log {saved.dir !== path && `in ${folderLabel(saved.dir)} `}from “{saved.device}” to “{name}”.
+          </Note>
         ) : (
           <Note>Each device writes its own log, so give each a different name.</Note>
         )}

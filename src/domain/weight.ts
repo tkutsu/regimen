@@ -1,6 +1,7 @@
-import { dayOf, entriesOn, intake, kcalTarget, shiftDate } from "./day";
+import { daysFrom, kcalTarget, shiftDate, sum } from "./day";
+import { allFoods } from "./nutrition";
 import type { State } from "./state";
-import type { Phase } from "./types";
+import type { Day, Entry, Phase } from "./types";
 
 export const KCAL_PER_KG = 7700;
 /** The fit reads the last six weeks of a phase, so a long cut shows where maintenance ended up. */
@@ -35,13 +36,16 @@ export type Stretch = {
 export const daysBetween = (from: string, to: string) =>
   Math.round((Date.parse(`${to}T12:00:00Z`) - Date.parse(`${from}T12:00:00Z`)) / 86_400_000);
 
+/** Each day from the first weigh-in on, with the kcal eaten on it; none when nothing was ticked as eaten. */
+type Log = { day: Day; kcal?: number }[];
+
 /** Phases from the first weigh-in to `to`, oldest first. */
 export function stretches(state: State, to: string): Stretch[] {
   const first = [...state.weights.keys()].sort()[0];
   if (!first || first > to) return [];
+  const days = daysFrom(state, first, to);
   const runs: { phase: Phase; from: string; to: string }[] = [];
-  for (let d = first; d <= to; d = shiftDate(d, 1)) {
-    const phase = dayOf(state, d).phase;
+  for (const { date: d, phase } of days) {
     const [before, short] = [runs.at(-2), runs.at(-1)!];
     if (short?.phase === phase) short.to = d;
     else if (before?.phase === phase && daysBetween(short.from, short.to) + 1 < BREAK) {
@@ -49,28 +53,36 @@ export function stretches(state: State, to: string): Stretch[] {
       before.to = d;
     } else runs.push({ phase, from: d, to: d });
   }
-  return runs.map((run) => read(state, run.phase, run.from, run.to));
+
+  // Only what was eaten: a plan left unticked doesn't count.
+  const byDate = new Map<string, Entry[]>();
+  for (const entry of state.entries.values()) if (entry.done) byDate.set(entry.date, [...(byDate.get(entry.date) ?? []), entry]);
+  const foods = allFoods(state);
+  const log: Log = days.map((day) => {
+    const entries = byDate.get(day.date);
+    return { day, kcal: entries && sum(entries, foods).kcal };
+  });
+  return runs.map((run) => read(state, run.phase, run.from, run.to, log));
 }
 
 /**
  * Weight follows cumulative intake minus maintenance, at 7700 kcal per kg:
  * kg − Σintake / 7700 = c − maintenance / 7700 × day, so maintenance is the slope.
- * Days with nothing logged count as eaten to target, as in the sheet.
+ * Only entries ticked as eaten count; days with none count as eaten to target, as in the sheet.
  */
-function read(state: State, phase: Phase, from: string, to: string): Stretch {
+function read(state: State, phase: Phase, from: string, to: string, log: Log): Stretch {
   const fitFrom = [shiftDate(from, SETTLE), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
   const { kcalPer1kSteps } = state.settings;
   const rows: { t: number; y: number }[] = [];
   let eaten = 0;
   let logged = 0;
-  for (let d = fitFrom, t = 0; d <= to; d = shiftDate(d, 1), t++) {
-    const day = dayOf(state, d);
+  const start = daysBetween(log[0].day.date, fitFrom);
+  for (const [t, { day, kcal }] of log.slice(start, daysBetween(log[0].day.date, to) + 1).entries()) {
     // a morning weigh-in reflects what was eaten up to the day before
-    const kg = state.weights.get(d);
+    const kg = state.weights.get(day.date);
     if (kg !== undefined) rows.push({ t, y: kg - eaten / KCAL_PER_KG });
-    const isLogged = entriesOn(state, d).length > 0;
-    logged += Number(isLogged);
-    eaten += (isLogged ? intake(state, d).kcal : kcalTarget(state, day)) - ((day.steps / 1000) * kcalPer1kSteps + day.extraKcal);
+    logged += Number(kcal !== undefined);
+    eaten += (kcal ?? kcalTarget(state, day)) - ((day.steps / 1000) * kcalPer1kSteps + day.extraKcal);
   }
 
   const days = Math.max(0, daysBetween(fitFrom, to) + 1);
@@ -97,8 +109,7 @@ function read(state: State, phase: Phase, from: string, to: string): Stretch {
 /** Runs of days in the same phase, as set on each day, from `from` to `to`. */
 export function phaseRuns(state: State, from: string, to: string): { phase: Phase; from: string; to: string }[] {
   const runs: { phase: Phase; from: string; to: string }[] = [];
-  for (let d = from; d <= to; d = shiftDate(d, 1)) {
-    const phase = dayOf(state, d).phase;
+  for (const { date: d, phase } of daysFrom(state, from, to)) {
     const last = runs.at(-1);
     if (last?.phase === phase) last.to = d;
     else runs.push({ phase, from: d, to: d });
@@ -109,9 +120,12 @@ export function phaseRuns(state: State, from: string, to: string): { phase: Phas
 /** Each weigh-in with the mean of the weigh-ins in the `days` days ending on it. */
 export function weightSeries(state: State, days = 7): { date: string; kg: number; avg: number }[] {
   const points = [...state.weights].sort(([a], [b]) => a.localeCompare(b));
+  // The window only moves forward; each mean is summed afresh, so no rounding drift builds up.
+  let start = 0;
   return points.map(([date, kg], i) => {
     const from = shiftDate(date, 1 - days);
-    const week = points.slice(0, i + 1).filter(([d]) => d >= from);
+    while (points[start][0] < from) start++;
+    const week = points.slice(start, i + 1);
     return { date, kg, avg: week.reduce((sum, [, w]) => sum + w, 0) / week.length };
   });
 }

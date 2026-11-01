@@ -70,12 +70,20 @@ export function useKeys<T extends string>(tabs: readonly T[], tab: T, setTab: (t
       if (!root) return;
       const dialog = root.getAttribute("aria-modal") === "true";
 
-      if (e.key === "Tab" && !dialog) {
+      if (e.key === "Tab") {
         e.preventDefault();
+        document.documentElement.setAttribute("data-keys", "");
+        if (dialog) {
+          // Around the dialog's own controls, never out to the screen behind it.
+          const items = [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].filter((el) => el.getClientRects().length);
+          const i = items.indexOf(document.activeElement as HTMLElement);
+          const next = i < 0 ? (e.shiftKey ? items.at(-1) : items[0]) : items[(i + (e.shiftKey ? items.length - 1 : 1)) % items.length];
+          next?.focus();
+          return;
+        }
         const i = tabs.indexOf(tab);
         (document.activeElement as HTMLElement | null)?.blur();
         setTab(tabs[(i + (e.shiftKey ? tabs.length - 1 : 1)) % tabs.length]);
-        document.documentElement.setAttribute("data-keys", "");
         return;
       }
       if (!ARROWS.includes(e.key) || e.shiftKey) return;

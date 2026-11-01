@@ -33,24 +33,30 @@ describe("recipe values", () => {
 describe("recipe form", () => {
   it("round-trips a recipe and reads sums in amounts", () => {
     const form = toRecipeForm(recipe);
-    expect(fromRecipeForm(form, "r")).toEqual(recipe);
-    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "250+50" }] }, "r")?.ingredients).toEqual([{ foodId: "rice", amount: 300 }]);
+    expect(fromRecipeForm(form, "r", foods)).toEqual(recipe);
+    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "250+50" }] }, "r", foods)?.ingredients).toEqual([{ foodId: "rice", amount: 300 }]);
   });
 
   it("needs a name, ingredients with amounts, and a pot heavier than its container", () => {
     const form = toRecipeForm(recipe);
-    expect(fromRecipeForm({ ...form, name: " " }, "r")).toBeUndefined();
-    expect(fromRecipeForm({ ...form, ingredients: [] }, "r")).toBeUndefined();
-    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "" }] }, "r")).toBeUndefined();
-    expect(fromRecipeForm({ ...form, totalG: "400" }, "r")).toBeUndefined();
-    expect(fromRecipeForm({ ...form, totalG: "" }, "r")?.totalG).toBe(0);
+    expect(fromRecipeForm({ ...form, name: " " }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...form, ingredients: [] }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "" }] }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...form, totalG: "400" }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...form, totalG: "" }, "r", foods)?.totalG).toBe(0);
   });
 
   it("saves values by hand without ingredients, and drops them once it has some", () => {
     const form = { ...toRecipeForm(recipe), ingredients: [], totalG: "", values: { ...toRecipeForm().values, kcal: "245", sugar: "3,6" }, note: " thin " };
-    expect(fromRecipeForm(form, "r")).toEqual({ id: "r", name: "rice", ingredients: [], totalG: 0, containerG: 500, values: { kcal: 245, sugar: 3.6 }, note: "thin" });
-    expect(fromRecipeForm({ ...form, values: toRecipeForm().values }, "r")).toBeUndefined();
-    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "300" }] }, "r")?.values).toBeUndefined();
+    expect(fromRecipeForm(form, "r", foods)).toEqual({ id: "r", name: "rice", ingredients: [], totalG: 0, containerG: 500, values: { kcal: 245, sugar: 3.6 }, note: "thin" });
+    expect(fromRecipeForm({ ...form, values: toRecipeForm().values }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "300" }] }, "r", foods)?.values).toBeUndefined();
+  });
+
+  it("needs a weighing when no ingredient is counted in grams", () => {
+    const eggs = { ...toRecipeForm(recipe), ingredients: [{ foodId: "egg", amount: "4" }] };
+    expect(fromRecipeForm({ ...eggs, totalG: "" }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...eggs, totalG: "700" }, "r", foods)?.totalG).toBe(700);
   });
 
   it("starts a new batch unweighed", () => {

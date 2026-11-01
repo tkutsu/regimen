@@ -48,7 +48,7 @@ struct Device {
 #[derive(Serialize)]
 struct Loaded {
     logs: Vec<String>,
-    /// The logs' fingerprint as read, to compare with `logs_fingerprint` later.
+    /// The folder's fingerprint as read, to compare with `folder_fingerprint` later.
     fingerprint: String,
     devices: Vec<Device>,
     synced: Option<bool>,
@@ -147,8 +147,8 @@ async fn load_folder(app: AppHandle, dir: String, device: String, check_in: bool
         store::write(&app, &dir, "devices", &format!("{device}.json"), &serde_json::to_string(&me).map_err(err)?, false).await?;
     }
 
-    // Taken before reading: a log that changes in between changes the next fingerprint too.
-    let fingerprint = store::fingerprint(&app, &dir, "events").await?;
+    // Taken before reading: a file that changes in between changes the next fingerprint too.
+    let fingerprint = fingerprint(&app, &dir).await?;
     let logs = store::read(&app, &dir, "events", ".jsonl").await?.into_iter().map(|file| file.text).collect();
     let devices = store::read(&app, &dir, "devices", ".json")
         .await?
@@ -159,11 +159,15 @@ async fn load_folder(app: AppHandle, dir: String, device: String, check_in: bool
     Ok(Loaded { logs, fingerprint, synced: store::synced(&dir), devices })
 }
 
-/// The event logs' names, sizes and change times: cheap to read, and different once
-/// any log changes, so the app can check often and read the logs only when it must.
+/// The names, sizes and change times of the event logs and check-ins: cheap to read, and
+/// different once any of them changes, so the app can check often and read only when it must.
+async fn fingerprint(app: &AppHandle, dir: &str) -> Result<String, String> {
+    Ok(format!("{}|{}", store::fingerprint(app, dir, "events").await?, store::fingerprint(app, dir, "devices").await?))
+}
+
 #[tauri::command]
-async fn logs_fingerprint(app: AppHandle, dir: String) -> Result<String, String> {
-    store::fingerprint(&app, &dir, "events").await
+async fn folder_fingerprint(app: AppHandle, dir: String) -> Result<String, String> {
+    fingerprint(&app, &dir).await
 }
 
 /// Appends to this device's own log. No other device writes it, so Syncthing never conflicts.
@@ -199,7 +203,7 @@ pub fn run() {
     #[cfg(target_os = "android")]
     let builder = builder.plugin(store::plugin());
     builder
-        .invoke_handler(tauri::generate_handler![load_config, suggest_config, save_config, pick_dir, inspect_dir, load_folder, logs_fingerprint, append_events, rename_device])
+        .invoke_handler(tauri::generate_handler![load_config, suggest_config, save_config, pick_dir, inspect_dir, load_folder, folder_fingerprint, append_events, rename_device])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

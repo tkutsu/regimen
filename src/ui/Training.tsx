@@ -2,12 +2,13 @@ import { useMemo, useState } from "react";
 import { localDate } from "../domain/day";
 import { newId, type State } from "../domain/state";
 import { finish, newestFirst, startSession, usedExercises } from "../domain/training";
-import type { Change, Exercise, Session, Workout } from "../domain/types";
+import type { Exercise, Session, Workout } from "../domain/types";
+import type { Commit } from "../store";
 import { Remove, Section, TextInput } from "./fields";
 import { SessionView } from "./SessionView";
 import { WorkoutEditor } from "./WorkoutEditor";
 
-type Props = { state: State; commit: (...changes: Change[]) => void };
+type Props = { state: State; commit: Commit };
 
 const RECENT = 10;
 
@@ -28,9 +29,8 @@ export function Training({ state, commit }: Props) {
 
   const put = (session: Session) => commit({ type: "session.upsert", session });
   const createExercise = (exercise: Exercise) => commit({ type: "exercise.upsert", exercise });
-  const start = (session: Session) => {
-    put(session);
-    setOpenId(session.id);
+  const start = async (session: Session) => {
+    if (await put(session)) setOpenId(session.id);
   };
   const close = () => setOpenId(undefined);
 
@@ -121,13 +121,11 @@ export function Training({ state, commit }: Props) {
           saved={editing.saved}
           exercises={state.exercises}
           onCreateExercise={createExercise}
-          onSave={(workout) => {
-            commit({ type: "workout.upsert", workout });
-            setEditing(undefined);
+          onSave={async (workout) => {
+            if (await commit({ type: "workout.upsert", workout })) setEditing(undefined);
           }}
-          onDelete={() => {
-            commit({ type: "workout.delete", workoutId: editing.workout.id });
-            setEditing(undefined);
+          onDelete={async () => {
+            if (await commit({ type: "workout.delete", workoutId: editing.workout.id })) setEditing(undefined);
           }}
           onClose={() => setEditing(undefined)}
         />
@@ -140,14 +138,12 @@ export function Training({ state, commit }: Props) {
           exercises={state.exercises}
           onChange={put}
           onCreateExercise={createExercise}
-          onFinish={() => {
+          onFinish={async () => {
             const done = finish(shown);
-            commit(done ? { type: "session.upsert", session: done } : { type: "session.delete", sessionId: shown.id });
-            close();
+            if (await commit(done ? { type: "session.upsert", session: done } : { type: "session.delete", sessionId: shown.id })) close();
           }}
-          onDelete={() => {
-            commit({ type: "session.delete", sessionId: shown.id });
-            close();
+          onDelete={async () => {
+            if (await commit({ type: "session.delete", sessionId: shown.id })) close();
           }}
           onClose={close}
         />
