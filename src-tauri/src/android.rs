@@ -40,6 +40,10 @@ pub async fn read(app: &AppHandle, dir: &str, sub: &str, suffix: &str) -> Result
     call(app, "read", json!({ "dir": dir, "sub": sub, "suffix": suffix })).await
 }
 
+pub async fn fingerprint(app: &AppHandle, dir: &str, sub: &str) -> Result<String, String> {
+    call(app, "fingerprint", json!({ "dir": dir, "sub": sub })).await
+}
+
 pub async fn write(app: &AppHandle, dir: &str, sub: &str, name: &str, text: &str, append: bool) -> Result<(), String> {
     call(app, "write", json!({ "dir": dir, "sub": sub, "name": name, "text": text, "append": append })).await
 }
