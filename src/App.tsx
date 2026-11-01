@@ -11,12 +11,12 @@ type Tab = keyof typeof SCREENS | "settings";
 const TABS: Tab[] = ["today", "weight", "foods", "settings"];
 
 export default function App() {
-  const { config, state, error, reload, commit, saveConfig } = useRegimen();
+  const { config, state, peers, error, reload, commit, saveConfig } = useRegimen();
   const [tab, setTab] = useState<Tab>("today");
 
   if (config === null) return <Setup onSave={saveConfig} />;
   if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={reload} /> : <p className="p-4 text-bad">{error}</p>;
-  if (!config || !state) return null;
+  if (!config || !state || !peers) return null;
   const Screen = tab === "settings" ? undefined : SCREENS[tab];
   return (
     <div className="mx-auto max-w-md p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
@@ -27,7 +27,7 @@ export default function App() {
           </button>
         ))}
       </nav>
-      {Screen ? <Screen state={state} commit={commit} /> : <Settings state={state} commit={commit} config={config} onSaveConfig={saveConfig} />}
+      {Screen ? <Screen state={state} commit={commit} /> : <Settings state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} />}
     </div>
   );
 }

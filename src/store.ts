@@ -6,13 +6,23 @@ import type { Change } from "./domain/types";
 /** Where this device keeps the logs and the name of its own log. */
 export type Config = { dir: string; device: string };
 
+/** A device's check-in: where it keeps the folder and when it last opened the app (Unix seconds). */
+export type Device = { name: string; platform: "desktop" | "mobile"; dir: string; seen: number };
+
+/** Who syncs this folder, and whether Syncthing shares it here (null when unknown, on Android). */
+export type Peers = { devices: Device[]; synced: boolean | null };
+
+type Loaded = Peers & { logs: string[] };
+
 /**
  * Loads the merged state from the sync folder and reloads whenever the app regains focus.
+ * Opening also checks this device in, so the others see it syncing.
  * `config` is null on first run, before a folder is chosen.
  */
 export function useRegimen() {
   const [config, setConfig] = useState<Config | null>();
   const [state, setState] = useState<State>();
+  const [peers, setPeers] = useState<Peers>();
   const [error, setError] = useState<string>();
 
   const reload = useCallback(async () => {
@@ -20,8 +30,9 @@ export function useRegimen() {
       const config = await invoke<Config | null>("load_config");
       setConfig(config);
       if (!config) return;
-      const logs = await invoke<string[]>("read_logs", { dir: config.dir });
+      const { logs, ...peers } = await invoke<Loaded>("load_folder", { dir: config.dir, device: config.device });
       setState(fold(parseLogs(logs)));
+      setPeers(peers);
       setError(undefined);
     } catch (e) {
       setError(String(e));
@@ -61,5 +72,5 @@ export function useRegimen() {
     [reload],
   );
 
-  return { config, state, error, reload, commit, saveConfig };
+  return { config, state, peers, error, reload, commit, saveConfig };
 }
