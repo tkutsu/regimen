@@ -16,7 +16,7 @@ export function Remaining({ target, eaten, planned }: Props) {
       <div className="flex items-baseline justify-between">
         <span className={`text-4xl font-semibold ${left < 0 ? "text-bad" : ""}`}>{Math.round(left)}</span>
         <span className="text-sm text-muted">
-          {Math.round(total)} / {Math.round(target.kcal)}kcal
+          {Math.round(total)} / {Math.round(target.kcal)}
         </span>
       </div>
       <Bar eaten={eaten.kcal} planned={planned.kcal} range={{ max: target.kcal }} />
