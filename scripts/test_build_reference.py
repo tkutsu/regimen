@@ -98,12 +98,44 @@ class ReferenceImportTests(unittest.TestCase):
         self.assertIsNone(self.normalize(sugar=20, carbs=15))
         self.assertIsNone(self.normalize(prot=60, fat=40, sugar=10))
 
-    def test_preserves_unknowns_instead_of_estimating_zero_or_unsaturated_fat(self):
+    def test_estimates_missing_unsaturated_fat_and_records_its_origin(self):
+        estimates = set()
+        values = {**self.values(), 'mufa': None, 'pufa': None}
+        row = build.normalize('usda', '1', 'Example food', 'Group', values, estimates)
+        self.assertEqual(row[8], 1)
+        self.assertEqual(estimates, {'usda-1'})
+        self.assertEqual(self.normalize(mufa=.6, pufa=None)[8], 1)
+
+    def test_database_lists_only_estimates_kept_after_deduplication(self):
+        def source(path, estimates):
+            values = {**self.values(), 'mufa': None, 'pufa': None}
+            return [build.normalize('usda', key, 'Example food', 'Group', values, estimates)
+                    for key in ['1', '2']]
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'reference.json'
+            with patch.object(build, 'usda', side_effect=source), \
+                 patch.object(build, 'ciqual', return_value=[]), \
+                 patch.object(build, 'off', return_value=[]):
+                build.main(None, None, None, path)
+            data = json.loads(path.read_text())
+            self.assertEqual(len(data['foods']), 1)
+            self.assertEqual(data['estimatedUnsatFat'], ['usda-1'])
+
+    def test_preserves_reported_unsaturated_fat_and_complete_components(self):
+        estimates = set()
+        values = self.values()
+        row = build.normalize('usda', '1', 'Example food', 'Group', values, estimates)
+        self.assertEqual(row[8], .9)
+        self.assertEqual(estimates, set())
+        self.assertEqual(self.normalize(unsat=.8)[8], .8)
+
+    def test_preserves_unknowns_without_enough_data_to_estimate(self):
         row = self.normalize(mufa=None, pufa=None, fiber=None, sugar=None, carbs=.2)
         self.assertIsNone(row[6])
-        self.assertIsNone(row[8])
         self.assertIsNone(row[10])
-        self.assertIsNone(self.normalize(mufa=.6, pufa=None)[8])
+        self.assertIsNone(self.normalize(fat=None, mufa=None, pufa=None)[8])
+        self.assertIsNone(self.normalize(sat=None, mufa=None, pufa=None)[8])
+        self.assertIsNone(self.normalize(fat=.9, sat=1, mufa=None, pufa=None)[8])
         self.assertIsNone(self.normalize(fat=.2, sat=None, mufa=None, pufa=None)[7])
 
     def test_only_exact_zero_proves_missing_components_are_zero(self):
