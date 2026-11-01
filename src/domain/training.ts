@@ -1,5 +1,5 @@
 import type { State } from "./state";
-import type { Amount, Session, SetLog, Workout } from "./types";
+import type { Amount, Session, SetLog, Target, Workout } from "./types";
 
 /** Newest first; sessions on the same day, the one started last first. */
 export function newestFirst(sessions: Iterable<Session>): Session[] {
@@ -20,6 +20,9 @@ export function lastSets(sessions: Session[], exerciseId: string, before?: strin
   return [];
 }
 
+/** How many drop sets follow the line's last set. */
+export const dropsOf = (target: Target): number => target.drops ?? (target.drop ? 1 : 0);
+
 /** A set still to do, the same as `like`, a drop set if that was one. */
 const plan = (exerciseId: string, { reps, kg, drop }: Amount & { drop?: true }): SetLog => ({ exerciseId, reps, kg, done: false, ...(drop && { drop }) });
 
@@ -30,15 +33,17 @@ const plan = (exerciseId: string, { reps, kg, drop }: Amount & { drop?: true }):
 export function startSession(workout: Workout, sessions: Session[], date: string, id: string): Session {
   // An exercise in the workout twice (warm-up, then work sets) continues where the first left off.
   const used = new Map<string, { sets: number; drops: number }>();
-  const sets = workout.targets.flatMap(({ exerciseId, sets: count, drop, reps, kg }) => {
+  const sets = workout.targets.flatMap((target) => {
+    const { exerciseId, sets: count } = target;
     const last = lastSets(sessions, exerciseId);
     const work = last.filter((set) => !set.drop);
     const drops = last.filter((set) => set.drop);
     const n = used.get(exerciseId) ?? { sets: 0, drops: 0 };
-    used.set(exerciseId, { sets: n.sets + count, drops: n.drops + (drop ? 1 : 0) });
-    const planned = Array.from({ length: count }, (_, i) => plan(exerciseId, work[n.sets + i] ?? work.at(-1) ?? { reps, kg }));
-    // A drop set never done starts as the set before it, to be lightened.
-    return drop ? [...planned, plan(exerciseId, { ...(drops[n.drops] ?? drops.at(-1) ?? planned.at(-1)), drop })] : planned;
+    used.set(exerciseId, { sets: n.sets + count, drops: n.drops + dropsOf(target) });
+    const planned = Array.from({ length: count }, (_, i) => plan(exerciseId, work[n.sets + i] ?? work.at(-1) ?? { reps: target.reps, kg: target.kg }));
+    // A drop never done starts as the set before it, to be lightened.
+    for (let i = 0; i < dropsOf(target); i++) planned.push(plan(exerciseId, { ...(drops[n.drops + i] ?? planned.at(-1)), drop: true }));
+    return planned;
   });
   // The session shows an exercise where it first appears, so only that line's link counts.
   const firsts = workout.targets.filter((target, i) => workout.targets.findIndex((t) => t.exerciseId === target.exerciseId) === i);

@@ -104,10 +104,17 @@ export type Amount = { reps?: number; kg?: number };
 
 /**
  * One planned line of a workout: 3 sets of 8 @ 60 kg. A linked line is in a superset with the
- * line above: the two are done back to back, with no rest between. A line with a drop set has
- * one more set after its last, lighter and straight after it.
+ * line above: the two are done back to back, with no rest between. A line with drops has that
+ * many drop sets after its last set, each lighter than the one before and straight after it.
  */
-export type Target = Amount & { exerciseId: string; sets: number; linked?: true; drop?: true };
+export type Target = Amount & {
+  exerciseId: string;
+  sets: number;
+  linked?: true;
+  drops?: number;
+  /** One drop, as saved before there could be more. */
+  drop?: true;
+};
 
 /** A template, started whenever you like. */
 export type Workout = { id: string; name: string; targets: Target[]; note?: string };
