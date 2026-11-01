@@ -1,6 +1,34 @@
 import { describe, expect, it } from "vitest";
-import { parseAmount, scale } from "./nutrition";
-import type { Food } from "./types";
+import { allFoods, parseAmount, scale, toggleFav } from "./nutrition";
+import { fold, stamp, type State } from "./state";
+import type { Change, Food, Recipe } from "./types";
+
+describe("toggleFav", () => {
+  let clock = 0;
+  const state = (...changes: Change[]) => fold(changes.map((change) => stamp(change, "desktop", new Date(Date.UTC(2026, 0, 1, 0, 0, clock++)))));
+  const oats: Food = { id: "oats", name: "oats", basis: "100g", group: "", fav: false, note: "", kcal: 380 };
+  const stew: Recipe = { id: "stew", name: "stew", ingredients: [], totalG: 0, containerG: 0, values: { kcal: 90 } };
+  const favOf = (s: State, id: string) => allFoods(s).get(id)?.fav;
+
+  it("stars and unstars a food", () => {
+    const add: Change = { type: "food.upsert", food: oats };
+    const starred = state(add, ...toggleFav(state(add), "oats"));
+    expect(favOf(starred, "oats")).toBe(true);
+    expect(toggleFav(starred, "oats")).toEqual([add]);
+  });
+
+  it("unstars a recipe, a favourite by default, and stars it back", () => {
+    const add: Change = { type: "recipe.upsert", recipe: stew };
+    expect(favOf(state(add), "stew")).toBe(true);
+    const unstarred = state(add, ...toggleFav(state(add), "stew"));
+    expect(favOf(unstarred, "stew")).toBe(false);
+    expect(toggleFav(unstarred, "stew")).toEqual([add]);
+  });
+
+  it("leaves an unknown id alone", () => {
+    expect(toggleFav(state(), "missing")).toEqual([]);
+  });
+});
 
 describe("parseAmount", () => {
   it("replaces with a plain number", () => {

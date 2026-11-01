@@ -3,6 +3,7 @@ import { LABELS, NUTRIENTS, parseAmount, scale } from "../domain/nutrition";
 import { searchFoods } from "../domain/search";
 import type { Container, Food, Variant } from "../domain/types";
 import { sourceOf, useReference } from "../reference";
+import { Star } from "./fields";
 
 type Props = {
   foods: Map<string, Food>;
@@ -10,6 +11,7 @@ type Props = {
   recentIds: string[];
   containers: Container[];
   onAdd: (food: Food, amount: number, done: boolean, variant?: Variant) => void;
+  onToggleFav: (food: Food) => void;
   onClose: () => void;
   /** One button with this label instead of Plan and Eaten. */
   addLabel?: string;
@@ -19,7 +21,7 @@ type Props = {
  * Favourites and recent foods until you type; then your foods, recent ones first,
  * followed by the bundled reference tables. A reference food is copied into your foods when added.
  */
-export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLabel }: Props) {
+export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, onClose, addLabel }: Props) {
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<Food>();
   const reference = useReference(true);
@@ -78,7 +80,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLa
                   <ul>
                     {list.map((food) => (
                       <li key={food.id}>
-                        <FoodRow food={food} onPick={() => setPicked(food)} />
+                        <FoodRow food={food} onPick={() => setPicked(food)} onToggleFav={foods.has(food.id) ? () => onToggleFav(food) : undefined} />
                       </li>
                     ))}
                   </ul>
@@ -94,17 +96,20 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLa
   );
 }
 
-function FoodRow({ food, onPick }: { food: Food; onPick: () => void }) {
+/** Your own foods get a star to toggle; reference foods aren't yours to star yet. */
+function FoodRow({ food, onPick, onToggleFav }: { food: Food; onPick: () => void; onToggleFav?: () => void }) {
   const source = sourceOf(food);
   return (
-    <button onClick={onPick} className="flex w-full items-baseline gap-2 border-b border-line px-4 py-3 text-left">
-      {food.fav && <span className="text-accent">★</span>}
-      <span className="flex-1">{food.name}</span>
-      <span className="shrink-0 text-right text-xs text-muted">
-        {Math.round(food.kcal)} kcal / {food.basis === "item" ? "item" : "100 g"}
-        {source && <span className="block">{source}</span>}
-      </span>
-    </button>
+    <div className="flex items-baseline border-b border-line">
+      {onToggleFav && <Star fav={food.fav} name={food.name} onToggle={onToggleFav} className="py-3 pr-2 pl-4" />}
+      <button onClick={onPick} className={`flex min-w-0 flex-1 items-baseline gap-2 py-3 pr-4 text-left ${onToggleFav ? "" : "pl-4"}`}>
+        <span className="flex-1">{food.name}</span>
+        <span className="shrink-0 text-right text-xs text-muted">
+          {Math.round(food.kcal)} kcal / {food.basis === "item" ? "item" : "100 g"}
+          {source && <span className="block">{source}</span>}
+        </span>
+      </button>
+    </div>
   );
 }
 

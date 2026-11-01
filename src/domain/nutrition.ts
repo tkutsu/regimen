@@ -1,5 +1,5 @@
 import type { State } from "./state";
-import type { Food, Nutrients, Recipe, Values } from "./types";
+import type { Change, Food, Nutrients, Recipe, Values } from "./types";
 
 export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt", "sugar"] as const;
 
@@ -64,7 +64,19 @@ function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
 /** A recipe as a per-100g food; old batches stop being favourites. */
 export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
   const values = recipeValues(recipe, foods);
-  return { ...values, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav: !recipe.archived, note: recipe.note ?? "" };
+  const fav = !recipe.archived && recipe.fav !== false;
+  return { ...values, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav, note: recipe.note ?? "" };
+}
+
+/** Stars or unstars one of your foods or recipes. */
+export function toggleFav(state: State, id: string): Change[] {
+  const recipe = state.recipes.get(id);
+  if (recipe) {
+    const { fav, ...rest } = recipe;
+    return [{ type: "recipe.upsert", recipe: fav === false ? rest : { ...rest, fav: false } }];
+  }
+  const food = state.foods.get(id);
+  return food ? [{ type: "food.upsert", food: { ...food, fav: !food.fav } }] : [];
 }
 
 /** Foods plus recipes, which can be eaten like any other food. */

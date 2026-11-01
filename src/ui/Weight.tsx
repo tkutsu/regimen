@@ -254,7 +254,6 @@ function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: 
                   width={clampX(x(band.to) + halfDay) - x1}
                   y={H - PAD.bottom + STRIP.gap}
                   height={STRIP.height}
-                  rx={1.5}
                   className={PHASE_FILL[band.phase]}
                 />
               );
@@ -289,7 +288,7 @@ function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: 
         </span>
         {MARKED.filter((phase) => bands.some((band) => band.phase === phase)).map((phase) => (
           <span key={phase} className="flex items-center gap-1.5">
-            <span className={`h-1.5 w-3 rounded-sm ${PHASE_BG[phase]}`} /> {phase}
+            <span className={`h-1.5 w-3 ${PHASE_BG[phase]}`} /> {phase}
           </span>
         ))}
       </div>

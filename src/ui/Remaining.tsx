@@ -14,46 +14,38 @@ export function Remaining({ target, eaten, planned }: Props) {
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <div className="flex items-baseline justify-between">
-        <span className={`text-4xl font-semibold ${left < 0 ? "text-bad" : ""}`}>{Math.round(left)}</span>
+        <span className={left < 0 ? "text-bad" : ""}>
+          <span className="text-4xl font-semibold">{Math.round(Math.abs(left))}</span>
+          <span className="ml-1.5 text-sm">kcal {left < 0 ? "over" : "left"}</span>
+        </span>
         <span className="text-sm text-muted">
-          {Math.round(total)} / {Math.round(target.kcal)}
+          {Math.round(total)} / {Math.round(target.kcal)}kcal
         </span>
       </div>
       <Bar eaten={eaten.kcal} planned={planned.kcal} range={{ max: target.kcal }} />
-      <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
+      <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
         {LIMITED.map((key) => (
           <Macro key={key} name={key} range={target[key]} eaten={eaten[key]} planned={planned[key]} />
         ))}
-      </dl>
+      </div>
     </section>
   );
 }
 
-/** Over the max is bad; under the min still has some to go; past a min with no max is good. */
-function status(total: number, { min, max }: Range, unit: (n: number) => string) {
-  if (max !== undefined && total > max) return { text: `${unit(total - max)} over`, tone: "text-bad" };
-  if (min !== undefined && total < min) return { text: `${unit(min - total)} to go`, tone: "" };
-  if (max !== undefined) return { text: `${unit(max - total)} left`, tone: min !== undefined ? "text-good" : "" };
-  if (min !== undefined) return { text: `${unit(total - min)} over`, tone: "text-good" };
-  return { text: "no limit", tone: "text-muted" };
-}
-
+/** A nutrient's name and amount over its bar; the bar's colour says over or enough. */
 function Macro({ name, range, eaten, planned }: { name: Limited; range: Range; eaten: number; planned: number }) {
-  const g = (n: number) => `${n.toFixed(DIGITS[name])}g`;
   const total = eaten + planned;
   const { min, max } = range;
   const bounds = [min, max].filter((n) => n !== undefined).map((n) => n.toFixed(DIGITS[name]));
-  const { text, tone } = status(total, range, g);
   return (
     <div>
-      <dt className="flex justify-between text-xs text-muted">
+      <p className="flex justify-between text-xs text-muted">
         <span>{LABELS[name]}</span>
         <span>
           {total.toFixed(DIGITS[name])}
           {bounds.length > 0 && ` / ${bounds.join("–")}`}g
         </span>
-      </dt>
-      <dd className={`text-sm font-medium ${tone}`}>{text}</dd>
+      </p>
       <Bar eaten={eaten} planned={planned} range={range} />
     </div>
   );

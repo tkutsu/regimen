@@ -122,6 +122,15 @@ export function Tick({ done, label, onClick, className = "size-5" }: { done: boo
   );
 }
 
+/** A favourite toggle at the start of a food's row; className gives it the row's padding. */
+export function Star({ fav, name, onToggle, className }: { fav: boolean; name: string; onToggle: () => void; className: string }) {
+  return (
+    <button onClick={onToggle} aria-label={`Favourite ${name}`} aria-pressed={fav} className={`shrink-0 ${className} ${fav ? "text-accent" : "text-line"}`}>
+      ★
+    </button>
+  );
+}
+
 export function Remove({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button onClick={onClick} aria-label={`Remove ${label}`} className="-mr-1 w-6 text-center text-lg leading-none text-muted">
