@@ -10,13 +10,15 @@ type Props = {
   containers: Container[];
   onAdd: (food: Food, amount: number, done: boolean, variant?: Variant) => void;
   onClose: () => void;
+  /** One button with this label instead of Plan and Eaten. */
+  addLabel?: string;
 };
 
 /**
  * Favourites and recent foods until you type; then your foods, followed by the
  * bundled reference tables. A reference food is copied into your foods when added.
  */
-export function FoodPicker({ foods, recentIds, containers, onAdd, onClose }: Props) {
+export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLabel }: Props) {
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<Food>();
   const reference = useReference(true);
@@ -58,6 +60,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onClose }: Pro
         <Amount
           food={picked}
           containers={containers}
+          addLabel={addLabel}
           onBack={() => setPicked(undefined)}
           onAdd={(amount, done, variant) => onAdd(picked, amount, done, variant)}
         />
@@ -119,11 +122,12 @@ function Breakdown({ food, amount, factor }: { food: Food; amount: number; facto
 type AmountProps = {
   food: Food;
   containers: Container[];
+  addLabel?: string;
   onBack: () => void;
   onAdd: (amount: number, done: boolean, variant?: Variant) => void;
 };
 
-function Amount({ food, containers, onBack, onAdd }: AmountProps) {
+function Amount({ food, containers, addLabel, onBack, onAdd }: AmountProps) {
   const item = food.basis === "item";
   const [text, setText] = useState(item ? "1" : "100");
   const [variant, setVariant] = useState<Variant>();
@@ -166,7 +170,7 @@ function Amount({ food, containers, onBack, onAdd }: AmountProps) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onFocus={(e) => e.target.select()}
-          onKeyDown={(e) => e.key === "Enter" && submit(true)}
+          onKeyDown={(e) => e.key === "Enter" && submit(!addLabel)}
           className="w-28 rounded-xl border border-line bg-surface px-3 py-2 text-right text-lg outline-none focus:border-accent"
         />
         <span className="text-muted">{item ? "×" : "g"}</span>
@@ -193,14 +197,20 @@ function Amount({ food, containers, onBack, onAdd }: AmountProps) {
         </label>
       )}
 
-      <div className="grid grid-cols-2 gap-2">
-        <button disabled={!amount} onClick={() => submit(false)} className="rounded-xl border border-line py-3 disabled:opacity-40">
-          Plan
+      {addLabel ? (
+        <button disabled={!amount} onClick={() => submit(false)} className="rounded-xl bg-accent py-3 font-medium text-bg disabled:opacity-40">
+          {addLabel}
         </button>
-        <button disabled={!amount} onClick={() => submit(true)} className="rounded-xl bg-accent py-3 font-medium text-bg disabled:opacity-40">
-          Eaten
-        </button>
-      </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2">
+          <button disabled={!amount} onClick={() => submit(false)} className="rounded-xl border border-line py-3 disabled:opacity-40">
+            Plan
+          </button>
+          <button disabled={!amount} onClick={() => submit(true)} className="rounded-xl bg-accent py-3 font-medium text-bg disabled:opacity-40">
+            Eaten
+          </button>
+        </div>
+      )}
     </div>
   );
 }

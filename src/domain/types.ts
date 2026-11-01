@@ -40,9 +40,25 @@ export type Entry = {
   done: boolean;
   variant?: string;
   factor?: number;
+  /** The staple this entry was planned from. */
+  staple?: string;
 };
 
 export type Container = { id: string; name: string; grams: number };
+
+/** A food planned on every day from `from` on; a day it's removed from stays without it. */
+export type Staple = { id: string; foodId: string; amount: number; variant?: string; factor?: number; from: string };
+
+/** Nutrients with a settable range; kcal follows the phase instead. */
+export type Limited = Exclude<keyof Nutrients, "kcal">;
+
+/**
+ * Either bound may be left out. Units: protein g per kg of trend weight, fiber g per
+ * 1000 kcal, fats and sugar % of kcal, salt g.
+ */
+export type Range = { min?: number; max?: number };
+
+export type Theme = "system" | "light" | "dark";
 
 export type Day = {
   date: string;
@@ -67,11 +83,13 @@ export type Recipe = {
 export type Settings = {
   tdee: number;
   phaseOffsets: Record<Phase, number>;
-  proteinPerKg: number;
   kcalPer1kSteps: number;
-  /** Sugar limit as a share of the day's kcal, in percent. */
-  sugarPct: number;
+  limits: Record<Limited, Range>;
   containers: Container[];
+  staples: Staple[];
+  theme: Theme;
+  /** Hue of the accent colour, 0-360 (oklch). */
+  accentHue: number;
 };
 
 type Meta = { id: string; t: string; dev: string };

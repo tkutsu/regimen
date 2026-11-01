@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { LIMIT_UNITS, localDate } from "../domain/day";
+import { allFoods, LABELS, pickableFoods } from "../domain/nutrition";
+import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
-import type { Change, Phase, Settings as SettingsT } from "../domain/types";
+import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, Staple, Theme } from "../domain/types";
 import type { Config, Peers } from "../store";
-import { NumberInput } from "./fields";
+import { NumberInput, OptionalNumberInput } from "./fields";
+import { FoodPicker } from "./FoodPicker";
+import { applyLook } from "./look";
 import { Devices, SyncForm } from "./Sync";
 
 type Props = {
@@ -13,9 +18,11 @@ type Props = {
   onSaveConfig: (config: Config) => Promise<void>;
 };
 
+type Set = (patch: Partial<SettingsT>) => void;
+
 export function Settings({ state, commit, config, peers, onSaveConfig }: Props) {
   const settings = state.settings;
-  const set = (patch: Partial<SettingsT>) => commit({ type: "settings", settings: patch });
+  const set: Set = (patch) => commit({ type: "settings", settings: patch });
   const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
 
   return (
@@ -29,18 +36,15 @@ export function Settings({ state, commit, config, peers, onSaveConfig }: Props) 
             <NumberInput value={settings.phaseOffsets[phase]} onCommit={(offset) => setOffset(phase, offset)} className="w-20 text-right" />
           </Row>
         ))}
-        <Row label="Protein" unit="g/kg">
-          <NumberInput value={settings.proteinPerKg} onCommit={(proteinPerKg) => set({ proteinPerKg })} className="w-20 text-right" />
-        </Row>
-        <Row label="Sugar limit" unit="% kcal">
-          <NumberInput value={settings.sugarPct} onCommit={(sugarPct) => set({ sugarPct })} className="w-20 text-right" />
-        </Row>
         <Row label="Steps" unit="kcal/1k">
           <NumberInput value={settings.kcalPer1kSteps} onCommit={(kcalPer1kSteps) => set({ kcalPer1kSteps })} className="w-20 text-right" />
         </Row>
       </Section>
 
-      <Containers state={state} set={set} />
+      <Limits limits={settings.limits} set={set} />
+      <Staples state={state} commit={commit} />
+      <Containers containers={settings.containers} set={set} />
+      <Look theme={settings.theme} accentHue={settings.accentHue} set={set} />
 
       <Devices config={config} peers={peers} />
 
@@ -52,12 +56,90 @@ export function Settings({ state, commit, config, peers, onSaveConfig }: Props) 
   );
 }
 
-function Containers({ state, set }: { state: State; set: (patch: Partial<SettingsT>) => void }) {
-  const { containers } = state.settings;
+const LIMITED: Limited[] = ["prot", "fiber", "satFat", "unsatFat", "salt", "sugar"];
+
+/** A lower and an upper bound per nutrient; either can be blank. */
+function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {
+  const setRange = (key: Limited, patch: Range) => set({ limits: { ...limits, [key]: { ...limits[key], ...patch } } });
+  return (
+    <Section
+      title="Limits"
+      aside={
+        <span className="flex pr-3 text-xs text-muted normal-case">
+          <span className="w-16 text-right">min</span>
+          <span className="w-16 text-right">max</span>
+          <span className="w-20" />
+        </span>
+      }
+    >
+      {LIMITED.map((key) => (
+        <label key={key} className="flex items-center px-4 py-2.5">
+          <span className="flex-1 first-letter:uppercase">{LABELS[key]}</span>
+          <OptionalNumberInput value={limits[key].min} onCommit={(min) => setRange(key, { min })} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
+          <OptionalNumberInput value={limits[key].max} onCommit={(max) => setRange(key, { max })} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
+          <span className="w-20 pl-2 text-xs text-muted">{LIMIT_UNITS[key]}</span>
+        </label>
+      ))}
+    </Section>
+  );
+}
+
+/** Foods planned on every day from now on. Removing one from a day on Today leaves the others alone. */
+function Staples({ state, commit }: { state: State; commit: (...changes: Change[]) => void }) {
+  const [picking, setPicking] = useState(false);
+  const foods = useMemo(() => allFoods(state), [state]);
+  const pickable = useMemo(() => pickableFoods(state), [state]);
+  const { staples, containers } = state.settings;
+  const save = (next: Staple[], ...also: Change[]) => commit(...also, { type: "settings", settings: { staples: next } });
+
+  return (
+    <Section title="Staples" aside={<span className="text-xs text-muted normal-case">planned every day</span>}>
+      {staples.map((staple) => {
+        const food = foods.get(staple.foodId);
+        return (
+          <div key={staple.id} className="flex items-center gap-2 px-4 py-2.5">
+            <span className="min-w-0 flex-1 truncate">
+              {food?.name ?? "unknown food"}
+              {staple.variant && <span className="text-muted"> · {staple.variant}</span>}
+            </span>
+            <NumberInput
+              value={staple.amount}
+              onCommit={(amount) => amount > 0 && save(staples.map((s) => (s.id === staple.id ? { ...s, amount } : s)))}
+              className="w-16 text-right"
+            />
+            <span className="w-4 text-sm text-muted">{food?.basis === "item" ? "×" : "g"}</span>
+            <Remove label={food?.name ?? "staple"} onClick={() => save(staples.filter((s) => s.id !== staple.id))} />
+          </div>
+        );
+      })}
+      <button onClick={() => setPicking(true)} className="w-full px-4 py-2.5 text-left text-accent">
+        Add staple
+      </button>
+      {picking && (
+        <FoodPicker
+          foods={pickable}
+          recentIds={recentFoodIds(state)}
+          containers={containers}
+          addLabel="Add staple"
+          onAdd={(food, amount, _, variant) => {
+            const staple = { id: newId(), foodId: food.id, amount, variant: variant?.name, factor: variant?.factor, from: localDate() };
+            // A reference-table food becomes one of yours, as on Today.
+            save([...staples, staple], ...(foods.has(food.id) ? [] : [{ type: "food.upsert", food } as Change]));
+            setPicking(false);
+          }}
+          onClose={() => setPicking(false)}
+        />
+      )}
+    </Section>
+  );
+}
+
+function Containers({ containers, set }: { containers: Container[]; set: Set }) {
   const [name, setName] = useState("");
   const [grams, setGrams] = useState("");
   const weight = Number(grams.replace(",", "."));
   const valid = name.trim() !== "" && weight > 0;
+  const edit = (id: string, patch: Partial<Container>) => set({ containers: containers.map((c) => (c.id === id ? { ...c, ...patch } : c)) });
 
   const add = () => {
     if (!valid) return;
@@ -69,28 +151,24 @@ function Containers({ state, set }: { state: State; set: (patch: Partial<Setting
   return (
     <Section title="Containers">
       {containers.map((c) => (
-        <Row key={c.id} label={c.name} unit="g">
-          <span className="w-20 text-right">{c.grams}</span>
-          <button
-            onClick={() => set({ containers: containers.filter((other) => other.id !== c.id) })}
-            aria-label={`Remove ${c.name}`}
-            className="-mr-1 px-1 text-muted"
-          >
-            ×
-          </button>
-        </Row>
+        <div key={c.id} className="flex items-center gap-2 px-4 py-2">
+          <TextInput value={c.name} onCommit={(name) => edit(c.id, { name })} className="min-w-0 flex-1" />
+          <NumberInput value={c.grams} onCommit={(grams) => grams > 0 && edit(c.id, { grams })} className="w-16 text-right" />
+          <span className="w-4 text-sm text-muted">g</span>
+          <Remove label={c.name} onClick={() => set({ containers: containers.filter((other) => other.id !== c.id) })} />
+        </div>
       ))}
       <div className="flex items-center gap-2 px-4 py-2">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="name" className="min-w-0 flex-1 bg-transparent outline-none" />
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="name" className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted/60" />
         <input
           value={grams}
           inputMode="decimal"
           onChange={(e) => setGrams(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && add()}
           placeholder="grams"
-          className="w-20 bg-transparent text-right outline-none"
+          className="w-16 bg-transparent text-right outline-none placeholder:text-muted/60"
         />
-        <button disabled={!valid} onClick={add} className="text-accent disabled:opacity-40">
+        <button disabled={!valid} onClick={add} className="w-10 text-right text-accent disabled:opacity-40">
           Add
         </button>
       </div>
@@ -98,10 +176,87 @@ function Containers({ state, set }: { state: State; set: (patch: Partial<Setting
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+const THEMES: Theme[] = ["system", "light", "dark"];
+
+/** The hue slider previews while dragging and saves on release, so a drag is one event. */
+function Look({ theme, accentHue, set }: { theme: Theme; accentHue: number; set: Set }) {
+  const [hue, setHue] = useState<number>();
+  const preview = (next: number) => {
+    setHue(next);
+    applyLook({ theme, accentHue: next });
+  };
+  const save = () => {
+    if (hue !== undefined && hue !== accentHue) set({ accentHue: hue });
+    setHue(undefined);
+  };
+  return (
+    <Section title="Look">
+      <div className="flex items-center gap-3 px-4 py-2.5">
+        <span className="flex-1">Theme</span>
+        <div className="flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
+          {THEMES.map((name) => (
+            <button
+              key={name}
+              onClick={() => set({ theme: name })}
+              className={`rounded-lg px-3 py-1 capitalize ${theme === name ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      </div>
+      <label className="flex items-center gap-4 px-4 py-3">
+        <span>Accent</span>
+        <input
+          type="range"
+          min={0}
+          max={359}
+          value={hue ?? accentHue}
+          onChange={(e) => preview(Number(e.target.value))}
+          onPointerUp={save}
+          onKeyUp={save}
+          onBlur={save}
+          className="hue min-w-0 flex-1"
+        />
+      </label>
+    </Section>
+  );
+}
+
+/** Text that commits on blur or Enter, like NumberInput. */
+function TextInput({ value, onCommit, className = "" }: { value: string; onCommit: (value: string) => void; className?: string }) {
+  const [draft, setDraft] = useState<string>();
+  const commit = () => {
+    const text = draft?.trim();
+    if (text && text !== value) onCommit(text);
+    setDraft(undefined);
+  };
+  return (
+    <input
+      value={draft ?? value}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+      className={`bg-transparent outline-none ${className}`}
+    />
+  );
+}
+
+function Remove({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} aria-label={`Remove ${label}`} className="-mr-1 w-6 text-center text-lg leading-none text-muted">
+      ×
+    </button>
+  );
+}
+
+function Section({ title, aside, children }: { title: string; aside?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section>
-      <h2 className="mb-2 px-1 text-xs font-medium tracking-wide text-muted uppercase">{title}</h2>
+      <h2 className="mb-2 flex items-baseline justify-between px-1 text-xs font-medium tracking-wide text-muted uppercase">
+        {title}
+        {aside}
+      </h2>
       <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">{children}</div>
     </section>
   );

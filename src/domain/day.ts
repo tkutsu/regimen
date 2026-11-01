@@ -1,6 +1,6 @@
 import { add, allFoods, scale, zero } from "./nutrition";
 import type { State } from "./state";
-import type { Day, Entry, Nutrients } from "./types";
+import type { Day, Entry, Limited, Nutrients, Range } from "./types";
 
 /** Today's date in local time, as YYYY-MM-DD. */
 export function localDate(date = new Date()): string {
@@ -47,28 +47,67 @@ export function kcalTarget(state: State, day: Day): number {
   return tdeeOn(state, day.date) + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal;
 }
 
-/** Daily targets, carried over from the sheet; sugar is a share of kcal at 4 kcal/g. */
-export function targets(state: State, date: string): Nutrients {
+export type Targets = { kcal: number } & Record<Limited, Range>;
+
+export const LIMIT_UNITS: Record<Limited, string> = {
+  prot: "g/kg",
+  fiber: "g/1k kcal",
+  satFat: "% kcal",
+  unsatFat: "% kcal",
+  salt: "g",
+  sugar: "% kcal",
+};
+
+/** The day's kcal target and every limit in grams. Shares of kcal use 9 kcal/g for fat, 4 for sugar. */
+export function targets(state: State, date: string): Targets {
   const kcal = kcalTarget(state, dayOf(state, date));
-  return {
-    kcal,
-    prot: (trendWeight(state, date) ?? 0) * state.settings.proteinPerKg,
-    fiber: (kcal / 1000) * 15,
-    satFat: (kcal * 0.07) / 9,
-    unsatFat: (kcal * 0.25) / 9,
-    salt: 4.5,
-    sugar: (kcal * state.settings.sugarPct) / 100 / 4,
+  const kg = trendWeight(state, date) ?? 0;
+  const grams: Record<Limited, (value: number) => number> = {
+    prot: (perKg) => perKg * kg,
+    fiber: (per1k) => (kcal / 1000) * per1k,
+    satFat: (pct) => (kcal * pct) / 100 / 9,
+    unsatFat: (pct) => (kcal * pct) / 100 / 9,
+    salt: (g) => g,
+    sugar: (pct) => (kcal * pct) / 100 / 4,
   };
+  const out = { kcal } as Targets;
+  for (const [key, toGrams] of Object.entries(grams) as [Limited, (value: number) => number][]) {
+    const { min, max } = state.settings.limits[key];
+    out[key] = { min: min === undefined ? undefined : toGrams(min), max: max === undefined ? undefined : toGrams(max) };
+  }
+  return out;
 }
 
 export function entriesOn(state: State, date: string): Entry[] {
   return [...state.entries.values()].filter((entry) => entry.date === date);
 }
 
-/** Everything logged for the day, planned or done; a skipped plan is simply removed. */
-export function intake(state: State, date: string): Nutrients {
+/**
+ * Staple entries the day doesn't have yet: from the day a staple was added on, and
+ * never again on a day it was removed from. The id is fixed per staple and day, so two
+ * devices planning the same day write the same entry.
+ */
+export function missingStaples(state: State, date: string): Entry[] {
+  return state.settings.staples
+    .filter((staple) => staple.from <= date)
+    .map((staple) => ({
+      id: `${staple.id}@${date}`,
+      date,
+      foodId: staple.foodId,
+      amount: staple.amount,
+      done: false,
+      variant: staple.variant,
+      factor: staple.factor,
+      staple: staple.id,
+    }))
+    .filter((entry) => !state.entries.has(entry.id) && !state.removed.has(entry.id));
+}
+
+/** Everything logged for the day, planned or done; `done` picks one of the two. A skipped plan is simply removed. */
+export function intake(state: State, date: string, done?: boolean): Nutrients {
   const foods = allFoods(state);
-  return entriesOn(state, date).reduce((sum, entry) => {
+  const entries = entriesOn(state, date).filter((entry) => done === undefined || entry.done === done);
+  return entries.reduce((sum, entry) => {
     const food = foods.get(entry.foodId);
     return food ? add(sum, scale(food, entry.amount, entry.factor)) : sum;
   }, zero());

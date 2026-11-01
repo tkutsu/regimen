@@ -94,11 +94,23 @@ function read(state: State, phase: Phase, from: string, to: string): Stretch {
   return { ...stretch, tdee, kgPerWeek: ((stretch.intake - tdee) * 7) / KCAL_PER_KG };
 }
 
-/** Each weigh-in with the mean of the weigh-ins in the 7 days ending on it. */
-export function weightSeries(state: State): { date: string; kg: number; avg: number }[] {
+/** Runs of days in the same phase, as set on each day, from `from` to `to`. */
+export function phaseRuns(state: State, from: string, to: string): { phase: Phase; from: string; to: string }[] {
+  const runs: { phase: Phase; from: string; to: string }[] = [];
+  for (let d = from; d <= to; d = shiftDate(d, 1)) {
+    const phase = dayOf(state, d).phase;
+    const last = runs.at(-1);
+    if (last?.phase === phase) last.to = d;
+    else runs.push({ phase, from: d, to: d });
+  }
+  return runs;
+}
+
+/** Each weigh-in with the mean of the weigh-ins in the `days` days ending on it. */
+export function weightSeries(state: State, days = 7): { date: string; kg: number; avg: number }[] {
   const points = [...state.weights].sort(([a], [b]) => a.localeCompare(b));
   return points.map(([date, kg], i) => {
-    const from = shiftDate(date, -6);
+    const from = shiftDate(date, 1 - days);
     const week = points.slice(0, i + 1).filter(([d]) => d >= from);
     return { date, kg, avg: week.reduce((sum, [, w]) => sum + w, 0) / week.length };
   });

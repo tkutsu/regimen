@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { dayOf, entriesOn, intake, localDate, shiftDate, targets, trendWeight } from "../domain/day";
+import { useEffect, useMemo, useState } from "react";
+import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
 import { allFoods, parseAmount, pickableFoods, scale } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
@@ -18,8 +18,17 @@ export function Today({ state, commit }: Props) {
   const pickable = useMemo(() => pickableFoods(state), [state]);
   const day = dayOf(state, date);
   const entries = entriesOn(state, date).sort((a, b) => Number(a.done) - Number(b.done));
-  const yesterday = entriesOn(state, shiftDate(date, -1));
+  // Staples are planned anyway, so "Plan yesterday's" copies the rest.
+  const yesterday = entriesOn(state, shiftDate(date, -1)).filter((entry) => !entry.staple);
+  const onlyStaples = entries.every((entry) => entry.staple);
   const trend = trendWeight(state, date);
+
+  // Today and later days get their staples when opened; past days stay as they were.
+  useEffect(() => {
+    if (date < localDate()) return;
+    const missing = missingStaples(state, date);
+    if (missing.length) commit(...missing.map((entry): Change => ({ type: "entry.upsert", entry })));
+  }, [state, date, commit]);
 
   const setDay = (patch: Partial<Day>) => commit({ type: "day.upsert", day: { ...day, ...patch } });
   const putEntry = (entry: Entry) =>
@@ -56,7 +65,7 @@ export function Today({ state, commit }: Props) {
         </p>
       )}
 
-      <Remaining target={targets(state, date)} eaten={intake(state, date)} />
+      <Remaining target={targets(state, date)} eaten={intake(state, date, true)} planned={intake(state, date, false)} />
 
       <div className="grid grid-cols-3 gap-2">
         <NumberField
@@ -73,9 +82,9 @@ export function Today({ state, commit }: Props) {
         {entries.map((entry) => (
           <EntryRow key={entry.id} entry={entry} food={foods.get(entry.foodId)} onChange={putEntry} />
         ))}
-        {entries.length === 0 && (
+        {onlyStaples && (entries.length === 0 || yesterday.length > 0) && (
           <li className="flex items-center justify-between px-4 py-3 text-sm text-muted">
-            Nothing logged
+            {entries.length === 0 ? "Nothing logged" : "Only staples so far"}
             {yesterday.length > 0 && (
               <button onClick={copyYesterday} className="text-accent">
                 Plan yesterday's {yesterday.length}

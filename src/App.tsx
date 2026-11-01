@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRegimen } from "./store";
 import { Foods } from "./ui/Foods";
+import { useLook } from "./ui/look";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
 import { Today } from "./ui/Today";
@@ -13,6 +14,7 @@ const TABS: Tab[] = ["today", "weight", "foods", "settings"];
 export default function App() {
   const { config, state, peers, error, reload, commit, saveConfig } = useRegimen();
   const [tab, setTab] = useState<Tab>("today");
+  useLook(state?.settings);
 
   if (config === null) return <Setup onSave={saveConfig} />;
   if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={reload} /> : <p className="p-4 text-bad">{error}</p>;
