@@ -14,6 +14,14 @@ val tauriProperties = Properties().apply {
     }
 }
 
+// The release key lives outside the repo; without it, release builds come out unsigned.
+val signingProperties = Properties().apply {
+    val propFile = File(System.getProperty("user.home"), ".local/share/android/regimen-release.properties")
+    if (propFile.exists()) {
+        propFile.inputStream().use { load(it) }
+    }
+}
+
 android {
     compileSdk = 37
     namespace = "dev.themos.regimen"
@@ -24,6 +32,16 @@ android {
         targetSdk = 37
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
+    }
+    signingConfigs {
+        if (signingProperties.containsKey("storeFile")) {
+            create("release") {
+                storeFile = file(signingProperties.getProperty("storeFile"))
+                storePassword = signingProperties.getProperty("password")
+                keyAlias = signingProperties.getProperty("keyAlias")
+                keyPassword = signingProperties.getProperty("password")
+            }
+        }
     }
     buildTypes {
         getByName("debug") {
@@ -39,6 +57,7 @@ android {
             }
         }
         getByName("release") {
+            signingConfig = signingConfigs.findByName("release")
             optimization {
                enable = true
             }
