@@ -6,11 +6,12 @@ import { useLook } from "./ui/look";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
 import { Today } from "./ui/Today";
+import { Training } from "./ui/Training";
 import { Weight } from "./ui/Weight";
 
-const SCREENS = { today: Today, weight: Weight, foods: Foods };
+const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods };
 type Tab = keyof typeof SCREENS | "settings";
-const TABS: Tab[] = ["today", "weight", "foods", "settings"];
+const TABS: Tab[] = ["today", "training", "weight", "foods", "settings"];
 
 export default function App() {
   const { config, state, peers, error, reload, commit, saveConfig } = useRegimen();

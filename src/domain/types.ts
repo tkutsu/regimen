@@ -94,6 +94,39 @@ export type Settings = {
   accentHue: number;
 };
 
+/** Reps or a hold/bout in seconds (either with kg, left out = bodyweight), or a distance with its time. */
+export type Measure = "reps" | "time" | "distance";
+
+/** The measure is fixed once made: changing it would reread every set logged with it. */
+export type Exercise = { id: string; name: string; measure: Measure };
+
+/** What one set records; the exercise's measure says which fields count. */
+export type Amount = { reps?: number; kg?: number; secs?: number; km?: number };
+
+/** One planned line of a workout: 3 sets of 8 @ 60 kg. */
+export type Target = Amount & { exerciseId: string; sets: number };
+
+/** A template, started whenever you like. */
+export type Workout = { id: string; name: string; targets: Target[]; note?: string };
+
+/** A set not ticked yet is still the plan. */
+export type SetLog = Amount & { exerciseId: string; done: boolean };
+
+/**
+ * One time a workout was done. Its sets are copied in when it starts and its name with them,
+ * so editing or deleting the workout later leaves it alone. Finishing drops the sets not done.
+ */
+export type Session = {
+  id: string;
+  date: string;
+  workoutId?: string;
+  name: string;
+  /** In order; an exercise's sets are shown together, where its first one is. */
+  sets: SetLog[];
+  finished?: boolean;
+  note?: string;
+};
+
 type Meta = { id: string; t: string; dev: string };
 
 export type Event = Meta &
@@ -107,6 +140,12 @@ export type Event = Meta &
     | { type: "recipe.upsert"; recipe: Recipe }
     | { type: "recipe.delete"; recipeId: string }
     | { type: "settings"; settings: Partial<Settings> }
+    | { type: "exercise.upsert"; exercise: Exercise }
+    | { type: "exercise.delete"; exerciseId: string }
+    | { type: "workout.upsert"; workout: Workout }
+    | { type: "workout.delete"; workoutId: string }
+    | { type: "session.upsert"; session: Session }
+    | { type: "session.delete"; sessionId: string }
   );
 
 /** An event before it is stamped with id, time and device. */
