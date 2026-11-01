@@ -48,6 +48,15 @@ describe("parseLogs", () => {
 });
 
 describe("fold", () => {
+  it("keeps food keywords through the event log and subsequent edits", () => {
+    const food = { ...oats, keywords: ["βρώμη", "porridge"] };
+    const event = stamp({ type: "food.upsert", food }, "desktop");
+    const state = fold(parseLogs([line(event)]));
+    expect(state.foods.get(food.id)).toEqual(food);
+    const next = applyEvents(state, [stamp({ type: "food.upsert", food: { ...food, name: "Rolled oats" } }, "phone")]);
+    expect(next.foods.get(food.id)?.keywords).toEqual(food.keywords);
+  });
+
   it("keeps the last write per entity", () => {
     const state = fold([
       stamp({ type: "food.upsert", food: oats }, "desktop", new Date("2026-10-30")),
