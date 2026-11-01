@@ -5,13 +5,14 @@ import { useKeys } from "./ui/keys";
 import { useLook } from "./ui/look";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
+import { System } from "./ui/System";
 import { Today } from "./ui/Today";
 import { Training } from "./ui/Training";
 import { Weight } from "./ui/Weight";
 
-const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods };
-type Tab = keyof typeof SCREENS | "settings";
-const TABS: Tab[] = ["today", "training", "weight", "foods", "settings"];
+const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods, settings: Settings };
+type Tab = keyof typeof SCREENS | "system";
+const TABS: Tab[] = ["today", "training", "weight", "foods", "settings", "system"];
 
 export default function App() {
   const { config, state, peers, error, saveError, reload, commit, retrySave, dismissSaveError, saveConfig } = useRegimen();
@@ -22,10 +23,10 @@ export default function App() {
   if (config === null) return <Setup onSave={saveConfig} />;
   if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={() => reload()} /> : <p className="p-4 text-bad">{error}</p>;
   if (!config || !state || !peers) return null;
-  const Screen = tab === "settings" ? undefined : SCREENS[tab];
+  const Screen = tab === "system" ? undefined : SCREENS[tab];
   return (
     <div data-app className="mx-auto max-w-md p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
-      <nav aria-label="Screens" className="mb-4 flex gap-4 text-sm">
+      <nav aria-label="Screens" className="mb-4 flex justify-between gap-2 text-sm">
         {TABS.map((name) => (
           <button key={name} data-tab={name} onClick={() => setTab(name)} aria-current={tab === name ? "page" : undefined} className={`capitalize ${tab === name ? "font-medium" : "text-muted"}`}>
             {name}
@@ -33,7 +34,7 @@ export default function App() {
         ))}
       </nav>
       <main>
-        {Screen ? <Screen state={state} commit={commit} /> : <Settings state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} />}
+        {Screen ? <Screen state={state} commit={commit} /> : <System state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} />}
       </main>
       {saveError && <SaveFailed message={saveError.message} onRetry={retrySave} onDismiss={dismissSaveError} />}
     </div>
