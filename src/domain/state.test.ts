@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { fold, parseLogs, stamp } from "./state";
-import type { Food, Settings } from "./types";
+import { applyEvents, fold, parseLogs, stamp } from "./state";
+import type { Event, Food, Settings } from "./types";
 
 const oats: Food = {
   id: "oats",
@@ -35,6 +35,16 @@ describe("parseLogs", () => {
     const event = line({ id: "a", t: "2026-10-31T08:00:00Z", dev: "phone", type: "food.delete", foodId: "x" });
     expect(parseLogs([event, event])).toHaveLength(1);
   });
+
+  it("reads the event written after a torn line", () => {
+    const next = line({ type: "food.upsert", food: oats, id: "b", t: "2026-10-31T08:00:00Z", dev: "phone" });
+    expect(parseLogs(['{"type":"weight","date":"2026-1' + next]).map((e) => e.id)).toEqual(["b"]);
+  });
+
+  it("keeps a device's events in the order they were stamped", () => {
+    const events = Array.from({ length: 20 }, (_, kg) => stamp({ type: "weight", date: "2026-10-31", kg }, "phone"));
+    expect(fold(parseLogs([events.map(line).join("\n")])).weights.get("2026-10-31")).toBe(19);
+  });
 });
 
 describe("fold", () => {
@@ -61,6 +71,28 @@ describe("fold", () => {
     expect(state.settings.limits.prot).toEqual({ min: 2 });
     expect(state.settings.limits.sugar).toEqual({ max: 8 });
     expect(state.settings.limits.salt).toEqual({ max: 4.5 });
+  });
+
+  it("merges limits per nutrient, so two devices' edits both stay", () => {
+    const state = fold([
+      stamp({ type: "settings", settings: { limits: { prot: { min: 2 } } } }, "desktop"),
+      stamp({ type: "settings", settings: { limits: { fiber: { min: 35 } } } }, "phone"),
+    ]);
+    expect(state.settings.limits).toMatchObject({ prot: { min: 2 }, fiber: { min: 35 }, salt: { max: 4.5 } });
+  });
+
+  it("skips an event missing its payload instead of failing the history", () => {
+    const broken = { id: "x", t: "2026-10-31T08:00:00Z", dev: "phone", type: "food.upsert" } as Event;
+    const state = fold([broken, stamp({ type: "food.upsert", food: oats }, "desktop")]);
+    expect(state.foods.has("oats")).toBe(true);
+  });
+
+  it("applies new events to a copy, sharing what they don't change", () => {
+    const state = fold([stamp({ type: "food.upsert", food: oats }, "desktop")]);
+    const next = applyEvents(state, [stamp({ type: "weight", date: "2026-10-31", kg: 68 }, "desktop")]);
+    expect(next.weights.get("2026-10-31")).toBe(68);
+    expect(state.weights.size).toBe(0);
+    expect(next.foods).toBe(state.foods);
   });
 
   it("removes deleted entities", () => {
