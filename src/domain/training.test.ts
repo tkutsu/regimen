@@ -117,23 +117,31 @@ describe("editing a session", () => {
 
 describe("drop sets", () => {
   const drop = (exerciseId: string, reps: number, kg?: number): SetLog => ({ ...set(exerciseId, reps, kg), drop: true });
-  const curls: Workout = { id: "c", name: "Arms", targets: [{ exerciseId: "curl", sets: 2, reps: 10, kg: 14, drop: true }] };
+  const curls: Workout = { id: "c", name: "Arms", targets: [{ exerciseId: "curl", sets: 2, reps: 10, kg: 14, drops: 2 }] };
 
-  it("follow the target's last set, from last time's drop", () => {
-    const last = session("a", "2026-10-30", [set("curl", 10, 16), set("curl", 9, 16), drop("curl", 12, 10)]);
+  it("follow the target's last set, each from that drop last time", () => {
+    const last = session("a", "2026-10-30", [set("curl", 10, 16), set("curl", 9, 16), drop("curl", 12, 10), drop("curl", 8, 6)]);
     expect(startSession(curls, [last], "2026-11-01", "s").sets.map((s) => [s.reps, s.kg, s.drop])).toEqual([
       [10, 16, undefined],
       [9, 16, undefined],
       [12, 10, true],
+      [8, 6, true],
     ]);
   });
 
   it("start as the set before them when never done", () => {
-    expect(startSession(curls, [], "2026-11-01", "s").sets.map((s) => [s.reps, s.kg, s.drop])).toEqual([
-      [10, 14, undefined],
-      [10, 14, undefined],
-      [10, 14, true],
+    const once = session("a", "2026-10-30", [set("curl", 10, 16), drop("curl", 12, 10)]);
+    expect(startSession(curls, [once], "2026-11-01", "s").sets.map((s) => [s.reps, s.kg, s.drop])).toEqual([
+      [10, 16, undefined],
+      [10, 16, undefined],
+      [12, 10, true],
+      [12, 10, true],
     ]);
+  });
+
+  it("read a line saved with one drop set as one", () => {
+    const old: Workout = { id: "o", name: "Old", targets: [{ exerciseId: "curl", sets: 1, reps: 10, drop: true }] };
+    expect(startSession(old, [], "2026-11-01", "s").sets.map((s) => s.drop)).toEqual([undefined, true]);
   });
 
   it("stay last when a set is added, and can be added", () => {
