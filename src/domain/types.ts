@@ -96,26 +96,24 @@ export type Settings = {
   accentHue: number;
 };
 
-/** Reps or a hold/bout in seconds (either with kg, left out = bodyweight), or a distance with its time. */
-export type Measure = "reps" | "time" | "distance";
+/** Every exercise counts reps; `measure` is still written because older builds read it. */
+export type Exercise = { id: string; name: string; measure: "reps" };
 
-/** The measure is fixed once made: changing it would reread every set logged with it. */
-export type Exercise = { id: string; name: string; measure: Measure };
-
-/** What one set records; the exercise's measure says which fields count. */
-export type Amount = { reps?: number; kg?: number; secs?: number; km?: number };
+/** What one set records: reps, with kg (left out = bodyweight). */
+export type Amount = { reps?: number; kg?: number };
 
 /**
  * One planned line of a workout: 3 sets of 8 @ 60 kg. A linked line is in a superset with the
- * line above: the two are done back to back, with no rest between.
+ * line above: the two are done back to back, with no rest between. A line with a drop set has
+ * one more set after its last, lighter and straight after it.
  */
-export type Target = Amount & { exerciseId: string; sets: number; linked?: true };
+export type Target = Amount & { exerciseId: string; sets: number; linked?: true; drop?: true };
 
 /** A template, started whenever you like. */
 export type Workout = { id: string; name: string; targets: Target[]; note?: string };
 
-/** A set not ticked yet is still the plan. */
-export type SetLog = Amount & { exerciseId: string; done: boolean };
+/** A set not ticked yet is still the plan. A drop set follows the set before it with no rest. */
+export type SetLog = Amount & { exerciseId: string; done: boolean; drop?: true };
 
 /**
  * One time a workout was done. Its sets are copied in when it starts and its name with them,

@@ -80,6 +80,10 @@ body::before {
   .flow > :not([role="dialog"]) {
     view-transition-name: match-element;
   }
+  /* A moved element replays its animation, so rows that can be dragged only glide. */
+  .flow > [data-row] {
+    animation: none;
+  }
   /* A named row is drawn above everything while it moves, so only the top page's rows are named. */
   :root:has([role="dialog"]) .flow > * {
     view-transition-name: none;
