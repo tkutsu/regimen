@@ -28,7 +28,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
     patch({ variants: form.variants.map((v, j) => (i === j ? { ...v, ...changes } : v)) });
 
   return (
-    <div className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <div role="dialog" aria-modal="true" aria-label={food ? "Edit food" : "New food"} className="fixed inset-0 z-10 flex flex-col bg-bg">
       <header className="flex items-center justify-between border-b border-line p-3">
         <button onClick={onClose} className="px-2 py-2 text-muted">
           Cancel

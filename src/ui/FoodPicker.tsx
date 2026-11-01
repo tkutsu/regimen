@@ -40,7 +40,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLa
   }, [foods, recentIds, reference, query]);
 
   return (
-    <div className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <div role="dialog" aria-modal="true" aria-label="Pick a food" className="fixed inset-0 z-10 flex flex-col bg-bg">
       <header className="flex items-center gap-2 border-b border-line p-3">
         <input
           autoFocus
