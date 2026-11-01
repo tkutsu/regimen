@@ -112,7 +112,7 @@ export function TextInput({ value, onCommit, placeholder, className = "", "aria-
 /** A circle that fills with the accent and a black tick when done. */
 export function Tick({ done, label, onClick, className = "size-5" }: { done: boolean; label: string; onClick: () => void; className?: string }) {
   return (
-    <button onClick={onClick} aria-label={label} className={`${className} shrink-0 rounded-full border-2 ${done ? "border-accent bg-accent" : "border-line"}`}>
+    <button onClick={onClick} aria-label={label} className={`${className} shrink-0 rounded-full border-2 transition-colors ${done ? "border-accent bg-accent" : "border-line"}`}>
       {done && (
         <svg viewBox="0 0 16 16" aria-hidden className="block size-full" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3.5 8.5l3 3 6-6.5" />
@@ -125,7 +125,7 @@ export function Tick({ done, label, onClick, className = "size-5" }: { done: boo
 /** A favourite toggle at the start of a food's row; className gives it the row's padding. */
 export function Star({ fav, name, onToggle, className }: { fav: boolean; name: string; onToggle: () => void; className: string }) {
   return (
-    <button onClick={onToggle} aria-label={`Favourite ${name}`} aria-pressed={fav} className={`shrink-0 ${className} ${fav ? "text-accent" : "text-line"}`}>
+    <button onClick={onToggle} aria-label={`Favourite ${name}`} aria-pressed={fav} className={`shrink-0 transition-colors ${className} ${fav ? "text-accent" : "text-line"}`}>
       ★
     </button>
   );
@@ -147,7 +147,7 @@ export function Section({ title, aside, children }: { title: string; aside?: Rea
         {title}
         {aside}
       </h2>
-      <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">{children}</div>
+      <div className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">{children}</div>
     </section>
   );
 }

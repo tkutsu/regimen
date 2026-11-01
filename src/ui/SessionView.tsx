@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
+import { Dialog } from "./Dialog";
 import { AmountFields, ExerciseSearch, LinkToggle } from "./exercises";
-import { box } from "./FoodEditor";
 import { Remove, TextInput, Tick } from "./fields";
+import { box } from "./FoodEditor";
+import { transition } from "./motion";
 
 type Props = {
   session: Session;
@@ -33,9 +35,9 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
   const done = session.sets.filter((set) => set.done).length;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Session" className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <Dialog label="Session" onClose={onClose}>
       <header className="flex items-center justify-between border-b border-line p-3">
-        <button onClick={onClose} className="px-2 py-2 text-muted">
+        <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Close
         </button>
         <h2 className="font-medium">
@@ -103,7 +105,7 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
           </button>
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }
 
@@ -140,7 +142,7 @@ function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, o
         </div>
         {last.length > 0 && <p className="text-xs text-muted">last time {summarize(measure, last)}</p>}
       </div>
-      <ul>
+      <ul className="flow">
         {at.map((i, n) => {
           const set = session.sets[i];
           return (

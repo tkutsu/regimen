@@ -3,6 +3,8 @@ import { fromForm, readValue, toForm, type FoodForm, type ValueTexts } from "../
 import { LABELS, NUTRIENTS } from "../domain/nutrition";
 import { newId } from "../domain/state";
 import type { Food } from "../domain/types";
+import { Dialog } from "./Dialog";
+import { transition } from "./motion";
 
 type Props = {
   food?: Food;
@@ -28,9 +30,9 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
     patch({ variants: form.variants.map((v, j) => (i === j ? { ...v, ...changes } : v)) });
 
   return (
-    <div role="dialog" aria-modal="true" aria-label={food ? "Edit food" : "New food"} className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <Dialog label={food ? "Edit food" : "New food"} onClose={onClose}>
       <header className="flex items-center justify-between border-b border-line p-3">
-        <button onClick={onClose} className="px-2 py-2 text-muted">
+        <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel
         </button>
         <h2 className="font-medium">{food ? "Edit food" : "New food"}</h2>
@@ -93,7 +95,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
 
           <section>
             <Heading hint="grams × factor = the values above">Variants</Heading>
-            <div className="flex flex-col gap-2">
+            <div className="flow flex flex-col gap-2">
               {form.variants.map((variant, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <input
@@ -147,7 +149,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             ))}
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }
 

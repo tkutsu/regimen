@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyEvents, fold, parseLogs, stamp, type State } from "./domain/state";
 import type { Change, Event } from "./domain/types";
+import { transition } from "./ui/motion";
 
 /** Where this device keeps the logs and the name of its own log. */
 export type Config = { dir: string; device: string };
@@ -90,7 +91,10 @@ export function useRegimen() {
     };
   }, [reload, refresh]);
 
-  /** Applies to the newest state, so a reload that lands while writing isn't undone. */
+  /**
+   * Applies to the newest state, so a reload that lands while writing isn't undone. The
+   * change animates in, and the promise resolves once it's on screen.
+   */
   const commit: Commit = useCallback(
     async (...changes) => {
       if (!config) return false;
@@ -102,7 +106,7 @@ export function useRegimen() {
         return false;
       }
       written.current.push(...events);
-      setState((state) => state && applyEvents(state, events));
+      await transition(() => setState((state) => state && applyEvents(state, events)));
       return true;
     },
     [config],

@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
-import { allFoods, parseAmount, pickableFoods, toggleFav } from "../domain/nutrition";
+import { allFoods, parseAmount, pickableFoods, scale, toggleFav } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
-import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
+import type { Change, Day, Entry, Food, Nutrients, Phase, Variant } from "../domain/types";
 import type { Commit } from "../store";
 import { NumberField, Tick } from "./fields";
 import { FoodPicker } from "./FoodPicker";
+import { transition } from "./motion";
 import { Remaining } from "./Remaining";
 
 type Props = { state: State; commit: Commit };
@@ -14,6 +15,7 @@ type Props = { state: State; commit: Commit };
 export function Today({ state, commit }: Props) {
   const [date, setDate] = useState(localDate);
   const [picking, setPicking] = useState(false);
+  const [shown, setShown] = useState<keyof Nutrients>();
 
   const foods = useMemo(() => allFoods(state), [state]);
   const pickable = useMemo(() => pickableFoods(state), [state]);
@@ -40,19 +42,20 @@ export function Today({ state, commit }: Props) {
     const save: Change[] = foods.has(food.id) ? [] : [{ type: "food.upsert", food }];
     if (await commit(...save, { type: "entry.upsert", entry })) setPicking(false);
   };
+  const show = (key: keyof Nutrients) => transition(() => setShown(shown === key ? undefined : key));
   const copyYesterday = () =>
     commit(...yesterday.map((entry): Change => ({ type: "entry.upsert", entry: { ...entry, id: newId(), date, done: false } })));
 
   return (
     <div className="flex flex-col gap-4 pb-24">
-      <DateNav date={date} onChange={setDate} />
+      <DateNav date={date} onChange={(next) => transition(() => setDate(next))} />
 
       <div className="flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
         {(["cut", "maintain", "bulk"] as Phase[]).map((phase) => (
           <button
             key={phase}
             onClick={() => setDay({ phase, offset: undefined })}
-            className={`flex-1 rounded-lg py-1.5 capitalize ${day.phase === phase ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+            className={`flex-1 rounded-lg py-1.5 capitalize transition-colors ${day.phase === phase ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
           >
             {phase}
           </button>
@@ -65,7 +68,7 @@ export function Today({ state, commit }: Props) {
         </p>
       )}
 
-      <Remaining target={targets(state, date)} eaten={intake(state, date, true)} planned={intake(state, date, false)} />
+      <Remaining target={targets(state, date)} eaten={intake(state, date, true)} planned={intake(state, date, false)} shown={shown} onShow={show} />
 
       <div className="grid grid-cols-3 gap-2">
         <NumberField
@@ -79,9 +82,9 @@ export function Today({ state, commit }: Props) {
         <NumberField label="extra" unit="kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} />
       </div>
 
-      <ul className="overflow-hidden rounded-2xl border border-line bg-surface">
+      <ul className="flow overflow-hidden rounded-2xl border border-line bg-surface">
         {entries.map((entry) => (
-          <EntryRow key={entry.id} entry={entry} food={foods.get(entry.foodId)} onChange={putEntry} />
+          <EntryRow key={entry.id} entry={entry} food={foods.get(entry.foodId)} shown={shown} onChange={putEntry} />
         ))}
         {onlyStaples && (entries.length === 0 || yesterday.length > 0) && (
           <li className="flex items-center justify-between px-4 py-3 text-sm text-muted">
@@ -138,7 +141,8 @@ function DateNav({ date, onChange }: { date: string; onChange: (date: string) =>
   );
 }
 
-function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChange: (entry: Entry) => void }) {
+/** An entry's food and amount, or with `shown`, its share of that total. */
+function EntryRow({ entry, food, shown, onChange }: { entry: Entry; food?: Food; shown?: keyof Nutrients; onChange: (entry: Entry) => void }) {
   const [open, setOpen] = useState(false);
   const unit = food?.basis === "item" ? "×" : "g";
   return (
@@ -150,10 +154,14 @@ function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChan
             {food?.name ?? "unknown food"}
             {entry.variant && <span className="text-muted"> · {entry.variant}</span>}
           </span>
-          <span className="ml-auto shrink-0 text-sm">
-            {+entry.amount.toFixed(1)}
-            <span className="text-muted">{unit}</span>
-          </span>
+          {shown ? (
+            <Share food={food} entry={entry} shown={shown} />
+          ) : (
+            <span className="ml-auto shrink-0 text-sm">
+              {+entry.amount.toFixed(1)}
+              <span className="text-muted">{unit}</span>
+            </span>
+          )}
         </button>
         <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label={`Remove ${food?.name ?? "food"}`} className="px-1 text-muted">
           ×
@@ -173,13 +181,25 @@ function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChan
   );
 }
 
+/** What an entry adds to a total: kcal whole, grams to a tenth below 10; "?" when the food doesn't say. */
+function Share({ food, entry, shown }: { food?: Food; entry: Entry; shown: keyof Nutrients }) {
+  const known = food && food[shown] !== undefined;
+  const n = known ? scale(food, entry.amount, entry.factor)[shown] : 0;
+  return (
+    <span className={`ml-auto shrink-0 text-sm ${entry.done ? "text-accent" : "text-accent/60"}`}>
+      {!known ? "?" : shown === "kcal" || n >= 10 ? Math.round(n) : +n.toFixed(1)}
+      <span className="text-muted">{shown === "kcal" ? " kcal" : "g"}</span>
+    </span>
+  );
+}
+
 /** Adds to, removes from, or replaces an entry's amount. "+50" / "-20" typed directly also work. */
 function AmountEditor({ amount, unit, onCommit }: { amount: number; unit: string; onCommit: (amount: number) => void }) {
   const [text, setText] = useState("");
   const value = parseAmount(text);
   const apply = (next: number | undefined) => next !== undefined && onCommit(Math.max(0, next));
   return (
-    <div className="flex items-center gap-2 px-3 pb-3">
+    <div className="rise flex items-center gap-2 px-3 pb-3">
       <input
         autoFocus
         inputMode="decimal"
