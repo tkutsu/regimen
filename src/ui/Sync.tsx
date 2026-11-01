@@ -230,6 +230,7 @@ function Field({ label, value, onChange, children }: { label: string; value: str
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          aria-label={label}
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
