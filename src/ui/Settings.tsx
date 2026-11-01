@@ -75,8 +75,8 @@ function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {
       {LIMITED.map((key) => (
         <label key={key} className="flex items-center px-4 py-2.5">
           <span className="flex-1 first-letter:uppercase">{LABELS[key]}</span>
-          <OptionalNumberInput value={limits[key].min} onCommit={(min) => setRange(key, { min })} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
-          <OptionalNumberInput value={limits[key].max} onCommit={(max) => setRange(key, { max })} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
+          <OptionalNumberInput value={limits[key].min} onCommit={(min) => setRange(key, { min })} aria-label={`${LABELS[key]} min`} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
+          <OptionalNumberInput value={limits[key].max} onCommit={(max) => setRange(key, { max })} aria-label={`${LABELS[key]} max`} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
           <span className="w-20 pl-2 text-xs text-muted">{LIMIT_UNITS[key]}</span>
         </label>
       ))}

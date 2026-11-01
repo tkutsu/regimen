@@ -28,6 +28,7 @@ type Props = {
   onCommit: (value: number) => void;
   placeholder?: string;
   className?: string;
+  "aria-label"?: string;
 };
 
 export function NumberInput({ value, onCommit, placeholder, className = "" }: Props) {
@@ -35,8 +36,8 @@ export function NumberInput({ value, onCommit, placeholder, className = "" }: Pr
 }
 
 /** A number that may be left blank. */
-export function OptionalNumberInput({ value, onCommit, placeholder, className = "" }: Omit<Props, "onCommit"> & { onCommit: (value?: number) => void }) {
-  return <input {...useDraft(value, onCommit, true)} placeholder={placeholder} className={`bg-transparent outline-none ${className}`} />;
+export function OptionalNumberInput({ value, onCommit, placeholder, className = "", "aria-label": label }: Omit<Props, "onCommit"> & { onCommit: (value?: number) => void }) {
+  return <input {...useDraft(value, onCommit, true)} placeholder={placeholder} aria-label={label} className={`bg-transparent outline-none ${className}`} />;
 }
 
 export function NumberField({ label, ...props }: Props & { label: string }) {
