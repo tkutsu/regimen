@@ -18,6 +18,17 @@ describe("recipe values", () => {
     expect(recipeTotals({ ...recipe, totalG: 0 }, foods).cookedG).toBe(320);
   });
 
+  it("keeps sugar unknown until every contributing ingredient has a value", () => {
+    const known = new Map<string, Food>([...foods].map(([id, food]) => [id, { ...food, sugar: 2 }]));
+    expect(recipeAsFood(recipe, known).sugar).toBeCloseTo(1.3);
+    known.set("rice", { ...known.get("rice")!, sugar: undefined });
+    expect(recipeAsFood(recipe, known).sugar).toBeUndefined();
+    expect(recipeAsFood({ ...recipe, ingredients: recipe.ingredients.filter((i) => i.foodId !== "rice") }, known).sugar).toBeDefined();
+    expect(recipeAsFood({ ...recipe, ingredients: recipe.ingredients.map((i) => i.foodId === "rice" ? { ...i, amount: 0 } : i) }, known).sugar).toBeDefined();
+    known.delete("rice");
+    expect(recipeAsFood(recipe, known).sugar).toBeUndefined();
+  });
+
   it("uses the values written by hand while it has no ingredients", () => {
     const byHand: Recipe = { ...recipe, ingredients: [], values: { kcal: 245, prot: 12 }, note: "350 g a slice" };
     const food = recipeAsFood(byHand, foods);

@@ -111,10 +111,14 @@ export function missingStaples(state: State, date: string): Entry[] {
     .filter((entry) => !state.entries.has(entry.id) && !state.removed.has(entry.id));
 }
 
-/** Everything logged for the day, planned or done; `done` picks one of the two. A skipped plan is simply removed. */
-export function intake(state: State, date: string, done?: boolean): Nutrients {
+export type Intake = Nutrients & { sugarIncomplete: boolean };
+
+/** Logged totals and whether sugar is only a known subtotal; `done` picks eaten or planned. */
+export function intake(state: State, date: string, done?: boolean): Intake {
   const entries = entriesOn(state, date).filter((entry) => done === undefined || entry.done === done);
-  return sum(entries, allFoods(state));
+  const foods = allFoods(state);
+  const sugarIncomplete = entries.some((entry) => entry.amount * (entry.factor ?? 1) > 0 && foods.get(entry.foodId)?.sugar === undefined);
+  return { ...sum(entries, foods), sugarIncomplete };
 }
 
 /** What the entries add up to; one whose food is gone counts as nothing. */

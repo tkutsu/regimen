@@ -175,7 +175,7 @@ export function RecipeEditor(props: Props) {
                   {NUTRIENTS.slice(1).map((key) => (
                     <div key={key} className="flex justify-between">
                       <dt className="text-muted">{LABELS[key]}</dt>
-                      <dd>{(per100[key] ?? 0).toFixed(key === "salt" ? 2 : 1)}g</dd>
+                      <dd>{per100[key] === undefined ? "?" : `${per100[key].toFixed(key === "salt" ? 2 : 1)}g`}</dd>
                     </div>
                   ))}
                 </dl>

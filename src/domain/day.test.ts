@@ -38,6 +38,42 @@ describe("intake", () => {
     );
     expect(intake(s, "2026-10-31").kcal).toBeCloseTo(374 * 0.6 + 20);
   });
+
+  it("flags missing sugar in eaten and planned food separately, keeping the known subtotal", () => {
+    const s = state(
+      { type: "food.upsert", food: { ...oats, sugar: 2 } },
+      { type: "food.upsert", food: { ...omega3, sugar: undefined } },
+      { type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "oats", amount: 50, factor: 2, done: true } },
+      { type: "entry.upsert", entry: { id: "2", date: "2026-10-31", foodId: "omega3", amount: 1, done: false } },
+    );
+    expect(intake(s, "2026-10-31", true)).toMatchObject({ sugar: 2, sugarIncomplete: false });
+    expect(intake(s, "2026-10-31", false)).toMatchObject({ sugar: 0, sugarIncomplete: true });
+    expect(intake(s, "2026-10-31")).toMatchObject({ sugar: 2, sugarIncomplete: true });
+    expect(intake(s, "2026-10-30").sugarIncomplete).toBe(false);
+    s.foods.set("omega3", omega3);
+    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(false);
+  });
+
+  it("flags missing foods, but ignores zero amounts and zero factors", () => {
+    const s = state({ type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "gone", amount: 1, done: true } });
+    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(true);
+    s.entries.get("1")!.amount = 0;
+    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(false);
+    s.entries.get("1")!.amount = 1;
+    s.entries.get("1")!.factor = 0;
+    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(false);
+  });
+
+  it("flags a recipe whose ingredients lack sugar", () => {
+    const s = state(
+      { type: "food.upsert", food: { ...oats, sugar: undefined } },
+      { type: "recipe.upsert", recipe: { id: "r", name: "porridge", ingredients: [{ foodId: "oats", amount: 60 }], totalG: 200, containerG: 0 } },
+      { type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "r", amount: 100, done: true } },
+    );
+    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(true);
+    s.foods.set("oats", { ...oats, sugar: 2 });
+    expect(intake(s, "2026-10-31")).toMatchObject({ sugar: 0.6, sugarIncomplete: false });
+  });
 });
 
 describe("recipeAsFood", () => {

@@ -26,7 +26,7 @@ export function add(a: Nutrients, b: Nutrients): Nutrients {
 
 /**
  * Nutrients in an amount of food: grams for "100g" foods, a count for "item" foods.
- * A nutrient the food was saved without (sugar, before it was tracked) counts as 0.
+ * Missing values contribute nothing to the known subtotal; callers must flag incomplete totals.
  */
 export function scale(food: Food, amount: number, variantFactor = 1): Nutrients {
   const factor = (food.basis === "item" ? amount : amount / 100) * variantFactor;
@@ -58,7 +58,9 @@ function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
   const { total, cookedG } = recipeTotals(recipe, foods);
   const per100 = zero();
   for (const key of NUTRIENTS) per100[key] = cookedG ? (total[key] / cookedG) * 100 : 0;
-  return per100;
+  const values: Values = per100;
+  if (!cookedG || recipe.ingredients.some(({ foodId, amount }) => amount > 0 && foods.get(foodId)?.sugar === undefined)) delete values.sugar;
+  return values;
 }
 
 /** A recipe as a per-100g food; old batches stop being favourites. */
