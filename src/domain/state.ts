@@ -10,16 +10,30 @@ export type State = {
   settings: Settings;
   /** Every maintenance change with the local date it was made, oldest first. */
   tdeeHistory: { date: string; tdee: number }[];
+  /** Deleted entries, so a staple removed from a day isn't planned there again. */
+  removed: Set<string>;
 };
 
 export const defaultSettings: Settings = {
   tdee: 2300,
   phaseOffsets: { bulk: 100, maintain: 0, cut: -600 },
-  proteinPerKg: 1.6,
   kcalPer1kSteps: 37,
-  sugarPct: 10,
+  limits: {
+    prot: { min: 1.6 },
+    fiber: { min: 15 },
+    satFat: { max: 7 },
+    unsatFat: { min: 25 },
+    salt: { max: 4.5 },
+    sugar: { max: 10 },
+  },
   containers: [],
+  staples: [],
+  theme: "system",
+  accentHue: 160,
 };
+
+/** Settings as written before limits had ranges. */
+type Legacy = { proteinPerKg?: number; sugarPct?: number };
 
 /**
  * Parses every device's log into one ordered list. Lines that fail to parse
@@ -51,6 +65,7 @@ export function fold(events: Event[]): State {
     recipes: new Map(),
     settings: defaultSettings,
     tdeeHistory: [],
+    removed: new Set(),
   };
   for (const event of events) apply(state, event);
   return state;
@@ -69,6 +84,7 @@ export function apply(state: State, event: Event): void {
       break;
     case "entry.delete":
       state.entries.delete(event.entryId);
+      state.removed.add(event.entryId);
       break;
     case "day.upsert":
       state.days.set(event.day.date, event.day);
@@ -82,11 +98,16 @@ export function apply(state: State, event: Event): void {
     case "recipe.delete":
       state.recipes.delete(event.recipeId);
       break;
-    case "settings":
-      state.settings = { ...state.settings, ...event.settings };
+    case "settings": {
+      const { proteinPerKg, sugarPct, ...patch } = event.settings as Partial<Settings> & Legacy;
+      const limits = { ...state.settings.limits, ...patch.limits };
+      if (proteinPerKg !== undefined) limits.prot = { ...limits.prot, min: proteinPerKg };
+      if (sugarPct !== undefined) limits.sugar = { ...limits.sugar, max: sugarPct };
+      state.settings = { ...state.settings, ...patch, limits };
       if (event.settings.tdee !== undefined)
         state.tdeeHistory.push({ date: localDate(new Date(event.t)), tdee: event.settings.tdee });
       break;
+    }
   }
 }
 

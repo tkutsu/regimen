@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { fold, parseLogs, stamp } from "./state";
-import type { Food } from "./types";
+import type { Food, Settings } from "./types";
 
 const oats: Food = {
   id: "oats",
@@ -52,7 +52,15 @@ describe("fold", () => {
   it("merges partial settings over the defaults", () => {
     const state = fold([stamp({ type: "settings", settings: { tdee: 2100 } }, "desktop")]);
     expect(state.settings.tdee).toBe(2100);
-    expect(state.settings.proteinPerKg).toBe(1.6);
+    expect(state.settings.limits.prot).toEqual({ min: 1.6 });
+  });
+
+  it("reads protein and sugar settings written before limits had ranges", () => {
+    const legacy = { proteinPerKg: 2, sugarPct: 8 } as Partial<Settings>;
+    const state = fold([stamp({ type: "settings", settings: legacy }, "desktop")]);
+    expect(state.settings.limits.prot).toEqual({ min: 2 });
+    expect(state.settings.limits.sugar).toEqual({ max: 8 });
+    expect(state.settings.limits.salt).toEqual({ max: 4.5 });
   });
 
   it("removes deleted entities", () => {

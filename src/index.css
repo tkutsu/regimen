@@ -1,28 +1,34 @@
 @import "tailwindcss";
 
+/*
+ * Each colour holds its light and dark value; `color-scheme` picks one. It follows the
+ * system unless Settings fixes it (data-theme), and native controls such as dropdowns
+ * follow it too. The accent's hue is set in Settings (--accent-hue).
+ */
 @theme {
-  --color-bg: oklch(0.985 0.004 90);
-  --color-surface: oklch(1 0 0);
-  --color-line: oklch(0.91 0.006 90);
-  --color-fg: oklch(0.24 0.01 90);
-  --color-muted: oklch(0.56 0.01 90);
-  --color-accent: oklch(0.55 0.11 160);
-  --color-good: oklch(0.58 0.12 155);
-  --color-bad: oklch(0.57 0.17 28);
+  --color-bg: light-dark(oklch(0.985 0.004 90), oklch(0.17 0.008 90));
+  --color-surface: light-dark(oklch(1 0 0), oklch(0.21 0.008 90));
+  --color-line: light-dark(oklch(0.91 0.006 90), oklch(0.3 0.008 90));
+  --color-fg: light-dark(oklch(0.24 0.01 90), oklch(0.93 0.008 90));
+  --color-muted: light-dark(oklch(0.56 0.01 90), oklch(0.66 0.01 90));
+  --color-accent: light-dark(oklch(0.55 0.11 var(--accent-hue)), oklch(0.72 0.11 var(--accent-hue)));
+  --color-good: light-dark(oklch(0.58 0.12 155), oklch(0.74 0.12 155));
+  --color-bad: light-dark(oklch(0.57 0.17 28), oklch(0.7 0.15 28));
+  --color-cut: light-dark(oklch(0.6 0.12 250), oklch(0.68 0.11 250));
+  --color-maintain: light-dark(oklch(0.62 0.03 90), oklch(0.66 0.03 90));
+  --color-bulk: light-dark(oklch(0.68 0.13 65), oklch(0.74 0.12 65));
   --font-sans: system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: oklch(0.17 0.008 90);
-    --color-surface: oklch(0.21 0.008 90);
-    --color-line: oklch(0.3 0.008 90);
-    --color-fg: oklch(0.93 0.008 90);
-    --color-muted: oklch(0.66 0.01 90);
-    --color-accent: oklch(0.72 0.11 160);
-    --color-good: oklch(0.74 0.12 155);
-    --color-bad: oklch(0.7 0.15 28);
-  }
+:root {
+  --accent-hue: 160;
+  color-scheme: light dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
@@ -30,6 +36,11 @@ body {
   color: var(--color-fg);
   font-variant-numeric: tabular-nums;
   -webkit-tap-highlight-color: transparent;
+}
+
+option {
+  background: var(--color-surface);
+  color: var(--color-fg);
 }
 
 /* Edge to edge on Android: keep scrolled content from showing behind the status bar. */
@@ -40,4 +51,32 @@ body::before {
   z-index: 50;
   height: env(safe-area-inset-top);
   background: var(--color-bg);
+}
+
+/* The accent picker: a track through every hue at the accent's lightness. */
+.hue {
+  appearance: none;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right in oklch longer hue,
+    light-dark(oklch(0.55 0.11 0), oklch(0.72 0.11 0)),
+    light-dark(oklch(0.55 0.11 359.9), oklch(0.72 0.11 359.9))
+  );
+}
+.hue::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: var(--color-accent);
+  border: 3px solid var(--color-surface);
+  box-shadow: 0 0 0 1px var(--color-line);
+}
+.hue::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: var(--color-accent);
+  border: 3px solid var(--color-surface);
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { dayOf, intake, shiftDate, targets, trendWeight } from "./day";
+import { dayOf, intake, missingStaples, shiftDate, targets, trendWeight } from "./day";
 import { recipeAsFood } from "./nutrition";
-import { fold, stamp } from "./state";
+import { defaultSettings, fold, stamp } from "./state";
 import type { Change, Food } from "./types";
 
 const food = (id: string, basis: Food["basis"], kcal: number, prot = 0): Food => ({
@@ -79,7 +79,34 @@ describe("targets", () => {
       { type: "weight", date: "2026-10-31", kg: 70 },
     );
     expect(trendWeight(s, "2026-10-31")).toBe(69);
-    expect(targets(s, "2026-10-31").prot).toBeCloseTo(69 * 1.6);
+    expect(targets(s, "2026-10-31").prot.min).toBeCloseTo(69 * 1.6);
+  });
+
+  it("turns shares of kcal into grams and keeps unset bounds unset", () => {
+    const s = state(
+      { type: "day.upsert", day: { date: "2026-10-31", phase: "maintain", steps: 0, extraKcal: 0, offset: 0 } },
+      { type: "settings", settings: { tdee: 1800, limits: { ...defaultSettings.limits, satFat: { min: 5, max: 10 } } } },
+    );
+    expect(targets(s, "2026-10-31").satFat).toEqual({ min: 10, max: 20 });
+    expect(targets(s, "2026-10-31").salt).toEqual({ min: undefined, max: 4.5 });
+  });
+});
+
+describe("missingStaples", () => {
+  const staple = { id: "s1", foodId: "oats", amount: 60, from: "2026-10-30" };
+  const settings: Change = { type: "settings", settings: { staples: [staple] } };
+
+  it("plans staples from the day they were added", () => {
+    const s = state(settings);
+    expect(missingStaples(s, "2026-10-29")).toEqual([]);
+    expect(missingStaples(s, "2026-10-31")).toMatchObject([{ id: "s1@2026-10-31", foodId: "oats", amount: 60, done: false, staple: "s1" }]);
+  });
+
+  it("leaves out staples already planned or removed from the day", () => {
+    const s = state(settings, { type: "entry.delete", entryId: "s1@2026-10-31" });
+    expect(missingStaples(s, "2026-10-31")).toEqual([]);
+    s.entries.set("s1@2026-11-01", { ...missingStaples(s, "2026-11-01")[0] });
+    expect(missingStaples(s, "2026-11-01")).toEqual([]);
   });
 });
 

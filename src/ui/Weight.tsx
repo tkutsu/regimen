@@ -1,23 +1,32 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
-import type { Change } from "../domain/types";
-import { daysBetween, stretches, weightSeries, type Stretch } from "../domain/weight";
+import type { Change, Phase } from "../domain/types";
+import { daysBetween, phaseRuns, stretches, weightSeries, type Stretch } from "../domain/weight";
+import { useRemembered } from "./look";
 
 type Props = { state: State; commit: (...changes: Change[]) => void };
 type Point = ReturnType<typeof weightSeries>[number];
 
 const RANGES = { "1M": 31, "3M": 92, All: Infinity };
+const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
+/** Days the average line spans. */
+const AVERAGES = [3, 7, 14];
+const PHASES: Phase[] = ["cut", "maintain", "bulk"];
+const PHASE_FILL: Record<Phase, string> = { cut: "fill-cut", maintain: "fill-maintain", bulk: "fill-bulk" };
+const PHASE_BG: Record<Phase, string> = { cut: "bg-cut", maintain: "bg-maintain", bulk: "bg-bulk" };
 
 const short = (date: string, weekday = false) =>
   new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", ...(weekday && { weekday: "short" }) });
 
 export function Weight({ state, commit }: Props) {
   const today = localDate();
-  const [range, setRange] = useState<keyof typeof RANGES>("3M");
-  const series = useMemo(() => weightSeries(state), [state]);
+  const [range, setRange] = useRemembered<keyof typeof RANGES>("weight.range", "3M", RANGE_NAMES);
+  const [days, setDays] = useRemembered("weight.average", 7, AVERAGES);
+  const series = useMemo(() => weightSeries(state, days), [state, days]);
   const phases = useMemo(() => stretches(state, today), [state, today]);
   const shown = series.filter((p) => daysBetween(p.date, today) < RANGES[range]);
+  const bands = shown.length ? phaseRuns(state, shown[0].date, shown.at(-1)!.date) : [];
 
   const latest = series.at(-1);
   const weekAgo = series.findLast((p) => p.date <= shiftDate(today, -7));
@@ -34,23 +43,20 @@ export function Weight({ state, commit }: Props) {
             <span className="text-lg font-normal text-muted"> kg</span>
           </span>
           <span className="text-sm text-muted">
-            7-day average
+            {days}-day average
             {change !== undefined &&
               (Math.abs(change) < 0.05 ? " · steady this week" : ` · ${change > 0 ? "+" : ""}${change.toFixed(1)} this week`)}
           </span>
         </div>
-        <div className="mt-4 flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
-          {(Object.keys(RANGES) as (keyof typeof RANGES)[]).map((name) => (
-            <button
-              key={name}
-              onClick={() => setRange(name)}
-              className={`flex-1 rounded-lg py-1 ${range === name ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
-            >
-              {name}
-            </button>
-          ))}
+        <div className="mt-4 flex gap-2 text-sm">
+          <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
+          <Segmented options={AVERAGES} value={days} onChange={setDays} label={(n) => `${n}d`} className="flex-[2]" />
         </div>
-        {shown.length > 1 ? <Chart points={shown} /> : <p className="py-6 text-center text-sm text-muted">Not enough weigh-ins in this range.</p>}
+        {shown.length > 1 ? (
+          <Chart points={shown} bands={bands} days={days} />
+        ) : (
+          <p className="py-6 text-center text-sm text-muted">Not enough weigh-ins in this range.</p>
+        )}
       </section>
 
       <Maintenance phases={phases} tdee={state.settings.tdee} onUse={(tdee) => commit({ type: "settings", settings: { tdee } })} />
@@ -62,7 +68,7 @@ export function Weight({ state, commit }: Props) {
             <tr>
               <th className="px-4 py-2 text-left font-normal">date</th>
               <th className="px-4 py-2 text-right font-normal">weight</th>
-              <th className="px-4 py-2 text-right font-normal">7-day avg</th>
+              <th className="px-4 py-2 text-right font-normal">{days}-day avg</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line border-t border-line">
@@ -79,6 +85,24 @@ export function Weight({ state, commit }: Props) {
           </tbody>
         </table>
       </section>
+    </div>
+  );
+}
+
+type SegmentedProps<T> = { options: readonly T[]; value: T; onChange: (value: T) => void; label: (value: T) => string; className?: string };
+
+function Segmented<T extends string | number>({ options, value, onChange, label, className = "" }: SegmentedProps<T>) {
+  return (
+    <div className={`flex gap-1 rounded-xl bg-line/50 p-1 ${className}`}>
+      {options.map((option) => (
+        <button
+          key={option}
+          onClick={() => onChange(option)}
+          className={`flex-1 rounded-lg py-1 ${value === option ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+        >
+          {label(option)}
+        </button>
+      ))}
     </div>
   );
 }
@@ -151,8 +175,10 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
 const H = 180;
 const PAD = { top: 12, right: 8, bottom: 22, left: 34 };
 
-/** Daily weigh-ins as dots, the 7-day average as a line; hover or touch reads a day. */
-function Chart({ points }: { points: Point[] }) {
+type Band = { phase: Phase; from: string; to: string };
+
+/** Daily weigh-ins as dots, the average as a line, each day's phase as a band behind; hover or touch reads a day. */
+function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: number }) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number>();
 
@@ -170,6 +196,9 @@ function Chart({ points }: { points: Point[] }) {
   const xTicks = [0, 1 / 3, 2 / 3, 1].map((f) => points[Math.round(f * (points.length - 1))].date);
   const line = points.map((p, i) => `${i ? "L" : "M"}${x(p.date).toFixed(1)},${y(p.avg).toFixed(1)}`).join("");
   const read = points[hover ?? points.length - 1];
+  const readPhase = bands.find((band) => band.from <= read.date && read.date <= band.to)?.phase;
+  const halfDay = innerW / span / 2;
+  const clampX = (px: number) => Math.min(Math.max(px, PAD.left), width - PAD.right);
 
   const onPointer = (e: React.PointerEvent<SVGSVGElement>) => {
     const px = e.clientX - e.currentTarget.getBoundingClientRect().left;
@@ -181,7 +210,10 @@ function Chart({ points }: { points: Point[] }) {
   return (
     <div ref={ref} className="mt-3">
       <p className="mb-1 flex justify-between text-sm">
-        <span className="text-muted">{short(read.date, true)}</span>
+        <span className="text-muted">
+          {short(read.date, true)}
+          {readPhase && ` · ${readPhase}`}
+        </span>
         <span>
           <span className="font-medium">{read.kg.toFixed(1)} kg</span>
           <span className="text-muted"> · avg {read.avg.toFixed(1)}</span>
@@ -189,6 +221,20 @@ function Chart({ points }: { points: Point[] }) {
       </p>
       {width > 0 && (
         <svg width={width} height={H} onPointerMove={onPointer} onPointerDown={onPointer} onPointerLeave={() => setHover(undefined)} className="touch-pan-y select-none">
+          {bands.map((band) => {
+            const x1 = clampX(x(band.from) - halfDay);
+            return (
+              <rect
+                key={band.from}
+                x={x1}
+                width={clampX(x(band.to) + halfDay) - x1}
+                y={PAD.top}
+                height={H - PAD.top - PAD.bottom}
+                className={PHASE_FILL[band.phase]}
+                opacity={0.14}
+              />
+            );
+          })}
           {yTicks.map((v) => (
             <g key={v}>
               <line x1={PAD.left} x2={width - PAD.right} y1={y(v)} y2={y(v)} className="stroke-line" strokeWidth={1} />
@@ -210,13 +256,18 @@ function Chart({ points }: { points: Point[] }) {
           <circle cx={x(read.date)} cy={y(read.avg)} r={4} className="fill-accent stroke-surface" strokeWidth={2} />
         </svg>
       )}
-      <div className="mt-1 flex gap-4 text-xs text-muted">
+      <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
         <span className="flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-muted opacity-60" /> daily weigh-in
+          <span className="size-1.5 rounded-full bg-muted opacity-60" /> weigh-in
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-0.5 w-3 rounded-full bg-accent" /> 7-day average
+          <span className="h-0.5 w-3 rounded-full bg-accent" /> {days}-day average
         </span>
+        {PHASES.filter((phase) => bands.some((band) => band.phase === phase)).map((phase) => (
+          <span key={phase} className="flex items-center gap-1.5">
+            <span className={`size-2.5 rounded-sm opacity-40 ${PHASE_BG[phase]}`} /> {phase}
+          </span>
+        ))}
       </div>
     </div>
   );
