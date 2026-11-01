@@ -1,5 +1,5 @@
 import { localDate } from "./day";
-import type { Change, Day, Entry, Event, Food, Recipe, Settings } from "./types";
+import type { Change, Day, Entry, Event, Exercise, Food, Recipe, Session, Settings, Workout } from "./types";
 
 export type State = {
   foods: Map<string, Food>;
@@ -7,6 +7,9 @@ export type State = {
   days: Map<string, Day>;
   weights: Map<string, number>;
   recipes: Map<string, Recipe>;
+  exercises: Map<string, Exercise>;
+  workouts: Map<string, Workout>;
+  sessions: Map<string, Session>;
   settings: Settings;
   /** Every maintenance change with the local date it was made, oldest first. */
   tdeeHistory: { date: string; tdee: number }[];
@@ -63,6 +66,9 @@ export function fold(events: Event[]): State {
     days: new Map(),
     weights: new Map(),
     recipes: new Map(),
+    exercises: new Map(),
+    workouts: new Map(),
+    sessions: new Map(),
     settings: defaultSettings,
     tdeeHistory: [],
     removed: new Set(),
@@ -97,6 +103,24 @@ export function apply(state: State, event: Event): void {
       break;
     case "recipe.delete":
       state.recipes.delete(event.recipeId);
+      break;
+    case "exercise.upsert":
+      state.exercises.set(event.exercise.id, event.exercise);
+      break;
+    case "exercise.delete":
+      state.exercises.delete(event.exerciseId);
+      break;
+    case "workout.upsert":
+      state.workouts.set(event.workout.id, event.workout);
+      break;
+    case "workout.delete":
+      state.workouts.delete(event.workoutId);
+      break;
+    case "session.upsert":
+      state.sessions.set(event.session.id, event.session);
+      break;
+    case "session.delete":
+      state.sessions.delete(event.sessionId);
       break;
     case "settings": {
       const { proteinPerKg, sugarPct, ...patch } = event.settings as Partial<Settings> & Legacy;
