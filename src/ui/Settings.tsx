@@ -137,9 +137,12 @@ function Staples({ state, commit }: { state: State; commit: (...changes: Change[
 function Containers({ containers, set }: { containers: Container[]; set: Set }) {
   const [name, setName] = useState("");
   const [grams, setGrams] = useState("");
+  // While a row is dragged, the order shown; saved once on release.
+  const [drag, setDrag] = useState<{ id: string; order: Container[] }>();
   const weight = Number(grams.replace(",", "."));
   const valid = name.trim() !== "" && weight > 0;
   const edit = (id: string, patch: Partial<Container>) => set({ containers: containers.map((c) => (c.id === id ? { ...c, ...patch } : c)) });
+  const shown = drag?.order ?? containers;
 
   const add = () => {
     if (!valid) return;
@@ -147,11 +150,41 @@ function Containers({ containers, set }: { containers: Container[]; set: Set }) 
     setName("");
     setGrams("");
   };
+  const drop = () => {
+    if (drag && drag.order.some((c, i) => c.id !== containers[i].id)) set({ containers: drag.order });
+    setDrag(undefined);
+  };
+  const step = (i: number, by: number) => {
+    const to = i + by;
+    if (to < 0 || to >= containers.length) return;
+    const next = [...containers];
+    [next[i], next[to]] = [next[to], next[i]];
+    set({ containers: next });
+  };
 
   return (
     <Section title="Containers">
-      {containers.map((c) => (
-        <div key={c.id} className="flex items-center gap-2 px-4 py-2">
+      {shown.map((c, i) => (
+        <div key={c.id} data-container={c.id} className={`flex items-center gap-2 py-2 pr-4 pl-2 ${drag?.id === c.id ? "bg-line/40" : ""}`}>
+          <button
+            aria-label={`Move ${c.name}`}
+            title="Drag to reorder (Alt+↑/↓)"
+            onPointerDown={(e) => {
+              e.currentTarget.setPointerCapture(e.pointerId);
+              setDrag({ id: c.id, order: containers });
+            }}
+            onPointerMove={(e) => drag && setDrag({ ...drag, order: dropAt(drag.order, drag.id, e.clientY) })}
+            onPointerUp={drop}
+            onPointerCancel={() => setDrag(undefined)}
+            onKeyDown={(e) => {
+              if (!e.altKey || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+              e.preventDefault();
+              step(i, e.key === "ArrowUp" ? -1 : 1);
+            }}
+            className="flex h-8 w-6 shrink-0 cursor-grab touch-none items-center justify-center text-muted/70 active:cursor-grabbing"
+          >
+            <Grip />
+          </button>
           <TextInput value={c.name} onCommit={(name) => edit(c.id, { name })} className="min-w-0 flex-1" />
           <NumberInput value={c.grams} onCommit={(grams) => grams > 0 && edit(c.id, { grams })} className="w-16 text-right" />
           <span className="w-4 text-sm text-muted">g</span>
@@ -159,13 +192,14 @@ function Containers({ containers, set }: { containers: Container[]; set: Set }) 
         </div>
       ))}
       <div className="flex items-center gap-2 px-4 py-2">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="name" className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted/60" />
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="name" aria-label="New container name" className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted/60" />
         <input
           value={grams}
           inputMode="decimal"
           onChange={(e) => setGrams(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && add()}
           placeholder="grams"
+          aria-label="New container grams"
           className="w-16 bg-transparent text-right outline-none placeholder:text-muted/60"
         />
         <button disabled={!valid} onClick={add} className="w-10 text-right text-accent disabled:opacity-40">
@@ -173,6 +207,25 @@ function Containers({ containers, set }: { containers: Container[]; set: Set }) 
         </button>
       </div>
     </Section>
+  );
+}
+
+/** `order` with `id` moved to where the pointer is, among the other rows on screen. */
+function dropAt(order: Container[], id: string, y: number) {
+  const rows = [...document.querySelectorAll<HTMLElement>("[data-container]")].filter((row) => row.dataset.container !== id);
+  const at = rows.filter((row) => {
+    const r = row.getBoundingClientRect();
+    return r.top + r.height / 2 < y;
+  }).length;
+  const rest = order.filter((c) => c.id !== id);
+  return [...rest.slice(0, at), order.find((c) => c.id === id)!, ...rest.slice(at)];
+}
+
+function Grip() {
+  return (
+    <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor" aria-hidden>
+      {[2, 8, 14].flatMap((y) => [<circle key={`a${y}`} cx="2.5" cy={y} r="1.5" />, <circle key={`b${y}`} cx="7.5" cy={y} r="1.5" />])}
+    </svg>
   );
 }
 

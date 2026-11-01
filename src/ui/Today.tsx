@@ -145,7 +145,7 @@ function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChan
       <div className={`flex items-center gap-3 px-3 py-2 ${entry.done ? "" : "text-muted"}`}>
         <button
           onClick={() => onChange({ ...entry, done: !entry.done })}
-          aria-label={entry.done ? "Mark planned" : "Mark eaten"}
+          aria-label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`}
           className={`size-5 shrink-0 rounded-full border-2 ${entry.done ? "border-accent bg-accent" : "border-line"}`}
         />
         <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left">
@@ -159,7 +159,7 @@ function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChan
           </span>
         </button>
         <span className="w-12 text-right text-sm text-muted">{Math.round(kcal)}</span>
-        <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label="Remove" className="px-1 text-muted">
+        <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label={`Remove ${food?.name ?? "food"}`} className="px-1 text-muted">
           ×
         </button>
       </div>
