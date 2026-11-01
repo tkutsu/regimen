@@ -3,6 +3,7 @@ import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
 import type { Change, Phase } from "../domain/types";
 import { daysBetween, phaseRuns, stretches, weightSeries, type Stretch } from "../domain/weight";
+import { NumberInput } from "./fields";
 import { useRemembered } from "./look";
 
 type Props = { state: State; commit: (...changes: Change[]) => void };
@@ -12,6 +13,9 @@ const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
 /** Days the average line spans. */
 const AVERAGES = [3, 7, 14];
+/** Weigh-ins listed under Recent, and how many more each Show more adds. */
+const RECENT = 14;
+const MORE = 30;
 const PHASES: Phase[] = ["cut", "maintain", "bulk"];
 const PHASE_FILL: Record<Phase, string> = { cut: "fill-cut", maintain: "fill-maintain", bulk: "fill-bulk" };
 const PHASE_BG: Record<Phase, string> = { cut: "bg-cut", maintain: "bg-maintain", bulk: "bg-bulk" };
@@ -23,6 +27,7 @@ export function Weight({ state, commit }: Props) {
   const today = localDate();
   const [range, setRange] = useRemembered<keyof typeof RANGES>("weight.range", "3M", RANGE_NAMES);
   const [days, setDays] = useRemembered("weight.average", 7, AVERAGES);
+  const [listed, setListed] = useState(RECENT);
   const series = useMemo(() => weightSeries(state, days), [state, days]);
   const phases = useMemo(() => stretches(state, today), [state, today]);
   const shown = series.filter((p) => daysBetween(p.date, today) < RANGES[range]);
@@ -73,17 +78,30 @@ export function Weight({ state, commit }: Props) {
           </thead>
           <tbody className="divide-y divide-line border-t border-line">
             {series
-              .slice(-14)
+              .slice(-listed)
               .reverse()
               .map((p) => (
                 <tr key={p.date}>
                   <td className="px-4 py-2">{short(p.date, true)}</td>
-                  <td className="px-4 py-2 text-right">{p.kg.toFixed(1)}</td>
+                  <td className="px-4 py-2 text-right">
+                    <NumberInput
+                      value={p.kg}
+                      onCommit={(kg) => kg > 0 && commit({ type: "weight", date: p.date, kg })}
+                      format={(kg) => kg.toFixed(1)}
+                      aria-label={`weight on ${short(p.date)}`}
+                      className="w-14 text-right"
+                    />
+                  </td>
                   <td className="px-4 py-2 text-right text-muted">{p.avg.toFixed(1)}</td>
                 </tr>
               ))}
           </tbody>
         </table>
+        {series.length > listed && (
+          <button onClick={() => setListed(listed + MORE)} className="mt-2 w-full rounded-xl border border-line py-2.5 text-sm text-accent">
+            Show more
+          </button>
+        )}
       </section>
     </div>
   );
