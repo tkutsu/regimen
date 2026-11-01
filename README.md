@@ -1,12 +1,36 @@
 # regimen
 
-Offline calorie and weigh-in tracker for Linux and Android, synced with Syncthing.
+An offline calorie and weigh-in tracker for Linux and Android. There is no
+server and no account: each device writes its own log into a folder that
+Syncthing keeps in sync, and every device reads all the logs.
+
+- Today: log what you eat and see what's left of the day's calories and nutrients.
+- Foods: your own foods with groups, variants and containers, plus bundled
+  reference foods you can search offline.
+- Recipes: weigh the cooked pot to get values per 100 g, and start a new batch
+  when you cook it again.
+- Weight: a weigh-in chart and an estimate of maintenance calories for each
+  cut or bulk phase.
+
+Built with Tauri 2, React and Tailwind.
+
+## Run and build
 
 ```
 pnpm install
 pnpm tauri dev
 pnpm test
 ```
+
+To install the desktop app for the current user (binary in `~/.local/bin`,
+plus a launcher entry):
+
+```
+scripts/install-linux.sh
+```
+
+For Android, `pnpm tauri android build --apk` with `ANDROID_HOME` and
+`NDK_HOME` set. On first run, pick the synced folder and a name for the device.
 
 ## Reference foods
 
