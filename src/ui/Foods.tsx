@@ -145,9 +145,9 @@ function FoodRow({ food, onPick }: { food: Food; onPick: () => void }) {
           ?
         </span>
       )}
-      <span className="w-20 shrink-0 text-right text-sm text-muted">
+      <span className="shrink-0 text-right text-sm text-muted">
         {Math.round(food.kcal)}
-        <span className="text-xs"> /{food.basis === "item" ? "item" : "100g"}</span>
+        <span className="text-xs"> kcal/{food.basis === "item" ? "item" : "100g"}</span>
       </span>
     </button>
   );

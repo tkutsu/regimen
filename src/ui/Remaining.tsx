@@ -16,7 +16,7 @@ export function Remaining({ target, eaten, planned }: Props) {
       <div className="flex items-baseline justify-between">
         <span className={`text-4xl font-semibold ${left < 0 ? "text-bad" : ""}`}>{Math.round(left)}</span>
         <span className="text-sm text-muted">
-          kcal left · {Math.round(total)} / {Math.round(target.kcal)}
+          {Math.round(total)} / {Math.round(target.kcal)}kcal
         </span>
       </div>
       <Bar eaten={eaten.kcal} planned={planned.kcal} range={{ max: target.kcal }} />
@@ -50,7 +50,7 @@ function Macro({ name, range, eaten, planned }: { name: Limited; range: Range; e
         <span>{LABELS[name]}</span>
         <span>
           {total.toFixed(DIGITS[name])}
-          {bounds.length > 0 && `/${bounds.join("–")}`}g
+          {bounds.length > 0 && ` / ${bounds.join("–")}`}g
         </span>
       </dt>
       <dd className={`text-sm font-medium ${tone}`}>{text}</dd>

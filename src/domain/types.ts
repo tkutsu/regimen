@@ -52,8 +52,8 @@ export type Staple = { id: string; foodId: string; amount: number; variant?: str
 export type Limited = Exclude<keyof Nutrients, "kcal">;
 
 /**
- * Either bound may be left out. Units: protein g per kg of trend weight, fiber g per
- * 1000 kcal, fats and sugar % of kcal, salt g.
+ * Either bound may be left out. Units: protein g per kg of trend weight, fiber and salt g,
+ * fats and sugar % of kcal.
  */
 export type Range = { min?: number; max?: number };
 
