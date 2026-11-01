@@ -19,7 +19,7 @@ fn config_path(app: &AppHandle) -> Result<PathBuf, String> {
 
 fn default_config(app: &AppHandle) -> Config {
     if cfg!(target_os = "android") {
-        Config { dir: "/storage/emulated/0/Sync/regimen".into(), device: "phone".into() }
+        Config { dir: "/storage/emulated/0/_Files/_shared/regimen".into(), device: "phone".into() }
     } else {
         let home = app.path().home_dir().unwrap_or_default();
         Config { dir: home.join("_shared/mobile/regimen"), device: "desktop".into() }
