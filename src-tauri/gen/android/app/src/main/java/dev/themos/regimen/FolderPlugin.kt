@@ -80,6 +80,13 @@ class FolderPlugin(private val activity: Activity) : Plugin(activity) {
     null
   }
 
+  @Command
+  fun remove(invoke: Invoke) = background(invoke) { tree, args ->
+    val file = folder(tree, args.sub)?.let { children(tree, it) }?.find { it.name == args.name }
+    file?.let { DocumentsContract.deleteDocument(resolver, uri(tree, it.id)) }
+    null
+  }
+
   /** Parses the args, does the work on the IO thread, and answers with its result. */
   private fun background(invoke: Invoke, work: (Uri, FolderArgs) -> Any?) {
     val args = invoke.parseArgs(FolderArgs::class.java)

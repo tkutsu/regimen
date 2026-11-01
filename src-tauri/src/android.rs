@@ -44,6 +44,10 @@ pub async fn write(app: &AppHandle, dir: &str, sub: &str, name: &str, text: &str
     call(app, "write", json!({ "dir": dir, "sub": sub, "name": name, "text": text, "append": append })).await
 }
 
+pub async fn remove(app: &AppHandle, dir: &str, sub: &str, name: &str) -> Result<(), String> {
+    call(app, "remove", json!({ "dir": dir, "sub": sub, "name": name })).await
+}
+
 /// A picked folder can't see its parents, so whether Syncthing shares it is unknown.
 pub fn synced(_: &str) -> Option<bool> {
     None

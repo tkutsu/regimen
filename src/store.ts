@@ -62,14 +62,15 @@ export function useRegimen() {
     [config, state],
   );
 
-  /** Switching folders reads everything again from the new one. */
+  /** Switching folders reads everything again from the new one. A new name takes this device's log with it. */
   const saveConfig = useCallback(
-    async (config: Config) => {
-      await invoke("save_config", { config });
+    async (next: Config) => {
+      if (config && config.device !== next.device) await invoke("rename_device", { dir: next.dir, from: config.device, to: next.device });
+      await invoke("save_config", { config: next });
       setState(undefined);
       await reload();
     },
-    [reload],
+    [config, reload],
   );
 
   return { config, state, peers, error, reload, commit, saveConfig };
