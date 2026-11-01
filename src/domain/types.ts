@@ -103,8 +103,11 @@ export type Exercise = { id: string; name: string; measure: Measure };
 /** What one set records; the exercise's measure says which fields count. */
 export type Amount = { reps?: number; kg?: number; secs?: number; km?: number };
 
-/** One planned line of a workout: 3 sets of 8 @ 60 kg. */
-export type Target = Amount & { exerciseId: string; sets: number };
+/**
+ * One planned line of a workout: 3 sets of 8 @ 60 kg. A linked line is in a superset with the
+ * line above: the two are done back to back, with no rest between.
+ */
+export type Target = Amount & { exerciseId: string; sets: number; linked?: true };
 
 /** A template, started whenever you like. */
 export type Workout = { id: string; name: string; targets: Target[]; note?: string };
@@ -123,6 +126,8 @@ export type Session = {
   name: string;
   /** In order; an exercise's sets are shown together, where its first one is. */
   sets: SetLog[];
+  /** Exercises in a superset with the exercise shown above them, as their workout lines were. */
+  linked?: string[];
   finished?: boolean;
   note?: string;
 };

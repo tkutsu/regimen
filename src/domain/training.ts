@@ -48,7 +48,11 @@ export function startSession(workout: Workout, sessions: Session[], date: string
       done: false,
     }));
   });
-  return { id, date, workoutId: workout.id, name: workout.name, sets };
+  // The session shows an exercise where it first appears, so only that line's link counts.
+  const firsts = workout.targets.filter((target, i) => workout.targets.findIndex((t) => t.exerciseId === target.exerciseId) === i);
+  const linked = firsts.slice(1).filter((target) => target.linked).map((target) => target.exerciseId);
+  const session: Session = { id, date, workoutId: workout.id, name: workout.name, sets };
+  return linked.length ? { ...session, linked } : session;
 }
 
 /** An exercise added to a session mid-way: last time's sets, or one blank set. */
@@ -69,6 +73,17 @@ export function byExercise(sets: SetLog[]): { exerciseId: string; at: number[] }
   const groups = new Map<string, number[]>();
   sets.forEach((set, i) => groups.set(set.exerciseId, [...(groups.get(set.exerciseId) ?? []), i]));
   return [...groups].map(([exerciseId, at]) => ({ exerciseId, at }));
+}
+
+/** byExercise's groups, each linked one put with the group above it: a block of more than one is a superset. */
+export function supersets(sets: SetLog[], linked: string[] = []): { exerciseId: string; at: number[] }[][] {
+  const blocks: { exerciseId: string; at: number[] }[][] = [];
+  for (const group of byExercise(sets)) {
+    const above = blocks.at(-1);
+    if (above && linked.includes(group.exerciseId)) above.push(group);
+    else blocks.push([group]);
+  }
+  return blocks;
 }
 
 /** The session with the sets not done dropped; undefined when none were, as there's nothing to keep. */

@@ -3,7 +3,7 @@
 /*
  * Each colour holds its light and dark value; `color-scheme` picks one. It follows the
  * system unless Settings fixes it (data-theme), and native controls such as dropdowns
- * follow it too. The accent's hue is set in Settings (--accent-hue).
+ * follow it too. The accent's hue is set in System (--accent-hue).
  */
 @theme {
   --color-bg: light-dark(oklch(0.985 0.004 90), oklch(0.17 0.008 90));
