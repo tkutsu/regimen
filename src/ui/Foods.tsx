@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { recipeAsFood, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
-import { searchFoods } from "../domain/search";
+import { recentFoodIds, searchFoods } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Food, Recipe } from "../domain/types";
 import { FoodEditor } from "./FoodEditor";
@@ -20,10 +20,11 @@ export function Foods({ state, commit }: Props) {
   const incomplete = useMemo(() => foods.filter((food) => unknownNutrients(food).length), [foods]);
   const groups = useMemo(() => [...new Set(foods.map((food) => food.group).filter(Boolean))].sort(), [foods]);
   const uses = useMemo(() => usage(state), [state]);
+  const recent = useMemo(() => recentFoodIds(state), [state]);
   const sections = useMemo((): [string, Food[]][] => {
     const shown = onlyUnknown ? incomplete : foods;
-    return query.trim() ? [["", searchFoods(shown, query, 200)]] : byGroup(shown);
-  }, [foods, incomplete, onlyUnknown, query]);
+    return query.trim() ? [["", searchFoods(shown, query, 200, recent)]] : byGroup(shown);
+  }, [foods, incomplete, onlyUnknown, query, recent]);
 
   const recipes = useMemo(
     () =>
@@ -115,6 +116,7 @@ export function Foods({ state, commit }: Props) {
           saved={state.recipes.has(cooking.recipe.id)}
           replaces={cooking.replaces}
           foods={state.foods}
+          recentIds={recent}
           containers={state.settings.containers}
           uses={uses.get(cooking.recipe.id) ?? 0}
           onSave={(recipe) => {

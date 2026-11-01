@@ -12,6 +12,8 @@ type Props = {
   /** This draft is the next batch of that recipe. */
   replaces?: Recipe;
   foods: Map<string, Food>;
+  /** Most recently used first. */
+  recentIds: string[];
   containers: Container[];
   /** Entries that ate this recipe. */
   uses: number;
@@ -25,7 +27,7 @@ type Props = {
  * Ingredients by raw weight; the weighed total minus its container gives the values per 100 g.
  * Without ingredients, the values are written by hand.
  */
-export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses, onSave, onNewBatch, onDelete, onClose }: Props) {
+export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, containers, uses, onSave, onNewBatch, onDelete, onClose }: Props) {
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [query, setQuery] = useState("");
   const [confirming, setConfirming] = useState(false);
@@ -42,7 +44,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, containers, uses,
   };
   const totals = recipeTotals(draft, foods);
   const per100 = recipeAsFood(draft, foods);
-  const matches = useMemo(() => searchFoods(foods.values(), query, 6), [foods, query]);
+  const matches = useMemo(() => searchFoods(foods.values(), query, 6, recentIds), [foods, query, recentIds]);
   const byHand = !form.ingredients.length;
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
 

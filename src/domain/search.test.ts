@@ -43,6 +43,27 @@ describe("searchFoods", () => {
     expect(names(searchFoods(foods, "oats"))[0]).toBe("overnight oats");
   });
 
+  it("forgives a typo from four letters on, two from seven", () => {
+    const foods = [food("Chicken breast, roasted"), food("Γιαούρτι 2%"), food("Rice, white")];
+    expect(names(searchFoods(foods, "chiken brest"))).toEqual(["Chicken breast, roasted"]);
+    expect(names(searchFoods(foods, "chcikne"))).toEqual(["Chicken breast, roasted"]);
+    expect(names(searchFoods(foods, "γιαουτρι"))).toEqual(["Γιαούρτι 2%"]);
+    expect(names(searchFoods(foods, "ruce"))).toEqual(["Rice, white"]);
+    expect(names(searchFoods(foods, "rcie"))).toEqual(["Rice, white"]);
+    expect(searchFoods(foods, "rce")).toEqual([]);
+    expect(searchFoods(foods, "chkn")).toEqual([]);
+  });
+
+  it("ranks exact matches over typos", () => {
+    const foods = [food("ricotta"), food("rice")];
+    expect(names(searchFoods(foods, "rice"))).toEqual(["rice", "ricotta"]);
+  });
+
+  it("ranks recently used foods first, the most recent highest", () => {
+    const foods = [food("egg"), food("eggplant"), food("egg noodles")];
+    expect(names(searchFoods(foods, "egg", 50, ["egg noodles", "eggplant"]))).toEqual(["egg noodles", "eggplant", "egg"]);
+  });
+
   it("returns nothing for an empty query", () => {
     expect(searchFoods([food("oats")], "  ")).toEqual([]);
   });
