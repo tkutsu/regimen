@@ -6,6 +6,7 @@ import { sourceOf, useReference } from "../reference";
 
 type Props = {
   foods: Map<string, Food>;
+  /** Most recently used first. */
   recentIds: string[];
   containers: Container[];
   onAdd: (food: Food, amount: number, done: boolean, variant?: Variant) => void;
@@ -15,8 +16,8 @@ type Props = {
 };
 
 /**
- * Favourites and recent foods until you type; then your foods, followed by the
- * bundled reference tables. A reference food is copied into your foods when added.
+ * Favourites and recent foods until you type; then your foods, recent ones first,
+ * followed by the bundled reference tables. A reference food is copied into your foods when added.
  */
 export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLabel }: Props) {
   const [query, setQuery] = useState("");
@@ -26,7 +27,10 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLa
   const sections = useMemo((): [string, Food[]][] => {
     if (!query.trim()) {
       const favs = [...foods.values()].filter((food) => food.fav).sort((a, b) => a.name.localeCompare(b.name));
-      const recent = recentIds.map((id) => foods.get(id)).filter((food): food is Food => !!food && !food.fav);
+      const recent = recentIds
+        .map((id) => foods.get(id))
+        .filter((food): food is Food => !!food && !food.fav)
+        .slice(0, 15);
       return [
         ["Favourites", favs],
         ["Recent", recent],
@@ -34,8 +38,8 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onClose, addLa
     }
     const unsaved = reference.filter((food) => !foods.has(food.id));
     return [
-      ["Your foods", searchFoods(foods.values(), query, 30)],
-      ["USDA & CIQUAL", searchFoods(unsaved, query, 40)],
+      ["Your foods", searchFoods(foods.values(), query, 30, recentIds)],
+      ["Reference foods", searchFoods(unsaved, query, 40)],
     ];
   }, [foods, recentIds, reference, query]);
 
