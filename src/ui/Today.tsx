@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
-import { allFoods, parseAmount, pickableFoods, scale } from "../domain/nutrition";
+import { allFoods, parseAmount, pickableFoods, toggleFav } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
@@ -107,6 +107,7 @@ export function Today({ state, commit }: Props) {
           recentIds={recentFoodIds(state)}
           containers={state.settings.containers}
           onAdd={add}
+          onToggleFav={(food) => commit(...toggleFav(state, food.id))}
           onClose={() => setPicking(false)}
         />
       )}
@@ -140,7 +141,6 @@ function DateNav({ date, onChange }: { date: string; onChange: (date: string) =>
 function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChange: (entry: Entry) => void }) {
   const [open, setOpen] = useState(false);
   const unit = food?.basis === "item" ? "×" : "g";
-  const kcal = food ? scale(food, entry.amount, entry.factor).kcal : 0;
   return (
     <li className="border-b border-line last:border-b-0">
       <div className={`flex items-center gap-3 px-3 py-2 ${entry.done ? "" : "text-muted"}`}>
@@ -155,7 +155,6 @@ function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChan
             <span className="text-muted">{unit}</span>
           </span>
         </button>
-        <span className="w-12 text-right text-sm text-muted">{Math.round(kcal)}</span>
         <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label={`Remove ${food?.name ?? "food"}`} className="px-1 text-muted">
           ×
         </button>

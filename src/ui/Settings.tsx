@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { LIMIT_UNITS, localDate } from "../domain/day";
-import { allFoods, LABELS, pickableFoods } from "../domain/nutrition";
+import { allFoods, LABELS, pickableFoods, toggleFav } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, SettingsPatch, Staple } from "../domain/types";
@@ -112,6 +112,7 @@ function Staples({ state, commit }: { state: State; commit: Commit }) {
             // A reference-table food becomes one of yours, as on Today.
             if (await save([...staples, staple], ...(foods.has(food.id) ? [] : [{ type: "food.upsert", food } as Change]))) setPicking(false);
           }}
+          onToggleFav={(food) => commit(...toggleFav(state, food.id))}
           onClose={() => setPicking(false)}
         />
       )}
