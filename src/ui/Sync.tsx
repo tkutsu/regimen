@@ -143,6 +143,7 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
       : undefined;
   // Keeping your own name in another folder is still you.
   const clash = typeof folder === "object" && folder.logs.includes(name) && saved?.device !== name;
+  const renamed = saved && saved.device !== name;
   const valid = chosen && !nameProblem;
 
   const pick = async () => {
@@ -200,7 +201,11 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
         {nameProblem ? (
           <Note bad>{nameProblem}</Note>
         ) : clash ? (
-          <Note bad>Another device already writes as “{name}”. Keep it only if this is that device.</Note>
+          <Note bad>
+            Another device already writes as “{name}”. Keep it only if this is that device{renamed && `: “${saved.device}” merges into it`}.
+          </Note>
+        ) : renamed ? (
+          <Note>Saving renames this device's log from “{saved.device}” to “{name}”.</Note>
         ) : (
           <Note>Each device writes its own log, so give each a different name.</Note>
         )}
