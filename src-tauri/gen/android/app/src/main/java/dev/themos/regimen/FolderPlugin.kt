@@ -67,6 +67,17 @@ class FolderPlugin(private val activity: Activity) : Plugin(activity) {
     }
   }
 
+  /** Mirrors `fingerprint` in `files.rs`: `name:size:modified` per file, sorted, hidden files left out. */
+  @Command
+  fun fingerprint(invoke: Invoke) = background(invoke) { tree, args ->
+    val parent = folder(tree, args.sub) ?: return@background ""
+    val uri = DocumentsContract.buildChildDocumentsUriUsingTree(tree, parent)
+    val columns = arrayOf(Document.COLUMN_DISPLAY_NAME, Document.COLUMN_SIZE, Document.COLUMN_LAST_MODIFIED)
+    val cursor = resolver.query(uri, columns, null, null, null) ?: throw FileNotFoundException("Can't open the folder")
+    val files = cursor.use { generateSequence { if (it.moveToNext()) Triple(it.getString(0), it.getLong(1), it.getLong(2)) else null }.toList() }
+    files.filterNot { it.first.startsWith(".") }.map { "${it.first}:${it.second}:${it.third}" }.sorted().joinToString(",")
+  }
+
   @Command
   fun write(invoke: Invoke) = background(invoke) { tree, args ->
     val parent = folder(tree, args.sub) ?: create(tree, root(tree), Document.MIME_TYPE_DIR, args.sub)
