@@ -1,11 +1,101 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
-import type { Config } from "../store";
+import type { Config, Device, Peers } from "../store";
 
-type Folder = { exists: boolean; logs: string[] };
+type Folder = { exists: boolean; logs: string[]; synced: boolean | null };
 
+/** Android picks the folder with the system picker; desktop types a path. */
+const ANDROID = /Android/.test(navigator.userAgent);
 const ABSOLUTE = /^(\/|[A-Za-z]:[\\/])/;
 const NAME = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+
+/** Another device counts as syncing while its check-ins keep arriving. */
+const FRESH = 2 * 24 * 3600;
+/** Seen this recently, it's syncing right now. */
+const LIVE = 15 * 60;
+
+/** A readable folder: `content://…/tree/primary%3A_Files%2Fregimen` reads as `_Files/regimen`. */
+export function folderLabel(dir: string) {
+  const tree = dir.match(/\/tree\/([^/]+)/);
+  if (tree) return decodeURIComponent(tree[1]).replace(/^primary:/, "");
+  return dir.replace(/^\/home\/[^/]+/, "~");
+}
+
+function ago(seconds: number) {
+  if (seconds < 60) return "just now";
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+  if (seconds < 48 * 3600) return `${Math.floor(seconds / 3600)} h ago`;
+  return `${Math.floor(seconds / 86400)} d ago`;
+}
+
+/**
+ * Every device that syncs this folder, from their check-ins, by platform. The dot is
+ * green while a device's check-ins keep arriving, and pulses when it was just seen.
+ * This device's dot says whether anything arrives here from the others.
+ */
+export function Devices({ config, peers }: { config: Config; peers: Peers }) {
+  const now = Date.now() / 1000;
+  const others = peers.devices.filter((device) => device.name !== config.device);
+  const hearing = others.some((device) => now - device.seen < FRESH);
+  const problem =
+    peers.synced === false
+      ? "Syncthing doesn't share this folder, so nothing syncs. Pick the folder Syncthing syncs below."
+      : !others.length
+        ? "No other device has synced into this folder yet."
+        : !hearing
+          ? "Nothing from the other devices in 2 days. Is Syncthing running on each?"
+          : undefined;
+
+  return (
+    <section>
+      <h2 className="mb-2 px-1 text-xs font-medium tracking-wide text-muted uppercase">Devices</h2>
+      <div className="overflow-hidden rounded-2xl border border-line bg-surface">
+        {(["desktop", "mobile"] as const).map((platform) => {
+          const devices = peers.devices.filter((device) => device.platform === platform).sort((a, b) => a.name.localeCompare(b.name));
+          if (!devices.length) return null;
+          return (
+            <div key={platform} className="border-line not-first:border-t">
+              <h3 className="px-4 pt-2.5 text-xs text-muted capitalize">{platform}</h3>
+              {devices.map((device) => {
+                const self = device.name === config.device;
+                const age = now - device.seen;
+                return (
+                  <DeviceRow
+                    key={device.name}
+                    device={device}
+                    self={self}
+                    syncing={self ? hearing && peers.synced !== false : age < FRESH}
+                    live={!self && age < LIVE}
+                    note={self ? "This device" : ago(age)}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+      {problem && <p className="mt-2 px-1 text-xs text-bad">{problem}</p>}
+    </section>
+  );
+}
+
+function DeviceRow({ device, self, syncing, live, note }: { device: Device; self: boolean; syncing: boolean; live: boolean; note: string }) {
+  return (
+    <div className="flex items-start gap-3 px-4 py-2.5">
+      <span className="relative mt-2 flex size-2 shrink-0" title={syncing ? "Syncing" : "Not syncing"}>
+        {live && <span className="absolute inset-0 animate-ping rounded-full bg-good opacity-60" />}
+        <span className={`relative size-2 rounded-full ${syncing ? "bg-good" : "bg-muted/50"}`} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex items-baseline gap-2">
+          <span className={self ? "font-medium" : ""}>{device.name}</span>
+          <span className={`ml-auto shrink-0 text-xs ${self ? "rounded-full bg-accent/15 px-2 py-0.5 text-accent" : "text-muted"}`}>{note}</span>
+        </span>
+        <span className="block truncate text-xs text-muted">{folderLabel(device.dir)}</span>
+      </span>
+    </div>
+  );
+}
 
 type Props = {
   /** The config in use, if any; its own name isn't a clash. */
@@ -17,7 +107,7 @@ type Props = {
 
 /**
  * The folder and this device's name. Shows what the folder already holds, so a
- * typo'd path or a name another device writes under is caught before saving.
+ * wrong folder or a name another device writes under is caught before saving.
  */
 export function SyncForm({ saved, initial, action, onSave }: Props) {
   const [dir, setDir] = useState(initial.dir);
@@ -27,11 +117,11 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
 
   const path = dir.trim();
   const name = device.trim();
-  const absolute = ABSOLUTE.test(path);
+  const chosen = ANDROID ? path.startsWith("content://") : ABSOLUTE.test(path);
 
   useEffect(() => {
     setFolder(undefined);
-    if (!absolute) return;
+    if (!chosen) return;
     let live = true;
     const timer = setTimeout(() => {
       invoke<Folder>("inspect_dir", { dir: path }).then(
@@ -43,7 +133,7 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
       live = false;
       clearTimeout(timer);
     };
-  }, [path, absolute]);
+  }, [path, chosen]);
 
   const own = saved?.dir === path && saved.device === name;
   const nameProblem = !NAME.test(name)
@@ -51,8 +141,19 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
     : name === "import"
       ? "“import” is kept for imported data."
       : undefined;
-  const clash = typeof folder === "object" && folder.logs.includes(name) && !own;
-  const valid = absolute && !nameProblem;
+  // Keeping your own name in another folder is still you.
+  const clash = typeof folder === "object" && folder.logs.includes(name) && saved?.device !== name;
+  const valid = chosen && !nameProblem;
+
+  const pick = async () => {
+    try {
+      setFailed(undefined);
+      const picked = await invoke<string | null>("pick_dir");
+      if (picked) setDir(picked);
+    } catch (e) {
+      setFailed(String(e));
+    }
+  };
 
   const save = async () => {
     try {
@@ -63,21 +164,38 @@ export function SyncForm({ saved, initial, action, onSave }: Props) {
     }
   };
 
+  const folderNotes = !chosen ? (
+    <Note>{ANDROID ? "Pick the folder Syncthing syncs." : "Use a full path."}</Note>
+  ) : typeof folder === "string" ? (
+    <Note bad>Can't read this folder: {folder}</Note>
+  ) : folder ? (
+    <>
+      {!folder.exists ? (
+        <Note>Doesn't exist yet. It's created when you start.</Note>
+      ) : !folder.logs.length ? (
+        <Note>No logs here yet, so you start fresh.</Note>
+      ) : (
+        <Note>Logs here from {folder.logs.join(", ")}.</Note>
+      )}
+      {folder.synced === false && <Note bad>Syncthing doesn't share this folder, so other devices won't see it.</Note>}
+    </>
+  ) : null;
+
   return (
     <div className="flex flex-col gap-3">
-      <Field label="Folder" value={dir} onChange={setDir}>
-        {!absolute ? (
-          <Note>Use a full path.</Note>
-        ) : typeof folder === "string" ? (
-          <Note bad>Can't read this folder: {folder}</Note>
-        ) : folder && !folder.exists ? (
-          <Note>Doesn't exist yet. It's created with your first entry.</Note>
-        ) : folder && !folder.logs.length ? (
-          <Note>No logs here yet, so you start fresh.</Note>
-        ) : folder ? (
-          <Note>Logs here from {folder.logs.join(", ")}.</Note>
-        ) : null}
-      </Field>
+      {ANDROID ? (
+        <div className="flex flex-col gap-1">
+          <button onClick={pick} className="rounded-xl border border-line bg-surface px-3 py-2 text-left">
+            <span className="block text-xs text-muted">Folder</span>
+            <span className={chosen ? "" : "text-accent"}>{chosen ? folderLabel(path) : "Choose a folder…"}</span>
+          </button>
+          {folderNotes}
+        </div>
+      ) : (
+        <Field label="Folder" value={dir} onChange={setDir}>
+          {folderNotes}
+        </Field>
+      )}
       <Field label="This device" value={device} onChange={setDevice}>
         {nameProblem ? (
           <Note bad>{nameProblem}</Note>
@@ -134,7 +252,7 @@ export function Setup({ saved, error, onSave, onRetry }: { saved?: Config; error
       <h1 className="text-2xl font-semibold">Regimen</h1>
       {error ? (
         <p className="text-sm text-bad">
-          Couldn't read {saved?.dir}: {error}
+          Couldn't read {saved && folderLabel(saved.dir)}: {error}
         </p>
       ) : (
         <p className="text-sm text-muted">
