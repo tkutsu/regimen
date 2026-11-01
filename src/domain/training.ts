@@ -58,11 +58,12 @@ export function planExercise(sessions: Session[], exerciseId: string, before?: s
   return last.length ? last.map((set) => plan(exerciseId, set)) : [{ exerciseId, done: false }];
 }
 
-/** One more set after the exercise's last, the same as it; a drop set after it stays last. */
+/** One more set after the exercise's last, the same as the last that wasn't a drop. */
 export function addSet(sets: SetLog[], exerciseId: string): SetLog[] {
-  const at = sets.findLastIndex((set) => set.exerciseId === exerciseId && !set.drop);
+  const at = sets.findLastIndex((set) => set.exerciseId === exerciseId);
   if (at < 0) return [...sets, { exerciseId, done: false }];
-  return [...sets.slice(0, at + 1), plan(exerciseId, sets[at]), ...sets.slice(at + 1)];
+  const like = sets.findLast((set) => set.exerciseId === exerciseId && !set.drop) ?? sets[at];
+  return [...sets.slice(0, at + 1), plan(exerciseId, { ...like, drop: undefined }), ...sets.slice(at + 1)];
 }
 
 /** A drop set after the exercise's last set, the same as it, to be lightened. */
