@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRegimen } from "./store";
 import { Foods } from "./ui/Foods";
 import { useKeys } from "./ui/keys";
 import { useLook } from "./ui/look";
+import { transition } from "./ui/motion";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
 import { System } from "./ui/System";
@@ -17,8 +18,9 @@ const TABS: Tab[] = ["today", "training", "weight", "foods", "settings", "system
 export default function App() {
   const { config, state, peers, error, saveError, reload, commit, retrySave, dismissSaveError, saveConfig } = useRegimen();
   const [tab, setTab] = useState<Tab>("today");
+  const go = useCallback((next: Tab) => transition(() => setTab(next)), []);
   useLook(state?.settings);
-  useKeys(TABS, tab, setTab);
+  useKeys(TABS, tab, go);
 
   if (config === null) return <Setup onSave={saveConfig} />;
   if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={() => reload()} /> : <p className="p-4 text-bad">{error}</p>;
@@ -33,9 +35,9 @@ export default function App() {
           <button
             key={name}
             data-tab={name}
-            onClick={() => setTab(name)}
+            onClick={() => go(name)}
             aria-current={tab === name ? "page" : undefined}
-            className={`grow py-2 capitalize first:grow-[0.5] first:text-left last:grow-[0.5] last:text-right ${tab === name ? "font-medium" : "text-muted"}`}
+            className={`grow py-2 capitalize transition-colors first:grow-[0.5] first:text-left last:grow-[0.5] last:text-right ${tab === name ? "font-medium" : "text-muted"}`}
           >
             {name}
           </button>

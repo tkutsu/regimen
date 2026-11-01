@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { newId } from "../domain/state";
 import type { Exercise, Target, Workout } from "../domain/types";
+import { Dialog } from "./Dialog";
 import { AmountFields, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
-import { box, Heading } from "./FoodEditor";
 import { NumberInput, Remove, TextInput } from "./fields";
+import { box, Heading } from "./FoodEditor";
+import { transition } from "./motion";
 import { useReorder } from "./reorder";
 
 type Props = {
@@ -41,9 +43,9 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
   const save = () => valid && onSave({ id: workout.id, name: name.trim(), targets: targets(), note: note.trim() || undefined });
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Workout" className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <Dialog label="Workout" onClose={onClose}>
       <header className="flex items-center justify-between border-b border-line p-3">
-        <button onClick={onClose} className="px-2 py-2 text-muted">
+        <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel
         </button>
         <h2 className="font-medium">{saved ? "Edit workout" : "New workout"}</h2>
@@ -58,7 +60,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
 
           <section>
             <Heading hint="each starts from last time">Exercises</Heading>
-            <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
+            <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
               {shown.map((line, i) => {
                 const exercise = exercises.get(line.exerciseId);
                 const label = exercise?.name ?? "deleted exercise";
@@ -114,6 +116,6 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
           )}
         </div>
       </div>
-    </div>
+    </Dialog>
   );
 }

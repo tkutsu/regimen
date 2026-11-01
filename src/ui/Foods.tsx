@@ -62,7 +62,7 @@ export function Foods({ state, commit }: Props) {
       {recipes.length > 0 && (
         <section>
           <h2 className="mb-1 px-1 text-xs font-medium tracking-wide text-muted uppercase">recipes</h2>
-          <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
+          <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
             {recipes.map((recipe) => (
               <li key={recipe.id}>
                 <FoodRow food={recipeAsFood(recipe, state.foods)} onPick={() => setCooking({ recipe })} onToggleFav={() => star(recipe.id)} />

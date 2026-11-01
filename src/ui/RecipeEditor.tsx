@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale } from "../domain/nutrition";
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
 import type { Container, Food, Recipe } from "../domain/types";
+import { Dialog } from "./Dialog";
 import { box, Heading, ValueFields } from "./FoodEditor";
 import { FoodPicker } from "./FoodPicker";
+import { transition } from "./motion";
 
 type Props = {
   recipe: Recipe;
@@ -55,9 +57,9 @@ export function RecipeEditor(props: Props) {
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Recipe" className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <Dialog label="Recipe" onClose={onClose}>
       <header className="flex items-center justify-between border-b border-line p-3">
-        <button onClick={onClose} className="px-2 py-2 text-muted">
+        <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel
         </button>
         <h2 className="font-medium">{replaces ? "New batch" : saved ? "Edit recipe" : "New recipe"}</h2>
@@ -78,7 +80,7 @@ export function RecipeEditor(props: Props) {
 
           <section>
             <Heading hint="raw weights">Ingredients</Heading>
-            <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
+            <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
               {form.ingredients.map((ingredient, i) => {
                 const food = foods.get(ingredient.foodId);
                 const amount = parseAmount(ingredient.amount);
@@ -227,6 +229,6 @@ export function RecipeEditor(props: Props) {
           onClose={() => setPicking(false)}
         />
       )}
-    </div>
+    </Dialog>
   );
 }
