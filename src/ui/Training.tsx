@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { localDate } from "../domain/day";
 import { newId, type State } from "../domain/state";
-import { finish, newestFirst, startSession, usedExercises } from "../domain/training";
+import { finish, newestFirst, startSession } from "../domain/training";
 import type { Exercise, Session, Workout } from "../domain/types";
 import type { Commit } from "../store";
-import { Remove, Section, TextInput } from "./fields";
+import { Section } from "./fields";
 import { SessionView } from "./SessionView";
 import { WorkoutEditor } from "./WorkoutEditor";
 
@@ -12,7 +12,7 @@ type Props = { state: State; commit: Commit };
 
 const RECENT = 10;
 
-/** Sessions still going, your workouts to start, what you did, and the exercises they use. */
+/** Sessions still going, your workouts to start, and what you did. */
 export function Training({ state, commit }: Props) {
   const [editing, setEditing] = useState<{ workout: Workout; saved: boolean }>();
   const [openId, setOpenId] = useState<string>();
@@ -22,8 +22,6 @@ export function Training({ state, commit }: Props) {
   const going = sessions.filter((session) => !session.finished);
   const finished = sessions.filter((session) => session.finished);
   const workouts = useMemo(() => [...state.workouts.values()].sort((a, b) => a.name.localeCompare(b.name)), [state.workouts]);
-  const exercises = useMemo(() => [...state.exercises.values()].sort((a, b) => a.name.localeCompare(b.name)), [state.exercises]);
-  const used = useMemo(() => usedExercises(state), [state]);
   const today = localDate();
   const shown = openId ? state.sessions.get(openId) : undefined;
 
@@ -99,17 +97,6 @@ export function Training({ state, commit }: Props) {
                 {session.sets.length} {session.sets.length === 1 ? "set" : "sets"}
               </span>
             </button>
-          ))}
-        </Section>
-      )}
-
-      {exercises.length > 0 && (
-        <Section title="Exercises">
-          {exercises.map((exercise) => (
-            <div key={exercise.id} className="flex items-center gap-2 px-4 py-2">
-              <TextInput value={exercise.name} onCommit={(name) => saveExercise({ ...exercise, name })} aria-label={`Rename ${exercise.name}`} className="min-w-0 flex-1" />
-              {used.has(exercise.id) ? <span className="w-5" /> : <Remove label={exercise.name} onClick={() => commit({ type: "exercise.delete", exerciseId: exercise.id })} />}
-            </div>
           ))}
         </Section>
       )}

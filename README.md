@@ -54,10 +54,15 @@ as reported, K1 and K2; total folate, folic acid, food folate and folate DFE.
 These columns are alternatives or components, not values to add together.
 No conversions between vitamin forms are inferred.
 
-A value the source lacks stays unknown. Exact zero carbohydrate can establish
+A value the source lacks stays unknown unless derived as described here. Exact zero carbohydrate can establish
 zero sugar, and exact zero fat can establish zero fatty acids. Fiber stays
 unknown unless supplied by the source. Bounds and traces stay unknown, and
-unsaturated fat requires an explicit value or both mono- and polyunsaturated fat.
+unsaturated fat uses an explicit value or both mono- and polyunsaturated fat when
+available. Otherwise, known total and saturated fat can provide an estimate:
+total fat minus saturated fat, provided the result is nonnegative. These rows are
+listed in `estimatedUnsatFat` and labelled in the food's note when loaded or saved.
+This is an approximation because total fat also includes non-fatty-acid components
+([FAO](https://www.fao.org/4/y4705e/y4705e22.htm)). Existing reported values are preserved.
 
 The importer rejects unusable names, impossible nutrient amounts and inconsistent
 nutrition. It also excludes Open Food Facts products with source-reported
