@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { fold, stamp } from "./state";
 import {
+  addDrop,
   addSet,
   byExercise,
   finish,
   formatAmount,
   lastSets,
   newestFirst,
-  parseDuration,
   planExercise,
   startSession,
   summarize,
@@ -115,29 +115,49 @@ describe("editing a session", () => {
   });
 });
 
-describe("text", () => {
-  it("reads durations with : or a phone keypad's . and ,", () => {
-    expect(parseDuration("90")).toBe(90);
-    expect(parseDuration("1:30")).toBe(90);
-    expect(parseDuration("25.30")).toBe(1530);
-    expect(parseDuration("1:02:00")).toBe(3720);
-    expect(parseDuration("")).toBeUndefined();
-    expect(parseDuration("1:x")).toBeUndefined();
+describe("drop sets", () => {
+  const drop = (exerciseId: string, reps: number, kg?: number): SetLog => ({ ...set(exerciseId, reps, kg), drop: true });
+  const curls: Workout = { id: "c", name: "Arms", targets: [{ exerciseId: "curl", sets: 2, reps: 10, kg: 14, drop: true }] };
+
+  it("follow the target's last set, from last time's drop", () => {
+    const last = session("a", "2026-10-30", [set("curl", 10, 16), set("curl", 9, 16), drop("curl", 12, 10)]);
+    expect(startSession(curls, [last], "2026-11-01", "s").sets.map((s) => [s.reps, s.kg, s.drop])).toEqual([
+      [10, 16, undefined],
+      [9, 16, undefined],
+      [12, 10, true],
+    ]);
   });
 
-  it("writes each measure", () => {
-    expect(formatAmount("reps", { reps: 8, kg: 62.5 })).toBe("8 @ 62.5 kg");
-    expect(formatAmount("reps", { reps: 12 })).toBe("12");
-    expect(formatAmount("time", { secs: 75 })).toBe("1:15");
-    expect(formatAmount("time", { secs: 60, kg: 24 })).toBe("1:00 @ 24 kg");
-    expect(formatAmount("distance", { km: 5, secs: 1530 })).toBe("5 km in 25:30");
-    expect(formatAmount("distance", { km: 2.5 })).toBe("2.5 km");
-    expect(formatAmount("reps", {})).toBe("–");
+  it("start as the set before them when never done", () => {
+    expect(startSession(curls, [], "2026-11-01", "s").sets.map((s) => [s.reps, s.kg, s.drop])).toEqual([
+      [10, 14, undefined],
+      [10, 14, undefined],
+      [10, 14, true],
+    ]);
+  });
+
+  it("stay last when a set is added, and can be added", () => {
+    const sets = [set("curl", 10, 16, false), drop("curl", 12, 10), set("dips", 8)];
+    expect(addSet(sets, "curl").map((s) => [s.exerciseId, s.kg, s.drop])).toEqual([
+      ["curl", 16, undefined],
+      ["curl", 16, undefined],
+      ["curl", 10, true],
+      ["dips", undefined, undefined],
+    ]);
+    expect(addDrop(sets, "dips").at(-1)).toEqual({ exerciseId: "dips", reps: 8, kg: undefined, done: false, drop: true });
+  });
+});
+
+describe("text", () => {
+  it("writes reps with their load", () => {
+    expect(formatAmount({ reps: 8, kg: 62.5 })).toBe("8 @ 62.5 kg");
+    expect(formatAmount({ reps: 12 })).toBe("12");
+    expect(formatAmount({})).toBe("–");
+    expect(formatAmount({ reps: 12, kg: 40, drop: true })).toBe("drop 12 @ 40 kg");
   });
 
   it("counts alike sets in a row together", () => {
-    expect(summarize("reps", [{ reps: 8, kg: 60 }, { reps: 8, kg: 60 }, { reps: 6, kg: 60 }])).toBe("2 × 8 @ 60 kg, 6 @ 60 kg");
-    expect(summarize("time", [{ secs: 60 }, { secs: 60 }])).toBe("2 × 1:00");
+    expect(summarize([{ reps: 8, kg: 60 }, { reps: 8, kg: 60 }, { reps: 6, kg: 60 }])).toBe("2 × 8 @ 60 kg, 6 @ 60 kg");
   });
 });
 
@@ -147,7 +167,7 @@ describe("fold", () => {
     const state = fold(
       [
         { type: "exercise.upsert", exercise: { id: "bench", name: "Bench press", measure: "reps" } },
-        { type: "exercise.upsert", exercise: { id: "plank", name: "Plank", measure: "time" } },
+        { type: "exercise.upsert", exercise: { id: "plank", name: "Plank", measure: "reps" } },
         { type: "exercise.delete", exerciseId: "plank" },
         { type: "workout.upsert", workout: push },
         { type: "session.upsert", session: s },

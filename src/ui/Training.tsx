@@ -108,7 +108,6 @@ export function Training({ state, commit }: Props) {
           {exercises.map((exercise) => (
             <div key={exercise.id} className="flex items-center gap-2 px-4 py-2">
               <TextInput value={exercise.name} onCommit={(name) => saveExercise({ ...exercise, name })} aria-label={`Rename ${exercise.name}`} className="min-w-0 flex-1" />
-              <span className="text-sm text-muted">{exercise.measure}</span>
               {used.has(exercise.id) ? <span className="w-5" /> : <Remove label={exercise.name} onClick={() => commit({ type: "exercise.delete", exerciseId: exercise.id })} />}
             </div>
           ))}

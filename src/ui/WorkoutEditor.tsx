@@ -23,24 +23,33 @@ type Props = {
 /** A row of the form; the key tells apart the same exercise listed twice while reordering. */
 type Line = Target & { key: string };
 
+/** Lines in blocks, each linked line with the one above: a block of more than one is a superset. */
+function blocks(lines: Line[]): Line[][] {
+  const out: Line[][] = [];
+  lines.forEach((line, i) => (i > 0 && line.linked ? out.at(-1)!.push(line) : out.push([line])));
+  return out;
+}
+
+/** Back to lines, each block's first unlinked, so a block moved or emptied keeps apart from the one above. */
+const unblock = (blocks: Line[][]): Line[] => blocks.flatMap((block) => block.map((line, j) => (j ? line : { ...line, linked: undefined })));
+
 /** The exercises of a workout in order, each with its sets. Nothing is written until Save. */
 export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSave, onDelete, onClose }: Props) {
   const [name, setName] = useState(workout.name);
   const [lines, setLines] = useState<Line[]>(() => workout.targets.map((target) => ({ ...target, key: newId() })));
   const [note, setNote] = useState(workout.note ?? "");
   const [confirming, setConfirming] = useState(false);
-  const { shown, dragging, handle } = useReorder(lines, (line) => line.key, setLines);
+  // A superset moves as one; an exercise leaves or joins one with its link.
+  const { shown, dragging, handle } = useReorder(
+    blocks(lines),
+    (block) => block[0].key,
+    (next) => setLines(unblock(next)),
+  );
   const patch = (key: string, changes: Partial<Target>) => setLines(lines.map((line) => (line.key === key ? { ...line, ...changes } : line)));
+  const remove = (key: string) => setLines(unblock(blocks(lines).map((block) => block.filter((line) => line.key !== key))));
+  const add = (exerciseId: string) => transition(() => setLines([...lines, { key: newId(), exerciseId, sets: 3 }]));
   const valid = name.trim() !== "" && lines.length > 0;
-
-  const add = (exerciseId: string) => {
-    // Timed and distance work is usually one bout; lifts usually a few sets.
-    const sets = exercises.get(exerciseId)?.measure === "reps" ? 3 : 1;
-    setLines([...lines, { key: newId(), exerciseId, sets }]);
-  };
-  // The first line has nothing above to be linked to.
-  const targets = () => lines.map(({ key: _, ...target }, i) => (i === 0 ? { ...target, linked: undefined } : target));
-  const save = () => valid && onSave({ id: workout.id, name: name.trim(), targets: targets(), note: note.trim() || undefined });
+  const save = () => valid && onSave({ id: workout.id, name: name.trim(), targets: lines.map(({ key: _, ...target }) => target), note: note.trim() || undefined });
 
   return (
     <Dialog label="Workout" onClose={onClose}>
@@ -58,50 +67,40 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
         <div className="mx-auto flex max-w-md flex-col gap-5 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <input autoFocus={!saved} value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className={`${box} border-line text-lg`} />
 
-          <section>
+          <section className="flex flex-col gap-2">
             <Heading hint="each starts from last time">Exercises</Heading>
-            <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
-              {shown.map((line, i) => {
-                const exercise = exercises.get(line.exerciseId);
-                const label = exercise?.name ?? "deleted exercise";
-                const superset = (i > 0 && line.linked) || shown[i + 1]?.linked;
+            <ul className="flow flex flex-col gap-2">
+              {shown.map((block, b) => {
+                const superset = block.length > 1;
+                const names = block.map((line) => exercises.get(line.exerciseId)?.name ?? "deleted exercise");
                 return (
                   <li
-                    key={line.key}
-                    data-row={line.key}
-                    className={`flex items-start gap-2 py-2 pr-4 pl-2 ${dragging === line.key ? "bg-line/40" : ""} ${superset ? "shadow-[inset_3px_0_0_var(--color-accent)]" : ""}`}
+                    key={block[0].key}
+                    data-row={block[0].key}
+                    className={`rounded-2xl border bg-surface ${superset ? "border-accent/60" : "border-line"} ${dragging === block[0].key ? "relative z-10 shadow-lg" : ""}`}
                   >
-                    <button {...handle(line, label)} />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        {exercise ? (
-                          <TextInput value={exercise.name} onCommit={(name) => onSaveExercise({ ...exercise, name })} aria-label={`Rename ${label}`} className="min-w-0 flex-1" />
-                        ) : (
-                          <span className="min-w-0 flex-1 truncate text-muted">{label}</span>
-                        )}
-                        {i > 0 && <LinkToggle linked={!!line.linked} label={label} onToggle={() => patch(line.key, { linked: line.linked ? undefined : true })} />}
-                        <Remove label={label} onClick={() => setLines(lines.filter((other) => other.key !== line.key))} />
-                      </div>
-                      <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                        <label className="flex items-baseline gap-1">
-                          <NumberInput
-                            value={line.sets}
-                            onCommit={(sets) => sets >= 1 && patch(line.key, { sets: Math.round(sets) })}
-                            aria-label={`${label} sets`}
-                            className={`${fieldBox} w-10`}
-                          />
-                          <span className="text-xs text-muted">sets of</span>
-                        </label>
-                        <AmountFields measure={exercise?.measure ?? "reps"} amount={line} onChange={(amount) => patch(line.key, amount)} label={label} />
-                      </div>
-                    </div>
+                    {superset && <p className="px-4 pt-3 text-xs font-medium tracking-wide text-accent uppercase">Superset · no rest between</p>}
+                    {block.map((line, j) => (
+                      <ExerciseLine
+                        key={line.key}
+                        line={line}
+                        exercise={exercises.get(line.exerciseId)}
+                        grip={j === 0 ? handle(block, names.join(" + ")) : undefined}
+                        // The very first exercise has nothing above to be linked to.
+                        linkable={b > 0 || j > 0}
+                        className={j > 0 ? "border-t border-line" : ""}
+                        onPatch={(changes) => patch(line.key, changes)}
+                        onRemove={() => remove(line.key)}
+                        onRename={onSaveExercise}
+                      />
+                    ))}
                   </li>
                 );
               })}
-              <li>
-                <ExerciseSearch exercises={exercises} onPick={add} onCreate={onSaveExercise} />
-              </li>
             </ul>
+            <div className="overflow-hidden rounded-2xl border border-line bg-surface">
+              <ExerciseSearch exercises={exercises} onPick={add} onCreate={onSaveExercise} />
+            </div>
           </section>
 
           <section>
@@ -117,5 +116,53 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
         </div>
       </div>
     </Dialog>
+  );
+}
+
+type LineProps = {
+  line: Line;
+  exercise?: Exercise;
+  /** The block's drag handle, on its first line; the others keep its space. */
+  grip?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  linkable: boolean;
+  className: string;
+  onPatch: (changes: Partial<Target>) => void;
+  onRemove: () => void;
+  onRename: (exercise: Exercise) => void;
+};
+
+/** One exercise of the workout: its sets, and whether a drop set follows the last. */
+function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRemove, onRename }: LineProps) {
+  const label = exercise?.name ?? "deleted exercise";
+  return (
+    <div className={`flex items-start gap-2 py-2 pr-4 pl-2 ${className}`}>
+      {grip ? <button {...grip} /> : <span className="w-6 shrink-0" />}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          {exercise ? (
+            <TextInput value={exercise.name} onCommit={(name) => onRename({ ...exercise, name })} aria-label={`Rename ${label}`} className="min-w-0 flex-1" />
+          ) : (
+            <span className="min-w-0 flex-1 truncate text-muted">{label}</span>
+          )}
+          {linkable && <LinkToggle linked={!!line.linked} label={label} onToggle={() => onPatch({ linked: line.linked ? undefined : true })} />}
+          <Remove label={label} onClick={onRemove} />
+        </div>
+        <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <label className="flex items-baseline gap-1">
+            <NumberInput value={line.sets} onCommit={(sets) => sets >= 1 && onPatch({ sets: Math.round(sets) })} aria-label={`${label} sets`} className={`${fieldBox} w-10`} />
+            <span className="text-xs text-muted">sets of</span>
+          </label>
+          <AmountFields amount={line} onChange={onPatch} label={label} />
+          <button
+            onClick={() => onPatch({ drop: line.drop ? undefined : true })}
+            aria-pressed={!!line.drop}
+            aria-label={`Drop set after ${label}'s last set`}
+            className={`rounded-full border px-2.5 py-0.5 text-xs ${line.drop ? "border-accent/60 text-accent" : "border-line text-muted"}`}
+          >
+            {line.drop ? "drop set" : "+ drop set"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

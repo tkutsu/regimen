@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
+import { addDrop, addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
 import { Dialog } from "./Dialog";
 import { AmountFields, ExerciseSearch, LinkToggle } from "./exercises";
@@ -81,6 +81,7 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
                     onEditSet={editSet}
                     onRemoveSet={(i) => setSets(session.sets.filter((_, j) => j !== i))}
                     onAddSet={() => setSets(addSet(session.sets, exerciseId))}
+                    onAddDrop={() => setSets(addDrop(session.sets, exerciseId))}
                   />
                 </div>
               ))}
@@ -122,11 +123,11 @@ type SetsProps = {
   onEditSet: (i: number, changes: Partial<SetLog>) => void;
   onRemoveSet: (i: number) => void;
   onAddSet: () => void;
+  onAddDrop: () => void;
 };
 
 /** One exercise's sets, with what it was last time. */
-function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, onRename, onEditSet, onRemoveSet, onAddSet }: SetsProps) {
-  const measure = exercise?.measure ?? "reps";
+function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, onRename, onEditSet, onRemoveSet, onAddSet, onAddDrop }: SetsProps) {
   const label = exercise?.name ?? "deleted exercise";
   const last = exercise ? lastSets(sessions, exercise.id, session.id) : [];
   return (
@@ -140,25 +141,29 @@ function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, o
           )}
           {linked !== undefined && <LinkToggle linked={linked} label={label} onToggle={onToggleLink} />}
         </div>
-        {last.length > 0 && <p className="text-xs text-muted">last time {summarize(measure, last)}</p>}
+        {last.length > 0 && <p className="text-xs text-muted">last time {summarize(last)}</p>}
       </div>
       <ul className="flow">
         {at.map((i, n) => {
           const set = session.sets[i];
+          // Drop sets aren't counted: "set 3" stays set 3 with a drop after it.
+          const name = set.drop ? `${label} drop set` : `${label} set ${at.slice(0, n + 1).filter((j) => !session.sets[j].drop).length}`;
           return (
-            <li key={i} className={`flex items-center gap-3 px-4 py-1.5 ${set.done ? "" : "text-muted"}`}>
-              <Tick done={set.done} onClick={() => onEditSet(i, { done: !set.done })} label={`${set.done ? "Unmark" : "Mark"} ${label} set ${n + 1} done`} className="size-6" />
+            <li key={i} className={`flex items-center gap-3 py-1.5 pr-4 ${set.drop ? "pl-8" : "pl-4"} ${set.done ? "" : "text-muted"}`}>
+              <Tick done={set.done} onClick={() => onEditSet(i, { done: !set.done })} label={`${set.done ? "Unmark" : "Mark"} ${name} done`} className="size-6" />
               <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-1">
-                <AmountFields measure={measure} amount={set} onChange={(amount) => onEditSet(i, amount)} label={`${label} set ${n + 1}`} />
+                {set.drop && <span className="text-xs font-medium text-accent">drop</span>}
+                <AmountFields amount={set} onChange={(amount) => onEditSet(i, amount)} label={name} />
               </div>
-              <Remove label={`${label} set ${n + 1}`} onClick={() => onRemoveSet(i)} />
+              <Remove label={name} onClick={() => onRemoveSet(i)} />
             </li>
           );
         })}
       </ul>
-      <button onClick={onAddSet} className="px-4 pt-1 pb-3 text-sm text-accent">
-        + Set
-      </button>
+      <div className="flex gap-4 px-4 pt-1 pb-3 text-sm text-accent">
+        <button onClick={onAddSet}>+ Set</button>
+        <button onClick={onAddDrop}>+ Drop</button>
+      </div>
     </>
   );
 }
