@@ -48,6 +48,8 @@ struct Device {
 #[derive(Serialize)]
 struct Loaded {
     logs: Vec<String>,
+    /// The logs' fingerprint as read, to compare with `logs_fingerprint` later.
+    fingerprint: String,
     devices: Vec<Device>,
     synced: Option<bool>,
 }
@@ -133,15 +135,20 @@ async fn inspect_dir(app: AppHandle, dir: String) -> Result<Folder, String> {
     Ok(Folder { exists: true, logs, synced })
 }
 
-/// Checks this device in, then reads every device's raw event log and check-in.
-/// Parsing and merging the logs happen in the frontend.
+/// Reads every device's raw event log and check-in; parsing and merging them happen in
+/// the frontend. Opening the app checks this device in first. Reloads that a changed log
+/// triggers don't, so the check-in isn't rewritten (and synced) every few seconds.
 #[tauri::command]
-async fn load_folder(app: AppHandle, dir: String, device: String) -> Result<Loaded, String> {
+async fn load_folder(app: AppHandle, dir: String, device: String, check_in: bool) -> Result<Loaded, String> {
     check_device(&device)?;
-    let seen = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_err(err)?.as_secs();
-    let me = Device { name: device.clone(), platform: store::PLATFORM.into(), dir: dir.clone(), seen };
-    store::write(&app, &dir, "devices", &format!("{device}.json"), &serde_json::to_string(&me).map_err(err)?, false).await?;
+    if check_in {
+        let seen = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_err(err)?.as_secs();
+        let me = Device { name: device.clone(), platform: store::PLATFORM.into(), dir: dir.clone(), seen };
+        store::write(&app, &dir, "devices", &format!("{device}.json"), &serde_json::to_string(&me).map_err(err)?, false).await?;
+    }
 
+    // Taken before reading: a log that changes in between changes the next fingerprint too.
+    let fingerprint = store::fingerprint(&app, &dir, "events").await?;
     let logs = store::read(&app, &dir, "events", ".jsonl").await?.into_iter().map(|file| file.text).collect();
     let devices = store::read(&app, &dir, "devices", ".json")
         .await?
@@ -149,7 +156,14 @@ async fn load_folder(app: AppHandle, dir: String, device: String) -> Result<Load
         .filter(|file| !file.name.trim_end_matches(".json").contains('.'))
         .filter_map(|file| serde_json::from_str(&file.text).ok())
         .collect();
-    Ok(Loaded { logs, devices, synced: store::synced(&dir) })
+    Ok(Loaded { logs, fingerprint, synced: store::synced(&dir), devices })
+}
+
+/// The event logs' names, sizes and change times: cheap to read, and different once
+/// any log changes, so the app can check often and read the logs only when it must.
+#[tauri::command]
+async fn logs_fingerprint(app: AppHandle, dir: String) -> Result<String, String> {
+    store::fingerprint(&app, &dir, "events").await
 }
 
 /// Appends to this device's own log. No other device writes it, so Syncthing never conflicts.
@@ -185,7 +199,7 @@ pub fn run() {
     #[cfg(target_os = "android")]
     let builder = builder.plugin(store::plugin());
     builder
-        .invoke_handler(tauri::generate_handler![load_config, suggest_config, save_config, pick_dir, inspect_dir, load_folder, append_events, rename_device])
+        .invoke_handler(tauri::generate_handler![load_config, suggest_config, save_config, pick_dir, inspect_dir, load_folder, logs_fingerprint, append_events, rename_device])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

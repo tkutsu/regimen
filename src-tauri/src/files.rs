@@ -5,6 +5,7 @@ use std::{
     fs,
     io::{ErrorKind, Write},
     path::Path,
+    time::UNIX_EPOCH,
 };
 use tauri::AppHandle;
 
@@ -34,6 +35,27 @@ pub async fn read(app: &AppHandle, dir: &str, sub: &str, suffix: &str) -> Result
         .filter(|name| name.ends_with(suffix))
         .map(|name| Ok(File { text: fs::read_to_string(path.join(&name)).map_err(err)?, name }))
         .collect()
+}
+
+/// `name:size:modified` for each file in `<dir>/<sub>`, sorted. Hidden files are left out:
+/// Syncthing downloads into `.syncthing.*.tmp` and renames the result into place.
+pub async fn fingerprint(_: &AppHandle, dir: &str, sub: &str) -> Result<String, String> {
+    let entries = match fs::read_dir(Path::new(dir).join(sub)) {
+        Err(e) if e.kind() == ErrorKind::NotFound => return Ok(String::new()),
+        Err(e) => return Err(err(e)),
+        Ok(entries) => entries,
+    };
+    let mut files: Vec<String> = entries
+        .filter_map(Result::ok)
+        .filter_map(|entry| {
+            let name = entry.file_name().into_string().ok().filter(|name| !name.starts_with('.'))?;
+            let meta = entry.metadata().ok()?;
+            let modified = meta.modified().ok()?.duration_since(UNIX_EPOCH).ok()?.as_nanos();
+            Some(format!("{name}:{}:{modified}", meta.len()))
+        })
+        .collect();
+    files.sort();
+    Ok(files.join(","))
 }
 
 /// Writes (or appends to) `<dir>/<sub>/<name>` and syncs it to disk, creating the folders.

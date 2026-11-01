@@ -17,7 +17,7 @@ export default function App() {
   useLook(state?.settings);
 
   if (config === null) return <Setup onSave={saveConfig} />;
-  if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={reload} /> : <p className="p-4 text-bad">{error}</p>;
+  if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={() => reload()} /> : <p className="p-4 text-bad">{error}</p>;
   if (!config || !state || !peers) return null;
   const Screen = tab === "settings" ? undefined : SCREENS[tab];
   return (
