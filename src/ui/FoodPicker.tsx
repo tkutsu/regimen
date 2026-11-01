@@ -3,7 +3,9 @@ import { LABELS, NUTRIENTS, parseAmount, scale } from "../domain/nutrition";
 import { searchFoods } from "../domain/search";
 import type { Container, Food, Variant } from "../domain/types";
 import { sourceOf, useReference } from "../reference";
+import { Dialog, useBack } from "./Dialog";
 import { Star } from "./fields";
+import { transition } from "./motion";
 
 type Props = {
   foods: Map<string, Food>;
@@ -48,7 +50,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
   }, [foods, recentIds, reference, query]);
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Pick a food" className="fixed inset-0 z-10 flex flex-col bg-bg">
+    <Dialog label="Pick a food" onClose={onClose}>
       <header className="flex items-center gap-2 border-b border-line p-3">
         <input
           autoFocus
@@ -60,7 +62,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
           placeholder="Search foods"
           className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
         />
-        <button onClick={onClose} className="px-2 py-2 text-muted">
+        <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel
         </button>
       </header>
@@ -94,7 +96,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
           )}
         </div>
       )}
-    </div>
+    </Dialog>
   );
 }
 
@@ -149,9 +151,10 @@ function Amount({ food, containers, addLabel, onBack, onAdd }: AmountProps) {
   const amount = weighed === undefined ? 0 : Math.max(0, weighed - (container?.grams ?? 0));
   const kcal = scale(food, amount, variant?.factor).kcal;
   const submit = (done: boolean) => amount > 0 && onAdd(amount, done, variant);
+  useBack(onBack);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="rise flex flex-col gap-4 p-4">
       <div>
         <button onClick={onBack} className="text-sm text-muted">
           ‹ back
