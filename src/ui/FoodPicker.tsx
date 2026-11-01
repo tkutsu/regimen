@@ -15,13 +15,15 @@ type Props = {
   onClose: () => void;
   /** One button with this label instead of Plan and Eaten. */
   addLabel?: string;
+  /** Offer a food's variants; recipes weigh their ingredients raw. */
+  variants?: boolean;
 };
 
 /**
  * Favourites and recent foods until you type; then your foods, recent ones first,
  * followed by the bundled reference tables. A reference food is copied into your foods when added.
  */
-export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, onClose, addLabel }: Props) {
+export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, onClose, addLabel, variants = true }: Props) {
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<Food>();
   const reference = useReference(true);
@@ -64,7 +66,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
       </header>
       {picked ? (
         <Amount
-          food={picked}
+          food={variants ? picked : { ...picked, variants: undefined }}
           containers={containers}
           addLabel={addLabel}
           onBack={() => setPicked(undefined)}
