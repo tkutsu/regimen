@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale } from "../domain/nutrition";
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
-import { searchFoods } from "../domain/search";
 import type { Container, Food, Recipe } from "../domain/types";
 import { box, Heading, ValueFields } from "./FoodEditor";
+import { FoodPicker } from "./FoodPicker";
 
 type Props = {
   recipe: Recipe;
@@ -17,9 +17,11 @@ type Props = {
   containers: Container[];
   /** Entries and staples that use this recipe. */
   uses: number;
-  onSave: (recipe: Recipe) => void;
+  /** `added` are reference foods picked as ingredients, to become yours with the recipe. */
+  onSave: (recipe: Recipe, added: Food[]) => void;
   onNewBatch: () => void;
   onDelete: () => void;
+  onToggleFav: (food: Food) => void;
   onClose: () => void;
 };
 
@@ -27,10 +29,14 @@ type Props = {
  * Ingredients by raw weight; the weighed total minus its container gives the values per 100 g.
  * Without ingredients, the values are written by hand.
  */
-export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, containers, uses, onSave, onNewBatch, onDelete, onClose }: Props) {
+export function RecipeEditor(props: Props) {
+  const { recipe, saved, replaces, recentIds, containers, uses, onSave, onNewBatch, onDelete, onToggleFav, onClose } = props;
   const [form, setForm] = useState(() => toRecipeForm(recipe));
-  const [query, setQuery] = useState("");
+  const [picking, setPicking] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  // Reference foods picked so far count as yours until the recipe is saved or dropped.
+  const [picked, setPicked] = useState<Food[]>([]);
+  const foods = useMemo(() => new Map([...props.foods, ...picked.map((food): [string, Food] => [food.id, food])]), [props.foods, picked]);
   const result = fromRecipeForm(form, recipe.id, foods);
   const patch = (changes: Partial<RecipeForm>) => setForm({ ...form, ...changes });
   const setAmount = (i: number, amount: string) => patch({ ingredients: form.ingredients.map((ing, j) => (i === j ? { ...ing, amount } : ing)) });
@@ -44,7 +50,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, contai
   };
   const totals = recipeTotals(draft, foods);
   const per100 = recipeAsFood(draft, foods);
-  const matches = useMemo(() => searchFoods(foods.values(), query, 6, recentIds), [foods, query, recentIds]);
+  const save = (recipe: Recipe) => onSave(recipe, picked.filter((food) => recipe.ingredients.some((i) => i.foodId === food.id)));
   const byHand = !form.ingredients.length;
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
 
@@ -55,7 +61,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, contai
           Cancel
         </button>
         <h2 className="font-medium">{replaces ? "New batch" : saved ? "Edit recipe" : "New recipe"}</h2>
-        <button disabled={!result} onClick={() => result && onSave(result)} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
+        <button disabled={!result} onClick={() => result && save(result)} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
           Save
         </button>
       </header>
@@ -101,28 +107,10 @@ export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, contai
                   </li>
                 );
               })}
-              <li className="relative">
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="+ Add ingredient"
-                  className="w-full bg-transparent px-4 py-2.5 outline-none placeholder:text-accent"
-                />
-                {matches.map((food) => (
-                  <button
-                    key={food.id}
-                    onClick={() => {
-                      patch({ ingredients: [...form.ingredients, { foodId: food.id, amount: "" }] });
-                      setQuery("");
-                    }}
-                    className="flex w-full items-baseline gap-2 border-t border-line px-4 py-2 text-left text-sm"
-                  >
-                    <span className="flex-1">{food.name}</span>
-                    <span className="text-xs text-muted">
-                      {Math.round(food.kcal)} / {food.basis === "item" ? "item" : "100 g"}
-                    </span>
-                  </button>
-                ))}
+              <li>
+                <button onClick={() => setPicking(true)} className="w-full px-4 py-2.5 text-left text-accent">
+                  + Add ingredient
+                </button>
               </li>
             </ul>
           </section>
@@ -223,6 +211,22 @@ export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, contai
             ))}
         </div>
       </div>
+      {picking && (
+        <FoodPicker
+          foods={props.foods}
+          recentIds={recentIds}
+          containers={containers}
+          addLabel="Add ingredient"
+          variants={false}
+          onAdd={(food, amount) => {
+            if (!props.foods.has(food.id) && !picked.some((p) => p.id === food.id)) setPicked([...picked, food]);
+            patch({ ingredients: [...form.ingredients, { foodId: food.id, amount: String(Math.round(amount * 10) / 10) }] });
+            setPicking(false);
+          }}
+          onToggleFav={onToggleFav}
+          onClose={() => setPicking(false)}
+        />
+      )}
     </div>
   );
 }

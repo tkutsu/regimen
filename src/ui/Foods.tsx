@@ -120,14 +120,17 @@ export function Foods({ state, commit }: Props) {
           recentIds={recent}
           containers={state.settings.containers}
           uses={uses.get(cooking.recipe.id) ?? 0}
-          onSave={async (edited) => {
+          onSave={async (edited, added) => {
             const old = cooking.replaces;
             const archive = old ? [{ type: "recipe.upsert" as const, recipe: { ...old, archived: true } }] : [];
+            // A reference-table food becomes one of yours, as on Today.
+            const foods = added.map((food) => ({ type: "food.upsert" as const, food }));
             // The editor doesn't show the star, so an unstarred recipe stays unstarred.
             const fav = (state.recipes.get(edited.id) ?? old)?.fav;
             const recipe = fav === false ? { ...edited, fav } : edited;
-            if (await commit(...archive, { type: "recipe.upsert", recipe })) setCooking(undefined);
+            if (await commit(...archive, ...foods, { type: "recipe.upsert", recipe })) setCooking(undefined);
           }}
+          onToggleFav={(food) => star(food.id)}
           onNewBatch={() => setCooking({ recipe: newBatch(cooking.recipe, newId()), replaces: cooking.recipe })}
           onDelete={async () => {
             if (await commit({ type: "recipe.delete", recipeId: cooking.recipe.id })) setCooking(undefined);
