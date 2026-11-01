@@ -66,11 +66,24 @@ export function OptionalNumberInput({ value, onCommit, format, parse, placeholde
   return <input {...useDraft(value, onCommit, true, format, parse)} placeholder={placeholder} aria-label={label} className={`bg-transparent outline-none ${className}`} />;
 }
 
-export function NumberField({ label, ...props }: Props & { label: string }) {
+/**
+ * A labelled number with its unit right after it. The input is as wide as what it shows,
+ * measured by an invisible copy of the text, so the unit follows the number.
+ */
+export function NumberField({ label, unit, value, onCommit, placeholder }: Omit<Props, "className" | "aria-label"> & { label: string; unit: string }) {
+  const draft = useDraft(value, (v) => v !== undefined && onCommit(v));
   return (
     <label className="rounded-xl border border-line bg-surface px-3 py-2">
       <span className="block text-xs text-muted">{label}</span>
-      <NumberInput {...props} className="w-full text-lg placeholder:text-muted/50" />
+      <span className="flex items-baseline text-lg">
+        <span className="inline-grid min-w-0">
+          <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
+            {`${draft.value || placeholder || ""} `}
+          </span>
+          <input {...draft} placeholder={placeholder} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
+        </span>
+        <span className="text-sm text-muted">{unit}</span>
+      </span>
     </label>
   );
 }
@@ -93,6 +106,19 @@ export function TextInput({ value, onCommit, placeholder, className = "", "aria-
       aria-label={label}
       className={`bg-transparent outline-none ${className}`}
     />
+  );
+}
+
+/** A circle that fills with the accent and a black tick when done. */
+export function Tick({ done, label, onClick, className = "size-5" }: { done: boolean; label: string; onClick: () => void; className?: string }) {
+  return (
+    <button onClick={onClick} aria-label={label} className={`${className} shrink-0 rounded-full border-2 ${done ? "border-accent bg-accent" : "border-line"}`}>
+      {done && (
+        <svg viewBox="0 0 16 16" aria-hidden className="block size-full" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3.5 8.5l3 3 6-6.5" />
+        </svg>
+      )}
+    </button>
   );
 }
 

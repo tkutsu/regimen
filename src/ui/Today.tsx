@@ -5,7 +5,7 @@ import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
 import type { Commit } from "../store";
-import { NumberField } from "./fields";
+import { NumberField, Tick } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { Remaining } from "./Remaining";
 
@@ -69,13 +69,14 @@ export function Today({ state, commit }: Props) {
 
       <div className="grid grid-cols-3 gap-2">
         <NumberField
-          label="weight (kg)"
+          label="weight"
+          unit="kg"
           value={state.weights.get(date)}
           placeholder={trend?.toFixed(1)}
           onCommit={(kg) => kg > 0 && commit({ type: "weight", date, kg })}
         />
-        <NumberField label="steps (k)" value={day.steps / 1000} onCommit={(k) => setDay({ steps: Math.round(k * 1000) })} />
-        <NumberField label="extra kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} />
+        <NumberField label="steps" unit="k" value={day.steps / 1000} onCommit={(k) => setDay({ steps: Math.round(k * 1000) })} />
+        <NumberField label="extra" unit="kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} />
       </div>
 
       <ul className="overflow-hidden rounded-2xl border border-line bg-surface">
@@ -143,11 +144,7 @@ function EntryRow({ entry, food, onChange }: { entry: Entry; food?: Food; onChan
   return (
     <li className="border-b border-line last:border-b-0">
       <div className={`flex items-center gap-3 px-3 py-2 ${entry.done ? "" : "text-muted"}`}>
-        <button
-          onClick={() => onChange({ ...entry, done: !entry.done })}
-          aria-label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`}
-          className={`size-5 shrink-0 rounded-full border-2 ${entry.done ? "border-accent bg-accent" : "border-line"}`}
-        />
+        <Tick done={entry.done} onClick={() => onChange({ ...entry, done: !entry.done })} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
         <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left">
           <span className="truncate">
             {food?.name ?? "unknown food"}

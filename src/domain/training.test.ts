@@ -11,6 +11,7 @@ import {
   planExercise,
   startSession,
   summarize,
+  supersets,
   usedExercises,
 } from "./training";
 import type { Session, SetLog, Workout } from "./types";
@@ -48,6 +49,13 @@ describe("startSession", () => {
     const warmUp: Workout = { id: "w", name: "Squat", targets: [{ exerciseId: "squat", sets: 1, reps: 5, kg: 40 }, { exerciseId: "squat", sets: 2, reps: 5, kg: 100 }] };
     const last = session("a", "2026-10-30", [set("squat", 5, 40), set("squat", 5, 100), set("squat", 5, 102.5)]);
     expect(startSession(warmUp, [last], "2026-11-01", "s").sets.map((s) => s.kg)).toEqual([40, 100, 102.5]);
+  });
+
+  it("copies supersets in, counting an exercise's link only where it first appears", () => {
+    const linked = (exerciseId: string) => ({ exerciseId, sets: 1, linked: true as const });
+    const circuit: Workout = { id: "c", name: "Circuit", targets: [linked("bench"), linked("row"), { exerciseId: "dips", sets: 1 }, linked("bench")] };
+    expect(startSession(circuit, [], "2026-11-01", "s").linked).toEqual(["row"]);
+    expect(startSession(push, [], "2026-11-01", "s")).not.toHaveProperty("linked");
   });
 });
 
@@ -92,6 +100,12 @@ describe("editing a session", () => {
       { exerciseId: "bench", at: [0, 2] },
       { exerciseId: "dips", at: [1] },
     ]);
+  });
+
+  it("puts each linked exercise with the one above it", () => {
+    const sets = [set("bench", 8), set("row", 8), set("dips", 10), set("curl", 12)];
+    expect(supersets(sets, ["row", "curl"]).map((block) => block.map((group) => group.exerciseId))).toEqual([["bench", "row"], ["dips", "curl"]]);
+    expect(supersets(sets, ["bench"])).toHaveLength(4);
   });
 
   it("finishing drops the sets not done, and the session when none were", () => {

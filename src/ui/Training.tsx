@@ -28,7 +28,7 @@ export function Training({ state, commit }: Props) {
   const shown = openId ? state.sessions.get(openId) : undefined;
 
   const put = (session: Session) => commit({ type: "session.upsert", session });
-  const createExercise = (exercise: Exercise) => commit({ type: "exercise.upsert", exercise });
+  const saveExercise = (exercise: Exercise) => commit({ type: "exercise.upsert", exercise });
   const start = async (session: Session) => {
     if (await put(session)) setOpenId(session.id);
   };
@@ -107,7 +107,7 @@ export function Training({ state, commit }: Props) {
         <Section title="Exercises">
           {exercises.map((exercise) => (
             <div key={exercise.id} className="flex items-center gap-2 px-4 py-2">
-              <TextInput value={exercise.name} onCommit={(name) => createExercise({ ...exercise, name })} aria-label={`Rename ${exercise.name}`} className="min-w-0 flex-1" />
+              <TextInput value={exercise.name} onCommit={(name) => saveExercise({ ...exercise, name })} aria-label={`Rename ${exercise.name}`} className="min-w-0 flex-1" />
               <span className="text-sm text-muted">{exercise.measure}</span>
               {used.has(exercise.id) ? <span className="w-5" /> : <Remove label={exercise.name} onClick={() => commit({ type: "exercise.delete", exerciseId: exercise.id })} />}
             </div>
@@ -120,7 +120,7 @@ export function Training({ state, commit }: Props) {
           workout={editing.workout}
           saved={editing.saved}
           exercises={state.exercises}
-          onCreateExercise={createExercise}
+          onSaveExercise={saveExercise}
           onSave={async (workout) => {
             if (await commit({ type: "workout.upsert", workout })) setEditing(undefined);
           }}
@@ -137,7 +137,7 @@ export function Training({ state, commit }: Props) {
           sessions={sessions}
           exercises={state.exercises}
           onChange={put}
-          onCreateExercise={createExercise}
+          onSaveExercise={saveExercise}
           onFinish={async () => {
             const done = finish(shown);
             if (await commit(done ? { type: "session.upsert", session: done } : { type: "session.delete", sessionId: shown.id })) close();

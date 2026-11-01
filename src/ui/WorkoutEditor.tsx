@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { newId } from "../domain/state";
 import type { Exercise, Target, Workout } from "../domain/types";
-import { AmountFields, ExerciseSearch, fieldBox } from "./exercises";
+import { AmountFields, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
 import { box, Heading } from "./FoodEditor";
-import { NumberInput, Remove } from "./fields";
+import { NumberInput, Remove, TextInput } from "./fields";
 import { useReorder } from "./reorder";
 
 type Props = {
@@ -11,7 +11,8 @@ type Props = {
   /** The workout is already saved, not a draft. */
   saved: boolean;
   exercises: Map<string, Exercise>;
-  onCreateExercise: (exercise: Exercise) => void;
+  /** Makes or renames an exercise, written straight away. */
+  onSaveExercise: (exercise: Exercise) => void;
   onSave: (workout: Workout) => void;
   onDelete: () => void;
   onClose: () => void;
@@ -21,7 +22,7 @@ type Props = {
 type Line = Target & { key: string };
 
 /** The exercises of a workout in order, each with its sets. Nothing is written until Save. */
-export function WorkoutEditor({ workout, saved, exercises, onCreateExercise, onSave, onDelete, onClose }: Props) {
+export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSave, onDelete, onClose }: Props) {
   const [name, setName] = useState(workout.name);
   const [lines, setLines] = useState<Line[]>(() => workout.targets.map((target) => ({ ...target, key: newId() })));
   const [note, setNote] = useState(workout.note ?? "");
@@ -35,8 +36,9 @@ export function WorkoutEditor({ workout, saved, exercises, onCreateExercise, onS
     const sets = exercises.get(exerciseId)?.measure === "reps" ? 3 : 1;
     setLines([...lines, { key: newId(), exerciseId, sets }]);
   };
-  const save = () =>
-    valid && onSave({ id: workout.id, name: name.trim(), targets: lines.map(({ key: _, ...target }) => target), note: note.trim() || undefined });
+  // The first line has nothing above to be linked to.
+  const targets = () => lines.map(({ key: _, ...target }, i) => (i === 0 ? { ...target, linked: undefined } : target));
+  const save = () => valid && onSave({ id: workout.id, name: name.trim(), targets: targets(), note: note.trim() || undefined });
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Workout" className="fixed inset-0 z-10 flex flex-col bg-bg">
@@ -57,15 +59,25 @@ export function WorkoutEditor({ workout, saved, exercises, onCreateExercise, onS
           <section>
             <Heading hint="each starts from last time">Exercises</Heading>
             <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
-              {shown.map((line) => {
+              {shown.map((line, i) => {
                 const exercise = exercises.get(line.exerciseId);
                 const label = exercise?.name ?? "deleted exercise";
+                const superset = (i > 0 && line.linked) || shown[i + 1]?.linked;
                 return (
-                  <li key={line.key} data-row={line.key} className={`flex items-start gap-2 py-2 pr-4 pl-2 ${dragging === line.key ? "bg-line/40" : ""}`}>
+                  <li
+                    key={line.key}
+                    data-row={line.key}
+                    className={`flex items-start gap-2 py-2 pr-4 pl-2 ${dragging === line.key ? "bg-line/40" : ""} ${superset ? "shadow-[inset_3px_0_0_var(--color-accent)]" : ""}`}
+                  >
                     <button {...handle(line, label)} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="min-w-0 flex-1 truncate">{label}</span>
+                        {exercise ? (
+                          <TextInput value={exercise.name} onCommit={(name) => onSaveExercise({ ...exercise, name })} aria-label={`Rename ${label}`} className="min-w-0 flex-1" />
+                        ) : (
+                          <span className="min-w-0 flex-1 truncate text-muted">{label}</span>
+                        )}
+                        {i > 0 && <LinkToggle linked={!!line.linked} label={label} onToggle={() => patch(line.key, { linked: line.linked ? undefined : true })} />}
                         <Remove label={label} onClick={() => setLines(lines.filter((other) => other.key !== line.key))} />
                       </div>
                       <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -85,7 +97,7 @@ export function WorkoutEditor({ workout, saved, exercises, onCreateExercise, onS
                 );
               })}
               <li>
-                <ExerciseSearch exercises={exercises} onPick={add} onCreate={onCreateExercise} />
+                <ExerciseSearch exercises={exercises} onPick={add} onCreate={onSaveExercise} />
               </li>
             </ul>
           </section>
