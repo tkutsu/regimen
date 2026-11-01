@@ -20,7 +20,7 @@ export const defaultSettings: Settings = {
   kcalPer1kSteps: 37,
   limits: {
     prot: { min: 1.6 },
-    fiber: { min: 15 },
+    fiber: { min: 30 },
     satFat: { max: 7 },
     unsatFat: { min: 25 },
     salt: { max: 4.5 },

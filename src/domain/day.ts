@@ -51,7 +51,7 @@ export type Targets = { kcal: number } & Record<Limited, Range>;
 
 export const LIMIT_UNITS: Record<Limited, string> = {
   prot: "g/kg",
-  fiber: "g/1k kcal",
+  fiber: "g",
   satFat: "% kcal",
   unsatFat: "% kcal",
   salt: "g",
@@ -64,7 +64,7 @@ export function targets(state: State, date: string): Targets {
   const kg = trendWeight(state, date) ?? 0;
   const grams: Record<Limited, (value: number) => number> = {
     prot: (perKg) => perKg * kg,
-    fiber: (per1k) => (kcal / 1000) * per1k,
+    fiber: (g) => g,
     satFat: (pct) => (kcal * pct) / 100 / 9,
     unsatFat: (pct) => (kcal * pct) / 100 / 9,
     salt: (g) => g,
