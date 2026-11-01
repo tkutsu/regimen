@@ -1,12 +1,13 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
-import type { Change, Phase } from "../domain/types";
+import type { Phase } from "../domain/types";
 import { daysBetween, phaseRuns, stretches, weightSeries, type Stretch } from "../domain/weight";
+import type { Commit } from "../store";
 import { NumberInput } from "./fields";
 import { useRemembered } from "./look";
 
-type Props = { state: State; commit: (...changes: Change[]) => void };
+type Props = { state: State; commit: Commit };
 type Point = ReturnType<typeof weightSeries>[number];
 
 const RANGES = { "1M": 31, "3M": 92, All: Infinity };

@@ -1,6 +1,6 @@
 import { add, allFoods, scale, zero } from "./nutrition";
 import type { State } from "./state";
-import type { Day, Entry, Limited, Nutrients, Range } from "./types";
+import type { Day, Entry, Food, Limited, Nutrients, Range } from "./types";
 
 /** Today's date in local time, as YYYY-MM-DD. */
 export function localDate(date = new Date()): string {
@@ -16,11 +16,19 @@ export function shiftDate(date: string, days: number): string {
 
 /** The day's settings. A day never set carries the phase and offset of the last one that was. */
 export function dayOf(state: State, date: string): Day {
-  const own = state.days.get(date);
-  if (own) return own;
-  const previous = [...state.days.keys()].filter((d) => d < date).sort().at(-1);
-  const carried = previous ? state.days.get(previous)! : undefined;
-  return { date, phase: carried?.phase ?? "maintain", offset: carried?.offset, steps: 0, extraKcal: 0 };
+  return daysFrom(state, date, date)[0];
+}
+
+/** `dayOf` for every date from `from` to `to`, in one pass over the days set. */
+export function daysFrom(state: State, from: string, to: string): Day[] {
+  const set = [...state.days.keys()].sort();
+  const out: Day[] = [];
+  let carried: Day | undefined;
+  for (let date = from, i = 0; date <= to; date = shiftDate(date, 1)) {
+    while (i < set.length && set[i] <= date) carried = state.days.get(set[i++]);
+    out.push(carried?.date === date ? carried : { date, phase: carried?.phase ?? "maintain", offset: carried?.offset, steps: 0, extraKcal: 0 });
+  }
+  return out;
 }
 
 /** Mean of the weigh-ins in the 7 days ending on date, else the latest one before it. */
@@ -105,10 +113,14 @@ export function missingStaples(state: State, date: string): Entry[] {
 
 /** Everything logged for the day, planned or done; `done` picks one of the two. A skipped plan is simply removed. */
 export function intake(state: State, date: string, done?: boolean): Nutrients {
-  const foods = allFoods(state);
   const entries = entriesOn(state, date).filter((entry) => done === undefined || entry.done === done);
-  return entries.reduce((sum, entry) => {
+  return sum(entries, allFoods(state));
+}
+
+/** What the entries add up to; one whose food is gone counts as nothing. */
+export function sum(entries: Entry[], foods: Map<string, Food>): Nutrients {
+  return entries.reduce((total, entry) => {
     const food = foods.get(entry.foodId);
-    return food ? add(sum, scale(food, entry.amount, entry.factor)) : sum;
+    return food ? add(total, scale(food, entry.amount, entry.factor)) : total;
   }, zero());
 }

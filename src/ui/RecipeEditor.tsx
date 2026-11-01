@@ -15,7 +15,7 @@ type Props = {
   /** Most recently used first. */
   recentIds: string[];
   containers: Container[];
-  /** Entries that ate this recipe. */
+  /** Entries and staples that use this recipe. */
   uses: number;
   onSave: (recipe: Recipe) => void;
   onNewBatch: () => void;
@@ -31,7 +31,7 @@ export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, contai
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [query, setQuery] = useState("");
   const [confirming, setConfirming] = useState(false);
-  const result = fromRecipeForm(form, recipe.id);
+  const result = fromRecipeForm(form, recipe.id, foods);
   const patch = (changes: Partial<RecipeForm>) => setForm({ ...form, ...changes });
   const setAmount = (i: number, amount: string) => patch({ ingredients: form.ingredients.map((ing, j) => (i === j ? { ...ing, amount } : ing)) });
 
@@ -165,8 +165,10 @@ export function RecipeEditor({ recipe, saved, replaces, foods, recentIds, contai
                   <p className="mt-2 px-1 text-sm text-muted">
                     = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g raw (×{(totals.cookedG / totals.rawG).toFixed(2)})
                   </p>
-                ) : (
+                ) : totals.rawG ? (
                   <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the raw weight.</p>
+                ) : (
+                  <p className="mt-2 px-1 text-sm text-bad">Its ingredients are counted by the item, so weigh it to get values per 100 g.</p>
                 )}
                 {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The total weighs less than its container.</p>}
               </section>

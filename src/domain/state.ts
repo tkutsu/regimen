@@ -1,5 +1,5 @@
 import { localDate } from "./day";
-import type { Change, Day, Entry, Event, Food, Recipe, Settings } from "./types";
+import type { Change, Day, Entry, Event, Food, Recipe, Settings, SettingsPatch } from "./types";
 
 export type State = {
   foods: Map<string, Food>;
@@ -36,26 +36,42 @@ export const defaultSettings: Settings = {
 type Legacy = { proteinPerKg?: number; sugarPct?: number };
 
 /**
- * Parses every device's log into one ordered list. Lines that fail to parse
- * (a half-synced tail) are skipped; duplicates (Syncthing conflict copies) collapse by id.
+ * Parses every device's log into one ordered list, with `extra` events not read from
+ * them. Lines that fail to parse (a half-synced tail) are skipped; duplicates (Syncthing
+ * conflict copies) collapse by id.
  */
-export function parseLogs(texts: string[]): Event[] {
+export function parseLogs(texts: string[], extra: Event[] = []): Event[] {
   const byId = new Map<string, Event>();
   for (const line of texts.flatMap((text) => text.split("\n"))) {
-    if (!line.trim()) continue;
-    try {
-      const event = JSON.parse(line) as Event;
-      if (event.id && event.t && event.type) byId.set(event.id, event);
-    } catch {
-      // incomplete line, still syncing
-    }
+    const event = line.trim() ? readLine(line) : undefined;
+    if (event) byId.set(event.id, event);
   }
+  for (const event of extra) byId.set(event.id, event);
   return [...byId.values()].sort(
     (a, b) => a.t.localeCompare(b.t) || a.dev.localeCompare(b.dev) || a.id.localeCompare(b.id),
   );
 }
 
-/** Folds ordered events into state; for every entity the last write wins. */
+/**
+ * A line's event. A write cut short leaves a torn line that the next write appends to,
+ * as in `{"type":"wei{"type":"food.upsert",…}`, so the event is read from the last
+ * place where one starts.
+ */
+function readLine(line: string): Event | undefined {
+  for (let at = 0; at !== -1; at = line.indexOf("{", at + 1)) {
+    try {
+      const event = JSON.parse(line.slice(at)) as Event;
+      if (event.id && event.t && event.type) return event;
+    } catch {
+      // incomplete, or torn: try from the next brace
+    }
+  }
+}
+
+/**
+ * Folds ordered events into state; for every entity the last write wins. An event
+ * missing what its type needs (a hand edit, a newer version's shape) is skipped.
+ */
 export function fold(events: Event[]): State {
   const state: State = {
     foods: new Map(),
@@ -67,8 +83,47 @@ export function fold(events: Event[]): State {
     tdeeHistory: [],
     removed: new Set(),
   };
-  for (const event of events) apply(state, event);
+  for (const event of events) {
+    try {
+      apply(state, event);
+    } catch {
+      // malformed: the rest of the history still loads
+    }
+  }
   return state;
+}
+
+/** What each event changes in place; settings are replaced whole, so they need no copy. */
+const TOUCHES: Record<Event["type"], (keyof State)[]> = {
+  "food.upsert": ["foods"],
+  "food.delete": ["foods"],
+  "entry.upsert": ["entries"],
+  "entry.delete": ["entries", "removed"],
+  "day.upsert": ["days"],
+  weight: ["weights"],
+  "recipe.upsert": ["recipes"],
+  "recipe.delete": ["recipes"],
+  settings: ["tdeeHistory"],
+};
+
+const copy = <T>(value: T): T =>
+  (value instanceof Map ? new Map(value) : value instanceof Set ? new Set(value) : Array.isArray(value) ? [...value] : value) as T;
+
+/**
+ * The state after more events, as a new state. Only the collections they change are
+ * copied, so the others stay the same objects and memos on them hold.
+ */
+export function applyEvents(state: State, events: Event[]): State {
+  const next = { ...state };
+  const copied = new Set<keyof State>();
+  for (const event of events) {
+    for (const key of TOUCHES[event.type].filter((key) => !copied.has(key))) {
+      Object.assign(next, { [key]: copy(next[key]) });
+      copied.add(key);
+    }
+    apply(next, event);
+  }
+  return next;
 }
 
 export function apply(state: State, event: Event): void {
@@ -99,7 +154,8 @@ export function apply(state: State, event: Event): void {
       state.recipes.delete(event.recipeId);
       break;
     case "settings": {
-      const { proteinPerKg, sugarPct, ...patch } = event.settings as Partial<Settings> & Legacy;
+      // Limits merge per nutrient, so devices setting different ones don't undo each other.
+      const { proteinPerKg, sugarPct, ...patch } = event.settings as SettingsPatch & Legacy;
       const limits = { ...state.settings.limits, ...patch.limits };
       if (proteinPerKg !== undefined) limits.prot = { ...limits.prot, min: proteinPerKg };
       if (sugarPct !== undefined) limits.sugar = { ...limits.sugar, max: sugarPct };
@@ -115,6 +171,14 @@ export function newId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
 }
 
-export function stamp(change: Change, dev: string, now = new Date()): Event {
+let last = 0;
+
+/** Now, but always after the last event stamped here, so a device's events replay in the order they were made. */
+function nextTime(): Date {
+  last = Math.max(Date.now(), last + 1);
+  return new Date(last);
+}
+
+export function stamp(change: Change, dev: string, now = nextTime()): Event {
   return { ...change, id: newId(), t: now.toISOString(), dev } as Event;
 }
