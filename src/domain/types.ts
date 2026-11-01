@@ -94,6 +94,9 @@ export type Settings = {
   accentHue: number;
 };
 
+/** A settings change: the fields it sets, and of limits only the nutrients it sets. */
+export type SettingsPatch = Partial<Omit<Settings, "limits">> & { limits?: Partial<Settings["limits"]> };
+
 type Meta = { id: string; t: string; dev: string };
 
 export type Event = Meta &
@@ -106,7 +109,7 @@ export type Event = Meta &
     | { type: "weight"; date: string; kg: number }
     | { type: "recipe.upsert"; recipe: Recipe }
     | { type: "recipe.delete"; recipeId: string }
-    | { type: "settings"; settings: Partial<Settings> }
+    | { type: "settings"; settings: SettingsPatch }
   );
 
 /** An event before it is stamped with id, time and device. */

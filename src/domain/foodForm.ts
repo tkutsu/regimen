@@ -32,11 +32,11 @@ export function toForm(food?: Food): FoodForm {
   };
 }
 
-/** Blank reads as null (unknown), a number ≥ 0 as itself, anything else as NaN. */
+/** Blank reads as null (unknown), a finite number ≥ 0 as itself, anything else (Infinity, 1e309) as NaN. */
 export function readValue(text: string): number | null {
   if (!text.trim()) return null;
   const value = Number(text.trim().replace(",", "."));
-  return value >= 0 ? value : NaN;
+  return Number.isFinite(value) && value >= 0 ? value : NaN;
 }
 
 /** The typed nutrients, or undefined while kcal is blank or something isn't a number. */

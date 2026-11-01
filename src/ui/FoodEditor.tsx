@@ -7,7 +7,7 @@ import type { Food } from "../domain/types";
 type Props = {
   food?: Food;
   groups: string[];
-  /** Entries and recipe ingredients that use the food. */
+  /** Entries, recipe ingredients and staples that use the food. */
   uses: number;
   onSave: (food: Food) => void;
   onDelete: () => void;
@@ -138,7 +138,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
           {food &&
             (uses > 0 ? (
               <p className="text-center text-sm text-muted">
-                Used {uses} {uses === 1 ? "time" : "times"} in your log or recipes, so it can't be deleted.
+                Used {uses} {uses === 1 ? "time" : "times"} in your log, recipes or staples, so it can't be deleted.
               </p>
             ) : (
               <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">

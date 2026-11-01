@@ -4,11 +4,12 @@ import { allFoods, parseAmount, pickableFoods, scale } from "../domain/nutrition
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Phase, Variant } from "../domain/types";
+import type { Commit } from "../store";
 import { NumberField } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { Remaining } from "./Remaining";
 
-type Props = { state: State; commit: (...changes: Change[]) => void };
+type Props = { state: State; commit: Commit };
 
 export function Today({ state, commit }: Props) {
   const [date, setDate] = useState(localDate);
@@ -33,12 +34,11 @@ export function Today({ state, commit }: Props) {
   const setDay = (patch: Partial<Day>) => commit({ type: "day.upsert", day: { ...day, ...patch } });
   const putEntry = (entry: Entry) =>
     commit(entry.amount > 0 ? { type: "entry.upsert", entry } : { type: "entry.delete", entryId: entry.id });
-  const add = (food: Food, amount: number, done: boolean, variant?: Variant) => {
+  const add = async (food: Food, amount: number, done: boolean, variant?: Variant) => {
     const entry = { id: newId(), date, foodId: food.id, amount, done, variant: variant?.name, factor: variant?.factor };
     // A reference-table food becomes one of yours, synced like any other.
     const save: Change[] = foods.has(food.id) ? [] : [{ type: "food.upsert", food }];
-    commit(...save, { type: "entry.upsert", entry });
-    setPicking(false);
+    if (await commit(...save, { type: "entry.upsert", entry })) setPicking(false);
   };
   const copyYesterday = () =>
     commit(...yesterday.map((entry): Change => ({ type: "entry.upsert", entry: { ...entry, id: newId(), date, done: false } })));
