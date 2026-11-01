@@ -45,6 +45,14 @@ pub async fn write(_: &AppHandle, dir: &str, sub: &str, name: &str, text: &str, 
     file.sync_all().map_err(err)
 }
 
+/// Deletes `<dir>/<sub>/<name>`; already gone is fine.
+pub async fn remove(_: &AppHandle, dir: &str, sub: &str, name: &str) -> Result<(), String> {
+    match fs::remove_file(Path::new(dir).join(sub).join(name)) {
+        Err(e) if e.kind() != ErrorKind::NotFound => Err(err(e)),
+        _ => Ok(()),
+    }
+}
+
 /// Whether Syncthing shares the folder: it marks each shared folder with `.stfolder`.
 pub fn synced(dir: &str) -> Option<bool> {
     Some(Path::new(dir).ancestors().any(|folder| folder.join(".stfolder").exists()))

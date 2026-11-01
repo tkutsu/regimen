@@ -160,13 +160,32 @@ async fn append_events(app: AppHandle, dir: String, device: String, lines: Vec<S
     store::write(&app, &dir, "events", &format!("{device}.jsonl"), &text, true).await
 }
 
+/// Takes this device's log to its new name and drops the old check-in. When the new name
+/// already has a log, the old one is appended to it: events keep their ids, so the merged
+/// state is the same.
+#[tauri::command]
+async fn rename_device(app: AppHandle, dir: String, from: String, to: String) -> Result<(), String> {
+    check_device(&from)?;
+    check_device(&to)?;
+    if from == to {
+        return Ok(());
+    }
+    let old = format!("{from}.jsonl");
+    let log = store::read(&app, &dir, "events", &old).await?.into_iter().find(|file| file.name == old);
+    if let Some(log) = log {
+        store::write(&app, &dir, "events", &format!("{to}.jsonl"), &log.text, true).await?;
+        store::remove(&app, &dir, "events", &old).await?;
+    }
+    store::remove(&app, &dir, "devices", &format!("{from}.json")).await
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default();
     #[cfg(target_os = "android")]
     let builder = builder.plugin(store::plugin());
     builder
-        .invoke_handler(tauri::generate_handler![load_config, suggest_config, save_config, pick_dir, inspect_dir, load_folder, append_events])
+        .invoke_handler(tauri::generate_handler![load_config, suggest_config, save_config, pick_dir, inspect_dir, load_folder, append_events, rename_device])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
