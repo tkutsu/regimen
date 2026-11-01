@@ -80,6 +80,8 @@ export type Recipe = {
   note?: string;
   /** An old batch: kept for the days that ate it, left out of the picker. */
   archived?: boolean;
+  /** Recipes are favourites unless unstarred. */
+  fav?: false;
 };
 
 export type Settings = {

@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { recipeAsFood, unknownNutrients } from "../domain/nutrition";
+import { recipeAsFood, toggleFav, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
 import { recentFoodIds, searchFoods } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Food, Recipe } from "../domain/types";
 import type { Commit } from "../store";
 import { FoodEditor } from "./FoodEditor";
+import { Star } from "./fields";
 import { RecipeEditor } from "./RecipeEditor";
 
 type Props = { state: State; commit: Commit };
@@ -35,6 +36,7 @@ export function Foods({ state, commit }: Props) {
     [state.recipes, query],
   );
 
+  const star = (id: string) => commit(...toggleFav(state, id));
   const close = () => setEditing(undefined);
   const food = editing === "new" ? undefined : editing;
   const emptyRecipe = (): Recipe => ({ id: newId(), name: "", ingredients: [], totalG: 0, containerG: 0 });
@@ -63,7 +65,7 @@ export function Foods({ state, commit }: Props) {
           <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
             {recipes.map((recipe) => (
               <li key={recipe.id}>
-                <FoodRow food={recipeAsFood(recipe, state.foods)} onPick={() => setCooking({ recipe })} />
+                <FoodRow food={recipeAsFood(recipe, state.foods)} onPick={() => setCooking({ recipe })} onToggleFav={() => star(recipe.id)} />
               </li>
             ))}
           </ul>
@@ -77,7 +79,7 @@ export function Foods({ state, commit }: Props) {
               <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
                 {list.map((food) => (
                   <li key={food.id}>
-                    <FoodRow food={food} onPick={() => setEditing(food)} />
+                    <FoodRow food={food} onPick={() => setEditing(food)} onToggleFav={() => star(food.id)} />
                   </li>
                 ))}
               </ul>
@@ -118,9 +120,12 @@ export function Foods({ state, commit }: Props) {
           recentIds={recent}
           containers={state.settings.containers}
           uses={uses.get(cooking.recipe.id) ?? 0}
-          onSave={async (recipe) => {
+          onSave={async (edited) => {
             const old = cooking.replaces;
             const archive = old ? [{ type: "recipe.upsert" as const, recipe: { ...old, archived: true } }] : [];
+            // The editor doesn't show the star, so an unstarred recipe stays unstarred.
+            const fav = (state.recipes.get(edited.id) ?? old)?.fav;
+            const recipe = fav === false ? { ...edited, fav } : edited;
             if (await commit(...archive, { type: "recipe.upsert", recipe })) setCooking(undefined);
           }}
           onNewBatch={() => setCooking({ recipe: newBatch(cooking.recipe, newId()), replaces: cooking.recipe })}
@@ -134,22 +139,24 @@ export function Foods({ state, commit }: Props) {
   );
 }
 
-function FoodRow({ food, onPick }: { food: Food; onPick: () => void }) {
+function FoodRow({ food, onPick, onToggleFav }: { food: Food; onPick: () => void; onToggleFav: () => void }) {
   const unknown = unknownNutrients(food);
   return (
-    <button onClick={onPick} className="flex w-full items-baseline gap-2 px-4 py-2.5 text-left">
-      {food.fav && <span className="text-accent">★</span>}
-      <span className="min-w-0 flex-1 truncate">{food.name}</span>
-      {unknown.length > 0 && (
-        <span title={`unknown: ${unknown.join(", ")}`} className="text-xs text-muted">
-          ?
+    <div className="flex items-baseline">
+      <Star fav={food.fav} name={food.name} onToggle={onToggleFav} className="py-2.5 pr-2 pl-4" />
+      <button onClick={onPick} className="flex min-w-0 flex-1 items-baseline gap-2 py-2.5 pr-4 text-left">
+        <span className="min-w-0 flex-1 truncate">{food.name}</span>
+        {unknown.length > 0 && (
+          <span title={`unknown: ${unknown.join(", ")}`} className="text-xs text-muted">
+            ?
+          </span>
+        )}
+        <span className="shrink-0 text-right text-sm text-muted">
+          {Math.round(food.kcal)}
+          <span className="text-xs"> kcal /{food.basis === "item" ? "item" : "100g"}</span>
         </span>
-      )}
-      <span className="shrink-0 text-right text-sm text-muted">
-        {Math.round(food.kcal)}
-        <span className="text-xs"> kcal /{food.basis === "item" ? "item" : "100g"}</span>
-      </span>
-    </button>
+      </button>
+    </div>
   );
 }
 
