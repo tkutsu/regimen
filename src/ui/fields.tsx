@@ -2,9 +2,10 @@ import { useState } from "react";
 
 /**
  * Edits locally and commits on blur or Enter, so typing doesn't write an event per
- * keystroke. With `optional`, clearing the field commits undefined.
+ * keystroke. With `optional`, clearing the field commits undefined. `format` only
+ * changes how the value reads while it isn't being edited.
  */
-function useDraft(value: number | undefined, onCommit: (value: number | undefined) => void, optional = false) {
+function useDraft(value: number | undefined, onCommit: (value: number | undefined) => void, optional = false, format: (value: number) => string = String) {
   const [draft, setDraft] = useState<string>();
   const commit = () => {
     const text = (draft ?? "").trim();
@@ -15,7 +16,7 @@ function useDraft(value: number | undefined, onCommit: (value: number | undefine
   };
   return {
     inputMode: "decimal" as const,
-    value: draft ?? (value === undefined ? "" : String(value)),
+    value: draft ?? (value === undefined ? "" : format(value)),
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value),
     onFocus: (e: React.FocusEvent<HTMLInputElement>) => e.target.select(),
     onBlur: commit,
@@ -31,8 +32,15 @@ type Props = {
   "aria-label"?: string;
 };
 
-export function NumberInput({ value, onCommit, placeholder, className = "" }: Props) {
-  return <input {...useDraft(value, (v) => v !== undefined && onCommit(v))} placeholder={placeholder} className={`bg-transparent outline-none ${className}`} />;
+export function NumberInput({ value, onCommit, format, placeholder, className = "", "aria-label": label }: Props & { format?: (value: number) => string }) {
+  return (
+    <input
+      {...useDraft(value, (v) => v !== undefined && onCommit(v), false, format)}
+      placeholder={placeholder}
+      aria-label={label}
+      className={`bg-transparent outline-none ${className}`}
+    />
+  );
 }
 
 /** A number that may be left blank. */
