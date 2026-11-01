@@ -2,8 +2,9 @@ import { useState } from "react";
 import { newId } from "../domain/state";
 import type { Exercise, Target, Workout } from "../domain/types";
 import { Dialog } from "./Dialog";
+import { dropsOf } from "../domain/training";
 import { AmountFields, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
-import { NumberInput, Remove, TextInput } from "./fields";
+import { NumberInput, OptionalNumberInput, Remove, TextInput } from "./fields";
 import { box, Heading } from "./FoodEditor";
 import { transition } from "./motion";
 import { useReorder } from "./reorder";
@@ -36,7 +37,7 @@ const unblock = (blocks: Line[][]): Line[] => blocks.flatMap((block) => block.ma
 /** The exercises of a workout in order, each with its sets. Nothing is written until Save. */
 export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSave, onDelete, onClose }: Props) {
   const [name, setName] = useState(workout.name);
-  const [lines, setLines] = useState<Line[]>(() => workout.targets.map((target) => ({ ...target, key: newId() })));
+  const [lines, setLines] = useState<Line[]>(() => workout.targets.map((target) => ({ ...target, drop: undefined, drops: dropsOf(target) || undefined, key: newId() })));
   const [note, setNote] = useState(workout.note ?? "");
   const [confirming, setConfirming] = useState(false);
   // A superset moves as one; an exercise leaves or joins one with its link.
@@ -131,7 +132,7 @@ type LineProps = {
   onRename: (exercise: Exercise) => void;
 };
 
-/** One exercise of the workout: its sets, and whether a drop set follows the last. */
+/** One exercise of the workout: its sets, and how many drop sets follow the last. */
 function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRemove, onRename }: LineProps) {
   const label = exercise?.name ?? "deleted exercise";
   return (
@@ -153,14 +154,16 @@ function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRe
             <span className="text-xs text-muted">sets of</span>
           </label>
           <AmountFields amount={line} onChange={onPatch} label={label} />
-          <button
-            onClick={() => onPatch({ drop: line.drop ? undefined : true })}
-            aria-pressed={!!line.drop}
-            aria-label={`Drop set after ${label}'s last set`}
-            className={`rounded-full border px-2.5 py-0.5 text-xs ${line.drop ? "border-accent/60 text-accent" : "border-line text-muted"}`}
-          >
-            {line.drop ? "drop set" : "+ drop set"}
-          </button>
+          <label className="flex items-baseline gap-1">
+            <OptionalNumberInput
+              value={line.drops}
+              onCommit={(drops) => onPatch({ drops: drops && drops >= 1 ? Math.round(drops) : undefined })}
+              placeholder="–"
+              aria-label={`${label} drop sets`}
+              className={`${fieldBox} w-10`}
+            />
+            <span className="text-xs text-muted">drops</span>
+          </label>
         </div>
       </div>
     </div>
