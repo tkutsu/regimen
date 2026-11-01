@@ -41,9 +41,38 @@ protein, fiber, saturated fat, unsaturated fat, salt and sugar per 100 g:
 - ANSES-CIQUAL 2020 (CC BY 4.0)
 - Open Food Facts products sold in Greece (ODbL)
 
-A value the source lacks stays unknown, unless it follows from another (no
-carbohydrate means no sugar or fiber). To rebuild, download the three archives
-listed in `scripts/build_reference.py` into `.cache/` and run:
+The database also stores reported vitamins and minerals for future use. These
+columns follow sugar in each food row; the top-level `nutrients` array gives the
+key and unit of every numeric column, in order. Micronutrients use `mg` or `ug`
+(micrograms) per 100 g. Open Food Facts amounts are converted from grams, as
+specified in its [nutrition schema](https://openfoodfacts.github.io/documentation/docs/Product-Opener/schemas/schemas/product_nutrition/).
+The current UI continues to read only the original seven nutrients.
+
+Distinct vitamin forms stay separate: vitamin A as reported, vitamin A RAE,
+retinol and beta-carotene; vitamin E as reported and alpha-tocopherol; vitamin K
+as reported, K1 and K2; total folate, folic acid, food folate and folate DFE.
+These columns are alternatives or components, not values to add together.
+No conversions between vitamin forms are inferred.
+
+A value the source lacks stays unknown. Exact zero carbohydrate can establish
+zero sugar, and exact zero fat can establish zero fatty acids. Fiber stays
+unknown unless supplied by the source. Bounds and traces stay unknown, and
+unsaturated fat requires an explicit value or both mono- and polyunsaturated fat.
+
+The importer rejects unusable names, impossible nutrient amounts and inconsistent
+nutrition. It also excludes Open Food Facts products with source-reported
+nutrition errors. A source's generic name can replace a missing or barcode-only
+product name. Equivalent rows with the same name and nutrient values are
+collapsed within each source; matching names with different values stay separate.
+
+Run the importer regression checks with:
+
+```
+python -B -I -m unittest discover -s scripts -p 'test_build_reference.py'
+```
+
+To rebuild, download the three archives listed in `scripts/build_reference.py`
+into `.cache/` and run:
 
 ```
 python -I scripts/build_reference.py .cache/usda/sr.zip .cache/ciqual/xml.zip \
