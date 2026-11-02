@@ -267,7 +267,7 @@ function AmountEditor({ amount, unit, onCommit }: { amount: number; unit: string
     <div className="rise flex items-center gap-2 px-3 pb-3">
       <input
         autoFocus
-        inputMode="decimal"
+        inputMode="text"
         value={text}
         placeholder={unit}
         onChange={(e) => setText(e.target.value)}

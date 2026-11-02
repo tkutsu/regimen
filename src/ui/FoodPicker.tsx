@@ -182,7 +182,7 @@ function Amount({ food, containers, addLabel, onBack, onAdd }: AmountProps) {
       <label className="flex items-center gap-2">
         <input
           autoFocus
-          inputMode="decimal"
+          inputMode="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onFocus={(e) => e.target.select()}

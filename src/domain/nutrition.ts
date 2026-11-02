@@ -97,13 +97,29 @@ export function pickableFoods(state: State): Map<string, Food> {
 }
 
 /**
- * Reads an amount the way a calculator would: "120", "120+30-10". A leading sign
+ * Reads +, -, *, / with multiplication and division first. A leading sign
  * adjusts the current amount instead of replacing it: "+50" adds, "-20" removes.
  */
 export function parseAmount(text: string, current = 0): number | undefined {
   const s = text.replace(/,/g, ".").replace(/\s+/g, "");
-  if (!/^[+-]?(\d+\.?\d*|\.\d+)([+-](\d+\.?\d*|\.\d+))*$/.test(s)) return undefined;
-  const sum = s.match(/[+-]?(\d+\.?\d*|\.\d+)/g)!.reduce((total, term) => total + Number(term), 0);
-  if (!Number.isFinite(sum)) return undefined;
-  return Math.max(0, /^[+-]/.test(s) ? current + sum : sum);
+  const number = String.raw`(?:\d+\.?\d*|\.\d+)`;
+  const product = `${number}(?:[*/]${number})*`;
+  if (!new RegExp(`^[+-]?${product}(?:[+-]${product})*$`).test(s)) return undefined;
+
+  let sum = 0;
+  for (const term of s.match(/[+-]?[^+-]+/g)!) {
+    const factors = term.split(/([*/])/);
+    let value = Number(factors[0]);
+    if (!Number.isFinite(value)) return undefined;
+    for (let i = 1; i < factors.length; i += 2) {
+      const operand = Number(factors[i + 1]);
+      if (!Number.isFinite(operand)) return undefined;
+      value = factors[i] === "*" ? value * operand : value / operand;
+      if (!Number.isFinite(value)) return undefined;
+    }
+    sum += value;
+    if (!Number.isFinite(sum)) return undefined;
+  }
+  const result = /^[+-]/.test(s) ? current + sum : sum;
+  return Number.isFinite(result) ? Math.max(0, result) : undefined;
 }
