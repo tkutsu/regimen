@@ -18,6 +18,31 @@ describe("recipe values", () => {
     expect(recipeTotals({ ...recipe, totalG: 0 }, foods).cookedG).toBe(320);
   });
 
+  it("scales variant nutrients without scaling ingredient or cooked weights", () => {
+    const pasta: Food = { ...food("pasta", 150), prot: 5, fiber: 2, satFat: 0.5, unsatFat: 1, salt: 0.1, sugar: 3 };
+    const variantFoods = new Map([...foods, [pasta.id, pasta] as const]);
+    const batch: Recipe = { ...recipe, ingredients: [{ foodId: "pasta", amount: 200, variant: "raw", factor: 2.4 }], totalG: 1000 };
+    const { total, rawG, cookedG } = recipeTotals(batch, variantFoods);
+    expect([rawG, cookedG]).toEqual([200, 500]);
+    const expected = { kcal: 720, prot: 24, fiber: 9.6, satFat: 2.4, unsatFat: 4.8, salt: 0.48, sugar: 14.4 };
+    for (const key of Object.keys(expected) as (keyof typeof expected)[]) {
+      expect(total[key]).toBeCloseTo(expected[key]);
+      expect(recipeAsFood(batch, variantFoods)[key]).toBeCloseTo(expected[key] / 5);
+    }
+    const unweighed = recipeTotals({ ...batch, totalG: 0 }, variantFoods);
+    expect(unweighed.cookedG).toBe(200);
+    expect(unweighed.total.kcal).toBeCloseTo(720);
+    variantFoods.set("pasta", { ...pasta, sugar: undefined });
+    expect(recipeAsFood(batch, variantFoods).sugar).toBeUndefined();
+  });
+
+  it("applies variants to item ingredients alongside unmodified ingredients", () => {
+    const batch: Recipe = { ...recipe, ingredients: [{ foodId: "egg", amount: 2, variant: "large", factor: 1.5 }, { foodId: "oil", amount: 20 }] };
+    const { total, rawG, cookedG } = recipeTotals(batch, foods);
+    expect(total.kcal).toBeCloseTo(210 + 180);
+    expect([rawG, cookedG]).toEqual([20, 800]);
+  });
+
   it("keeps sugar unknown until every contributing ingredient has a value", () => {
     const known = new Map<string, Food>([...foods].map(([id, food]) => [id, { ...food, sugar: 2 }]));
     expect(recipeAsFood(recipe, known).sugar).toBeCloseTo(1.3);
@@ -46,6 +71,21 @@ describe("recipe form", () => {
     const form = toRecipeForm(recipe);
     expect(fromRecipeForm(form, "r", foods)).toEqual(recipe);
     expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "250+50" }] }, "r", foods)?.ingredients).toEqual([{ foodId: "rice", amount: 300 }]);
+  });
+
+  it("preserves selected variants through edits, reopening and new batches", () => {
+    const batch: Recipe = { ...recipe, ingredients: [{ foodId: "rice", amount: 300, variant: "raw", factor: 2.4 }] };
+    const changedFoods = new Map(foods);
+    changedFoods.set("rice", { ...foods.get("rice")!, variants: [{ name: "raw", factor: 3 }] });
+    const form = toRecipeForm(batch);
+    const saved = fromRecipeForm(form, "r", changedFoods)!;
+    expect(saved).toEqual(batch);
+    const edited = fromRecipeForm({ ...form, ingredients: [{ ...form.ingredients[0], amount: "250+100" }] }, "r", changedFoods)!;
+    expect(edited.ingredients).toEqual([{ foodId: "rice", amount: 350, variant: "raw", factor: 2.4 }]);
+    const next = newBatch(edited, "r2");
+    expect(next.totalG).toBe(0);
+    expect(fromRecipeForm(toRecipeForm(next), "r2", foods)).toEqual(next);
+    expect(recipeTotals(saved, changedFoods).total.kcal).toBeCloseTo(2520);
   });
 
   it("needs a name, ingredients with amounts, and a pot heavier than its container", () => {

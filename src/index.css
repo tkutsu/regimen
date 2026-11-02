@@ -52,6 +52,30 @@ body::before {
   background: var(--color-bg);
 }
 
+/* Content fades below the pinned tabs and at the bottom, beneath floating actions and dialogs. */
+[data-app] > nav::after,
+[data-app]::after {
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(var(--color-bg), transparent);
+}
+[data-app] > nav::after {
+  position: absolute;
+  inset: 100% 0 auto;
+  height: 1rem;
+}
+[data-app]::after {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 1;
+  height: calc(2rem + env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, var(--color-bg));
+}
+html {
+  scroll-padding-top: calc(4rem + env(safe-area-inset-top));
+  scroll-padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+}
+
 /*
  * Motion, all of it short and none with reduced motion. Pages slide up, new rows and
  * opened panels rise in. Changes made through a view transition (src/ui/motion.ts)

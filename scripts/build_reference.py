@@ -21,6 +21,7 @@ import json
 import math
 import re
 import sys
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -238,18 +239,94 @@ def off(path, estimates=None):
     return products.values()
 
 
+def words(text):
+    """Match spelling, accents and punctuation without changing displayed names."""
+    text = unicodedata.normalize("NFD", text.casefold()).replace("ς", "σ")
+    return re.findall(r"[^\W_]+", "".join(c for c in text if not unicodedata.combining(c)))
+
+
+def clean_keywords(name, keywords, packaged=False):
+    """Keep alternate search terms, omitting repeated title words and translated brands."""
+    title = set(words(name))
+    result, seen = [], set()
+    for keyword in keywords:
+        if packaged:
+            # OFF appends a brand in parentheses; its machine translation is not a food.
+            keyword = re.sub(r"\([^()]*\)\s*$", "", keyword).strip()
+        keyword = re.sub(r"Δωρεάν Mp3 Download", "", keyword, flags=re.I)
+        tokens = re.findall(r"[^\W_]+(?:[.,]\d+)?%?", keyword, re.UNICODE)
+        if set(words(keyword)) <= title:
+            continue
+        kept = [token for token in tokens
+                if not (re.search(r"[a-zA-Z]", token) and set(words(token)) <= title)]
+        if not any(any(c.isalpha() for c in token) for token in kept):
+            continue
+        value = " ".join(kept)
+        key = tuple(words(value))
+        if key and key not in seen:
+            seen.add(key)
+            result.append(value)
+    return result
+
+
+def close_nutrients(left, right):
+    """Allow rounding differences across every reported nutrient, never unknown versus zero."""
+    if len(left) != len(right):
+        return False
+    for i, (a, b) in enumerate(zip(left[4:], right[4:])):
+        if a is None or b is None:
+            if a != b:
+                return False
+        else:
+            absolute = 2 if i == 0 else .02 if i == 5 else .2 if i < 7 else .001
+            relative = .01 if i == 0 else .02
+            if abs(a - b) > max(absolute, max(abs(a), abs(b)) * relative) + 1e-9:
+                return False
+    return True
+
+
 def deduplicate(foods):
-    """Keep the first equivalent row per source, preserving distinct nutrients and sources."""
-    unique = {}
+    """Collapse equivalent names per source when all reported nutrients agree closely."""
+    unique, kept = {}, []
     for food in foods:
-        key = (food[0], clean_name(food[2]).casefold(), *food[3:])
-        unique.setdefault(key, food)
-    return list(unique.values())
+        key = (food[0], tuple(words(clean_name(food[2]))), food[3])
+        peers = unique.setdefault(key, [])
+        if not any(close_nutrients(food, peer) for peer in peers):
+            peers.append(food)
+            kept.append(food)
+    return kept
+
+
+def curate(foods, corrections):
+    """Apply reviewed product exclusions, names and equivalent-food merges on rebuild."""
+    excluded = set(corrections.get("excludeNames", []))
+    names = corrections.get("names", {})
+    rows = {}
+    for food in foods:
+        if food[0] == "off" and (re.search(r"[\u0400-\u052f]", food[2]) or food[2] in excluded):
+            continue
+        key = f"{food[0]}-{food[1]}"
+        row = food[:]
+        row[2] = names.get(key, row[2])
+        rows[key] = row
+    for removed, canonical in corrections.get("duplicates", {}).items():
+        if removed not in rows:
+            continue
+        if canonical not in rows or not close_nutrients(rows[removed], rows[canonical]):
+            raise ValueError(f"Reviewed duplicate no longer matches: {removed} -> {canonical}")
+        del rows[removed]
+    return deduplicate(rows.values())
 
 
 def main(usda_zip, ciqual_zip, off_csv, out):
     estimates = set()
-    foods = deduplicate([food for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates), *off(off_csv, estimates)) if food])
+    corrections = json.loads(Path(__file__).with_name("food_cleanup.json").read_text())
+    # Collapse exact source-export copies first, so a reviewed removal cannot uncover one.
+    source_rows = {}
+    for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates), *off(off_csv, estimates)):
+        if food:
+            source_rows.setdefault((food[0], clean_name(food[2]).casefold(), *food[3:]), food)
+    foods = curate(source_rows.values(), corrections)
     kept_ids = {f"{food[0]}-{food[1]}" for food in foods}
     aliases = json.loads(Path(__file__).with_name("food_keywords.el.json").read_text())
     translations = aliases["foods"]
@@ -272,8 +349,9 @@ def main(usda_zip, ciqual_zip, off_csv, out):
 
 
 def reference_keywords(foods, translations):
-    """Attach checked-in translations by exact source name, keeping nutrient rows untouched."""
-    return {f"{row[0]}-{row[1]}": translations[row[2]] for row in foods if row[2] in translations}
+    """Attach alternate Greek search terms without repeating words in the displayed name."""
+    return {f"{row[0]}-{row[1]}": cleaned for row in foods
+            if (cleaned := clean_keywords(row[2], translations.get(row[2], []), row[0] == "off"))}
 
 
 if __name__ == "__main__":

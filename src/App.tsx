@@ -27,10 +27,10 @@ export default function App() {
   if (!config || !state || !peers) return null;
   const Screen = tab === "system" ? undefined : SCREENS[tab];
   return (
-    <div data-app className="mx-auto max-w-md p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
+    <div data-app className="mx-auto min-h-dvh max-w-md p-4 pt-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
       {/* Each tab grows into the space beside it, so a tap anywhere on the row lands on one. The
           end tabs take half a share and sit flush, keeping the labels evenly spaced. */}
-      <nav aria-label="Screens" className="-mt-2 mb-2 flex text-sm">
+      <nav aria-label="Screens" className="sticky top-0 z-[2] -mx-4 mb-4 flex bg-bg px-4 pt-[max(0.5rem,env(safe-area-inset-top))] text-sm">
         {TABS.map((name) => (
           <button
             key={name}
