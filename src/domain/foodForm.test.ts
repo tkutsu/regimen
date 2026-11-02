@@ -19,11 +19,9 @@ const feta: Food = {
 };
 
 describe("food form", () => {
-  it("preserves a source-name review flag until it is cleared explicitly", () => {
+  it("drops the retired review flag when editing an old food", () => {
     const flagged = { ...feta, nameNeedsReview: true };
     const form = toForm(flagged);
-    expect(fromForm(form, feta.id)).toEqual(flagged);
-    form.nameNeedsReview = false;
     expect(fromForm(form, feta.id)).toEqual(feta);
   });
 

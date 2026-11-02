@@ -22,8 +22,6 @@ export type Food = Values & {
   name: string;
   /** Alternate names and search terms, including translations. */
   keywords?: string[];
-  /** The source supplies only a brand or an unclear food name. */
-  nameNeedsReview?: boolean;
   basis: "100g" | "item";
   group: string;
   fav: boolean;

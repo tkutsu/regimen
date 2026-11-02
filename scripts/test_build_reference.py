@@ -72,7 +72,9 @@ class ReferenceImportTests(unittest.TestCase):
                  patch.object(build, 'ciqual', return_value=[]), \
                  patch.object(build, 'off', return_value=[row, copy, canonical]):
                 build.main(None, None, None, path)
-            self.assertEqual(json.loads(path.read_text())['foods'], [canonical])
+            data = json.loads(path.read_text())
+            self.assertEqual(data['foods'], [canonical])
+            self.assertNotIn('namesToReview', data)
 
     def test_keywords_follow_exact_names_without_modifying_rows(self):
         rows = [['usda', '1', 'Milk', 'dairy', 60], ['off', '2', 'Milk', 'packaged', 61],

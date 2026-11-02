@@ -65,11 +65,6 @@ Duplicates require the same food identity and matching reported nutrients,
 allowing small rounding differences across macros and micronutrients. Missing
 values remain distinct from zero. Search keywords omit repeated English words
 and translated brand labels.
-Brand-only and unclear source names are flagged in the picker and in the Foods
-tab's "names to review" filter, which includes reference foods. Open a flagged
-food to correct its name and keywords and save a copy in your foods.
-The review status syncs with that copy.
-New source names without bundled translations are also flagged after a rebuild.
 
 Distinct vitamin forms stay separate: vitamin A as reported, vitamin A RAE,
 retinol and beta-carotene; vitamin E as reported and alpha-tocopherol; vitamin K

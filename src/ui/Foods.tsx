@@ -5,7 +5,6 @@ import { recentFoodIds, searchFoods } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Food, Recipe } from "../domain/types";
 import type { Commit } from "../store";
-import { useReference } from "../reference";
 import { FoodEditor } from "./FoodEditor";
 import { Star } from "./fields";
 import { RecipeEditor } from "./RecipeEditor";
@@ -16,31 +15,25 @@ type Props = { state: State; commit: Commit };
 export function Foods({ state, commit }: Props) {
   const [query, setQuery] = useState("");
   const [onlyUnknown, setOnlyUnknown] = useState(false);
-  const [onlyReview, setOnlyReview] = useState(false);
   const [editing, setEditing] = useState<Food | "new">();
   const [cooking, setCooking] = useState<{ recipe: Recipe; replaces?: Recipe }>();
 
   const foods = useMemo(() => [...state.foods.values()], [state.foods]);
-  const reference = useReference(true);
-  const review = useMemo(() => [
-    ...foods.filter((food) => food.nameNeedsReview),
-    ...reference.filter((food) => food.nameNeedsReview && !state.foods.has(food.id)),
-  ], [foods, reference, state.foods]);
   const incomplete = useMemo(() => foods.filter((food) => unknownNutrients(food).length), [foods]);
   const groups = useMemo(() => [...new Set(foods.map((food) => food.group).filter(Boolean))].sort(), [foods]);
   const uses = useMemo(() => usage(state), [state]);
   const recent = useMemo(() => recentFoodIds(state), [state]);
   const sections = useMemo((): [string, Food[]][] => {
-    const shown = onlyReview ? review : onlyUnknown ? incomplete : foods;
+    const shown = onlyUnknown ? incomplete : foods;
     return query.trim() ? [["", searchFoods(shown, query, 200, recent)]] : byGroup(shown);
-  }, [foods, incomplete, onlyUnknown, review, onlyReview, query, recent]);
+  }, [foods, incomplete, onlyUnknown, query, recent]);
 
   const recipes = useMemo(
     () =>
       [...state.recipes.values()]
-        .filter((recipe) => !onlyReview && !recipe.archived && recipe.name.toLowerCase().includes(query.trim().toLowerCase()))
+        .filter((recipe) => !recipe.archived && recipe.name.toLowerCase().includes(query.trim().toLowerCase()))
         .sort((a, b) => a.name.localeCompare(b.name)),
-    [state.recipes, query, onlyReview],
+    [state.recipes, query],
   );
 
   const star = (id: string) => commit(...toggleFav(state, id));
@@ -53,25 +46,16 @@ export function Foods({ state, commit }: Props) {
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder={`Search ${onlyReview ? review.length : foods.length} foods`}
+        placeholder={`Search ${foods.length} foods`}
         className="rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
       />
       {incomplete.length > 0 && (
         <button
-          onClick={() => { setOnlyUnknown(!onlyUnknown); setOnlyReview(false); }}
+          onClick={() => setOnlyUnknown(!onlyUnknown)}
           aria-pressed={onlyUnknown}
           className={`self-start rounded-full border px-3 py-1 text-sm ${onlyUnknown ? "border-accent text-accent" : "border-line text-muted"}`}
         >
           {incomplete.length} with unknown values
-        </button>
-      )}
-      {review.length > 0 && (
-        <button
-          onClick={() => { setOnlyReview(!onlyReview); setOnlyUnknown(false); }}
-          aria-pressed={onlyReview}
-          className={`self-start rounded-full border px-3 py-1 text-sm ${onlyReview ? "border-accent text-accent" : "border-line text-muted"}`}
-        >
-          {review.length} names to review
         </button>
       )}
 
@@ -166,7 +150,6 @@ function FoodRow({ food, onPick, onToggleFav }: { food: Food; onPick: () => void
       <button onClick={onPick} className={`flex min-w-0 flex-1 items-baseline gap-2 py-2.5 pr-4 text-left ${onToggleFav ? "" : "pl-4"}`}>
         <span className="min-w-0 flex-1">
           <span className="block truncate">{food.name}</span>
-          {food.nameNeedsReview && <span className="block text-xs text-accent">Name needs review</span>}
         </span>
         {unknown.length > 0 && (
           <span title={`unknown: ${unknown.join(", ")}`} className="text-xs text-muted">
