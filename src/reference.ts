@@ -3,7 +3,7 @@ import { NUTRIENTS } from "./domain/nutrition";
 import type { Food } from "./domain/types";
 
 type Row = [source: string, id: string, name: string, group: string, kcal: number, ...values: (number | null)[]];
-type Data = { sources: Record<string, string>; foods: Row[]; estimatedUnsatFat?: string[]; keywords?: Record<string, string[]>; namesToReview?: string[] };
+type Data = { sources: Record<string, string>; foods: Row[]; estimatedUnsatFat?: string[]; keywords?: Record<string, string[]> };
 
 const LABELS: Record<string, string> = { usda: "USDA FDC", ciqual: "CIQUAL", off: "Open Food Facts" };
 
@@ -15,13 +15,11 @@ function loadReference(): Promise<Food[]> {
     .then((response) => response.json() as Promise<Data>)
     .then((data) => {
       const estimates = new Set(data.estimatedUnsatFat);
-      const namesToReview = new Set(data.namesToReview);
       return data.foods.map(([source, id, name, group, kcal, ...values]): Food => {
         const note = `source: ${LABELS[source] ?? source} ${id}` +
           (estimates.has(`${source}-${id}`) ? "\nunsaturated fat estimate: total fat minus saturated fat" : "");
         const food: Food = { id: `${source}-${id}`, name, basis: "100g", group, fav: false, note, kcal };
         if (data.keywords?.[food.id]?.length) food.keywords = data.keywords[food.id];
-        if (namesToReview.has(food.id)) food.nameNeedsReview = true;
         // null (no value in the source) stays unknown rather than becoming 0
         NUTRIENTS.slice(1).forEach((key, i) => values[i] != null && (food[key] = values[i]!));
         return food;

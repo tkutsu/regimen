@@ -339,7 +339,6 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
         "estimatedUnsatFat": sorted(estimates & kept_ids),
         "keywords": reference_keywords(foods, translations),
-        "namesToReview": [f"{row[0]}-{row[1]}" for row in foods if row[2] not in translations or row[2] in aliases.get("review", {})],
         "foods": foods,
     }
     with open(out, "w") as f:
