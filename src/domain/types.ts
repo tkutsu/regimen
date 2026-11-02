@@ -73,12 +73,16 @@ export type Day = {
 export type Recipe = {
   id: string;
   name: string;
+  /** Omitted in older recipes, which use per-100g values. */
+  basis?: Food["basis"];
+  /** Items made by the batch, for ingredient-based per-item recipes. */
+  items?: number;
   /** Variant names and factors are copied in when selected. */
   ingredients: { foodId: string; amount: number; variant?: string; factor?: number }[];
   /** Weighed pot including the container; the difference is the cooked food. */
   totalG: number;
   containerG: number;
-  /** Per 100 g, written by hand: what the recipe counts while it has no ingredients. */
+  /** Values in the selected basis, used while the recipe has no ingredients. */
   values?: Values;
   note?: string;
   /** An old batch: kept for the days that ate it, left out of the picker. */
