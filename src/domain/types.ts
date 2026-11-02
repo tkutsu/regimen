@@ -75,7 +75,8 @@ export type Day = {
 export type Recipe = {
   id: string;
   name: string;
-  ingredients: { foodId: string; amount: number }[];
+  /** Variant names and factors are copied in when selected. */
+  ingredients: { foodId: string; amount: number; variant?: string; factor?: number }[];
   /** Weighed pot including the container; the difference is the cooked food. */
   totalG: number;
   containerG: number;

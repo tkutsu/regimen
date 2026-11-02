@@ -37,15 +37,16 @@ export function scale(food: Food, amount: number, variantFactor = 1): Nutrients 
 
 /**
  * What a batch adds up to. The cooked weight is the weighed pot minus its container;
- * without a weighing it falls back to the raw weight of the ingredients counted in grams.
+ * without a weighing it falls back to the weight of the ingredients counted in grams.
+ * Variant factors scale nutrients, leaving the ingredient weights unchanged.
  */
 export function recipeTotals(recipe: Recipe, foods: Map<string, Food>) {
   let total = zero();
   let rawG = 0;
-  for (const { foodId, amount } of recipe.ingredients) {
+  for (const { foodId, amount, factor } of recipe.ingredients) {
     const food = foods.get(foodId);
     if (!food) continue;
-    total = add(total, scale(food, amount));
+    total = add(total, scale(food, amount, factor));
     if (food.basis === "100g") rawG += amount;
   }
   const cookedG = recipe.totalG - recipe.containerG;

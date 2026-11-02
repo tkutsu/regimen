@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
 import { allFoods, parseAmount, pickableFoods, scale, toggleFav } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
@@ -100,7 +100,7 @@ export function Today({ state, commit }: Props) {
 
       <button
         onClick={() => setPicking(true)}
-        className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 mx-auto max-w-md rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg"
+        className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto max-w-md rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg"
       >
         Add food
       </button>
@@ -118,7 +118,35 @@ export function Today({ state, commit }: Props) {
   );
 }
 
+/** Change days with buttons, a horizontal swipe/drag, or vertical wheel input over the bar. */
 function DateNav({ date, onChange }: { date: string; onChange: (date: string) => void }) {
+  const bar = useRef<HTMLElement>(null);
+  const drag = useRef<{ pointer: number; x: number; y: number }>(undefined);
+  const dragged = useRef(false);
+  const wheel = useRef({ delta: 0, at: 0, stepped: -Infinity });
+
+  // A non-passive listener consumes wheel input here instead of also scrolling the page.
+  useEffect(() => {
+    const el = bar.current;
+    if (!el) return;
+    const scroll = (e: WheelEvent) => {
+      if (e.ctrlKey || !e.deltaY || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      const now = performance.now();
+      const gesture = wheel.current;
+      if (now - gesture.at > 180 || Math.sign(e.deltaY) !== Math.sign(gesture.delta)) gesture.delta = 0;
+      gesture.at = now;
+      if (now - gesture.stepped < 180) return;
+      gesture.delta += e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? el.clientHeight : 1);
+      if (Math.abs(gesture.delta) < 40) return;
+      gesture.stepped = now;
+      onChange(shiftDate(date, Math.sign(gesture.delta)));
+      gesture.delta = 0;
+    };
+    el.addEventListener("wheel", scroll, { passive: false });
+    return () => el.removeEventListener("wheel", scroll);
+  }, [date, onChange]);
+
   const today = localDate();
   const label =
     date === today
@@ -127,14 +155,51 @@ function DateNav({ date, onChange }: { date: string; onChange: (date: string) =>
         ? "Yesterday"
         : new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
   return (
-    <nav className="flex items-center justify-between">
-      <button onClick={() => onChange(shiftDate(date, -1))} className="px-3 py-1 text-2xl text-muted">
+    <nav
+      ref={bar}
+      aria-label="Day"
+      title="Swipe or drag left/right, or scroll up/down to change days"
+      className="flex touch-pan-y cursor-grab items-center justify-between select-none active:cursor-grabbing"
+      onPointerDown={(e) => {
+        if (e.button !== 0 || !e.isPrimary) return;
+        dragged.current = false;
+        drag.current = { pointer: e.pointerId, x: e.clientX, y: e.clientY };
+      }}
+      onPointerMove={(e) => {
+        const start = drag.current;
+        if (!start || start.pointer !== e.pointerId) return;
+        const dx = e.clientX - start.x;
+        if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(e.clientY - start.y)) return;
+        dragged.current = true;
+        e.currentTarget.setPointerCapture(e.pointerId);
+      }}
+      onPointerUp={(e) => {
+        const start = drag.current;
+        if (!start || start.pointer !== e.pointerId) return;
+        drag.current = undefined;
+        const dx = e.clientX - start.x;
+        if (dragged.current && Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(e.clientY - start.y)) {
+          onChange(shiftDate(date, dx < 0 ? 1 : -1));
+        }
+      }}
+      onPointerCancel={() => { drag.current = undefined; }}
+      onLostPointerCapture={(e) => {
+        // Touch capture moves from the pressed button to this bar when dragging starts.
+        if (e.target === e.currentTarget && drag.current?.pointer === e.pointerId) drag.current = undefined;
+      }}
+      onClickCapture={(e) => {
+        if (!dragged.current || e.detail === 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
+      <button aria-label="Previous day" onClick={() => onChange(shiftDate(date, -1))} className="px-3 py-1 text-2xl text-muted">
         ‹
       </button>
-      <button onClick={() => onChange(today)} className="text-lg font-semibold">
+      <button onClick={() => onChange(today)} className="text-lg font-semibold" aria-live="polite" aria-atomic="true">
         {label}
       </button>
-      <button onClick={() => onChange(shiftDate(date, 1))} className="px-3 py-1 text-2xl text-muted">
+      <button aria-label="Next day" onClick={() => onChange(shiftDate(date, 1))} className="px-3 py-1 text-2xl text-muted">
         ›
       </button>
     </nav>
