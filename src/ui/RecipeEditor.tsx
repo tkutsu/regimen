@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale } from "../domain/nutrition";
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
-import type { Container, Food, Recipe } from "../domain/types";
+import type { Container, Food, Nutrients, Recipe } from "../domain/types";
 import { Dialog } from "./Dialog";
 import { box, Heading, ValueFields } from "./FoodEditor";
 import { FoodPicker } from "./FoodPicker";
@@ -36,6 +36,7 @@ export function RecipeEditor(props: Props) {
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [picking, setPicking] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [shown, setShown] = useState<keyof Nutrients>("kcal");
   // Reference foods picked so far count as yours until the recipe is saved or dropped.
   const [picked, setPicked] = useState<Food[]>([]);
   const foods = useMemo(() => new Map([...props.foods, ...picked.map((food): [string, Food] => [food.id, food])]), [props.foods, picked]);
@@ -85,12 +86,18 @@ export function RecipeEditor(props: Props) {
               {form.ingredients.map((ingredient, i) => {
                 const food = foods.get(ingredient.foodId);
                 const amount = parseAmount(ingredient.amount);
+                const value = food && amount ? scale(food, amount, ingredient.factor)[shown] : 0;
                 return (
                   <li key={`${ingredient.foodId}-${i}`} className="flex items-center gap-2 py-1.5 pr-2 pl-4">
                     <span className="min-w-0 flex-1">
                       <span className="block truncate">{food?.name ?? "missing food"}</span>
                       {ingredient.variant && <span className="block truncate text-xs text-muted">{ingredient.variant} ×{ingredient.factor}</span>}
-                      {food && amount ? <span className="block text-xs text-muted">{Math.round(scale(food, amount, ingredient.factor).kcal)} kcal</span> : null}
+                      {food && amount ? (
+                        <span className={`block text-xs ${shown === "kcal" ? "text-muted" : "text-accent"}`}>
+                          {food[shown] === undefined ? "?" : shown === "kcal" || value >= 10 ? Math.round(value) : +value.toFixed(1)}
+                          {shown === "kcal" ? " kcal" : "g"}
+                        </span>
+                      ) : null}
                     </span>
                     <input
                       autoFocus={!ingredient.amount}
@@ -173,14 +180,19 @@ export function RecipeEditor(props: Props) {
                   </span>
                   <span className="text-sm text-muted">batch {Math.round(totals.total.kcal)} kcal</span>
                 </div>
-                <dl className="mt-2 grid grid-cols-3 gap-x-4 gap-y-1 text-sm">
+                <div className="mt-2 grid grid-cols-3 gap-x-4 gap-y-1 text-sm">
                   {NUTRIENTS.slice(1).map((key) => (
-                    <div key={key} className="flex justify-between">
-                      <dt className="text-muted">{LABELS[key]}</dt>
-                      <dd>{per100[key] === undefined ? "?" : `${per100[key].toFixed(key === "salt" ? 2 : 1)}g`}</dd>
-                    </div>
+                    <button
+                      key={key}
+                      onClick={() => transition(() => setShown((current) => current === key ? "kcal" : key))}
+                      aria-pressed={shown === key}
+                      className={`flex justify-between text-left transition-colors ${shown === key ? "text-accent" : ""}`}
+                    >
+                      <span className={shown === key ? "" : "text-muted"}>{LABELS[key]}</span>
+                      <span>{per100[key] === undefined ? "?" : `${per100[key].toFixed(key === "salt" ? 2 : 1)}g`}</span>
+                    </button>
                   ))}
-                </dl>
+                </div>
               </section>
             </>
           )}
