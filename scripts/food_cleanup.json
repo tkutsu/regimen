@@ -1,5 +1,5 @@
 {
-  "description": "Reviewed product exclusions, source-name spelling corrections and equivalent-food merges. Nutrients are never rewritten.",
+  "description": "Reviewed product exclusions, names, sourced nutrient corrections and equivalent-food merges.",
   "excludeNames": [
     "Chleb magnat",
     "Grčki Jogurt od Ovčijeg Mleka (ΝΕΟΓΑΛ)",
@@ -120,7 +120,13 @@
     "off-5204564300056": "Mini Barley Rusk (Chalkiadakis)",
     "off-5214002156237": "Planet Caramelised Biscuit",
     "off-5201004231741": "Petit-Beurre Biscuits (Papadopoulos)",
-    "ciqual-21522": "Lamb, chop, cooked (average)"
+    "ciqual-21522": "Lamb, chop, cooked (average)",
+    "off-5201673005278": "Πίτες για σουβλάκι ολικής άλεσης (Αξιαγάπητες, Καραμολέγκος)",
+    "off-5208069003115": "Μαργαρίνη κλασική 70% (Super Fresco)",
+    "off-5214002611019": "Smoothie #1 Mango & Orange (YumTales)",
+    "off-5214002611033": "Smoothie #3 Raspberry & Strawberry (YumTales)",
+    "off-5214002611040": "Smoothie #4 Kiwi & Spinach (YumTales)",
+    "off-5214002611163": "Smoothie #5 Beetroot (YumTales)"
   },
   "duplicates": {
     "off-05202296": "off-0052022960277",
@@ -296,5 +302,66 @@
     "split-pea-fava-cooked": "split pea, cooked",
     "trout-pestrofa-baked": "trout, baked",
     "white-beans-fasolia-raw": "white beans, raw"
+  },
+  "nutrients": {
+    "off-5201360660926": {
+      "fiber": {
+        "from": 28.0,
+        "to": 2.8,
+        "source": "https://www.fiksuruoka.fi/product/28156/tuc-bake-rolls-sour-cream-ja-onion-leipalastu-150g"
+      },
+      "sugar": {
+        "from": 45.0,
+        "to": 4.5,
+        "source": "https://www.fiksuruoka.fi/product/28156/tuc-bake-rolls-sour-cream-ja-onion-leipalastu-150g"
+      }
+    },
+    "off-5208069003115": {
+      "prot": {
+        "from": 0.5,
+        "to": null,
+        "source": "https://kritikos-sm.gr/products/eidh-psugeiou/boutura-margarines/super-fresco-klasiko-200gr-771434/",
+        "reason": "Label declares <0.5 g, not an exact amount."
+      },
+      "sugar": {
+        "from": 0.5,
+        "to": null,
+        "source": "https://kritikos-sm.gr/products/eidh-psugeiou/boutura-margarines/super-fresco-klasiko-200gr-771434/",
+        "reason": "Label declares <0.5 g, not an exact amount."
+      }
+    },
+    "off-5206546000046": {
+      "salt": {
+        "from": 23.6,
+        "to": null,
+        "reason": "Implausible Gouda salt/sodium entry; no exact-barcode label found. Keep unknown rather than borrow another barcode."
+      },
+      "sodium": {
+        "from": 9441.0,
+        "to": null,
+        "reason": "Implausible Gouda salt/sodium entry; no exact-barcode label found. Keep unknown rather than borrow another barcode."
+      }
+    }
+  },
+  "compatibleDuplicates": {
+    "off-5201005079373": "off-5201005004443",
+    "off-5201005079779": "off-5201005004443",
+    "off-0040005079373": "off-5201005004443",
+    "off-3083681016635": "off-3083681009811",
+    "off-5206851071489": "off-5206851071397",
+    "off-5201262221768": "off-5201262221690",
+    "off-5201037713726": "off-5201037713733"
+  },
+  "evidence": {
+    "off-5201673005278": "https://market.fronas.gr/wp-content/uploads/2022/12/Sales-Organizer-%CE%9A%CE%91%CE%A1%CE%91%CE%9C%CE%9F%CE%9B%CE%95%CE%93%CE%9A%CE%9F%CE%A3-%CE%9A%CE%91%CE%A4%CE%A3%CE%95%CE%9B%CE%97%CE%A3-%CE%A0%CE%91%CE%9E%CE%91%CE%9C%CE%91%CE%A3.pdf",
+    "off-5208069003115": "https://www.bazaar-online.gr/galaktokomika-eidi-rygeioy/voutyro-and-margarini-238/voutyro-23",
+    "yumtales": "https://www.yumtalesdrinks.gr/el/shop/",
+    "amita": "Source export has the same nine-fruit ingredients and compatible nutrients; retain the 1 L record with all reported micronutrients. https://www.ekatanalotis.gr/proionta-barcodes/",
+    "bonduelle": "Source export identifies both packages as natural sliced button mushrooms with mushrooms, water and salt. Retain all reported micronutrients; they are not independently label-verified.",
+    "noynoy": "Source export has the same brand, name and seven tracked nutrients. Retain the record with reported calcium, phosphorus and B2. https://www.bazaar-online.gr/noynoy-giaourti-straggisto-5-1kg",
+    "okra": "Source export has the same brand, name and nutrients. Retain the record with vitamin C. https://www.bazaar-online.gr/mparmpa-stathis-mpamies-alexandrines-750g",
+    "complet": "Package sizes differ; 47 versus 48 mg sodium rounds to the same 0.12 g salt. https://www.fastmarket.gr/index.php?page=3&path=11471&route=product%2Fcategory",
+    "fanta-kept-separate": "Despite equal tracked macros, the source ingredient lists describe different formulations, so no reviewed merge is approved.",
+    "off-5214002611163": "Source #05 and its 45 kcal, 0.5 g protein, 8.5 g sugar match the manufacturer's beetroot smoothie. https://www.yumtalesdrinks.gr/el/product/yumtales-smoothie-5-beetroot/"
   }
 }

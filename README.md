@@ -59,11 +59,16 @@ These are machine translations supplemented with reviewed common food terms.
 For brand-only names, source-reported food categories can supply Greek keywords.
 Uncommon names may need correction; keywords are editable after adding a food.
 Translations are bundled, so searching needs no network connection.
-Reviewed spelling corrections, Slavic-language product exclusions and duplicate
+Reviewed spelling and nutrient corrections, Slavic-language product exclusions and duplicate
 merges are recorded in `scripts/food_cleanup.json` and reapplied on rebuild.
 Duplicates require the same food identity and matching reported nutrients,
 allowing small rounding differences across macros and micronutrients. Missing
-values remain distinct from zero. Search keywords omit repeated English words
+values remain distinct from zero. Explicitly reviewed package duplicates can
+keep a canonical record with additional micronutrients, provided no known value
+is lost or conflicts; sodium allows 1 mg rounding. Label corrections record
+their source and expected previous value so changed source data stops the rebuild
+for inspection. Unsupported amounts and label bounds remain unknown.
+Search keywords omit repeated English words
 and translated brand labels.
 
 Distinct vitamin forms stay separate: vitamin A as reported, vitamin A RAE,

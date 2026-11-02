@@ -62,6 +62,41 @@ class ReferenceImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'no longer matches'):
             build.curate([row, different], {'duplicates': {'usda-2': 'usda-1'}})
 
+    def test_reviewed_nutrient_corrections_are_guarded_and_repeatable(self):
+        row = self.normalize()
+        rules = {'nutrients': {'usda-1': {'fiber': {'from': 1, 'to': 2.8}}}}
+        corrected = build.curate([row], rules)
+        self.assertEqual(corrected[0][6], 2.8)
+        self.assertEqual(row[6], 1)
+        self.assertEqual(build.curate(corrected, rules), corrected)
+        with self.assertRaisesRegex(ValueError, 'nutrient no longer matches'):
+            build.curate([self.normalize(fiber=3)], rules)
+        rules['nutrients']['usda-1']['fiber']['to'] = None
+        self.assertIsNone(build.curate([row], rules)[0][6])
+
+    def test_reviewed_merges_keep_known_micronutrients_and_reject_lost_values(self):
+        sparse = self.normalize()
+        richer = ['usda', '2', 'Other package', *self.normalize(calcium=120)[3:]]
+        rules = {'compatibleDuplicates': {'usda-1': 'usda-2'}}
+        self.assertEqual(build.curate([sparse, richer], rules), [richer])
+        # Automatic deduplication still keeps unknown and reported micronutrients distinct.
+        self.assertEqual(build.deduplicate([sparse, richer]), [sparse, richer])
+        with self.assertRaisesRegex(ValueError, 'duplicate no longer matches'):
+            build.curate([richer, sparse], {'compatibleDuplicates': {'usda-2': 'usda-1'}})
+        with self.assertRaisesRegex(ValueError, 'duplicate no longer matches'):
+            build.curate([self.normalize(calcium=0), richer], rules)
+        with self.assertRaisesRegex(ValueError, 'duplicate no longer matches'):
+            build.curate([self.normalize(prot=20), richer], rules)
+
+    def test_reviewed_merges_allow_one_mg_sodium_rounding_only(self):
+        row = self.normalize(sodium=47)
+        rounded = ['usda', '2', 'Other package', *self.normalize(sodium=48)[3:]]
+        rules = {'compatibleDuplicates': {'usda-1': 'usda-2'}}
+        self.assertFalse(build.close_nutrients(row, rounded))
+        self.assertEqual(build.curate([row, rounded], rules), [rounded])
+        with self.assertRaisesRegex(ValueError, 'duplicate no longer matches'):
+            build.curate([self.normalize(sodium=45), rounded], rules)
+
     def test_rebuild_does_not_uncover_an_exact_copy_of_a_removed_product(self):
         row = ['off', '5201125003609', 'Philadelphia Original Cream Cheesw', *self.normalize()[3:]]
         copy = ['off', 'unreviewed-copy', *row[2:]]
