@@ -46,6 +46,33 @@ describe("parseAmount", () => {
     expect(parseAmount("120+30-10", 999)).toBe(140);
   });
 
+  it("multiplies and divides before adding and subtracting", () => {
+    expect(parseAmount("2.5*243/2", 999)).toBe(303.75);
+    expect(parseAmount("100+2.5*243/2-10")).toBe(393.75);
+    expect(parseAmount("120/3*2")).toBe(80);
+    expect(parseAmount(" 2,5 * 243 / 2 ")).toBe(303.75);
+    expect(parseAmount(".5*20.")).toBe(10);
+    expect(parseAmount("0*100")).toBe(0);
+  });
+
+  it("keeps leading-sign adjustments for calculated amounts", () => {
+    expect(parseAmount("+2.5*20", 100)).toBe(150);
+    expect(parseAmount("-20/2", 100)).toBe(90);
+    expect(parseAmount("-20*10", 100)).toBe(0);
+  });
+
+  it.each(["1/0", "0/0", "2*", "*2", "2//3", "2**3", "1/", "2*abc", "1e3", "Math.random()"])("rejects invalid calculation %s", (text) => {
+    expect(parseAmount(text)).toBeUndefined();
+  });
+
+  it("rejects non-finite numbers and results", () => {
+    const huge = "9".repeat(400);
+    expect(parseAmount(huge)).toBeUndefined();
+    expect(parseAmount(`1/${huge}`)).toBeUndefined();
+    expect(parseAmount(`${"9".repeat(200)}*${"9".repeat(200)}`)).toBeUndefined();
+    expect(parseAmount(`+${"9".repeat(308)}`, Number.MAX_VALUE)).toBeUndefined();
+  });
+
   it("rejects anything else", () => {
     expect(parseAmount("")).toBeUndefined();
     expect(parseAmount("abc")).toBeUndefined();

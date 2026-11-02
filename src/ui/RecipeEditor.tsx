@@ -94,7 +94,7 @@ export function RecipeEditor(props: Props) {
                     </span>
                     <input
                       autoFocus={!ingredient.amount}
-                      inputMode="decimal"
+                      inputMode="text"
                       value={ingredient.amount}
                       onChange={(e) => setAmount(i, e.target.value)}
                       onFocus={(e) => e.target.select()}
@@ -132,7 +132,7 @@ export function RecipeEditor(props: Props) {
                   <label className={`${box} w-28 shrink-0 ${parseAmount(form.totalG) === undefined && form.totalG.trim() ? "border-bad" : "border-line"}`}>
                     <span className="block text-xs text-muted">total (g)</span>
                     <input
-                      inputMode="decimal"
+                      inputMode="text"
                       value={form.totalG}
                       onChange={(e) => patch({ totalG: e.target.value })}
                       placeholder="not yet"

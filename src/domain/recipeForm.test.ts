@@ -73,6 +73,20 @@ describe("recipe form", () => {
     expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "250+50" }] }, "r", foods)?.ingredients).toEqual([{ foodId: "rice", amount: 300 }]);
   });
 
+  it("saves calculated gram amounts as numbers", () => {
+    const form = {
+      ...toRecipeForm(recipe),
+      ingredients: [{ foodId: "rice", amount: "2.5*243/2" }],
+      totalG: "500+400*2",
+    };
+    const saved = fromRecipeForm(form, "r", foods)!;
+    expect(saved.ingredients).toEqual([{ foodId: "rice", amount: 303.75 }]);
+    expect(saved.totalG).toBe(1300);
+    expect(fromRecipeForm(toRecipeForm(saved), "r", foods)).toEqual(saved);
+    expect(fromRecipeForm({ ...form, totalG: "1300/0" }, "r", foods)).toBeUndefined();
+    expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "243/0" }] }, "r", foods)).toBeUndefined();
+  });
+
   it("preserves selected variants through edits, reopening and new batches", () => {
     const batch: Recipe = { ...recipe, ingredients: [{ foodId: "rice", amount: 300, variant: "raw", factor: 2.4 }] };
     const changedFoods = new Map(foods);
