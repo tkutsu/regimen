@@ -28,7 +28,7 @@ type Props = {
 };
 
 /**
- * Ingredients by weight in their selected form; the weighed total minus its container gives the values per 100 g.
+ * Divides ingredient totals by cooked weight or items made, in the selected basis.
  * Without ingredients, the values are written by hand.
  */
 export function RecipeEditor(props: Props) {
@@ -47,14 +47,17 @@ export function RecipeEditor(props: Props) {
   // values as typed so far, even while the form isn't valid yet
   const draft: Recipe = {
     ...recipe,
+    basis: form.basis,
+    items: parseAmount(form.items) ?? 0,
     ingredients: form.ingredients.map((ingredient) => ({ ...ingredient, amount: parseAmount(ingredient.amount) ?? 0 })),
     totalG: parseAmount(form.totalG) ?? 0,
     containerG: form.containerG,
   };
   const totals = recipeTotals(draft, foods);
-  const per100 = recipeAsFood(draft, foods);
+  const perUnit = recipeAsFood(draft, foods);
   const save = (recipe: Recipe) => onSave(recipe, picked.filter((food) => recipe.ingredients.some((i) => i.foodId === food.id)));
   const byHand = !form.ingredients.length;
+  const item = form.basis === "item";
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
 
   return (
@@ -78,6 +81,19 @@ export function RecipeEditor(props: Props) {
             placeholder="Name"
             className={`${box} border-line text-lg`}
           />
+
+          <div className="flex gap-1 self-start rounded-xl bg-line/50 p-1 text-sm">
+            {(["100g", "item"] as const).map((basis) => (
+              <button
+                key={basis}
+                onClick={() => patch({ basis })}
+                aria-pressed={form.basis === basis}
+                className={`rounded-lg px-3 py-2 ${form.basis === basis ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+              >
+                {basis === "item" ? "per item" : "per 100 g"}
+              </button>
+            ))}
+          </div>
 
           <section>
             <Heading hint="amounts in the selected form">Ingredients</Heading>
@@ -128,55 +144,68 @@ export function RecipeEditor(props: Props) {
 
           {byHand ? (
             <section>
-              <Heading hint="by hand, until it has ingredients">Per 100 g</Heading>
+              <Heading hint="by hand, until it has ingredients">{item ? "Per item" : "Per 100 g"}</Heading>
               <ValueFields values={form.values} onChange={(values) => patch({ values })} />
             </section>
           ) : (
             <>
-              <section>
-                <Heading hint="weigh it all when it's done">Cooked</Heading>
-                <div className="flex items-center gap-2">
-                  <label className={`${box} w-28 shrink-0 ${parseAmount(form.totalG) === undefined && form.totalG.trim() ? "border-bad" : "border-line"}`}>
-                    <span className="block text-xs text-muted">total (g)</span>
-                    <input
-                      inputMode="text"
-                      value={form.totalG}
-                      onChange={(e) => patch({ totalG: e.target.value })}
-                      placeholder="not yet"
-                      className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
-                    />
-                  </label>
-                  <span className="text-muted">−</span>
-                  <select
-                    value={form.containerG}
-                    onChange={(e) => patch({ containerG: Number(e.target.value) })}
-                    className="min-w-0 flex-1 self-stretch rounded-xl border border-line bg-surface px-2 text-fg"
-                  >
-                    <option value={0}>no container</option>
-                    {presets.map((c) => (
-                      <option key={c.id} value={c.grams}>
-                        {c.name} · {c.grams} g
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {totals.weighed ? (
-                  <p className="mt-2 px-1 text-sm text-muted">
-                    = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g of ingredients (×{(totals.cookedG / totals.rawG).toFixed(2)})
-                  </p>
-                ) : totals.rawG ? (
-                  <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the ingredient weight.</p>
-                ) : (
-                  <p className="mt-2 px-1 text-sm text-bad">Its ingredients are counted by the item, so weigh it to get values per 100 g.</p>
-                )}
-                {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The total weighs less than its container.</p>}
-              </section>
+              {item ? (
+                <section>
+                  <Heading hint="divide the batch into equal items">Items made</Heading>
+                  <input
+                    aria-label="Items made"
+                    inputMode="text"
+                    value={form.items}
+                    onChange={(e) => patch({ items: e.target.value })}
+                    className={`${box} w-28 ${parseAmount(form.items) ? "border-line" : "border-bad"}`}
+                  />
+                </section>
+              ) : (
+                <section>
+                  <Heading hint="weigh it all when it's done">Cooked</Heading>
+                  <div className="flex items-center gap-2">
+                    <label className={`${box} w-28 shrink-0 ${parseAmount(form.totalG) === undefined && form.totalG.trim() ? "border-bad" : "border-line"}`}>
+                      <span className="block text-xs text-muted">total (g)</span>
+                      <input
+                        inputMode="text"
+                        value={form.totalG}
+                        onChange={(e) => patch({ totalG: e.target.value })}
+                        placeholder="not yet"
+                        className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
+                      />
+                    </label>
+                    <span className="text-muted">−</span>
+                    <select
+                      value={form.containerG}
+                      onChange={(e) => patch({ containerG: Number(e.target.value) })}
+                      className="min-w-0 flex-1 self-stretch rounded-xl border border-line bg-surface px-2 text-fg"
+                    >
+                      <option value={0}>no container</option>
+                      {presets.map((c) => (
+                        <option key={c.id} value={c.grams}>
+                          {c.name} · {c.grams} g
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {totals.weighed ? (
+                    <p className="mt-2 px-1 text-sm text-muted">
+                      = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g of ingredients (×{(totals.cookedG / totals.rawG).toFixed(2)})
+                    </p>
+                  ) : totals.rawG ? (
+                    <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the ingredient weight.</p>
+                  ) : (
+                    <p className="mt-2 px-1 text-sm text-bad">Its ingredients are counted by the item, so weigh it to get values per 100 g.</p>
+                  )}
+                  {draft.totalG > 0 && draft.totalG <= form.containerG && <p className="mt-1 px-1 text-sm text-bad">The total weighs less than its container.</p>}
+                </section>
+              )}
 
               <section className="rounded-2xl border border-line bg-surface p-4">
                 <div className="flex items-baseline justify-between">
                   <span className="text-2xl font-semibold">
-                    {Math.round(per100.kcal)}
-                    <span className="text-base font-normal text-muted"> kcal / 100 g</span>
+                    {Math.round(perUnit.kcal)}
+                    <span className="text-base font-normal text-muted"> kcal / {item ? "item" : "100 g"}</span>
                   </span>
                   <span className="text-sm text-muted">batch {Math.round(totals.total.kcal)} kcal</span>
                 </div>
@@ -189,7 +218,7 @@ export function RecipeEditor(props: Props) {
                       className={`flex justify-between text-left transition-colors ${shown === key ? "text-accent" : ""}`}
                     >
                       <span className={shown === key ? "" : "text-muted"}>{LABELS[key]}</span>
-                      <span>{per100[key] === undefined ? "?" : `${per100[key].toFixed(key === "salt" ? 2 : 1)}g`}</span>
+                      <span>{perUnit[key] === undefined ? "?" : `${perUnit[key].toFixed(key === "salt" ? 2 : 1)}g`}</span>
                     </button>
                   ))}
                 </div>

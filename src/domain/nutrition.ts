@@ -53,22 +53,22 @@ export function recipeTotals(recipe: Recipe, foods: Map<string, Food>) {
   return { total, rawG, cookedG: cookedG > 0 ? cookedG : rawG, weighed: cookedG > 0 };
 }
 
-/** Per 100 g: the ingredients' sum, or the values written by hand while there are none. */
+/** Per item or 100 g: divided batch totals, or values written by hand without ingredients. */
 function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
   if (!recipe.ingredients.length && recipe.values) return recipe.values;
   const { total, cookedG } = recipeTotals(recipe, foods);
-  const per100 = zero();
-  for (const key of NUTRIENTS) per100[key] = cookedG ? (total[key] / cookedG) * 100 : 0;
-  const values: Values = per100;
-  if (!cookedG || recipe.ingredients.some(({ foodId, amount }) => amount > 0 && foods.get(foodId)?.sugar === undefined)) delete values.sugar;
+  const divisor = recipe.basis === "item" ? recipe.items ?? 0 : cookedG / 100;
+  const values: Values = zero();
+  for (const key of NUTRIENTS) values[key] = divisor > 0 ? total[key] / divisor : 0;
+  if (!(divisor > 0) || recipe.ingredients.some(({ foodId, amount }) => amount > 0 && foods.get(foodId)?.sugar === undefined)) delete values.sugar;
   return values;
 }
 
-/** A recipe as a per-100g food; old batches stop being favourites. */
+/** A recipe as a food in its selected basis; old batches stop being favourites. */
 export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
   const values = recipeValues(recipe, foods);
   const fav = !recipe.archived && recipe.fav !== false;
-  return { ...values, id: recipe.id, name: recipe.name, basis: "100g", group: "recipes", fav, note: recipe.note ?? "" };
+  return { ...values, id: recipe.id, name: recipe.name, basis: recipe.basis ?? "100g", group: "recipes", fav, note: recipe.note ?? "" };
 }
 
 /** Stars or unstars one of your foods or recipes. */

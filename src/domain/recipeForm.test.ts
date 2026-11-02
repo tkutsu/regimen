@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { recipeAsFood, recipeTotals } from "./nutrition";
+import { allFoods, recipeAsFood, recipeTotals, scale } from "./nutrition";
 import { fromRecipeForm, newBatch, toRecipeForm } from "./recipeForm";
+import { fold, parseLogs, stamp } from "./state";
 import type { Food, Recipe } from "./types";
 
 const food = (id: string, kcal: number, basis: Food["basis"] = "100g"): Food => ({ id, name: id, basis, group: "", fav: false, note: "", kcal, prot: 10 });
@@ -59,6 +60,27 @@ describe("recipe values", () => {
     const food = recipeAsFood(byHand, foods);
     expect([food.kcal, food.prot, food.sugar, food.note]).toEqual([245, 12, undefined, "350 g a slice"]);
     expect(recipeAsFood({ ...byHand, ingredients: recipe.ingredients }, foods).kcal).toBeCloseTo((1370 / 800) * 100);
+  });
+
+  it("divides an item batch by its yield and logs counts rather than grams", () => {
+    const batch: Recipe = { ...recipe, basis: "item", items: 10 };
+    const item = recipeAsFood(batch, foods);
+    expect(item.basis).toBe("item");
+    expect(item.kcal).toBeCloseTo(137);
+    expect(item.prot).toBeCloseTo(5.2);
+    expect(item.sugar).toBeUndefined();
+    expect(scale(item, 2).kcal).toBeCloseTo(274);
+    expect(recipeAsFood({ ...batch, items: 5 }, foods).kcal).toBeCloseTo(274);
+    expect(recipeAsFood({ ...batch, totalG: 0 }, foods)).toEqual(item);
+  });
+
+  it("scales item ingredients and variants without needing a batch weight", () => {
+    const batch: Recipe = {
+      ...recipe, basis: "item", items: 2, totalG: 0,
+      ingredients: [{ foodId: "egg", amount: 4, variant: "large", factor: 1.5 }],
+    };
+    expect(recipeAsFood(batch, foods).kcal).toBeCloseTo(210);
+    expect(recipeAsFood({ ...batch, ingredients: [], values: { kcal: 180, sugar: 0 } }, foods)).toMatchObject({ basis: "item", kcal: 180, sugar: 0 });
   });
 
   it("stops listing an old batch as a favourite", () => {
@@ -122,6 +144,40 @@ describe("recipe form", () => {
     const eggs = { ...toRecipeForm(recipe), ingredients: [{ foodId: "egg", amount: "4" }] };
     expect(fromRecipeForm({ ...eggs, totalG: "" }, "r", foods)).toBeUndefined();
     expect(fromRecipeForm({ ...eggs, totalG: "700" }, "r", foods)?.totalG).toBe(700);
+  });
+
+  it("creates, reopens and edits item recipes through saved event logs", () => {
+    const form = { ...toRecipeForm(recipe), basis: "item" as const, items: "2*5", totalG: "" };
+    const saved = fromRecipeForm(form, "r", foods)!;
+    expect(saved).toMatchObject({ basis: "item", items: 10, totalG: 0, containerG: 0 });
+    const events = [...foods.values()].map((food) => stamp({ type: "food.upsert", food }, "desktop"));
+    events.push(stamp({ type: "recipe.upsert", recipe: saved }, "desktop"));
+    const state = fold(parseLogs([events.map((event) => JSON.stringify(event)).join("\n")]));
+    const reopened = toRecipeForm(state.recipes.get("r"));
+    expect(fromRecipeForm(reopened, "r", foods)).toEqual(saved);
+    expect(allFoods(state).get("r")).toMatchObject({ basis: "item", kcal: 137 });
+    expect(fromRecipeForm({ ...reopened, items: "5" }, "r", foods)?.items).toBe(5);
+    expect(newBatch(saved, "r2")).toMatchObject({ basis: "item", items: 10, totalG: 0 });
+  });
+
+  it.each(["", "0", "bad", "5/0"])("requires a positive item yield: %s", (items) => {
+    expect(fromRecipeForm({ ...toRecipeForm(recipe), basis: "item", items }, "r", foods)).toBeUndefined();
+  });
+
+  it("saves handwritten item values without needing a yield or a weight", () => {
+    const form = { ...toRecipeForm(), name: "Slice", basis: "item" as const, items: "", totalG: "bad", values: { ...toRecipeForm().values, kcal: "180" } };
+    const saved = fromRecipeForm(form, "slice", foods)!;
+    expect(saved).toMatchObject({ basis: "item", values: { kcal: 180 }, totalG: 0, containerG: 0 });
+    expect(saved.items).toBeUndefined();
+    expect(recipeAsFood(saved, foods)).toMatchObject({ basis: "item", kcal: 180 });
+  });
+
+  it("switches back to grams without retaining the item yield", () => {
+    const form = { ...toRecipeForm({ ...recipe, basis: "item", items: 10 }), basis: "100g" as const, items: "bad" };
+    const saved = fromRecipeForm(form, "r", foods)!;
+    expect(saved).toEqual(recipe);
+    expect(recipeAsFood(saved, foods).basis).toBe("100g");
+    expect(recipeAsFood(saved, foods).kcal).toBeCloseTo(171.25);
   });
 
   it("starts a new batch unweighed", () => {
