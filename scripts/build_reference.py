@@ -269,16 +269,18 @@ def clean_keywords(name, keywords, packaged=False):
     return result
 
 
-def close_nutrients(left, right):
-    """Allow rounding differences across every reported nutrient, never unknown versus zero."""
+def close_nutrients(left, right, compatible=False):
+    """Compare reported values; reviewed merges may retain extra known micronutrients."""
     if len(left) != len(right):
         return False
     for i, (a, b) in enumerate(zip(left[4:], right[4:])):
         if a is None or b is None:
-            if a != b:
+            if a != b and not (compatible and i >= 7 and a is None):
                 return False
         else:
             absolute = 2 if i == 0 else .02 if i == 5 else .2 if i < 7 else .001
+            if compatible and i == len(MACRO_UNITS) + list(MICRO_UNITS).index("sodium"):
+                absolute = 1  # One mg sodium can round to the same displayed salt value.
             relative = .01 if i == 0 else .02
             if abs(a - b) > max(absolute, max(abs(a), abs(b)) * relative) + 1e-9:
                 return False
@@ -308,11 +310,22 @@ def curate(foods, corrections):
         key = f"{food[0]}-{food[1]}"
         row = food[:]
         row[2] = names.get(key, row[2])
+        for nutrient, change in corrections.get("nutrients", {}).get(key, {}).items():
+            column = 4 + list({**MACRO_UNITS, **MICRO_UNITS}).index(nutrient)
+            if row[column] not in (change["from"], change["to"]):
+                raise ValueError(f"Reviewed nutrient no longer matches: {key} {nutrient}")
+            row[column] = change["to"]
         rows[key] = row
     for removed, canonical in corrections.get("duplicates", {}).items():
         if removed not in rows:
             continue
         if canonical not in rows or not close_nutrients(rows[removed], rows[canonical]):
+            raise ValueError(f"Reviewed duplicate no longer matches: {removed} -> {canonical}")
+        del rows[removed]
+    for removed, canonical in corrections.get("compatibleDuplicates", {}).items():
+        if removed not in rows:
+            continue
+        if canonical not in rows or not close_nutrients(rows[removed], rows[canonical], compatible=True):
             raise ValueError(f"Reviewed duplicate no longer matches: {removed} -> {canonical}")
         del rows[removed]
     return deduplicate(rows.values())
