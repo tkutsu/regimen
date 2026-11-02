@@ -5,7 +5,7 @@ import type { Food, Recipe } from "./types";
 /** A recipe being edited, amounts kept as typed. */
 export type RecipeForm = {
   name: string;
-  ingredients: { foodId: string; amount: string }[];
+  ingredients: (Omit<Recipe["ingredients"][number], "amount"> & { amount: string })[];
   /** The weighed pot, container included; blank until cooked. */
   totalG: string;
   containerG: number;
@@ -17,7 +17,7 @@ export type RecipeForm = {
 export function toRecipeForm(recipe?: Recipe): RecipeForm {
   return {
     name: recipe?.name ?? "",
-    ingredients: (recipe?.ingredients ?? []).map(({ foodId, amount }) => ({ foodId, amount: String(amount) })),
+    ingredients: (recipe?.ingredients ?? []).map((ingredient) => ({ ...ingredient, amount: String(ingredient.amount) })),
     totalG: recipe?.totalG ? String(recipe.totalG) : "",
     containerG: recipe?.containerG ?? 0,
     values: valueTexts(recipe?.values),
@@ -34,7 +34,7 @@ export function toRecipeForm(recipe?: Recipe): RecipeForm {
 export function fromRecipeForm(form: RecipeForm, id: string, foods: Map<string, Food>): Recipe | undefined {
   const name = form.name.trim();
   const note = form.note.trim();
-  const ingredients = form.ingredients.map(({ foodId, amount }) => ({ foodId, amount: parseAmount(amount) ?? 0 }));
+  const ingredients = form.ingredients.map((ingredient) => ({ ...ingredient, amount: parseAmount(ingredient.amount) ?? 0 }));
   const totalG = form.totalG.trim() ? parseAmount(form.totalG) : 0;
   if (!name || ingredients.some((i) => i.amount <= 0)) return undefined;
   if (totalG === undefined || (totalG > 0 && totalG <= form.containerG)) return undefined;

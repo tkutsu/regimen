@@ -74,16 +74,6 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             <span className="text-xs text-muted">Separate names and terms with commas. Include the Greek name here.</span>
           </label>
 
-          {food?.nameNeedsReview && (
-            <label className="flex items-start gap-2 text-sm">
-              <input type="checkbox" checked={form.nameNeedsReview} onChange={(e) => patch({ nameNeedsReview: e.target.checked })} className="mt-1 accent-accent" />
-              <span>
-                Name needs review
-                <span className="block text-xs text-muted">Check the name and keywords, then clear this flag when ready.</span>
-              </span>
-            </label>
-          )}
-
           <div className="flex gap-2">
             <GroupInput
               value={form.group}
@@ -110,7 +100,11 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
           </section>
 
           <section>
-            <Heading hint="grams × factor = the values above">Variants</Heading>
+            <Heading hint="base values × factor = new values">Variants</Heading>
+            <p className="mb-3 text-xs text-muted">
+              A variant multiplies every nutrient value by its factor. For example, 100 kcal with a factor of 2.4 becomes 240 kcal per {form.basis === "item" ? "item" : "100 g"}.
+              {" "}Choose the variant when adding this food.
+            </p>
             <div className="flow flex flex-col gap-2">
               {form.variants.map((variant, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -118,6 +112,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
                     value={variant.name}
                     onChange={(e) => setVariant(i, { name: e.target.value })}
                     placeholder="raw"
+                    aria-label="Variant name"
                     className={`${box} min-w-0 flex-1 border-line`}
                   />
                   <span className="text-muted">×</span>
@@ -126,14 +121,17 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
                     value={variant.factor}
                     onChange={(e) => setVariant(i, { factor: e.target.value })}
                     placeholder="2.4"
+                    aria-label="Variant factor"
                     className={`${box} w-20 text-right ${border(variant.factor)}`}
                   />
                   <button
                     onClick={() => patch({ variants: form.variants.filter((_, j) => j !== i) })}
                     aria-label="Remove variant"
-                    className="px-1 text-muted"
+                    className="shrink-0 p-2 text-muted"
                   >
-                    ×
+                    <svg viewBox="0 0 24 24" aria-hidden className="size-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6" />
+                    </svg>
                   </button>
                 </div>
               ))}

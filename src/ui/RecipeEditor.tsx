@@ -28,7 +28,7 @@ type Props = {
 };
 
 /**
- * Ingredients by raw weight; the weighed total minus its container gives the values per 100 g.
+ * Ingredients by weight in their selected form; the weighed total minus its container gives the values per 100 g.
  * Without ingredients, the values are written by hand.
  */
 export function RecipeEditor(props: Props) {
@@ -46,7 +46,7 @@ export function RecipeEditor(props: Props) {
   // values as typed so far, even while the form isn't valid yet
   const draft: Recipe = {
     ...recipe,
-    ingredients: form.ingredients.map(({ foodId, amount }) => ({ foodId, amount: parseAmount(amount) ?? 0 })),
+    ingredients: form.ingredients.map((ingredient) => ({ ...ingredient, amount: parseAmount(ingredient.amount) ?? 0 })),
     totalG: parseAmount(form.totalG) ?? 0,
     containerG: form.containerG,
   };
@@ -79,7 +79,8 @@ export function RecipeEditor(props: Props) {
           />
 
           <section>
-            <Heading hint="raw weights">Ingredients</Heading>
+            <Heading hint="amounts in the selected form">Ingredients</Heading>
+            <p className="mb-2 px-1 text-xs text-muted">Choose a variant when adding an ingredient, then enter its amount in that form.</p>
             <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
               {form.ingredients.map((ingredient, i) => {
                 const food = foods.get(ingredient.foodId);
@@ -88,7 +89,8 @@ export function RecipeEditor(props: Props) {
                   <li key={`${ingredient.foodId}-${i}`} className="flex items-center gap-2 py-1.5 pr-2 pl-4">
                     <span className="min-w-0 flex-1">
                       <span className="block truncate">{food?.name ?? "missing food"}</span>
-                      {food && amount ? <span className="block text-xs text-muted">{Math.round(scale(food, amount).kcal)} kcal</span> : null}
+                      {ingredient.variant && <span className="block truncate text-xs text-muted">{ingredient.variant} ×{ingredient.factor}</span>}
+                      {food && amount ? <span className="block text-xs text-muted">{Math.round(scale(food, amount, ingredient.factor).kcal)} kcal</span> : null}
                     </span>
                     <input
                       autoFocus={!ingredient.amount}
@@ -153,10 +155,10 @@ export function RecipeEditor(props: Props) {
                 </div>
                 {totals.weighed ? (
                   <p className="mt-2 px-1 text-sm text-muted">
-                    = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g raw (×{(totals.cookedG / totals.rawG).toFixed(2)})
+                    = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g of ingredients (×{(totals.cookedG / totals.rawG).toFixed(2)})
                   </p>
                 ) : totals.rawG ? (
-                  <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the raw weight.</p>
+                  <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the ingredient weight.</p>
                 ) : (
                   <p className="mt-2 px-1 text-sm text-bad">Its ingredients are counted by the item, so weigh it to get values per 100 g.</p>
                 )}
@@ -219,10 +221,13 @@ export function RecipeEditor(props: Props) {
           recentIds={recentIds}
           containers={containers}
           addLabel="Add ingredient"
-          variants={false}
-          onAdd={(food, amount) => {
+          onAdd={(food, amount, _, variant) => {
             if (!props.foods.has(food.id) && !picked.some((p) => p.id === food.id)) setPicked([...picked, food]);
-            patch({ ingredients: [...form.ingredients, { foodId: food.id, amount: String(Math.round(amount * 10) / 10) }] });
+            patch({ ingredients: [...form.ingredients, {
+              foodId: food.id,
+              amount: String(Math.round(amount * 10) / 10),
+              ...(variant && { variant: variant.name, factor: variant.factor }),
+            }] });
             setPicking(false);
           }}
           onToggleFav={onToggleFav}

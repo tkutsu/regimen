@@ -59,10 +59,16 @@ These are machine translations supplemented with reviewed common food terms.
 For brand-only names, source-reported food categories can supply Greek keywords.
 Uncommon names may need correction; keywords are editable after adding a food.
 Translations are bundled, so searching needs no network connection.
+Reviewed spelling corrections, Slavic-language product exclusions and duplicate
+merges are recorded in `scripts/food_cleanup.json` and reapplied on rebuild.
+Duplicates require the same food identity and matching reported nutrients,
+allowing small rounding differences across macros and micronutrients. Missing
+values remain distinct from zero. Search keywords omit repeated English words
+and translated brand labels.
 Brand-only and unclear source names are flagged in the picker and in the Foods
 tab's "names to review" filter, which includes reference foods. Open a flagged
-food, correct its name and keywords, and clear "Name needs review" to save a
-reviewed copy in your foods. The review status syncs with that copy.
+food to correct its name and keywords and save a copy in your foods.
+The review status syncs with that copy.
 New source names without bundled translations are also flagged after a rebuild.
 
 Distinct vitamin forms stay separate: vitamin A as reported, vitamin A RAE,

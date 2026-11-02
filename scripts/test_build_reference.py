@@ -13,6 +13,67 @@ import build_reference as build
 
 
 class ReferenceImportTests(unittest.TestCase):
+    def test_keywords_remove_repeated_english_and_brand_translations(self):
+        self.assertEqual(build.clean_keywords('Mini pick crackers (Papadopoulou)',
+                                             ['Mini pick crackers (Παπαδοπούλου)', 'κράκερ',
+                                              'Mini pick κράκερ', 'ΚΡΑΚΕΡ'], True), ['κράκερ'])
+        self.assertEqual(build.clean_keywords('Coffee with milk', ['καφές with γάλα']),
+                         ['καφές γάλα'])
+        self.assertEqual(build.clean_keywords('Χυμός πορτοκάλι', ['Χυμός πορτοκάλι']), [])
+        self.assertEqual(build.clean_keywords('Γάλα 2% lactose free', ['γάλα χωρίς λακτόζη']),
+                         ['γάλα χωρίς λακτόζη'])
+
+    def test_close_duplicates_preserve_every_nutrient_and_unknown(self):
+        row = self.normalize(calcium=100)
+        close = row[:]
+        close[4] += 1
+        close[5] += .1
+        close[11] += .5
+        self.assertTrue(build.close_nutrients(row, close))
+        self.assertEqual(build.deduplicate([row, close]), [row])
+        unknown = row[:]
+        unknown[6] = None
+        self.assertFalse(build.close_nutrients(row, unknown))
+        self.assertFalse(build.close_nutrients(row, self.normalize(calcium=110)))
+
+    def test_close_nutrition_alone_does_not_merge_different_foods(self):
+        row = self.normalize()
+        other = [row[0], '2', 'Unrelated food', *row[3:]]
+        self.assertEqual(build.deduplicate([row, other]), [row, other])
+        salty = [row[0], '3', 'Food with salt without fat', *row[3:]]
+        fatty = [row[0], '4', 'Food without salt with fat', *row[3:]]
+        self.assertEqual(build.deduplicate([salty, fatty]), [salty, fatty])
+
+    def test_curate_filters_slavic_products_and_applies_reviewed_merges(self):
+        row = ['off', '1', 'Yogurt', *self.normalize()[3:]]
+        same = ['off', '2', 'Greek yogurt', *row[3:]]
+        slavic = ['off', '3', 'Кефир (Brand)', *row[3:]]
+        polish = ['off', '4', 'Chleb magnat', *row[3:]]
+        corrected = ['off', '5', 'Stawberry yogurt', *row[3:]]
+        rules = {'excludeNames': ['Chleb magnat'], 'duplicates': {'off-2': 'off-1'},
+                 'names': {'off-5': 'Strawberry yogurt'}}
+        self.assertEqual(build.curate([row, same, slavic, polish, corrected], rules),
+                         [row, ['off', '5', 'Strawberry yogurt', *row[3:]]])
+        self.assertEqual(corrected[2], 'Stawberry yogurt')
+
+    def test_reviewed_merge_fails_if_source_nutrients_drift(self):
+        row = self.normalize()
+        different = ['usda', '2', 'Other name', *self.normalize(calcium=200)[3:]]
+        with self.assertRaisesRegex(ValueError, 'no longer matches'):
+            build.curate([row, different], {'duplicates': {'usda-2': 'usda-1'}})
+
+    def test_rebuild_does_not_uncover_an_exact_copy_of_a_removed_product(self):
+        row = ['off', '5201125003609', 'Philadelphia Original Cream Cheesw', *self.normalize()[3:]]
+        copy = ['off', 'unreviewed-copy', *row[2:]]
+        canonical = ['off', '4000339697908', 'Philadelphia Original', *row[3:]]
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'reference.json'
+            with patch.object(build, 'usda', return_value=[]), \
+                 patch.object(build, 'ciqual', return_value=[]), \
+                 patch.object(build, 'off', return_value=[row, copy, canonical]):
+                build.main(None, None, None, path)
+            self.assertEqual(json.loads(path.read_text())['foods'], [canonical])
+
     def test_keywords_follow_exact_names_without_modifying_rows(self):
         rows = [['usda', '1', 'Milk', 'dairy', 60], ['off', '2', 'Milk', 'packaged', 61],
                 ['ciqual', '3', 'Milk chocolate', 'sweets', 530]]
