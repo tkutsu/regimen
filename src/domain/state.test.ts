@@ -48,6 +48,18 @@ describe("parseLogs", () => {
 });
 
 describe("fold", () => {
+  it("preserves daily rollover through log reloads and clearing", () => {
+    const day = { date: "2026-10-31", phase: "cut" as const, steps: 3000, extraKcal: 100, rolloverKcal: 200 };
+    const saved = stamp({ type: "day.upsert", day }, "desktop");
+    const reloaded = fold(parseLogs([line(saved)]));
+    expect(reloaded.days.get(day.date)).toEqual(day);
+    for (const rolloverKcal of [0, -100]) {
+      const changed = stamp({ type: "day.upsert", day: { ...day, rolloverKcal } }, "phone");
+      const next = fold(parseLogs([[saved, changed].map(line).join("\n")]));
+      expect(next.days.get(day.date)).toEqual({ ...day, rolloverKcal });
+    }
+  });
+
   it("keeps food keywords through the event log and subsequent edits", () => {
     const food = { ...oats, keywords: ["βρώμη", "porridge"] };
     const event = stamp({ type: "food.upsert", food }, "desktop");

@@ -38,8 +38,14 @@ export function Weight({ state, commit }: Props) {
   const latest = series.at(-1);
   const weekAgo = series.findLast((p) => p.date <= shiftDate(today, -7));
   const change = latest && weekAgo ? latest.avg - weekAgo.avg : undefined;
+  const notes = <WeightNotes value={state.settings.weightNotes ?? ""} commit={commit} />;
 
-  if (!latest) return <p className="py-6 text-center text-sm text-muted">No weigh-ins yet. Add one on Today.</p>;
+  if (!latest) return (
+    <div className="flex flex-col gap-4 pb-6">
+      <p className="py-6 text-center text-sm text-muted">No weigh-ins yet. Add one on Today.</p>
+      {notes}
+    </div>
+  );
 
   return (
     <div className="flex flex-col gap-4 pb-6">
@@ -105,7 +111,39 @@ export function Weight({ state, commit }: Props) {
           </button>
         )}
       </section>
+      {notes}
     </div>
+  );
+}
+
+/** Saves notes on blur, keeping the draft if writing fails or typing continues during a save. */
+function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
+  const [draft, setDraft] = useState<string>();
+  const save = async () => {
+    if (draft === undefined || draft === value) return;
+    const notes = draft;
+    if (await commit({ type: "settings", settings: { weightNotes: notes } })) {
+      setDraft((current) => current === notes ? undefined : current);
+    }
+  };
+
+  return (
+    <section>
+      <h2 className="mb-1 px-1 text-xs font-medium tracking-wide text-muted uppercase">
+        <label htmlFor="weight-notes">Notes</label>
+      </h2>
+      <textarea
+        id="weight-notes"
+        value={draft ?? value}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={save}
+        rows={4}
+        placeholder="Add your weight and progress notes..."
+        aria-describedby="weight-notes-hint"
+        className="block w-full resize-y rounded-2xl border border-line bg-surface p-4 text-sm outline-none placeholder:text-muted/60 focus:border-accent"
+      />
+      <p id="weight-notes-hint" className="mt-1 px-1 text-xs text-muted">Saves when you leave this field.</p>
+    </section>
   );
 }
 
