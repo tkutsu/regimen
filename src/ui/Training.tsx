@@ -34,15 +34,18 @@ export function Training({ state, commit }: Props) {
 
   return (
     <div className="flex flex-col gap-6 pb-8">
-      {going.map((session) => (
-        <button key={session.id} onClick={() => setOpenId(session.id)} className="rounded-2xl border border-accent bg-surface px-4 py-3 text-left">
-          <span className="block text-xs font-medium tracking-wide text-accent uppercase">Going · {dayLabel(session.date, today)}</span>
-          <span className="block text-lg font-medium">{session.name}</span>
-          <span className="block text-sm text-muted">
-            {session.sets.filter((set) => set.done).length} of {session.sets.length} sets done
-          </span>
-        </button>
-      ))}
+      {going.map((session) => {
+        const done = session.sets.filter((set) => set.done).length;
+        return (
+          <button key={session.id} onClick={() => setOpenId(session.id)} className="rounded-2xl border border-accent bg-surface px-4 py-3 text-left">
+            <span className="block text-xs font-medium tracking-wide text-accent uppercase">Going · {dayLabel(session.date, today)}</span>
+            <span className="block text-lg font-medium">{session.name}</span>
+            <span className="block text-sm text-muted">
+              {done} {done === 1 ? "set" : "sets"} done
+            </span>
+          </button>
+        );
+      })}
 
       <Section title="Workouts">
         {workouts.map((workout) => {

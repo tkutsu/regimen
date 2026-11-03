@@ -41,7 +41,7 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
           Close
         </button>
         <h2 className="font-medium">
-          {done} of {session.sets.length} {session.sets.length === 1 ? "set" : "sets"}
+          {done} {done === 1 ? "set" : "sets"} done
         </h2>
         {session.finished ? (
           <span className="w-14" />

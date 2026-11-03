@@ -115,10 +115,19 @@ html {
   [role="dialog"]:not(:has([role="dialog"])) .flow > :not([role="dialog"]) {
     view-transition-name: match-element;
   }
+  /* Row snapshots escape scroll clipping; keep the visible header above them. */
+  :root:not(:has([role="dialog"])) [data-app] > nav,
+  [role="dialog"]:not(:has([role="dialog"])) > header {
+    view-transition-name: page-header;
+    background: var(--color-bg);
+  }
 }
 ::view-transition-group(*) {
   animation-duration: 200ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-group(page-header) {
+  z-index: 1;
 }
 /* Taps during a transition reach the page underneath, so quick ticks aren't lost. */
 ::view-transition {
