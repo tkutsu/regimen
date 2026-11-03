@@ -7,6 +7,7 @@ import type { Commit } from "../store";
 import { Section } from "./fields";
 import { SessionView } from "./SessionView";
 import { WorkoutEditor } from "./WorkoutEditor";
+import { TrainingVolume } from "./TrainingVolume";
 
 type Props = { state: State; commit: Commit };
 
@@ -46,6 +47,8 @@ export function Training({ state, commit }: Props) {
           </button>
         );
       })}
+
+      <TrainingVolume state={state} />
 
       <Section title="Workouts">
         {workouts.map((workout) => {
