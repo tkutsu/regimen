@@ -13,6 +13,8 @@ import {
   summarize,
   supersets,
   usedExercises,
+  volumeSeries,
+  weekStart,
 } from "./training";
 import type { Session, SetLog, Workout } from "./types";
 
@@ -56,6 +58,65 @@ describe("startSession", () => {
     const circuit: Workout = { id: "c", name: "Circuit", targets: [linked("bench"), linked("row"), { exerciseId: "dips", sets: 1 }, linked("bench")] };
     expect(startSession(circuit, [], "2026-11-01", "s").linked).toEqual(["row"]);
     expect(startSession(push, [], "2026-11-01", "s")).not.toHaveProperty("linked");
+  });
+});
+
+describe("weekly volume", () => {
+  const history = () => {
+    const state = fold([]);
+    state.exercises.set("dips", { id: "dips", name: "Dips", measure: "reps", bodyweightPct: 50 });
+    state.weights = new Map([["2026-11-03", 200], ["2026-10-26", 79], ["2026-11-01", 81]]);
+    return state;
+  };
+
+  it("sums actual reps and loads across sessions, counting done sets and drops in Monday-Sunday weeks", () => {
+    const state = history();
+    state.sessions.set("a", session("a", "2026-10-26", [set("bench", 8, 60), set("bench", 7, 60), { ...set("bench", 10, 40), drop: true }, set("bench", 20, 60, false)]));
+    state.sessions.set("b", session("b", "2026-11-01", [set("bench", 5, 100)]));
+    state.sessions.set("c", { ...session("c", "2026-11-02", [set("bench", 6, 100)]), finished: undefined });
+    state.sessions.set("future", session("future", "2026-11-04", [set("bench", 10, 1000)]));
+    expect(volumeSeries(state, "2026-11-02", 2)).toEqual([
+      { date: "2026-10-26", kg: 1800, avg: 1800, missingBodyweight: 0 },
+      { date: "2026-11-02", kg: 600, avg: 1200, missingBodyweight: 0 },
+    ]);
+  });
+
+  it("uses each session day's latest weigh-in plus 1 kg, and adds external load before multiplying reps", () => {
+    const state = history();
+    state.sessions.set("a", session("a", "2026-10-27", [set("dips", 10, 20)]));
+    state.sessions.set("b", session("b", "2026-11-01", [set("dips", 10)]));
+    state.sessions.set("c", session("c", "2026-11-02", [set("dips", 10)]));
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1010, 410]);
+    state.exercises.set("dips", { ...state.exercises.get("dips")!, bodyweightPct: 100 });
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1820, 820]);
+  });
+
+  it("flags bodyweight without a prior weigh-in and retains added load; legacy exercises default to 0%", () => {
+    const state = history();
+    state.sessions.set("a", session("a", "2026-10-25", [set("dips", 10, 20), set("bench", 8, 60), set("unweighted", 12)]));
+    expect(volumeSeries(state, "2026-10-25")).toEqual([{ date: "2026-10-19", kg: 680, avg: 680, missingBodyweight: 1 }]);
+  });
+
+  it("includes zero weeks and averages over calendar weeks before range filtering", () => {
+    const state = history();
+    state.sessions.set("a", session("a", "2026-10-12", [set("bench", 10, 100)]));
+    state.sessions.set("b", session("b", "2026-10-26", [set("bench", 10, 200)]));
+    expect(volumeSeries(state, "2026-11-02", 2).map((p) => [p.kg, p.avg])).toEqual([[1000, 1000], [0, 500], [2000, 1000], [0, 1000]]);
+    expect(volumeSeries(state, "2026-11-02", 1).map((p) => p.avg)).toEqual([1000, 0, 2000, 0]);
+  });
+
+  it("has no series for planned sets or completed sets without reps", () => {
+    const state = history();
+    expect(volumeSeries(state, "2026-11-02")).toEqual([]);
+    state.sessions.set("a", session("a", "2026-11-01", [set("bench", 8, 60, false), { exerciseId: "bench", kg: 60, done: true }]));
+    expect(volumeSeries(state, "2026-11-02")).toEqual([]);
+  });
+
+  it("keeps Sunday and Monday apart across a year boundary and DST", () => {
+    expect(weekStart("2027-01-03")).toBe("2026-12-28");
+    expect(weekStart("2027-01-04")).toBe("2027-01-04");
+    expect(weekStart("2026-10-25")).toBe("2026-10-19");
+    expect(weekStart("2026-10-26")).toBe("2026-10-26");
   });
 });
 

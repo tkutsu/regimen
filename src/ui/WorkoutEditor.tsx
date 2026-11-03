@@ -3,7 +3,7 @@ import { newId } from "../domain/state";
 import type { Exercise, Target, Workout } from "../domain/types";
 import { Dialog } from "./Dialog";
 import { dropsOf } from "../domain/training";
-import { AmountFields, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
+import { AmountFields, BodyweightField, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
 import { NumberInput, OptionalNumberInput, Remove, TextInput } from "./fields";
 import { box, Heading } from "./FoodEditor";
 import { transition } from "./motion";
@@ -165,6 +165,7 @@ function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRe
             <span className="text-xs text-muted">drops</span>
           </label>
         </div>
+        {exercise && <div className="mt-2"><BodyweightField exercise={exercise} onChange={onRename} /></div>}
       </div>
     </div>
   );

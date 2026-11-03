@@ -110,9 +110,15 @@ export type Settings = {
 };
 
 /** Every exercise counts reps; `measure` is still written because older builds read it. */
-export type Exercise = { id: string; name: string; measure: "reps" };
+export type Exercise = {
+  id: string;
+  name: string;
+  measure: "reps";
+  /** Share of (the session day's bodyweight + 1 kg) added to load for volume; omitted = 0%. */
+  bodyweightPct?: number;
+};
 
-/** What one set records: reps, with kg (left out = bodyweight). */
+/** What one set records: reps and added kg; bodyweight's contribution is set on the exercise. */
 export type Amount = { reps?: number; kg?: number };
 
 /**

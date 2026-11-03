@@ -2,10 +2,29 @@ import { useState } from "react";
 import { parseAmount } from "../domain/nutrition";
 import { newId } from "../domain/state";
 import type { Amount, Exercise } from "../domain/types";
-import { OptionalNumberInput } from "./fields";
+import { Info, OptionalNumberInput } from "./fields";
 
 /** A small boxed number; callers may widen it. */
 export const fieldBox = "w-14 rounded-lg border border-line bg-bg px-2 py-1 text-right outline-none focus:border-accent placeholder:text-muted/50";
+
+/** An exercise's optional bodyweight contribution, shared by its workouts and past sessions. */
+export function BodyweightField({ exercise, onChange }: { exercise: Exercise; onChange: (exercise: Exercise) => void }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-1">
+      <label className="flex items-baseline gap-1 text-xs text-muted">
+        <OptionalNumberInput
+          value={exercise.bodyweightPct}
+          onCommit={(pct) => (pct === undefined || (pct >= 0 && pct <= 100)) && onChange({ ...exercise, bodyweightPct: pct || undefined })}
+          placeholder="0"
+          aria-label={`${exercise.name} bodyweight percentage`}
+          className={fieldBox}
+        />
+        <span>% bodyweight for volume</span>
+      </label>
+      <Info label={`${exercise.name} bodyweight percentage`} wide hint="0-100%. Adds this share of (bodyweight + 1 kg for clothes and food) to the set's added kg. Uses the latest weigh-in on or before the session date. Saves immediately for this exercise across all workouts and past sessions. Clear for 0%." />
+    </div>
+  );
+}
 
 /** Reps and kg, each committing on blur. Numbers read like amounts ("+2.5" adds to the weight). */
 export function AmountFields({ amount, onChange, label }: { amount: Amount; onChange: (amount: Amount) => void; label: string }) {
