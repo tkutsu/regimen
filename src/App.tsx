@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useRegimen } from "./store";
 import { Foods } from "./ui/Foods";
 import { useKeys } from "./ui/keys";
-import { useLook } from "./ui/look";
+import { useLook, useRemembered } from "./ui/look";
 import { transition } from "./ui/motion";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
@@ -17,8 +17,8 @@ const TABS: Tab[] = ["today", "training", "weight", "foods", "settings", "system
 
 export default function App() {
   const { config, state, peers, error, saveError, reload, commit, retrySave, dismissSaveError, saveConfig } = useRegimen();
-  const [tab, setTab] = useState<Tab>("today");
-  const go = useCallback((next: Tab) => transition(() => setTab(next)), []);
+  const [tab, setTab] = useRemembered<Tab>("last-tab", "today", TABS);
+  const go = useCallback((next: Tab) => transition(() => setTab(next)), [setTab]);
   useLook(state?.settings);
   useKeys(TABS, tab, go);
 

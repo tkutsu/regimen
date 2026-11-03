@@ -4,6 +4,7 @@ import { LABELS, NUTRIENTS } from "../domain/nutrition";
 import { newId } from "../domain/state";
 import type { Food } from "../domain/types";
 import { Dialog } from "./Dialog";
+import { blurOnEnter } from "./fields";
 import { transition } from "./motion";
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
   /** Entries, recipe ingredients and staples that use the food. */
   uses: number;
   onSave: (food: Food) => void;
-  onDelete?: () => void;
+  onDelete?: (everywhere: boolean) => void;
   onClose: () => void;
 };
 
@@ -24,6 +25,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
   const [id] = useState(() => food?.id ?? newId());
   const [form, setForm] = useState(() => toForm(food));
   const [confirming, setConfirming] = useState(false);
+  const [everywhere, setEverywhere] = useState(false);
   const saved = fromForm(form, id);
   const patch = (changes: Partial<FoodForm>) => setForm({ ...form, ...changes });
   const setVariant = (i: number, changes: Partial<FoodForm["variants"][number]>) =>
@@ -120,6 +122,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
                     inputMode="decimal"
                     value={variant.factor}
                     onChange={(e) => setVariant(i, { factor: e.target.value })}
+                    onKeyDown={blurOnEnter}
                     placeholder="2.4"
                     aria-label="Variant factor"
                     className={`${box} w-20 text-right ${border(variant.factor)}`}
@@ -151,16 +154,29 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             />
           </section>
 
-          {food && onDelete &&
-            (uses > 0 ? (
-              <p className="text-center text-sm text-muted">
-                Used {uses} {uses === 1 ? "time" : "times"} in your log, recipes or staples, so it can't be deleted.
-              </p>
-            ) : (
-              <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
-                {confirming ? "Tap again to delete" : "Delete food"}
+          {food && onDelete && (
+            <div className="flex flex-col gap-2">
+              {uses > 0 && (
+                <p className="text-center text-sm text-muted">
+                  Used {uses} {uses === 1 ? "time" : "times"} in your log, recipes or staples.
+                </p>
+              )}
+              {!everywhere && <p className="text-center text-sm text-muted">Deleting it keeps existing logs, recipes and staples.</p>}
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={everywhere} onChange={(e) => { setEverywhere(e.target.checked); setConfirming(false); }} className="accent-accent" />
+                Remove from everywhere
+              </label>
+              {everywhere && (
+                <p role="alert" className="text-sm text-bad">
+                  This deletes all log entries for this food and removes it from every recipe and staple.
+                  {" "}Past calorie totals will change. This cannot be undone.
+                </p>
+              )}
+              <button onClick={() => (confirming ? onDelete(everywhere) : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
+                {confirming ? (everywhere ? "Tap again to delete everywhere" : "Tap again to delete") : (everywhere ? "Delete everywhere" : "Delete food")}
               </button>
-            ))}
+            </div>
+          )}
         </div>
       </div>
     </Dialog>
@@ -245,6 +261,7 @@ export function ValueFields({ values, onChange }: { values: ValueTexts; onChange
             inputMode="decimal"
             value={values[key]}
             onChange={(e) => onChange({ ...values, [key]: e.target.value })}
+            onKeyDown={blurOnEnter}
             placeholder={key === "kcal" ? "required" : "?"}
             className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
           />

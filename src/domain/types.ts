@@ -27,6 +27,8 @@ export type Food = Values & {
   fav: boolean;
   note: string;
   variants?: Variant[];
+  /** Deleted from the food list and pickers, kept for existing uses. */
+  archived?: boolean;
 };
 
 /**
