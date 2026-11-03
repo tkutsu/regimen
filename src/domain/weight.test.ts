@@ -50,6 +50,38 @@ describe("stretches", () => {
     expect(maintain.intake).toBeCloseTo((41 * 2500 + 3000 - 370) / 42);
   });
 
+  it("keeps maintenance correct when unused calories are eaten the next day", () => {
+    const changes: Change[] = [settings, { type: "food.upsert", food: meal }];
+    let kg = 80;
+    const activity = 37 + 100;
+    for (let i = 0; i < 60; i++) {
+      const date = shiftDate(END, i - 59);
+      const eaten = (i % 2 ? 2200 : 1800) + activity;
+      changes.push(
+        { type: "day.upsert", day: { date, phase: "cut", steps: 1000, extraKcal: 100, rolloverKcal: i % 2 ? 200 : 0 } },
+        { type: "weight", date, kg },
+        { type: "entry.upsert", entry: { id: date, date, foodId: meal.id, amount: eaten / meal.kcal, done: true } },
+      );
+      kg += (eaten - 2500 - activity) / KCAL_PER_KG;
+    }
+    const [cut] = stretches(state(...changes), END);
+    expect(cut.logged).toBe(42);
+    expect(cut.intake).toBeCloseTo(2000);
+    expect(cut.tdee).toBeCloseTo(2500);
+  });
+
+  it("includes rollover once when assuming an unlogged day was eaten to target", () => {
+    const s = state(
+      settings,
+      since("2026-08-01", "maintain"),
+      ...weighIns(60, () => 80),
+      { type: "day.upsert", day: { date: END, phase: "maintain", steps: 1000, extraKcal: 100, rolloverKcal: 200 } },
+    );
+    const [maintain] = stretches(s, END);
+    expect(maintain.logged).toBe(0);
+    expect(maintain.intake).toBeCloseTo((41 * 2500 + 2700) / 42);
+  });
+
   it("gives each phase its own maintenance and leaves out the water drop", () => {
     // maintenance 2500 while maintaining, 2200 once cutting, plus a 1 kg water drop
     const cutFrom = "2026-10-01";

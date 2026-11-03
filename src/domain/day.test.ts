@@ -96,6 +96,16 @@ describe("targets", () => {
     expect(targets(s, "2026-10-31").kcal).toBe(2300 + 100 + 3 * 37 + 170);
   });
 
+  it.each([200, -200, 0])("adjusts the allowance by %s rollover kcal without changing logged intake", (rolloverKcal) => {
+    const s = state(
+      { type: "day.upsert", day: { date: "2026-10-31", phase: "cut", offset: -400, steps: 3000, extraKcal: 170, rolloverKcal } },
+      { type: "food.upsert", food: oats },
+      { type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "oats", amount: 100, done: true } },
+    );
+    expect(targets(s, "2026-10-31").kcal).toBe(2300 - 400 + 3 * 37 + 170 + rolloverKcal);
+    expect(intake(s, "2026-10-31", true).kcal).toBe(374);
+  });
+
   it("prefers a day's own offset over the phase default", () => {
     const s = state({ type: "day.upsert", day: { date: "2026-10-31", phase: "cut", steps: 0, extraKcal: 0, offset: -800 } });
     expect(targets(s, "2026-10-31").kcal).toBe(1500);
@@ -147,8 +157,9 @@ describe("missingStaples", () => {
 });
 
 describe("dayOf", () => {
-  it("carries phase and offset forward but not steps", () => {
-    const s = state({ type: "day.upsert", day: { date: "2026-10-29", phase: "cut", steps: 8000, extraKcal: 0, offset: -400 } });
+  it("carries phase and offset forward but not activity or rollover", () => {
+    const s = state({ type: "day.upsert", day: { date: "2026-10-29", phase: "cut", steps: 8000, extraKcal: 100, offset: -400, rolloverKcal: 200 } });
+    expect(dayOf(s, "2026-10-29").rolloverKcal).toBe(200);
     expect(dayOf(s, "2026-10-31")).toEqual({ date: "2026-10-31", phase: "cut", offset: -400, steps: 0, extraKcal: 0 });
   });
 });

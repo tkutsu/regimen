@@ -52,7 +52,7 @@ export function tdeeOn(state: State, date: string): number {
 export function kcalTarget(state: State, day: Day): number {
   const { phaseOffsets, kcalPer1kSteps } = state.settings;
   const offset = day.offset ?? phaseOffsets[day.phase];
-  return tdeeOn(state, day.date) + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal;
+  return tdeeOn(state, day.date) + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal + (day.rolloverKcal ?? 0);
 }
 
 export type Targets = { kcal: number } & Record<Limited, Range>;

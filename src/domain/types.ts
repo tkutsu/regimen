@@ -66,6 +66,8 @@ export type Day = {
   phase: Phase;
   steps: number;
   extraKcal: number;
+  /** Signed allowance carried into this date; changes the target, not calories burned. */
+  rolloverKcal?: number;
   /** kcal offset from TDEE for this day; falls back to the phase's offset. */
   offset?: number;
 };
@@ -93,6 +95,8 @@ export type Recipe = {
 
 export type Settings = {
   tdee: number;
+  /** Personal notes shown at the end of the weight tab. */
+  weightNotes?: string;
   phaseOffsets: Record<Phase, number>;
   kcalPer1kSteps: number;
   limits: Record<Limited, Range>;

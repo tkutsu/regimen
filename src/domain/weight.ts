@@ -69,6 +69,7 @@ export function stretches(state: State, to: string): Stretch[] {
  * Weight follows cumulative intake minus maintenance, at 7700 kcal per kg:
  * kg − Σintake / 7700 = c − maintenance / 7700 × day, so maintenance is the slope.
  * Only entries ticked as eaten count; days with none count as eaten to target, as in the sheet.
+ * Rollover changes that assumed intake, but is never counted as energy burned.
  */
 function read(state: State, phase: Phase, from: string, to: string, log: Log): Stretch {
   const fitFrom = [shiftDate(from, SETTLE), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
