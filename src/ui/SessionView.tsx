@@ -2,7 +2,7 @@ import { useState } from "react";
 import { addDrop, addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
 import { Dialog } from "./Dialog";
-import { AmountFields, ExerciseSearch, LinkToggle } from "./exercises";
+import { AmountFields, BodyweightField, ExerciseSearch, LinkToggle } from "./exercises";
 import { Remove, TextInput, Tick } from "./fields";
 import { box } from "./FoodEditor";
 import { transition } from "./motion";
@@ -142,6 +142,7 @@ function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, o
           {linked !== undefined && <LinkToggle linked={linked} label={label} onToggle={onToggleLink} />}
         </div>
         {last.length > 0 && <p className="text-xs text-muted">last time {summarize(last)}</p>}
+        {exercise && <div className="my-2"><BodyweightField exercise={exercise} onChange={onRename} /></div>}
       </div>
       <ul className="flow">
         {at.map((i, n) => {

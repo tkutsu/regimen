@@ -1,5 +1,43 @@
 import type { State } from "./state";
 import type { Amount, Session, SetLog, Target, Workout } from "./types";
+import { shiftDate } from "./day";
+
+/** Monday of the date's calendar week, using calendar arithmetic across DST changes. */
+export function weekStart(date: string): string {
+  return shiftDate(date, -((new Date(`${date}T12:00:00`).getDay() + 6) % 7));
+}
+
+export type VolumePoint = { date: string; kg: number; avg: number; missingBodyweight: number };
+
+/** Done sets as reps times load, summed Monday-Sunday, including zero weeks and the current partial week. */
+export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[] {
+  const sessions = [...state.sessions.values()].filter((s) => s.date <= to && s.sets.some((set) => set.done && (set.reps ?? 0) > 0)).sort((a, b) => a.date.localeCompare(b.date));
+  if (!sessions.length) return [];
+  const weights = [...state.weights].filter(([, kg]) => Number.isFinite(kg) && kg > 0).sort(([a], [b]) => a.localeCompare(b));
+  const totals = new Map<string, { kg: number; missingBodyweight: number }>();
+  let weighIn = -1;
+  for (const session of sessions) {
+    while (weighIn + 1 < weights.length && weights[weighIn + 1][0] <= session.date) weighIn++;
+    const bodyweight = weights[weighIn]?.[1];
+    const week = weekStart(session.date);
+    const total = totals.get(week) ?? { kg: 0, missingBodyweight: 0 };
+    for (const set of session.sets) {
+      if (!set.done || !Number.isFinite(set.reps) || (set.reps ?? 0) <= 0) continue;
+      const pct = state.exercises.get(set.exerciseId)?.bodyweightPct ?? 0;
+      const bodyLoad = pct > 0 && bodyweight !== undefined ? (bodyweight + 1) * pct / 100 : 0;
+      total.kg += set.reps! * ((set.kg ?? 0) + bodyLoad);
+      if (pct > 0 && bodyweight === undefined) total.missingBodyweight++;
+    }
+    totals.set(week, total);
+  }
+  const points: VolumePoint[] = [];
+  for (let date = weekStart(sessions[0].date); date <= weekStart(to); date = shiftDate(date, 7)) {
+    const total = totals.get(date) ?? { kg: 0, missingBodyweight: 0 };
+    const window = [...points.slice(Math.max(0, points.length - weeks + 1)), total];
+    points.push({ date, ...total, avg: window.reduce((sum, p) => sum + p.kg, 0) / window.length });
+  }
+  return points;
+}
 
 /** Newest first; sessions on the same day, the one started last first. */
 export function newestFirst(sessions: Iterable<Session>): Session[] {
