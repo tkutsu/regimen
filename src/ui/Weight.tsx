@@ -4,7 +4,7 @@ import type { State } from "../domain/state";
 import type { Phase } from "../domain/types";
 import { daysBetween, phaseRuns, stretches, weightSeries, type Stretch } from "../domain/weight";
 import type { Commit } from "../store";
-import { NumberInput } from "./fields";
+import { Info, NumberInput } from "./fields";
 import { useRemembered } from "./look";
 
 type Props = { state: State; commit: Commit };
@@ -129,8 +129,9 @@ function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
 
   return (
     <section>
-      <h2 className="mb-1 px-1 text-xs font-medium tracking-wide text-muted uppercase">
+      <h2 className="mb-1 flex items-center justify-between px-1 text-xs font-medium tracking-wide text-muted uppercase">
         <label htmlFor="weight-notes">Notes</label>
+        <Info id="weight-notes-hint" label="weight notes" hint="Saves when you leave this field." wide />
       </h2>
       <textarea
         id="weight-notes"
@@ -142,7 +143,6 @@ function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
         aria-describedby="weight-notes-hint"
         className="block w-full resize-y rounded-2xl border border-line bg-surface p-4 text-sm outline-none placeholder:text-muted/60 focus:border-accent"
       />
-      <p id="weight-notes-hint" className="mt-1 px-1 text-xs text-muted">Saves when you leave this field.</p>
     </section>
   );
 }
@@ -174,7 +174,10 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
   const reading = current.tdee && kcal(current.tdee);
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
-      <h2 className="text-xs font-medium tracking-wide text-muted uppercase">Real maintenance</h2>
+      <h2 className="flex items-center justify-between text-xs font-medium tracking-wide text-muted uppercase">
+        Real maintenance
+        <Info label="real maintenance" wide hint={`${current.logged} of ${daysBetween(current.fitFrom, current.to) + 1} days with food ticked as eaten. Days without eaten entries are assumed to meet their target. Each phase gets its own estimate; the first days are left out while water settles.`} />
+      </h2>
       {reading && current.kgPerWeek !== undefined ? (
         <>
           <div className="mt-1 flex items-baseline justify-between">
@@ -192,10 +195,6 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
               : `went ${current.kgPerWeek > 0 ? "up" : "down"} ${Math.abs(current.kgPerWeek).toFixed(2)} kg a week`}
             .
           </p>
-          <p className="mt-1 text-xs text-muted">
-            {current.logged} of {daysBetween(current.fitFrom, current.to) + 1} days with food ticked as eaten, the rest counted as eaten to target. The first days of a
-            phase are left out while water settles.
-          </p>
           {Math.abs(reading - tdee) >= 30 && (
             <button onClick={() => onUse(reading)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
               Use {reading} as maintenance
@@ -204,8 +203,7 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
         </>
       ) : (
         <p className="mt-1 text-sm">
-          <span className="capitalize">{current.phase}</span> since {short(current.from)}. Maintenance shifts with the phase, so this one gets its own
-          reading around {short(current.readyOn)}.
+          <span className="capitalize">{current.phase}</span> since {short(current.from)}. Estimated reading around {short(current.readyOn)}.
         </p>
       )}
       {phases.length > 1 && (
