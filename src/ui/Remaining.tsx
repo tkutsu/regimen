@@ -25,7 +25,7 @@ export function Remaining({ target, eaten, planned, shown, onShow }: Props) {
         <span className="flex items-baseline justify-between">
           <span className={left < 0 ? "text-bad" : ""}>
             <span className="text-4xl font-semibold">{Math.round(Math.abs(left))}</span>
-            <span className="ml-1.5 text-sm">kcal {left < 0 ? "over" : "left"}</span>
+            <span className="text-sm">kcal {left < 0 ? "over" : "left"}</span>
           </span>
           <span className={`text-sm transition-colors ${shown === "kcal" ? "text-accent" : "text-muted"}`}>
             {Math.round(total)} / {Math.round(target.kcal)}kcal

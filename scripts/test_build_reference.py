@@ -97,6 +97,53 @@ class ReferenceImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'duplicate no longer matches'):
             build.curate([self.normalize(sodium=45), rounded], rules)
 
+    def test_reviewed_identities_keep_one_whole_profile_despite_source_differences(self):
+        canonical = self.normalize(calcium=120)
+        duplicate = ['ciqual', '2', 'Different source name',
+                     *self.normalize(kcal=110, prot=4, calcium=100, iodine=5)[3:]]
+        rules = {'identityDuplicates': [{
+            'canonical': 'usda-1',
+            'expectedRows': {f'{row[0]}-{row[1]}': build.row_fingerprint(row)
+                             for row in [canonical, duplicate]},
+        }]}
+        result = build.curate([canonical, duplicate], rules)
+        self.assertEqual(result, [canonical])
+        self.assertIsNone(self.micro(result[0], 'iodine'))
+        self.assertEqual(build.curate(result, rules), result)
+        self.assertEqual(build.curate([], rules), [])
+        # Neither a renamed preparation nor changed/missing nutrients pass the review.
+        for row_index, column, value in [(0, 4, 101), (1, 2, 'Cooked version'),
+                                         (1, 6, None), (1, 11, 101)]:
+            changed = [canonical[:], duplicate[:]]
+            changed[row_index][column] = value
+            with self.subTest(row=row_index, column=column), \
+                 self.assertRaisesRegex(ValueError, 'food identity no longer matches'):
+                build.curate(changed, rules)
+        with self.assertRaisesRegex(ValueError, 'food identity no longer matches'):
+            build.curate([duplicate], rules)
+
+    def test_identity_removal_does_not_uncover_an_automatic_equivalent(self):
+        canonical = self.normalize()
+        removed = ['ciqual', '2', 'Other name', *self.normalize(kcal=110)[3:]]
+        equivalent = ['ciqual', '3', 'Other-name', *removed[3:]]
+        rules = {'identityDuplicates': [{
+            'canonical': 'usda-1',
+            'expectedRows': {f'{row[0]}-{row[1]}': build.row_fingerprint(row)
+                             for row in [canonical, removed]},
+        }]}
+        self.assertEqual(build.curate([canonical, removed, equivalent], rules), [canonical])
+
+    def test_identity_aliases_are_searchable_only_on_the_retained_id(self):
+        rows = [['usda', '1', 'Kiwifruit, green, raw', 'fruit', 61],
+                ['off', '2', 'Kiwifruit, green, raw', 'fruit', 58]]
+        keywords = build.reference_keywords(rows, {}, {'usda-1': ['Kiwi fruit', 'Ακτινίδιο']})
+        self.assertEqual(keywords, {'usda-1': ['Kiwi fruit', 'Ακτινίδιο']})
+        yogurt = [['off', '3', 'ΦΑΓΕ Total 5%', 'dairy', 93]]
+        keywords = build.reference_keywords(yogurt, {}, {
+            'off-3': ['Total 5% Greek Yogurt (FAGE)'],
+        })
+        self.assertIn('FAGE', ' '.join(keywords['off-3']).split())
+
     def test_rebuild_does_not_uncover_an_exact_copy_of_a_removed_product(self):
         row = ['off', '5201125003609', 'Philadelphia Original Cream Cheesw', *self.normalize()[3:]]
         copy = ['off', 'unreviewed-copy', *row[2:]]
@@ -254,8 +301,9 @@ class ReferenceImportTests(unittest.TestCase):
         self.assertIsNotNone(self.normalize(kcal=902, prot=0, fat=100, sat=40,
                                            mufa=50, pufa=5, carbs=0, sugar=0))
 
-    def off_rows(self, products):
+    def off_rows(self, products, identities=None):
         columns = ['code', 'product_name', 'brands', 'generic_name', 'countries_tags',
+                   'quantity', 'ingredients_text',
                    'data_quality_errors_tags', 'energy-kj_100g', 'energy-kcal_100g',
                    'proteins_100g', 'fiber_100g', 'saturated-fat_100g',
                    'monounsaturated-fat_100g', 'polyunsaturated-fat_100g',
@@ -275,7 +323,28 @@ class ReferenceImportTests(unittest.TestCase):
                                'saturated-fat_100g': '1', 'sugars_100g': '4'})
                     row.update(product)
                     writer.writerow(row)
-            return [r for r in build.off(path) if r]
+            return [r for r in build.off(path, identities=identities) if r]
+
+    def test_product_identity_guards_ingredients_even_when_nutrients_are_unchanged(self):
+        products = [{'code': '1', 'product_name': 'Plain yogurt',
+                     'ingredients_text': 'milk, cream', 'quantity': '200g'},
+                    {'code': '2', 'product_name': 'Plain yoghurt',
+                     'ingredients_text': 'milk, cream', 'quantity': '1kg'}]
+        identities = {}
+        rows = self.off_rows(products, identities)
+        rules = {'identityDuplicates': [{
+            'canonical': 'off-1',
+            'expectedRows': {f'{row[0]}-{row[1]}': build.row_fingerprint(row) for row in rows},
+            'expectedProducts': identities.copy(),
+        }]}
+        self.assertEqual(build.curate(rows, rules, identities), [rows[0]])
+        products[1]['ingredients_text'] = 'milk, cream, lactase'
+        changed = self.off_rows(products, identities)
+        self.assertEqual(changed, rows)
+        with self.assertRaisesRegex(ValueError, 'product identity no longer matches'):
+            build.curate(changed, rules, identities)
+        with self.assertRaisesRegex(ValueError, 'product identity no longer matches'):
+            build.curate(rows, rules)
 
     def test_off_converts_grams_to_mg_and_ug_and_keeps_vitamin_forms_separate(self):
         row = self.off_rows([{'calcium_100g': '.12', 'sodium_100g': '.2',

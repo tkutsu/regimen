@@ -363,5 +363,1822 @@
     "complet": "Package sizes differ; 47 versus 48 mg sodium rounds to the same 0.12 g salt. https://www.fastmarket.gr/index.php?page=3&path=11471&route=product%2Fcategory",
     "fanta-kept-separate": "Despite equal tracked macros, the source ingredient lists describe different formulations, so no reviewed merge is approved.",
     "off-5214002611163": "Source #05 and its 45 kcal, 0.5 g protein, 8.5 g sugar match the manufacturer's beetroot smoothie. https://www.yumtalesdrinks.gr/el/product/yumtales-smoothie-5-beetroot/"
-  }
+  },
+  "identityDuplicates": [
+    {
+      "canonical": "usda-168153",
+      "expectedRows": {
+        "usda-168153": "c3ca8f5db3d6e0fc64f8b52219158195dcd8a392f219d64f518b6175ea297f65",
+        "ciqual-13021": "859eeaae1a072f4d4b1c5e25d948e6b7e82db5824a633b19f87c9ee4073b949b",
+        "off-2000000135534": "1dcbfb138255d1b2551c2e76bca7063d137da6abbde154bff1356886219ba30a"
+      },
+      "reason": "The generic OFF kiwi has 3 g fibre and 9 g sugar, matching green kiwi rather than SunGold; merge with the two raw green/generic composition-table entries. Retain the USDA green profile and all alternate names.",
+      "aliases": [
+        "Kiwifruit, green, raw",
+        "Ακτινίδιο",
+        "πράσινο",
+        "ωμό",
+        "Kiwi fruit, pulp and seeds, raw",
+        "Ακτινίδια",
+        "πολτός και σπόροι",
+        "ωμά",
+        "ακτινίδιο"
+      ],
+      "expectedProducts": {
+        "off-2000000135534": "1a7ab263d2704dcb6f141ed777caeaac682c7c7ea783014069af2aab901865a0"
+      }
+    },
+    {
+      "canonical": "usda-171697",
+      "expectedRows": {
+        "usda-171697": "dc0dd74a32031ba836bf166f19f9a279abeb2d0ae80fc67ad8aa367bc341b1bc",
+        "ciqual-13000": "808555a3861129437e156480daf62608ea2120d561c88963de25302b2c4f69cb"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Apricots, raw",
+        "Βερίκοκα",
+        "ωμά",
+        "Apricot, pitted, raw",
+        "Βερίκοκο",
+        "χωρίς κουκούτσι",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169124",
+      "expectedRows": {
+        "usda-169124": "1a023a9aaf0b2fb478faf0080bcd4b5af0f734c2329433bed28fe7d7b9f71f27",
+        "ciqual-13002": "da4ee2015161a3ede0825542a66c79e668bb9f9e55dd4052117d97d6656f59e5"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Pineapple, raw, all varieties",
+        "Ανανάς",
+        "ωμός",
+        "όλες οι ποικιλίες",
+        "Pineapple, pulp, raw",
+        "πολτός"
+      ]
+    },
+    {
+      "canonical": "usda-171705",
+      "expectedRows": {
+        "usda-171705": "73c9efe1f62be4d5ac938f73a2268f09f78552be386c9087032040e8569b6ec4",
+        "ciqual-13004": "b9b879babfc73cd44028f8eb227062b5bacc66ce7a4d9d6b6234ada98e92da11"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Avocados, raw, all commercial varieties",
+        "Αβοκάντο",
+        "ωμά",
+        "όλων των εμπορικών ποικιλιών",
+        "Avocado, pulp, raw",
+        "πολτός",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-173944",
+      "expectedRows": {
+        "usda-173944": "56bf2ca278033661aa3f69b43835bdea5fc72afaa7183ecafbf16274e48ad547",
+        "ciqual-13005": "e3619b874fabd8f103075d594222da1c1da4a7614e7156502cf2dea9e32a2a5e"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Bananas, raw",
+        "Μπανάνες",
+        "ακατέργαστες",
+        "Banana, pulp, raw",
+        "Μπανάνα",
+        "πολτός",
+        "ωμή"
+      ]
+    },
+    {
+      "canonical": "usda-167762",
+      "expectedRows": {
+        "usda-167762": "746d245c799e02c64ada8293306ede5ed1e232d5c50d521bf5a430e0885b63a5",
+        "ciqual-13014": "844f99da7e02d17fd499a45a2268493ee871c6ed5ba676af48e4724ffae01729"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Strawberries, raw",
+        "Φράουλες ωμές",
+        "φράουλες",
+        "Strawberry, raw",
+        "Φράουλα",
+        "ωμή"
+      ]
+    },
+    {
+      "canonical": "usda-167755",
+      "expectedRows": {
+        "usda-167755": "4ead59347b8d794b899228f337fdc6888d0a7241727a30b6685f24f19d39f58e",
+        "ciqual-13015": "4cae04341c415dcb97cf65bdc30d9d89a62307bf2e53dea2b411a7a113e5b162"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Raspberries, raw",
+        "Σμέουρα",
+        "ωμά",
+        "φραμπουάζ",
+        "Raspberry, raw",
+        "σμέουρο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169134",
+      "expectedRows": {
+        "usda-169134": "bb70600f7cc22504e246382fcc9fd551c1dd8aeb48102daf6f6abef627633ac2",
+        "ciqual-13018": "c595672ac567b1d7ad44e0cd257cfd1f8160d84ee2d1c03822b16a394c211db1"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Pomegranates, raw",
+        "Ρόδια ωμά",
+        "Pomegranate, pulp and pips, raw",
+        "Ρόδι",
+        "πολτός και κουκούτσια",
+        "ωμά"
+      ]
+    },
+    {
+      "canonical": "usda-169086",
+      "expectedRows": {
+        "usda-169086": "97d2901ff2304145ee795b6114dc42a150891da1d98eb906346630bed3f107af",
+        "ciqual-13023": "3e5a4f00e28fe11658cdc4095c4b17438994c1dd3b1850161352c284479122ea"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Litchis, raw",
+        "Λίτσις",
+        "ακατέργαστο",
+        "Lychee, pulp, raw",
+        "Λίτσι",
+        "πολτός"
+      ]
+    },
+    {
+      "canonical": "usda-169910",
+      "expectedRows": {
+        "usda-169910": "9b13f778af2b9593c4151b29e4855f819520e197880c5232608fcf15209de044",
+        "ciqual-13025": "f60332cbaffb4511dcbee11d114b8219ab01b20b3e82897938b229c0584a3782"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mangos, raw",
+        "Μάγκος",
+        "ακατέργαστο",
+        "Mango, pulp, raw",
+        "Μάνγκο",
+        "πολτός",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-171711",
+      "expectedRows": {
+        "usda-171711": "5519d64a55582f28ae3fab6ef27685468ed27c717a5212b31d9c3572cb51f3f5",
+        "ciqual-13028": "96172902e0b6118d94ae5b5028457d14074d8ba08f1d4b603c2db8bc0f6710f7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Blueberries, raw",
+        "Μύρτιλα ωμά",
+        "μύρτιλα",
+        "Blueberry, raw",
+        "Μύρτιλο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-173946",
+      "expectedRows": {
+        "usda-173946": "07e468035f59b9a47661bdd0c9a0b6281179e6f4d50c6022ac2eb77ae4f431c8",
+        "ciqual-13029": "37454271aa4f13009ce54ca0d9c7b08d44b4b2822bfec11c715cdbacb86669d3"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Blackberries, raw",
+        "Βατόμουρα",
+        "ωμά",
+        "Blackberry, raw",
+        "Βατόμουρο",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-169097",
+      "expectedRows": {
+        "usda-169097": "0783c400443dee0c9f014ab38f28a6e8d9b7af155783d1000227622619148d15",
+        "ciqual-13034": "66c62ddee809de33106377f81a68470fd1d9e66417831982b6dc4f848ef94457"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oranges, raw, all commercial varieties",
+        "Πορτοκάλια",
+        "ωμά",
+        "όλων των εμπορικών ποικιλιών",
+        "Orange, pulp, raw",
+        "Πορτοκαλί",
+        "πολτός",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169926",
+      "expectedRows": {
+        "usda-169926": "3cd9af0880b40de0d0ab1e0cc78c57517dab0c0662f1292e437ee9d22484e697",
+        "ciqual-13035": "6e3bc90fd8b5de5f6dd5ee807801c6fb1f9db91ea2fb9600415da853a81060d6"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Papayas, raw",
+        "Παπάγιας",
+        "ακατέργαστος",
+        "Papaya, pulp, raw",
+        "Παπάγια",
+        "πολτός",
+        "ωμή"
+      ]
+    },
+    {
+      "canonical": "usda-167765",
+      "expectedRows": {
+        "usda-167765": "ccdb193bdabd6d99d59dc2897fca70636c7284f36df4c1b3ff3f94035635fd05",
+        "ciqual-13036": "36ea8e299bf5f8b98311e9d560c9e736a13e1058b4e51535a79df840e5b6a705"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Watermelon, raw",
+        "Καρπούζι ωμό",
+        "καρπούζι",
+        "Watermelon, pulp, raw",
+        "Καρπούζι",
+        "πολτός",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-168155",
+      "expectedRows": {
+        "usda-168155": "f7fc9a69ba68d012c0bcc8be6dc53cc196c85136d6b0597106a8c86d9dd7dd5f",
+        "ciqual-13067": "a51f00ab71db0e46262a140cba7b3e3f68aa2ce0c671e3741db3a2003a683451"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Limes, raw",
+        "Ασβέστης",
+        "ακατέργαστοι",
+        "Lime, pulp, raw",
+        "πολτός",
+        "ακατέργαστος",
+        "λάιμ"
+      ]
+    },
+    {
+      "canonical": "usda-173021",
+      "expectedRows": {
+        "usda-173021": "5c0bc3ea396ac979d35073d507a1739f93d5edc3c20f85633d932b666a5def0e",
+        "ciqual-13012": "c14683e4a72173b2f475e6a3c7ce126a781ccb4ba29768bd5c9e49c099d66a42"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Figs, raw",
+        "Σύκα ωμά",
+        "σύκα",
+        "Fig, raw",
+        "Σικ",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-170393",
+      "expectedRows": {
+        "usda-170393": "39c5069980f6967b83ccbe9c6b7cd92b12bfa51a98649e56caac4aeda52cd134",
+        "ciqual-20009": "2bab28ad8e1bd62e89ca834959d632d4338826b05298b07894127422f5abb8c1"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Carrots, raw",
+        "Καρότα ωμά",
+        "καρότα",
+        "Carrot, raw",
+        "Καρότο ωμό",
+        "καρότο"
+      ]
+    },
+    {
+      "canonical": "usda-169986",
+      "expectedRows": {
+        "usda-169986": "a8934bb38705e4846ab2f297f555a8f30f6b6bfe666cfe3e532551b6bd3e449e",
+        "ciqual-20016": "c0084563678b476d92151169df2a8814fcceda801d1d617b17b461c27b29093f"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Cauliflower, raw",
+        "Κουνουπίδι ωμό",
+        "κουνουπίδι"
+      ]
+    },
+    {
+      "canonical": "usda-168409",
+      "expectedRows": {
+        "usda-168409": "3f87ab230e3de85a359a5161e94e309a676347c085ecef08920011f6026ead06",
+        "ciqual-20019": "4209bb814d05416608fd577c5ccba6bd76ee9058b17d998c6874b49ada93b0ff"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Cucumber, with peel, raw",
+        "Αγγούρι",
+        "με φλούδα",
+        "ωμό",
+        "Cucumber, pulp and peel, raw",
+        "πολτός και φλούδα",
+        "ωμά"
+      ]
+    },
+    {
+      "canonical": "usda-169225",
+      "expectedRows": {
+        "usda-169225": "144533d644c3c105fc47a41487b067ca901de3306127cbb48d327ab3f7cd373d",
+        "ciqual-20210": "20f114903066dea654854ffb7718cc7d8b3d1ba1d4b1596d7a92b880ad17ab7a"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Cucumber, peeled, raw",
+        "Αγγούρι",
+        "ξεφλουδισμένο",
+        "ωμό",
+        "Cucumber, pulp, raw",
+        "πολτός"
+      ]
+    },
+    {
+      "canonical": "usda-169291",
+      "expectedRows": {
+        "usda-169291": "f7c7040d55a7a12f9671c6ff1136589dd775054b8a7da5160e77dcb88acef9dd",
+        "ciqual-20020": "e6efb30ebd51ea0c29a7a05a025e9cc3bfd7b1c08f1357b155562ff4b343e341"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Squash, summer, zucchini, includes skin, raw",
+        "Κολοκύθα",
+        "καλοκαιρινό",
+        "κολοκυθάκι",
+        "περιλαμβάνει δέρμα",
+        "ωμό",
+        "κολοκύθι",
+        "Courgette or zucchini, pulp and peel, raw",
+        "Κολοκύθι ή κολοκυθάκι",
+        "πολτός και φλούδα",
+        "ωμά"
+      ]
+    },
+    {
+      "canonical": "usda-169988",
+      "expectedRows": {
+        "usda-169988": "52cced219d0a86748bd036ded7b8c05f7aeafb9b1f067f10cbe6b1f6aa440240",
+        "ciqual-20023": "84d556765b83e3b55c433901b5c3f471d1b4add462c26108da068c8500a26a6c"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Celery, raw",
+        "Σέλινο ωμό",
+        "σέλινο",
+        "Celery stalk, raw",
+        "Μίσχος σέλινου",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169385",
+      "expectedRows": {
+        "usda-169385": "4dcca42e26c549c12778ab76be46bca06810c19a0aee82c3be6caee8a4ff0cde",
+        "ciqual-20028": "72eaa7f6c9f596a7af316935db449224e625e314f3e3d2d3b28d3725070aff0b"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fennel, bulb, raw",
+        "Μάραθος",
+        "βολβός",
+        "ωμός",
+        "Fennel, raw"
+      ]
+    },
+    {
+      "canonical": "usda-169276",
+      "expectedRows": {
+        "usda-169276": "324358031e9d34fd4c60b5aceef24fcfc3366e8d8993da693bdb6cc4deaa2a94",
+        "ciqual-20045": "42d7894e18a58a021c0f225af2e4dde4949010ea00cda45c818516648165c0b7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Radishes, raw",
+        "Ραδίκια ωμά",
+        "Radish, raw",
+        "Ραπανάκι",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-170400",
+      "expectedRows": {
+        "usda-170400": "49556c9af9d7cc134cbb7016ff4418860815c53091bf82cad725e4aa5395c6a1",
+        "ciqual-20055": "2471312a6c79e45ea736a26e8979933ba1dec79904d9634394090e1725be0a3b"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Celeriac, raw",
+        "Σέλινο",
+        "ακατέργαστο",
+        "σελινόριζα"
+      ]
+    },
+    {
+      "canonical": "usda-170499",
+      "expectedRows": {
+        "usda-170499": "b696bdf09caee037e9d5caeaffedab0842f73d2f0e12547767bd871218d4fe07",
+        "ciqual-20097": "3857b079720fa8ac8d51f4a5a949b54abcbb2269e91f279d8ff7ba5ef2267ed2"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Shallots, raw",
+        "Ασκαλώνια ωμά",
+        "Shallot, raw",
+        "Ασκαλώνιο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-170417",
+      "expectedRows": {
+        "usda-170417": "a7ee5a2d55fbc26a8c469e534444d93945853b4bb966cb14bc101863be214a94",
+        "ciqual-20181": "a0324ed8d4e39f0b398c26ac6b4324fa2f0f91f8319e09dc71a97f1746a94e02"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Parsnips, raw",
+        "Παστινάκος ωμός",
+        "Parsnip, raw",
+        "Παστινάκι",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169210",
+      "expectedRows": {
+        "usda-169210": "91ebd133e5a4c6c41f36d6b62447bec1262a9d13dd2afbce2403ecf3e2b02f9e",
+        "ciqual-20198": "f2a5ee0883c5d66cf5bb7714942d8f0289ada38ee2ac2d052f882eda652e547f"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Bamboo shoots, raw",
+        "Βλαστοί μπαμπού",
+        "ακατέργαστοι"
+      ]
+    },
+    {
+      "canonical": "usda-168482",
+      "expectedRows": {
+        "usda-168482": "ca6500bed777b92785782f6408fa6ce6d1b064565b5c66c6bfd33ae516f996ed",
+        "ciqual-4101": "e69dacc670320f2ab01b632ac9435f4eea14266d169219defb8e6614ac72b439"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Sweet potato, raw, unprepared (Includes foods for USDA's Food Distribution Program)",
+        "Γλυκοπατάτα",
+        "ωμή",
+        "απροετοίμαστη Περιλαμβάνει τρόφιμα για το Πρόγραμμα Διανομής Τροφίμων του",
+        "πατάτα",
+        "Sweet potato, raw"
+      ]
+    },
+    {
+      "canonical": "usda-169991",
+      "expectedRows": {
+        "usda-169991": "9d6269d1fac582fda160c38a79cd579607ec22e7eae30019ca90aaf6054eb593",
+        "ciqual-20004": "c474ad511a4335d5143cf928236d50fb3b5cd4f39e6052d30f85f1f8b4eb4b6a"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chard, swiss, raw",
+        "Σέσκουλα",
+        "ελβετικό",
+        "ωμό",
+        "Swiss chard, raw",
+        "Σέσκουλα ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-171714",
+      "expectedRows": {
+        "usda-171714": "074daac3ecdc01979e4f161740a9fbf3056920e90bebc21ab027807644c230cf",
+        "ciqual-54500": "fcf521a4ed33f49eab2f6e084fec7ebb6022386eeef93f6a7a2d00207e9a9b88"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Breadfruit, raw",
+        "Αρτόκαρπος",
+        "ωμός"
+      ]
+    },
+    {
+      "canonical": "usda-169230",
+      "expectedRows": {
+        "usda-169230": "1ad0a62f7df37218d6aa75e521e06016b480e9abe3a4d93029083c636a788c4b",
+        "ciqual-11000": "4714dcba81879d1854ed6578f2bed66146681425bda5c24058118dccb71a59ed"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Garlic, raw",
+        "Σκόρδο ωμό",
+        "σκόρδο",
+        "Garlic, fresh",
+        "Σκόρδο φρέσκο"
+      ]
+    },
+    {
+      "canonical": "usda-169231",
+      "expectedRows": {
+        "usda-169231": "47071dfde0f188d3ab0fa5875cfc7a5715ba688ca32bb1ee315ce78b1609e778",
+        "ciqual-11074": "b0bb5b8c0b7261d2e6944acf0a1afb13410f4dfc16e3e4e35a9f1cd42f5075e4"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Ginger root, raw",
+        "Ρίζα τζίντζερ",
+        "ωμή",
+        "τζίντζερ",
+        "πιπερόριζα",
+        "Ginger, raw",
+        "Τζίντζερ",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169997",
+      "expectedRows": {
+        "usda-169997": "d131c0f889baa841611259fcd1684c749ce360b9b28ee0cb8785ce6bd6a54268",
+        "ciqual-11094": "5ee0a00c5a8be2ce7c1a713c1720a20a7be26917bdd3d1f176982665392ec2e7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Coriander (cilantro) leaves, raw",
+        "Φύλλα κόλιανδρου κόλιαντρο ωμά",
+        "Coriander, fresh",
+        "κόλιανδρος φρέσκος"
+      ]
+    },
+    {
+      "canonical": "usda-170416",
+      "expectedRows": {
+        "usda-170416": "7a7e65579110c1aeca3eb14411d82e698e3275ce11938b68f12cea9299f34ed5",
+        "ciqual-11014": "e35cf71a7cecb2a1c8742623cbc7013fcc9cfdbed278952e9bba5299f4ccda1f"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Parsley, fresh",
+        "Μαϊντανός φρέσκος",
+        "μαϊντανός"
+      ]
+    },
+    {
+      "canonical": "usda-172232",
+      "expectedRows": {
+        "usda-172232": "1dcaaef90352d83c988838434de70703bcfd483e81c75e7dbecd5dcbd7c7ae0a",
+        "ciqual-11033": "c697680e8335100599c16d6258348a2191189f9cd4c1f34c3420dcd0728c09de"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Basil, fresh",
+        "Βασιλικός φρέσκος",
+        "βασιλικός"
+      ]
+    },
+    {
+      "canonical": "ciqual-11093",
+      "expectedRows": {
+        "usda-172233": "427d852f0a2fb22c1ca3beb60eee1f25fe34cf2a3b98e199383841f66e6513d2",
+        "ciqual-11093": "dfbfa350c4eabc6cea70feef0d4ca04c4ea32f955cfc7b8ed023f83d374bfd84"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Dill weed, fresh",
+        "Ανηθόχορτο",
+        "φρέσκο",
+        "άνηθος",
+        "Dill, fresh",
+        "Άνηθος φρέσκος"
+      ]
+    },
+    {
+      "canonical": "usda-173473",
+      "expectedRows": {
+        "usda-173473": "8c89435963766cb9a9946f8276881f3a4727c1f0cfe8029d8a7204fff2daca2f",
+        "ciqual-11068": "7501192a2d39e4e6a14c6f7fe84b5429601ce688aaf0b376263c49a5067c1919"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Rosemary, fresh",
+        "Δεντρολίβανο",
+        "φρέσκο"
+      ]
+    },
+    {
+      "canonical": "usda-173470",
+      "expectedRows": {
+        "usda-173470": "0a2cc8e01c7738b3afa837149ba96aed40f99ba04083afa07d6762ce5ad8a91a",
+        "ciqual-11070": "a15910b9facc44435991f2d6dca889326a450edcb99f8240f55f39e8bdf9022e"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Thyme, fresh",
+        "Θυμάρι φρέσκο",
+        "θυμάρι"
+      ]
+    },
+    {
+      "canonical": "usda-171317",
+      "expectedRows": {
+        "usda-171317": "8ec6752677e9820c1c35678994072287d9d8bdc968900f3ada26bb8e267a9ae3",
+        "ciqual-11032": "194ea43d96cd5578cfce2afd36fc437deb59f1ae1b87fd3bb2991c0a398a5f56"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, basil, dried",
+        "Μπαχαρικά",
+        "βασιλικός",
+        "αποξηραμένος",
+        "Basil, dried",
+        "Βασιλικός αποξηραμένος"
+      ]
+    },
+    {
+      "canonical": "usda-170928",
+      "expectedRows": {
+        "usda-170928": "85abaff8e25bcc282016c6189147498efce33584888001606ec329356c12f74d",
+        "ciqual-11034": "915f468bc9e6f323dd4f73b0bdb6a44a394f74c228810aeaa3b9c33360c8cb79"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, marjoram, dried",
+        "Μπαχαρικά",
+        "μαντζουράνα",
+        "αποξηραμένα",
+        "Marjoram, dried",
+        "Μαντζουράνα",
+        "αποξηραμένη"
+      ]
+    },
+    {
+      "canonical": "usda-171328",
+      "expectedRows": {
+        "usda-171328": "fb83772103df4c92a8e91e0995a93d6de959757f10ac8e9ab1866c5f92f6acdd",
+        "ciqual-11035": "24c5dd82d88f43f67b488bb953da96a3a830eef6fb9e4340f643746b3c21515d"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, oregano, dried",
+        "Μπαχαρικά",
+        "ρίγανη",
+        "αποξηραμένη",
+        "Oregano, dried",
+        "Ρίγανη αποξηραμένη"
+      ]
+    },
+    {
+      "canonical": "usda-171333",
+      "expectedRows": {
+        "usda-171333": "42da377b163e3b74cd1fcdda891d798c97081d96f909cd7eafeb6aeeb7cbb4a6",
+        "ciqual-11036": "9d99cd536dc4d27cd70648ef8210ef79963641ecc6c835d5abfc699cbd055853"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, rosemary, dried",
+        "Μπαχαρικά",
+        "δεντρολίβανο",
+        "αποξηραμένα",
+        "Rosemary, dried",
+        "Δεντρολίβανο",
+        "αποξηραμένο"
+      ]
+    },
+    {
+      "canonical": "usda-170938",
+      "expectedRows": {
+        "usda-170938": "4ceb73d47e4664c6c462e1cd4d674186a69850e54f7f779b0ef5bc1df02624ac",
+        "ciqual-11038": "98c8f3dbde6c72f5881d293cf0ec753b27dd51136e6799a3f6508b1c33e0cb80"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, thyme, dried",
+        "Μπαχαρικά",
+        "θυμάρι",
+        "αποξηραμένα",
+        "Thyme, dried",
+        "Θυμάρι αποξηραμένο"
+      ]
+    },
+    {
+      "canonical": "usda-170930",
+      "expectedRows": {
+        "usda-170930": "2eaf525c64571b63ace39356b81bce5515007b68f2313b535c9055e601cdc9f1",
+        "ciqual-11024": "b79a5db0a3b3bd9ba1af9cb8893d89a3d2e090619e21fd7e816563dd89fea807"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, parsley, dried",
+        "Μπαχαρικά",
+        "μαϊντανός",
+        "αποξηραμένα",
+        "Parsley, dried",
+        "Μαϊντανός αποξηραμένος"
+      ]
+    },
+    {
+      "canonical": "usda-170924",
+      "expectedRows": {
+        "usda-170924": "b94e00f7e1f7cce580fe8edf86388c0a07d4d1be928a9d1b079beb30c0a5c51b",
+        "ciqual-11005": "a390ed082f0554a0d51a6400e8264881d3306b83dd54906b49729a8757d5bd5c"
+      },
+      "reason": "Both are unbranded generic curry-powder composition estimates with matching main constituents and no distinct recipe identified. Named curry blends and branded recipes remain separate.",
+      "aliases": [
+        "Spices, curry powder",
+        "Μπαχαρικά",
+        "κάρυ σε σκόνη",
+        "Curry, powder",
+        "Κάρυ",
+        "σκόνη"
+      ]
+    },
+    {
+      "canonical": "usda-170926",
+      "expectedRows": {
+        "usda-170926": "d3f9a4351b23a5e273cd3582a45cdac262b0ac45196c92969f9fae2b2417dfe6",
+        "ciqual-11006": "e3ddf16f7249ae359c693178c541b068a3d377350f48a36edc1f28725311a432"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, ginger, ground",
+        "Μπαχαρικά",
+        "τζίντζερ",
+        "αλεσμένο",
+        "πιπερόριζα",
+        "Ginger, powder",
+        "Τζίντζερ",
+        "σκόνη"
+      ]
+    },
+    {
+      "canonical": "usda-170931",
+      "expectedRows": {
+        "usda-170931": "ffd5fc8872d42c1acb5016f32a1675c53b13f9dbd4224b7a635e206da29fb9da",
+        "ciqual-11015": "1ade02e32473b4fd064bcda397b378439ba041482a418186d3920708121de878"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, pepper, black",
+        "Μπαχαρικά",
+        "πιπέρι",
+        "μαύρο",
+        "Black pepper, powder",
+        "Μαύρο πιπέρι σε σκόνη",
+        "μαύρο πιπέρι"
+      ]
+    },
+    {
+      "canonical": "usda-170933",
+      "expectedRows": {
+        "usda-170933": "65771564a3f9e44b7376e732c988437d03eb6ccc10f4b732ba4b7ac7ff511480",
+        "ciqual-11019": "7e524ff7f59ddef27e006c9ffc7c8719e4501e277a82023daaa711d2409be1b7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, pepper, white",
+        "Μπαχαρικά",
+        "πιπέρι",
+        "λευκό",
+        "White pepper, powder",
+        "Λευκό πιπέρι σε σκόνη",
+        "λευκό πιπέρι"
+      ]
+    },
+    {
+      "canonical": "usda-171325",
+      "expectedRows": {
+        "usda-171325": "056c43ec60b03da19747be7c219db5f0a278987c49efa81c6725bb4cac13b14c",
+        "ciqual-11023": "b0ca118c4cf9fccfd1ef9527f835a6006a56eae47f3b56b48d14394fce62a135"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, garlic powder",
+        "Μπαχαρικά",
+        "σκόνη σκόρδου",
+        "σκόρδο",
+        "Garlic, powder, dried",
+        "Σκόρδο",
+        "σκόνη",
+        "αποξηραμένο"
+      ]
+    },
+    {
+      "canonical": "usda-171320",
+      "expectedRows": {
+        "usda-171320": "df57967f9499d9d47a24ae0303586d04dae63a3e837f5f54e7903e0707ccfbf4",
+        "ciqual-11025": "073ddc8be1eb4cdc72b94dccc3cc0f529989630df59df38cf3e2023019ed17f9"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, cinnamon, ground",
+        "Μπαχαρικά",
+        "κανέλα",
+        "αλεσμένο",
+        "Cinnamon, powder",
+        "Κανέλα",
+        "σκόνη"
+      ]
+    },
+    {
+      "canonical": "usda-170922",
+      "expectedRows": {
+        "usda-170922": "2a3fbb58bcffcca780004cdb47097dff3da1477298caa2dbcb1ebc6155d167c1",
+        "ciqual-11026": "8dfb87c5c63b7c270f5a90ec049a4cb96ab26a765def2fe0b7cab320caa612f0"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, coriander seed",
+        "Μπαχαρικά",
+        "σπόρος κόλιανδρου",
+        "Coriander, seed",
+        "κόλιανδρος",
+        "σπόρος"
+      ]
+    },
+    {
+      "canonical": "usda-170934",
+      "expectedRows": {
+        "usda-170934": "a9e7d63922417f25ae5a0757566f5cda84cd9576a6b8c02e09340032f2921c61",
+        "ciqual-11039": "bba4b8b096cda1c78b45a9f6ec0c8b9aa5912f71a51a9389ae70b9c578c93577"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, saffron",
+        "Μπαχαρικά",
+        "σαφράν",
+        "Saffron",
+        "Σαφράν"
+      ]
+    },
+    {
+      "canonical": "usda-170923",
+      "expectedRows": {
+        "usda-170923": "4cdc8841e5fdc4eed25610de9d2ef72dcfee9832b6dfc6e50ab20c5fb457caf1",
+        "ciqual-11042": "80e80015af0fa359a087e50b81c64f6adf71c933109454a1e392e67d85a3e761"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, cumin seed",
+        "Μπαχαρικά",
+        "σπόρος κύμινου",
+        "κύμινο",
+        "Cumin, seed",
+        "Κύμινο",
+        "σπόρος"
+      ]
+    },
+    {
+      "canonical": "usda-171326",
+      "expectedRows": {
+        "usda-171326": "daa758dfed26ab15e5316503d703d99e4637de49dff0296a6f2419c7367905cc",
+        "ciqual-11048": "8d61882296b132406fc9ee523be325659e5f75b2c82f59ae45690c96422f1493"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, nutmeg, ground",
+        "Μπαχαρικά",
+        "μοσχοκάρυδο",
+        "αλεσμένο",
+        "Nutmeg",
+        "Μοσχοκάρυδο"
+      ]
+    },
+    {
+      "canonical": "usda-171329",
+      "expectedRows": {
+        "usda-171329": "072bb7e88299e428076d81289cd8e61ddb0243133862cceabfac06f364fb1c32",
+        "ciqual-11049": "8d77b1f0daef0c5c164666dc4601d464f41361acf4b8f7dd711d7176f6a993a8"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, paprika",
+        "Μπαχαρικά",
+        "πάπρικα",
+        "Paprika",
+        "Πάπρικα"
+      ]
+    },
+    {
+      "canonical": "usda-171321",
+      "expectedRows": {
+        "usda-171321": "26159ddbf38487a896f49d2756b34e5b1dbb268ce3c7d6e98b10d4c9dd93d0a7",
+        "ciqual-11052": "55327c7543b2b2631f3e2a629f13621f5dbf3e3b31dbcbb823bc449e07b0ff13"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, cloves, ground",
+        "Μπαχαρικά",
+        "γαρίφαλο",
+        "αλεσμένο",
+        "Cloves",
+        "Γαρύφαλλο"
+      ]
+    },
+    {
+      "canonical": "usda-170917",
+      "expectedRows": {
+        "usda-170917": "b32b799a390562a9812976c3c8894430b1e0294b093afa81eb8507d7c6a79907",
+        "ciqual-11053": "d2f8579a953e164f04612f8beb7e93b43f9c3d0adee5fa04d846c971d9ccc728"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, bay leaf",
+        "Μπαχαρικά",
+        "δάφνη",
+        "Bay, leaves",
+        "Κόλπος",
+        "φύλλα"
+      ]
+    },
+    {
+      "canonical": "usda-171330",
+      "expectedRows": {
+        "usda-171330": "5744d4b6a24efa6ea852d0970fe87da04a0c478f115f0fb1411df32be3377af0",
+        "ciqual-11061": "37922cc4aaf8b4e1d6b77256a8833d679b393a2a77ba5b3e23ff656c1b34ed5e"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, poppy seed",
+        "Μπαχαρικά",
+        "παπαρουνόσπορος",
+        "Poppy, seed",
+        "Παπαρούνα",
+        "σπόρος"
+      ]
+    },
+    {
+      "canonical": "usda-170918",
+      "expectedRows": {
+        "usda-170918": "a7359de2c56f5ee4e5c6193f482b06e03c164445aa82cc60590a2d2c2e438f8f",
+        "ciqual-11064": "7d280f5933c438fa4d3f687d326e85c7933903abbec8867b8d44ef8e84461559"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, caraway seed",
+        "Μπαχαρικά",
+        "σπόρος κύμινο",
+        "Caraway, seed",
+        "Κύμινο",
+        "σπόρος"
+      ]
+    },
+    {
+      "canonical": "ciqual-11066",
+      "expectedRows": {
+        "usda-171323": "37643dd889ed2d0549c1b076162b24e065866e9f5e18b4707216f8f331a683fe",
+        "ciqual-11066": "eab198f1eb86f34845017afd87e3133450c0ddfcea4b1c1d14993b5eba18d7f3"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, fennel seed",
+        "Μπαχαρικά",
+        "μαραθόσπορος",
+        "Fennel, seed",
+        "Μάραθος",
+        "σπόρος"
+      ]
+    },
+    {
+      "canonical": "usda-170919",
+      "expectedRows": {
+        "usda-170919": "95c7d5cf7bf5db69faea1e27c51302b6ecd2a7f47050dba02396352c3b459ab9",
+        "ciqual-11075": "50dd44126ca6900f2e96f1edc128e7308c4f30929695d4ce9ee1214995ce3c58"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, cardamom",
+        "Μπαχαρικά",
+        "κάρδαμο",
+        "Cardamom, powder",
+        "Κάρδαμο",
+        "σκόνη"
+      ]
+    },
+    {
+      "canonical": "usda-171324",
+      "expectedRows": {
+        "usda-171324": "b87919b5f6e61814923d5c1da6c05a50f3d2cb7485af4fd8718737c0b8a6ac83",
+        "ciqual-11077": "1d89abe42c3dda27018ee917099eedd8e75b2db2d54ef98fa4eb525fd2b713dc"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, fenugreek seed",
+        "Μπαχαρικά",
+        "σπόρος τριγωνέλλας",
+        "Fenugreek, seed",
+        "σπόρος"
+      ]
+    },
+    {
+      "canonical": "usda-170932",
+      "expectedRows": {
+        "usda-170932": "80e18208dc554fa19c58d25d0cb3d04b14a6a528164f104fcb13793d61d8cc96",
+        "ciqual-11088": "0b3bf10ebb252a98efbdc4e93ea97e4715eed86fc97bae55150016a1c568e30f"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, pepper, red or cayenne",
+        "Μπαχαρικά",
+        "πιπέρι",
+        "κόκκινο ή καγιέν",
+        "Cayenne pepper",
+        "Πιπέρι καγιέν"
+      ]
+    },
+    {
+      "canonical": "usda-172231",
+      "expectedRows": {
+        "usda-172231": "c4a06ef2d70d793d1d10f17bd19a393289d95d40f1b83a3f4819e5d5aa0f6398",
+        "ciqual-11089": "5da5fcc29ae5800998e17b4840355b66450a45876adfec5c1bd625d9945e24be"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spices, turmeric, ground",
+        "Μπαχαρικά",
+        "κουρκουμάς",
+        "αλεσμένος",
+        "Turmeric, powder",
+        "Κουρκουμάς",
+        "σκόνη"
+      ]
+    },
+    {
+      "canonical": "usda-169745",
+      "expectedRows": {
+        "usda-169745": "49bb999b533d717019990f26ee9baaa45617768074dbadac9f92c394fd6b5065",
+        "ciqual-9001": "6252aca37ae94dae0909ad3cda87e39b1b8de03add2dd5c69607836cb2b51f29"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Spelt, uncooked",
+        "Ξύλινη",
+        "άψητη",
+        "Spelt, raw",
+        "ακατέργαστη"
+      ]
+    },
+    {
+      "canonical": "usda-169726",
+      "expectedRows": {
+        "usda-169726": "2546fb00a35b3aa6da1b0103965f5460f1ae90f9f12bd60a3c64bc87b828ed78",
+        "ciqual-9108": "6a9c4b6c5fdfdfe7d6a5d624e2a38e1c993d04cc416d91740670744c60c07e90"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Wild rice, raw",
+        "Άγριο ρύζι",
+        "ωμό",
+        "ρύζι"
+      ]
+    },
+    {
+      "canonical": "usda-168897",
+      "expectedRows": {
+        "usda-168897": "29e053d17fa39695e1ae0980542cff3a3e1ec3d317e0e44ec29e767d1625e53a",
+        "ciqual-9111": "65bd643c22230fd6aa15049ff5715431d3ad883e5ea71e1695910e79b83726a8"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Wild rice, cooked",
+        "Άγριο ρύζι",
+        "μαγειρεμένο",
+        "ρύζι",
+        "Wild rice, cooked, unsalted",
+        "ανάλατο"
+      ]
+    },
+    {
+      "canonical": "ciqual-9310",
+      "expectedRows": {
+        "usda-169705": "36c8e18211b8dee761247562786840d2478f36c5383c8276736ae94bdc24bb00",
+        "ciqual-9310": "3519179634cbad2780fa28cb117a24fa6ddc302e5e0938454f5f4cdd4ef3372b"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oats (Includes foods for USDA's Food Distribution Program)",
+        "Βρώμη Περιλαμβάνει τρόφιμα για το Πρόγραμμα Διανομής Τροφίμων του",
+        "βρώμη",
+        "Oat, raw",
+        "Βρώμη ωμή"
+      ]
+    },
+    {
+      "canonical": "usda-170284",
+      "expectedRows": {
+        "usda-170284": "754c12a70147cf88de8f23417f9816e556da79a5ba5110b9dd38ca94fedfebed",
+        "ciqual-9321": "6ad74a357a3a4ba6785165f7c44000e76727b30b9a2abe0ded57a90e0f77f673"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Barley, pearled, raw",
+        "Κριθάρι",
+        "μαργαριταρένιο",
+        "ωμό",
+        "Pearled barley, raw",
+        "Μαργαριταρένιο κριθάρι",
+        "ακατέργαστο",
+        "κριθάρι"
+      ]
+    },
+    {
+      "canonical": "usda-169702",
+      "expectedRows": {
+        "usda-169702": "9af97880be4069ffdb730792160d00ff9314228aed350cbd41ab714be2ba771c",
+        "ciqual-9330": "96095fe2c742514e2b0a1b63794d57eb86af55dc91407b64111fb5276d3f87ee"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Millet, raw",
+        "Κεχρί",
+        "ωμό",
+        "Millet, whole",
+        "ολόκληρο"
+      ]
+    },
+    {
+      "canonical": "usda-168871",
+      "expectedRows": {
+        "usda-168871": "7e96696cdfb1df6ed6bf0eb341485421d5f09b57ff4207d37cb9525cf30dcefc",
+        "ciqual-9331": "9ee18ada3143d7df9472123aa1d5876fc70d935cc4cbe459a00376e126ad3095"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Millet, cooked",
+        "Κεχρί",
+        "ψημένο",
+        "Millet, cooked, unsalted",
+        "ανάλατο"
+      ]
+    },
+    {
+      "canonical": "usda-168874",
+      "expectedRows": {
+        "usda-168874": "cd2db9c04f7551fe4c970a5e659371dce464b0741a9fb0d6f509fe7bb5b0df6f",
+        "ciqual-9340": "919a27836b9d2136efc611d5b276d6bcedcfc35124bc344559b767dc337c455c"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Quinoa, uncooked",
+        "Κινόα",
+        "άψητη",
+        "Quinoa, raw",
+        "ωμή"
+      ]
+    },
+    {
+      "canonical": "usda-168917",
+      "expectedRows": {
+        "usda-168917": "7f1cd01227167334767e858fa593926357b2ba3d5cc7342a392ab40a9f04635d",
+        "ciqual-9341": "159a0ed974178720b2399cd1eb3f6a5c67ae211a070673bc665133814c7f718e"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Quinoa, cooked",
+        "Κινόα",
+        "μαγειρεμένη",
+        "Quinoa, boiled/cooked in water, unsalted",
+        "βραστή ψημένη σε νερό",
+        "ανάλατη"
+      ]
+    },
+    {
+      "canonical": "usda-170682",
+      "expectedRows": {
+        "usda-170682": "18109f0fc3810fbf637c06c09e1664411f6b9335d21907bdd53e0de2c1b8a617",
+        "ciqual-9345": "1a051c2c03559ee7e65fd148b6623a10a29d3ff2a6666d2bb9f67ab959a5b0d4"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Amaranth grain, uncooked",
+        "Αμάρανθος κόκκος",
+        "άψητος",
+        "Amaranth, raw",
+        "Αμάρανθος",
+        "ακατέργαστος"
+      ]
+    },
+    {
+      "canonical": "usda-169716",
+      "expectedRows": {
+        "usda-169716": "f5c0c05353445caedb0f0441a91ca772b6b96e8cad6d020525fe1d8cc92a261e",
+        "ciqual-9360": "e47dbe972c75974e00cf4c29ec064a01eaef3acba46e7ff03533d1cfe06a9ee2"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Sorghum grain",
+        "Κόκκος σόργου",
+        "Sorghum, whole, raw",
+        "Σόργο",
+        "ολόκληρο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-170286",
+      "expectedRows": {
+        "usda-170286": "f93dbaba3202bbeb84774cba7760bc07c93e1424d6d7f5aa87f168025fb77fd6",
+        "ciqual-9380": "bc601d6e4fdff57c9df3caa52ae7756635acb93fd59c6d761217758c190eb6ac"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Buckwheat",
+        "Φαγόπυρο",
+        "Buckwheat, whole, raw",
+        "ολόκληρο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-168884",
+      "expectedRows": {
+        "usda-168884": "8041d22ae9aef8dd22c09815a8f5717c26c93487fcbf0d1ebcc8db91f0d50565",
+        "ciqual-9390": "bcf49a17b615bde8b141db33b9e0d60fc4b24fe92ab343dae864b4e5ec401f74"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Rye grain",
+        "Κόκκος σίκαλης",
+        "σίκαλη",
+        "Rye, whole, raw",
+        "Σίκαλη",
+        "ολόκληρη",
+        "ακατέργαστη"
+      ]
+    },
+    {
+      "canonical": "usda-169698",
+      "expectedRows": {
+        "usda-169698": "0bbd1da872139ab5b34a116150a942f1c3b999339d195e24ed5a7b0d4bdd9cf1",
+        "ciqual-9510": "dbe9ae682a91b244e69e41ab28f2b3e87ef6c13883d75c71dc1834a5360afa98"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Cornstarch",
+        "Αραβόσιτο",
+        "Maize/corn starch",
+        "Άμυλο αραβοσίτου καλαμποκιού",
+        "καλαμπόκι"
+      ]
+    },
+    {
+      "canonical": "usda-169739",
+      "expectedRows": {
+        "usda-169739": "f7299117b61eebf9e485d166be6f9d18bbdbee8fa4d356e273a3d92b80732755",
+        "ciqual-9550": "152f54b4b2f20585b27c19c210a1218661f9d947dee5545a077e9290333d5e8b"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Barley flour or meal",
+        "Κριθαράλευρο ή σιμιγδάλι",
+        "κριθάρι",
+        "αλεύρι",
+        "Barley flour",
+        "Κριθάλευρο"
+      ]
+    },
+    {
+      "canonical": "usda-172023",
+      "expectedRows": {
+        "usda-172023": "7ed1a7a7f4c7a3685af4f4bdb219f8e7b87256749f1ec650d64efe831b63e041",
+        "ciqual-9555": "44ca0ba3fa58494f342d9876d5d457d0944b0a8aaa2b6498c2a074f3e887d832"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Millet flour",
+        "Αλεύρι από κεχρί",
+        "αλεύρι"
+      ]
+    },
+    {
+      "canonical": "usda-174288",
+      "expectedRows": {
+        "usda-174288": "9ce15aeeb95f5b174a2e4a345eeab962ae5fdf0c39dea8b43a27fbbd670a347c",
+        "ciqual-9580": "e38c8754f8b3d8a31c134c7930a8a28c82d613f353cb03715a7908c28915dfab"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chickpea flour (besan)",
+        "Αλεύρι ρεβιθιού μπεσάν",
+        "ρεβίθια",
+        "αλεύρι",
+        "Chick pea flour",
+        "Ρεβυθάλευρο"
+      ]
+    },
+    {
+      "canonical": "usda-169722",
+      "expectedRows": {
+        "usda-169722": "f1533c63b324766a5abce14bbad488bbb464f42c4bacb8bd4aedc6a0f14722d8",
+        "ciqual-9621": "3f6f70fb39c39561aca4a037f2cee44100014207c58e732f28e89c20b1c33665"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Wheat bran, crude",
+        "Πίτουρο σιταριού",
+        "ακατέργαστο",
+        "σιτάρι",
+        "Wheat bran"
+      ]
+    },
+    {
+      "canonical": "usda-170289",
+      "expectedRows": {
+        "usda-170289": "401c492c1a51c46a262481ed07ec8b99436732d53900ac3a422f02a60cd50148",
+        "ciqual-9641": "ada7758d84c519508bcbce697b58eccec80089ec863d7eeb45570ef65e07cc5a"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Corn bran, crude",
+        "Πίτουρο καλαμποκιού",
+        "ακατέργαστο",
+        "καλαμπόκι",
+        "Maize/corn bran",
+        "Πίτουρο καλαμποκιού καλαμποκιού"
+      ]
+    },
+    {
+      "canonical": "usda-169713",
+      "expectedRows": {
+        "usda-169713": "4fc28d2b6e39418e26b7c17f81867b0fb7c0279071e7e53a06b0dd4cbed055c4",
+        "ciqual-9643": "825fba489f7c72d1984d4cfb1b96cae0be840824d94410eccbd37aa6a3874200"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Rice bran, crude",
+        "Πίτουρο ρυζιού",
+        "ακατέργαστο",
+        "ρύζι",
+        "Rice bran"
+      ]
+    },
+    {
+      "canonical": "usda-168892",
+      "expectedRows": {
+        "usda-168892": "0b887de19a7e1db10d897120d7dd4966bfc9aebbc023bb76aaf5bf267a7a153c",
+        "ciqual-9660": "cb4298c7d78f60faedbe2fef2bd8ddf3608477335b6b138d60b4749c93e7abab"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Wheat germ, crude",
+        "Φύτρο σιταριού",
+        "ακατέργαστο",
+        "σιτάρι",
+        "Wheat germ"
+      ]
+    },
+    {
+      "canonical": "usda-170688",
+      "expectedRows": {
+        "usda-170688": "a4dfe06e764fa1cb21118b7c2ab60b6afa3b1d2f2627fc01d3d39ee1350265bd",
+        "ciqual-9690": "ff80dfc144ec257e083a1c70dd882d4f56ff4655fb61b819bd389bcc75333d91"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Bulgur, dry",
+        "Πλιγούρι",
+        "ξερό",
+        "Wheat bulgur, raw",
+        "Πλιγούρι σίτου",
+        "ακατέργαστο",
+        "σιτάρι",
+        "πλιγούρι"
+      ]
+    },
+    {
+      "canonical": "usda-170287",
+      "expectedRows": {
+        "usda-170287": "c7bca3c6b7582ad0322b7b133e7a6e6b49ed5fb51ad6d248930a3293dd085ea4",
+        "ciqual-9691": "827bb4026f309af5c86e5e7a3f3a31bae0ef9a360b480fbd9316a29cf17e38b4"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Bulgur, cooked",
+        "Πλιγούρι",
+        "μαγειρεμένο",
+        "Wheat bulgur, cooked, unsalted",
+        "Πλιγούρι σιταριού",
+        "ανάλατο",
+        "σιτάρι",
+        "πλιγούρι"
+      ]
+    },
+    {
+      "canonical": "usda-168914",
+      "expectedRows": {
+        "usda-168914": "cea08ad2e605820c95c7b48bd04ecc1179075fdb6279e57d42f44ee076495350",
+        "ciqual-9901": "d92dbf00342e7b59877f0d6c60fa56c637698aac8266c82aecc18e3c3d007c8b"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Rice noodles, cooked",
+        "Χυλοπίτες ρυζιού",
+        "μαγειρευτά",
+        "ρύζι",
+        "νουντλς",
+        "Rice noodle, cooked, unsalted",
+        "μαγειρευτό",
+        "ανάλατο"
+      ]
+    },
+    {
+      "canonical": "usda-168211",
+      "expectedRows": {
+        "usda-168211": "1a104170e813857dc1364e7ab1201fa21350c514cc93b5c4ca6d41d3a0852081",
+        "off-5415191400129": "5c076d1a27ba47bed18974cb7e94ae582c855adac70ea219ee23f4e646432ac5"
+      },
+      "reason": "Both explicitly identify Zespri SunGold kiwi, a single named cultivar. Retain the richer USDA source profile and keep it separate from green kiwi.",
+      "aliases": [
+        "Kiwifruit, ZESPRI SunGold, raw",
+        "Ακτινίδιο",
+        "ακατέργαστο",
+        "Kiwifruit SUNGOLD (Zespri)",
+        "Ακτινίδιο GOLD"
+      ],
+      "expectedProducts": {
+        "off-5415191400129": "685d22b454db3c41ddbb29dcbdabf5c4a93d6c68a1a868f08779a93ed2bacff5"
+      }
+    },
+    {
+      "canonical": "off-5201054016282",
+      "expectedRows": {
+        "off-5201054002087": "4b391d9c42e09c88b2382fc6d32335bd0d60404704e9f3faa1b244f1a988f84d",
+        "off-5201054031841": "fac1c4f1a3d996e3323616674324f1eae737f9751c1a2bc4410b616906b9ecd1",
+        "off-5201054016282": "0b9178af6f3326e4584db5087fd1d93a44225c5e5dfd4f3e48edc30e265fee10",
+        "off-5201054017432": "dd1364a6f8399cf4bd0b1b510075d771587b1e1d419d5cc40288a453bb25f037",
+        "off-5201054017838": "42785840192f167191aa7f8bff66b682b1b9929d1a5140cb77811c98900f200f"
+      },
+      "reason": "Same plain FAGE Total 5% yogurt in Greek/English and different pack sizes; retain the Greek 93 kcal profile, which matches the manufacturer. Fat percentage, flavoured and lactose-free products remain separate.",
+      "aliases": [
+        "Total 5% ΛΙΠΑΡΑ (ΦΑΓΕ)",
+        "Σύνολο 5% ΛΙΠΑΡΑ",
+        "ΦΑΓΕ TOTAL 5%",
+        "Στραγγιστό γιαούρτι αγελάδος",
+        "Σύνολο",
+        "Total 5% Fat Greek Yogurt (FAGE)",
+        "Σύνολο 5% Λιπαρά Ελληνικό Γιαούρτι ΦΑΓΕ",
+        "γιαούρτι",
+        "Total 5% Fat (FAGE)",
+        "Συνολικό 5% λίπος"
+      ],
+      "evidence": [
+        "https://greece.fage/proionta/giaoyrtia/total-5"
+      ],
+      "expectedProducts": {
+        "off-5201054002087": "251225113a77c1f05c685049009a58bb41cd9fef5e005ef0160e041c9cedd4ce",
+        "off-5201054031841": "115cf4a3bcf3c06bb5e4081bdc4d875790c87f0de3f47a7a6aebb2ac06f19253",
+        "off-5201054016282": "6b82d98ea50171e2845cfb31d3f4d191e4823c54c88f3e068916f6834f3cb8d1",
+        "off-5201054017432": "cffb045246ce2b077449b0460c3432ce814d4707161cc2c521728ce63a5dd07e",
+        "off-5201054017838": "a3e449b1d1ca90e861ffa6347011b3b654fdca7379e17fdbeaa8339e1b0cf6a1"
+      }
+    },
+    {
+      "canonical": "off-5201054031612",
+      "expectedRows": {
+        "off-5201054002711": "affceabd69dd3f4c4e24c7cfb34c29a169b9e65f0b04e041a247c6e5dfefcf57",
+        "off-0759544083023": "87bdb31107e653c11ee6e6d095923140e70fd4fc7bb17228ae802ef255033d19",
+        "off-5201054031612": "8904c2f984b1a00f3a67f6b36c5613f7ffeb8d7095aa1030951cb34012937c57"
+      },
+      "reason": "Merge the plain 2% strained-yogurt records around 70 kcal and 9.9-10 g protein, retaining the complete Greek 70 kcal profile. The manufacturer lists 70 kcal and 9.9 g protein for plain Total 2%.",
+      "aliases": [
+        "FAGE Total 2% Yogurt",
+        "ΦΑΓΕ 2% Γιαούρτι",
+        "γιαούρτι",
+        "Total 2% Milk Fat (Fage)",
+        "Ολικό λίπος γάλακτος 2% φάγος",
+        "γάλα",
+        "Total Γιαούρτι στραγγιστό 2% Λιπαρά 3*200g"
+      ],
+      "evidence": [
+        "https://greece.fage/proionta/giaoyrtia/total-2"
+      ],
+      "expectedProducts": {
+        "off-5201054002711": "ebf3cca501e6589adb61f524f99df21f42d03ac4dbdcb70eb9a2e1f79a91ee0a",
+        "off-0759544083023": "a47b12e602fdc86bc27338c84243138dac04fd66674e81ae889e96636d98da52",
+        "off-5201054031612": "e114f3728993ac28fab4329051cca3350f5cf6b9da31886583af1b482f0bd243"
+      }
+    },
+    {
+      "canonical": "off-5206542003638",
+      "expectedRows": {
+        "off-5206542000668": "154bb3a891bfe87ffcd20fcf064c1ef86b8b0fe4004fd8696d5aab0c2ec31874",
+        "off-5206542003638": "a6be172cbbf79ae5773cd21094a4b6fefeb2233be04c6e619cf886c10b88e212",
+        "off-5206542010667": "9be3eabf9f1e1be88eaf579fb2e7180501481f0fa102c703e55751f2d876cacb"
+      },
+      "reason": "Original Green Cola; name and pack-size differences, 0.6–1 kcal. Excludes other flavours.",
+      "aliases": [
+        "Green cola",
+        "Πράσινη κόλλα",
+        "Αεριούχο Αναψυκτικό με λίγες θερμίδες Με γλυκαντικό Χωρίς ζάχαρη",
+        "κόλα",
+        "Green Cola",
+        "Green cola 330ml can",
+        "Κονσέρβα"
+      ],
+      "expectedProducts": {
+        "off-5206542000668": "d75a4eba34cb912d779d0429029fd6fac6a11bf3e252d2fb4fedec35d5c26888",
+        "off-5206542003638": "25fed9f0b23381c8eafe3890089b39b47f1e0bb6f4af9b02269c4cf3794e2a53",
+        "off-5206542010667": "8611f8aab20c0216f274bbf1a32ef177910f5458b156b458fd8138098a608c4e"
+      }
+    },
+    {
+      "canonical": "off-8410076600837",
+      "expectedRows": {
+        "off-8410076600837": "990c82dbb0ef65dbf3d90569cf489c4a9457a3b0ca8a83d9f925e02e4cfc53a1",
+        "off-8410076801180": "11738c12358fb63bb693b2601275aa8c1679fc49e14dae92de77a12d26729d9a"
+      },
+      "reason": "Both specify 60% oats, 3% honey and sunflower oil with the same remaining ingredient sequence. These are duplicate package/source records; retain one whole nutrient profile.",
+      "aliases": [
+        "Crunchy Oats & Honey (Nature Valley)",
+        "Τραγανή βρώμη και μέλι",
+        "βρώμη",
+        "μέλι",
+        "Crunchy oats&honey (Nature Valley)"
+      ],
+      "expectedProducts": {
+        "off-8410076600837": "aefb213dd048dbc02389ed9c8372514f7918ad84f8c6bcbd75ad3454c105a62b",
+        "off-8410076801180": "5b0e1fd577c157e327c88f8742c0ea4f4d98695bdf5735483c2e45ee8dcc4d9b"
+      }
+    },
+    {
+      "canonical": "off-8000500269169",
+      "expectedRows": {
+        "off-8000500269169": "7170d2a77f7f093159e2dc9526f98a9ff7b300eea5c585c5604d324cede662c3",
+        "off-80874652": "db79c4c47d3999ec9a0b779759a00d3a904764b6c999404eec63c90af8f49a0f"
+      },
+      "reason": "Same Kinder Cards product in a multipack and individual packet. Reported protein, saturated fat, salt and sugar match; keep the richer complete source record.",
+      "aliases": [
+        "Kinder Cards",
+        "Κάρτες"
+      ],
+      "expectedProducts": {
+        "off-8000500269169": "e3529c21815614c6a713e83e17a00a5ee51d35bc7918b63c2a761a6962993d7c",
+        "off-80874652": "cf10c6b5ee346b39e8ed9b8808bf0854cccd65766224824d0f0ee7cb7b2e7ee0"
+      }
+    },
+    {
+      "canonical": "off-5201310003087",
+      "expectedRows": {
+        "off-5201310003087": "8c40e42e22e8d1ccfc46a7343bd2c44b05a31d09a16126b839826b4401b493bd",
+        "off-5201310003018": "1261fc7bf30d333d568984d342ff257ff20dfa5acb4138704fe115c80c347055"
+      },
+      "reason": "Same brand and cooked turkey description; both 100 kcal and 14.5 g protein. Fibre missing in one, salt 2.16 versus 2.12 g; one ingredient list is absent.",
+      "aliases": [
+        "Γαλοπούλα βραστη (IFANTIS)",
+        "Γαλοπούλα Βραστή (Ifantis)"
+      ],
+      "expectedProducts": {
+        "off-5201310003087": "e5004bebf7bc7298fff41e6ced7973e2a11c9988413f3f47bbbce378916f9ef2",
+        "off-5201310003018": "36b13081e9a7d1a84ff22104704f45b7275b90d4d47d40c98c6b1145aaa37351"
+      }
+    },
+    {
+      "canonical": "off-12047567",
+      "expectedRows": {
+        "off-12047567": "4275f235f401f1e6e19059d36f21bc8bfaeedabbb4fabc3decba353d6ddc528e",
+        "off-5201256051005": "fb207dfde7e9f497b3d8c37e812914426d899cc2f590b257c088856aa394ea3d"
+      },
+      "reason": "Same named soda, brand, 200 ml quantity and ingredient sequence, with mixed-script OCR differences. Keep the record with more reported nutrient coverage.",
+      "aliases": [
+        "Gentlemen's soda (three cents)",
+        "Σόδα κυρίων",
+        "Gentlemen's Soda (Three Cents)"
+      ],
+      "expectedProducts": {
+        "off-12047567": "bb5e33624c7171bc2994d40c92e9e7f42148b9cffebc185f8498c1078be27f99",
+        "off-5201256051005": "880277aa7f5890006d05b24f3258a61efc60f1cf2b25db2405f8b6335efb8316"
+      }
+    },
+    {
+      "canonical": "off-5201310004749",
+      "expectedRows": {
+        "off-5201310004749": "1c6fda1496cb647ec92a7c114930bb90eb90bdb372e4b62b01c61b811ca9ea01",
+        "off-5201310004954": "1734b0c4aa9cde91b295b0b85fbf0c600ef2599f8cf71c0cc88de57493c2573c"
+      },
+      "reason": "Same brand/flavour; 323 kcal and matching shared protein, saturated fat, unsaturated fat and sugar; fibre coverage and salt rounding differ.",
+      "aliases": [
+        "Lemon Hummus (Ifantis)",
+        "Χούμους λεμόνι",
+        "λεμόνι",
+        "Lemon Hummus (ifantis)"
+      ],
+      "expectedProducts": {
+        "off-5201310004749": "b839edab66a2231e9edfa3f82b76ce7b797bdf888adf45ddcc2fd7d130068d3c",
+        "off-5201310004954": "9759dbfc27fc263e998ed3d682e964f7bbeac16f11ce5e6e62018b1720e28ede"
+      }
+    },
+    {
+      "canonical": "off-4335619091832",
+      "expectedRows": {
+        "off-4056489452379": "bd85e27876354a684256145ffde775f2d095e6f5539f4e6109c355b521db450f",
+        "off-4335619091832": "911914ba8c6960aba106bea949ada5215f252369b5d362a81975445bedd6d6ca"
+      },
+      "reason": "Same brand and salted flavour; 481 kcal, protein 7.8 versus 7.7 g and salt 0.90 versus 0.89 g; fibre missing in one.",
+      "aliases": [
+        "tortilla chips salted (Snack Day)",
+        "παστά τσιπς τορτίγιας",
+        "τορτίγια",
+        "Tortilla Chips Salted (Snack Day)",
+        "Πατατάκια τορτίγιας αλατισμένα"
+      ],
+      "expectedProducts": {
+        "off-4056489452379": "8d0e09403ea191665bd291d8a1901994650dff97e508188c50532cf3b4612241",
+        "off-4335619091832": "c2b68b40265f41bb0edc5ec1bd76267b797fac46eb12b08b907d610a82598208"
+      }
+    },
+    {
+      "canonical": "off-5202234620442",
+      "expectedRows": {
+        "off-5202234620428": "ebd316c182a020c511751a5db48825da572e850a845c8e305944f66ab9fe507a",
+        "off-5202234620442": "845a0229569ab8eb6f6fe4376c885276163cb544587aed520ed366284ed90ae4"
+      },
+      "reason": "Same named product, matching shared macros; 93 kcal. Salt missing in one; ingredient detail must confirm same milk type.",
+      "aliases": [
+        "Spitiko (Kri Kri)",
+        "γιαούρτια"
+      ],
+      "expectedProducts": {
+        "off-5202234620428": "99dbec7c01efd07afccf9008229c11b7ef37ed5d6cf30ebf9227a6e83e1f577e",
+        "off-5202234620442": "d69d227f9748539eaf98e12797e11c34370cc6b757b87f23754f58a63005f980"
+      }
+    },
+    {
+      "canonical": "off-5201066003102",
+      "expectedRows": {
+        "off-5201066001092": "ddb4e3b370029b086b5169da12743698f10306569a131dc10993da5f342cc6dc",
+        "off-5201066003102": "495ad89b9a11e20fe9b0eb72e7ba22f686e3e7b4f49aa146ab5a057b25a8606e"
+      },
+      "reason": "Same brand, preparation and shared macros; 24 kcal. Salt missing versus zero.",
+      "aliases": [
+        "Slightly concentrated tomato juice (Kyknos)",
+        "Ελαφρώς συμπυκνωμένος χυμός ντομάτας",
+        "ντομάτα",
+        "τομάτα",
+        "χυμός",
+        "Slightly Concentrated Tomato Juice (Kyknos)"
+      ],
+      "expectedProducts": {
+        "off-5201066001092": "bbbd0dd600cc65ee7d657bc8ff659e4fde8b8bdf2db9ffd3c5fdeaeb9fa45d16",
+        "off-5201066003102": "405ebd8d38a855af6db2839e5bcf8181c8b993dc0e8e1570819813ddea74812c"
+      }
+    },
+    {
+      "canonical": "off-5200130811476",
+      "expectedRows": {
+        "off-5200130811476": "86098028460b904dd1065f3dd41541246f8ffb29da24da0dd8b611f687fee060",
+        "off-5200130811582": "6f9453483da2a863cf3a1e858a176f2adf25471439931e2827350ef379924376"
+      },
+      "reason": "Same brand and named beans; 315 kcal, matching protein/fibre/sugar. Some fat and salt values missing.",
+      "aliases": [
+        "Haricots oeil noir (Panic organic)",
+        "Μαυρομάτικα φασόλια",
+        "φασόλια"
+      ],
+      "expectedProducts": {
+        "off-5200130811476": "4193f159deb76fea343a2d1997da2866302cd75d7d87d0b942ff6e5e9f986c09",
+        "off-5200130811582": "4193f159deb76fea343a2d1997da2866302cd75d7d87d0b942ff6e5e9f986c09"
+      }
+    },
+    {
+      "canonical": "off-5203583013343",
+      "expectedRows": {
+        "off-5203583013343": "e4300d7c165bbb86b850acae34e8dd0ced6381e059e49e999d0956d77af1ee95",
+        "off-5203583013367": "d0d63a088576327cf87b1a97e59f1e7b21f7a41f99dc26a35534b21fdc7e749e"
+      },
+      "reason": "Same brand and named rice; 349 kcal, matching 7 g protein. Most other nutrients missing in one.",
+      "aliases": [
+        "Barboiled Rice (Bali)",
+        "Ρύζι βραστό",
+        "ρύζι"
+      ],
+      "expectedProducts": {
+        "off-5203583013343": "e1b350ac522f9ce4ea7cd98329978214cbd1d3c39bfe44373ef08a7a9b871d83",
+        "off-5203583013367": "a5132ba55d706a875bd79f3143205f4317ef6516e579f6db48cc272b005bb635"
+      }
+    },
+    {
+      "canonical": "off-5201049186198",
+      "expectedRows": {
+        "off-5201049186198": "042614dc7109ed76add78e19c69a9517b74027effc67069b9c97a68bb40274d1",
+        "off-5201049186006": "6a9c00f7a55816a70d7f593b379f4d6a2d33eba215da4ad0632a6c8a2c0b9f8a"
+      },
+      "reason": "Same brand/product; 599–603 kcal and closely matching reported macros, salt missing in one.",
+      "aliases": [
+        "CASHEW BUTTER (wild souls)",
+        "ΒΟΥΤΥΡΟ ΚΑΣΙΟΥ",
+        "βούτυρο",
+        "κάσιους",
+        "Cashew Butter (Wild Souls)",
+        "Βούτυρο ανακαρδιοειδών"
+      ],
+      "expectedProducts": {
+        "off-5201049186198": "3041eb6dcd87dd849a6145acc19ca2091174e2cd9ea3cade9ace9c707dcd8965",
+        "off-5201049186006": "276af3dd764efb8febab088823c4311791c26c0950aa1c4de05ef0bb7778e272"
+      }
+    },
+    {
+      "canonical": "off-5206546003115",
+      "expectedRows": {
+        "off-5206546003115": "02e575a8781effb0f6623f1911abab213b27be6fec18e14664bcabecbd059c08",
+        "off-5206546000046": "a2a06d7ea3ac12036f63d8940fc04ddd89e894ce2be5a1417e38d890fdc59be1"
+      },
+      "reason": "Same brand/product, shared macros match at 348 kcal. The previously invalid salt value is now unknown in one row; missing salt should not force two search entries.",
+      "aliases": [
+        "Royal Gouda (Artima)"
+      ],
+      "expectedProducts": {
+        "off-5206546003115": "3a7be0faaa9c2a678ca047df60a2d3134cfdc1defe5e6483ca5be35024630584",
+        "off-5206546000046": "3a7be0faaa9c2a678ca047df60a2d3134cfdc1defe5e6483ca5be35024630584"
+      }
+    },
+    {
+      "canonical": "off-5200132752319",
+      "expectedRows": {
+        "off-5200132752319": "ed427464b1f872289ccc055361f9f4d56932e1934e85ab68b742ba60ae63e5ab",
+        "off-5200132752227": "7efbf25abd74b961a0822fce34d4cf1608722696a944d0826d3ef94893a83f7c"
+      },
+      "reason": "Same brand/preparation and 81 kcal, 18 g protein; sugar missing in one.",
+      "aliases": [
+        "κοτοπουλο φιλετο στηθος σε νερο (NUTRI VALLEY)",
+        "Κοτόπουλο Φιλέτο Στήθος Σε Νερό (Nutri Valley)"
+      ],
+      "expectedProducts": {
+        "off-5200132752319": "05997d99e34ec177ab73afad43ca3874b0afc62a10670967457c62c9b6f4a0ef",
+        "off-5200132752227": "eee5ea5f188946a7dd8318dfd85cd01544de18fd3029ce154e22be36f2701822"
+      }
+    },
+    {
+      "canonical": "off-2210791005360",
+      "expectedRows": {
+        "off-2210632005160": "d113691a2dbb497874ea081406b8913a46523d9fe22e457a254febe89302882e",
+        "off-2210791005360": "918bf7748ffef92862ba332311c51337e3f0c3a3bbbaf990746d0997c88254db"
+      },
+      "reason": "Same brand/product and matching shared macros; 191 kcal. Salt missing in one.",
+      "aliases": [
+        "Κοτομπουκιες (Σκλαβενίτης)",
+        "Κοτομπουκιές (Σκλαβενίτης)",
+        "κοτόπουλο"
+      ],
+      "expectedProducts": {
+        "off-2210632005160": "6a80a6248b2e3f28b1c53828800471dcae332fc0525d79ab7e312eda2e1c6e0f",
+        "off-2210791005360": "9f3c7a52cc57d7431f71d4122e3af9ff43c2cddb0aa1f5f7342d998215308436"
+      }
+    },
+    {
+      "canonical": "off-2210633005084",
+      "expectedRows": {
+        "off-2210633005084": "3c92abe5325d590420edff1dd0fdd693fae92a74d36f50047181032f3fc4fc8d",
+        "off-2210633004971": "4172dec9e4035620dd7789938fdaf34c4ad5f3fe42fb70fde6221d5d0d16605d"
+      },
+      "reason": "Same brand/preparation and 191 kcal, 15.2 g protein. Most macros missing in one; keep separate from nuggets unless identity evidence justifies it.",
+      "aliases": [
+        "Σνίτσελ Κοτόπουλο Πανε (Σκλαβενίτης)",
+        "Σνίτσελ Κοτόπουλου",
+        "Σνιτσελ Κοτόπουλο Πανε (Σκλαβενιτης)"
+      ],
+      "expectedProducts": {
+        "off-2210633005084": "65c1056db71ce6f19d7ff735bc02b230a5f00056941bea324a8913b16f5af1e6",
+        "off-2210633004971": "8242adfc774d5d21c9c964ba926db37d4f2e6e9dd1951d03d32eb14a3c839814"
+      }
+    },
+    {
+      "canonical": "off-4751037281219",
+      "expectedRows": {
+        "off-4751037281219": "fe3e29f981674ad923ad80336ada3a2176903d941447ad1042a33f9cafe122b8",
+        "off-8720892511133": "ba48e71fbc4d7430de0deeadbda5213f001a5dd48d4ed1638f07bdd758d9839f"
+      },
+      "reason": "Same rhubarb kombucha, brand, 330 ml quantity and identical full ingredients; the minor fibre/sugar differences do not indicate a distinct recipe.",
+      "aliases": [
+        "Rudy's Kombucha Rhubarb (Rudy’s Kombucha)",
+        "Ραβέντι",
+        "Rudy's Kombucha Rhubarb",
+        "Ραβέντι Κομπούχα του Ρούντι"
+      ],
+      "expectedProducts": {
+        "off-4751037281219": "0ee4e95bece61d20e745b0a759a39d096837e4503ef8b8294bb12f32fc70df49",
+        "off-8720892511133": "1191bcf84b1f7d1e50aa941e6d7c798c9cd2e45d1a7f217165e308a3de24f911"
+      }
+    }
+  ]
 }

@@ -53,7 +53,7 @@ export function Weight({ state, commit }: Props) {
         <div className="flex items-baseline justify-between">
           <span className="text-4xl font-semibold">
             {latest.avg.toFixed(1)}
-            <span className="text-lg font-normal text-muted"> kg</span>
+            <span className="text-lg font-normal text-muted">kg</span>
           </span>
           <span className="text-sm text-muted">
             {days}-day average
@@ -129,12 +129,14 @@ function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
 
   return (
     <section>
-      <h2 className="mb-1 flex items-center justify-between px-1 text-xs font-medium tracking-wide text-muted uppercase">
-        <label htmlFor="weight-notes">Notes</label>
-        <Info id="weight-notes-hint" label="weight notes" hint="Saves when you leave this field." wide />
+      <h2 className="mb-1 text-xs font-medium tracking-wide text-muted uppercase">
+        <Info id="weight-notes-hint" label="weight notes" hint="Saves when you leave this field." wide className="relative flex">
+          <span className="font-medium tracking-wide uppercase">Notes</span>
+        </Info>
       </h2>
       <textarea
         id="weight-notes"
+        aria-label="Weight notes"
         value={draft ?? value}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={save}
@@ -174,16 +176,17 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
   const reading = current.tdee && kcal(current.tdee);
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
-      <h2 className="flex items-center justify-between text-xs font-medium tracking-wide text-muted uppercase">
-        Real maintenance
-        <Info label="real maintenance" wide hint={`${current.logged} of ${Math.max(0, daysBetween(current.fitFrom, current.to) + 1)} days with food ticked as eaten. Days without eaten entries are assumed to meet their target. Each phase gets its own estimate; the first days are left out while water settles.`} />
+      <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
+        <Info label="real maintenance" wide className="relative -mx-3 flex" hint={`${current.logged} of ${Math.max(0, daysBetween(current.fitFrom, current.to) + 1)} days with food ticked as eaten. Days without eaten entries are assumed to meet their target. Each phase gets its own estimate; the first days are left out while water settles.`}>
+          <span className="font-medium tracking-wide uppercase">Real maintenance</span>
+        </Info>
       </h2>
       {reading && current.kgPerWeek !== undefined ? (
         <>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-3xl font-semibold">
               ≈ {reading}
-              <span className="text-base font-normal text-muted"> kcal</span>
+              <span className="text-base font-normal text-muted">kcal</span>
             </span>
             <span className="text-sm text-muted">setting {tdee}</span>
           </div>
@@ -273,7 +276,7 @@ function Chart({ points, bands, days }: { points: Point[]; bands: Band[]; days: 
           {readPhase && ` · ${readPhase}`}
         </span>
         <span>
-          <span className="font-medium">{read.kg.toFixed(1)} kg</span>
+          <span className="font-medium">{read.kg.toFixed(1)}kg</span>
           <span className="text-muted"> · avg {read.avg.toFixed(1)}</span>
         </span>
       </p>
