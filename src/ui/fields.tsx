@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 /**
  * Edits locally and commits on blur or Enter, so typing doesn't write an event per
- * keystroke. With `optional`, clearing the field commits undefined. `format` only
+ * keystroke. Clearing commits 0, or undefined with `optional`. `format` only
  * changes how the value reads while it isn't being edited.
  */
 function useDraft(
@@ -14,9 +14,10 @@ function useDraft(
 ) {
   const [draft, setDraft] = useState<string>();
   const commit = () => {
-    const text = (draft ?? "").trim();
-    const parsed = text ? parse(text, value) : undefined;
-    if (draft !== undefined && !text && optional && value !== undefined) onCommit(undefined);
+    if (draft === undefined) return;
+    const text = draft.trim();
+    const parsed = text ? parse(text, value) : optional ? undefined : 0;
+    if (!text && optional && value !== undefined) onCommit(undefined);
     else if (parsed !== undefined && parsed !== value) onCommit(parsed);
     setDraft(undefined);
   };
