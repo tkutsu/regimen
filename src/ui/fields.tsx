@@ -78,10 +78,10 @@ export function NumberField({ label, unit, value, onCommit, placeholder, hint }:
     <div className="relative rounded-xl border border-line bg-surface px-3 py-2">
       <label className="block">
         <span className={`block text-xs text-muted ${hint ? "pr-6" : ""}`}>{label}</span>
-        <span className="flex items-baseline text-lg">
+        <span className="flex items-baseline gap-0.5 text-lg">
           <span className="inline-grid min-w-0">
             <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
-              {`${draft.value || placeholder || ""} `}
+              {draft.value || placeholder || ""}
             </span>
             <input {...draft} placeholder={placeholder} aria-describedby={hint ? id : undefined} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
           </span>
