@@ -176,7 +176,7 @@ function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number;
     <section className="rounded-2xl border border-line bg-surface p-4">
       <h2 className="flex items-center justify-between text-xs font-medium tracking-wide text-muted uppercase">
         Real maintenance
-        <Info label="real maintenance" wide hint={`${current.logged} of ${daysBetween(current.fitFrom, current.to) + 1} days with food ticked as eaten. Days without eaten entries are assumed to meet their target. Each phase gets its own estimate; the first days are left out while water settles.`} />
+        <Info label="real maintenance" wide hint={`${current.logged} of ${Math.max(0, daysBetween(current.fitFrom, current.to) + 1)} days with food ticked as eaten. Days without eaten entries are assumed to meet their target. Each phase gets its own estimate; the first days are left out while water settles.`} />
       </h2>
       {reading && current.kgPerWeek !== undefined ? (
         <>
