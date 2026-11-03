@@ -89,7 +89,10 @@ export function allFoods(state: State): Map<string, Food> {
   return foods;
 }
 
-/** Foods that can be added to a day: all but replaced recipe batches. */
+/**
+ * Foods supplied to pickers, except replaced recipe batches. Archived foods stay in
+ * this map so reference searches exclude them; the picker hides them from its lists.
+ */
 export function pickableFoods(state: State): Map<string, Food> {
   const foods = allFoods(state);
   for (const recipe of state.recipes.values()) if (recipe.archived) foods.delete(recipe.id);

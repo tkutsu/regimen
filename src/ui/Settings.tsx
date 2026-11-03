@@ -63,7 +63,7 @@ function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {
           <span className="flex-1 first-letter:uppercase">{LABELS[key]}</span>
           <OptionalNumberInput value={limits[key].min} onCommit={(min) => setRange(key, { min })} aria-label={`${LABELS[key]} min`} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
           <OptionalNumberInput value={limits[key].max} onCommit={(max) => setRange(key, { max })} aria-label={`${LABELS[key]} max`} placeholder="–" className="w-16 text-right placeholder:text-muted/50" />
-          <span className="w-20 pl-2 text-xs text-muted">{LIMIT_UNITS[key]}</span>
+          <span className="w-20 text-xs text-muted">{LIMIT_UNITS[key]}</span>
         </label>
       ))}
     </Section>
@@ -88,12 +88,14 @@ function Staples({ state, commit }: { state: State; commit: Commit }) {
               {food?.name ?? "unknown food"}
               {staple.variant && <span className="text-muted"> · {staple.variant}</span>}
             </span>
-            <NumberInput
-              value={staple.amount}
-              onCommit={(amount) => amount > 0 && save(staples.map((s) => (s.id === staple.id ? { ...s, amount } : s)))}
-              className="w-16 text-right"
-            />
-            <span className="w-4 text-sm text-muted">{food?.basis === "item" ? "×" : "g"}</span>
+            <span className="inline-flex items-baseline">
+              <NumberInput
+                value={staple.amount}
+                onCommit={(amount) => amount > 0 && save(staples.map((s) => (s.id === staple.id ? { ...s, amount } : s)))}
+                className="w-16 text-right"
+              />
+              <span className="w-4 text-sm text-muted">{food?.basis === "item" ? "×" : "g"}</span>
+            </span>
             <Remove label={food?.name ?? "staple"} onClick={() => save(staples.filter((s) => s.id !== staple.id))} />
           </div>
         );
@@ -140,8 +142,10 @@ function Containers({ containers, set }: { containers: Container[]; set: Set }) 
         <div key={c.id} data-row={c.id} className={`flex items-center gap-2 py-2 pr-4 pl-2 ${dragging === c.id ? "bg-line/40" : ""}`}>
           <button {...handle(c, c.name)} />
           <TextInput value={c.name} onCommit={(name) => edit(c.id, { name })} className="min-w-0 flex-1" />
-          <NumberInput value={c.grams} onCommit={(grams) => grams > 0 && edit(c.id, { grams })} className="w-16 text-right" />
-          <span className="w-4 text-sm text-muted">g</span>
+          <span className="inline-flex items-baseline">
+            <NumberInput value={c.grams} onCommit={(grams) => grams > 0 && edit(c.id, { grams })} className="w-16 text-right" />
+            <span className="w-4 text-sm text-muted">g</span>
+          </span>
           <Remove label={c.name} onClick={() => set({ containers: containers.filter((other) => other.id !== c.id) })} />
         </div>
       ))}
@@ -169,8 +173,10 @@ function Row({ label, unit, hint, children }: { label: string; unit: string; hin
     <label className="flex items-center gap-2 px-4 py-2.5">
       <span className="flex-1 capitalize">{label}</span>
       {hint && <span className="text-sm text-muted">{hint}</span>}
-      {children}
-      <span className="w-14 text-sm text-muted">{unit}</span>
+      <span className="inline-flex items-baseline">
+        {children}
+        <span className="w-14 text-sm text-muted">{unit}</span>
+      </span>
     </label>
   );
 }

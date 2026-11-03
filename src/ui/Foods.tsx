@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { deleteFood } from "../domain/foodDeletion";
 import { recipeAsFood, toggleFav, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
 import { recentFoodIds, searchFoods } from "../domain/search";
@@ -18,7 +19,7 @@ export function Foods({ state, commit }: Props) {
   const [editing, setEditing] = useState<Food | "new">();
   const [cooking, setCooking] = useState<{ recipe: Recipe; replaces?: Recipe }>();
 
-  const foods = useMemo(() => [...state.foods.values()], [state.foods]);
+  const foods = useMemo(() => [...state.foods.values()].filter((food) => !food.archived), [state.foods]);
   const incomplete = useMemo(() => foods.filter((food) => unknownNutrients(food).length), [foods]);
   const groups = useMemo(() => [...new Set(foods.map((food) => food.group).filter(Boolean))].sort(), [foods]);
   const uses = useMemo(() => usage(state), [state]);
@@ -46,6 +47,13 @@ export function Foods({ state, commit }: Props) {
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter" || e.nativeEvent.isComposing || !query.trim()) return;
+          e.preventDefault();
+          if (recipes[0]) setCooking({ recipe: recipes[0] });
+          else setEditing(sections.find(([, list]) => list.length)?.[1][0]);
+        }}
+        enterKeyHint="go"
         placeholder={`Search ${foods.length} foods`}
         className="rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
       />
@@ -104,8 +112,8 @@ export function Foods({ state, commit }: Props) {
           onSave={async (saved) => {
             if (await commit({ type: "food.upsert", food: saved })) close();
           }}
-          onDelete={food && state.foods.has(food.id) ? async () => {
-            if (food && (await commit({ type: "food.delete", foodId: food.id }))) close();
+          onDelete={food && state.foods.has(food.id) ? async (everywhere) => {
+            if (await commit(...deleteFood(state, food.id, everywhere))) close();
           } : undefined}
           onClose={close}
         />
@@ -158,7 +166,7 @@ function FoodRow({ food, onPick, onToggleFav }: { food: Food; onPick: () => void
         )}
         <span className="shrink-0 text-right text-sm text-muted">
           {Math.round(food.kcal)}
-          <span className="text-xs"> kcal /{food.basis === "item" ? "item" : "100g"}</span>
+          <span className="text-xs">kcal /{food.basis === "item" ? "item" : "100g"}</span>
         </span>
       </button>
     </div>

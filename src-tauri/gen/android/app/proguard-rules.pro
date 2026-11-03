@@ -1,3 +1,8 @@
+# Rust calls this method through JNI during startup; R8 cannot see that call.
+-keep class dev.themos.regimen.TauriActivity {
+    public app.tauri.plugin.PluginManager getPluginManager();
+}
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.

@@ -64,7 +64,7 @@ export function Today({ state, commit }: Props) {
       {day.offset !== undefined && day.offset !== state.settings.phaseOffsets[day.phase] && (
         <p className="-mt-2 text-center text-xs text-muted">
           custom offset {day.offset > 0 ? "+" : ""}
-          {day.offset} kcal
+          {day.offset}kcal
         </p>
       )}
 
@@ -254,7 +254,7 @@ function Share({ food, entry, shown }: { food?: Food; entry: Entry; shown: keyof
   return (
     <span className={`ml-auto shrink-0 text-sm ${entry.done ? "text-accent" : "text-accent/60"}`}>
       {!known ? "?" : shown === "kcal" || n >= 10 ? Math.round(n) : +n.toFixed(1)}
-      <span className="text-muted">{shown === "kcal" ? " kcal" : "g"}</span>
+      <span className="text-muted">{shown === "kcal" ? "kcal" : "g"}</span>
     </span>
   );
 }

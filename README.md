@@ -68,6 +68,15 @@ keep a canonical record with additional micronutrients, provided no known value
 is lost or conflicts; sodium allows 1 mg rounding. Label corrections record
 their source and expected previous value so changed source data stops the rebuild
 for inspection. Unsupported amounts and label bounds remain unknown.
+Reviewed identity merges can also consolidate the same food across sources when
+their reported nutrients differ. Each merge records the retained ID, a reason,
+alternate search names and hashes of the normalized rows, including every
+nutrient. Packaged-food reviews also guard the source name, brand, quantity and
+ingredients. A changed record stops the rebuild for review. The retained row
+keeps its own nutrient profile; values are never averaged or filled from a
+different source. Cultivar, edible
+portion, preparation, fat percentage and known formulation differences remain
+separate.
 Search keywords omit repeated English words
 and translated brand labels.
 
@@ -91,7 +100,7 @@ The importer rejects unusable names, impossible nutrient amounts and inconsisten
 nutrition. It also excludes Open Food Facts products with source-reported
 nutrition errors. A source's generic name can replace a missing or barcode-only
 product name. Equivalent rows with the same name and nutrient values are
-collapsed within each source; matching names with different values stay separate.
+collapsed within each source; unreviewed matching names with different values stay separate.
 
 Run the importer regression checks with:
 

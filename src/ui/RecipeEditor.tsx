@@ -5,6 +5,7 @@ import type { Container, Food, Nutrients, Recipe } from "../domain/types";
 import { Dialog } from "./Dialog";
 import { box, Heading, ValueFields } from "./FoodEditor";
 import { FoodPicker } from "./FoodPicker";
+import { blurOnEnter } from "./fields";
 import { transition } from "./motion";
 
 type Props = {
@@ -111,7 +112,7 @@ export function RecipeEditor(props: Props) {
                       {food && amount ? (
                         <span className={`block text-xs ${shown === "kcal" ? "text-muted" : "text-accent"}`}>
                           {food[shown] === undefined ? "?" : shown === "kcal" || value >= 10 ? Math.round(value) : +value.toFixed(1)}
-                          {shown === "kcal" ? " kcal" : "g"}
+                          {shown === "kcal" ? "kcal" : "g"}
                         </span>
                       ) : null}
                     </span>
@@ -120,6 +121,7 @@ export function RecipeEditor(props: Props) {
                       inputMode="text"
                       value={ingredient.amount}
                       onChange={(e) => setAmount(i, e.target.value)}
+                      onKeyDown={blurOnEnter}
                       onFocus={(e) => e.target.select()}
                       className={`w-20 rounded-lg border bg-bg px-2 py-1 text-right outline-none focus:border-accent ${amount ? "border-line" : "border-bad"}`}
                     />
@@ -157,6 +159,7 @@ export function RecipeEditor(props: Props) {
                     inputMode="text"
                     value={form.items}
                     onChange={(e) => patch({ items: e.target.value })}
+                    onKeyDown={blurOnEnter}
                     className={`${box} w-28 ${parseAmount(form.items) ? "border-line" : "border-bad"}`}
                   />
                 </section>
@@ -170,6 +173,7 @@ export function RecipeEditor(props: Props) {
                         inputMode="text"
                         value={form.totalG}
                         onChange={(e) => patch({ totalG: e.target.value })}
+                        onKeyDown={blurOnEnter}
                         placeholder="not yet"
                         className="w-full bg-transparent text-lg outline-none placeholder:text-muted/50"
                       />
@@ -183,14 +187,14 @@ export function RecipeEditor(props: Props) {
                       <option value={0}>no container</option>
                       {presets.map((c) => (
                         <option key={c.id} value={c.grams}>
-                          {c.name} · {c.grams} g
+                          {c.name} · {c.grams}g
                         </option>
                       ))}
                     </select>
                   </div>
                   {totals.weighed ? (
                     <p className="mt-2 px-1 text-sm text-muted">
-                      = {Math.round(totals.cookedG)} g cooked from {Math.round(totals.rawG)} g of ingredients (×{(totals.cookedG / totals.rawG).toFixed(2)})
+                      = {Math.round(totals.cookedG)}g cooked from {Math.round(totals.rawG)}g of ingredients (×{(totals.cookedG / totals.rawG).toFixed(2)})
                     </p>
                   ) : totals.rawG ? (
                     <p className="mt-2 px-1 text-sm text-muted">Until it's weighed, values use the ingredient weight.</p>
@@ -205,9 +209,9 @@ export function RecipeEditor(props: Props) {
                 <div className="flex items-baseline justify-between">
                   <span className="text-2xl font-semibold">
                     {Math.round(perUnit.kcal)}
-                    <span className="text-base font-normal text-muted"> kcal / {item ? "item" : "100 g"}</span>
+                    <span className="text-base font-normal text-muted">kcal / {item ? "item" : "100 g"}</span>
                   </span>
-                  <span className="text-sm text-muted">batch {Math.round(totals.total.kcal)} kcal</span>
+                  <span className="text-sm text-muted">batch {Math.round(totals.total.kcal)}kcal</span>
                 </div>
                 <div className="mt-2 grid grid-cols-3 gap-x-4 gap-y-1 text-sm">
                   {NUTRIENTS.slice(1).map((key) => (

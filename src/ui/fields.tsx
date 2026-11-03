@@ -1,5 +1,12 @@
 import { useEffect, useId, useRef, useState } from "react";
 
+/** Enter finishes a field through its normal blur path. */
+export function blurOnEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+  if (e.key !== "Enter" || e.nativeEvent.isComposing) return;
+  e.preventDefault();
+  e.currentTarget.blur();
+}
+
 /**
  * Edits locally and commits on blur or Enter, so typing doesn't write an event per
  * keystroke. Clearing commits 0, or undefined with `optional`. `format` only
@@ -27,7 +34,7 @@ function useDraft(
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value),
     onFocus: (e: React.FocusEvent<HTMLInputElement>) => e.target.select(),
     onBlur: commit,
-    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && e.currentTarget.blur(),
+    onKeyDown: blurOnEnter,
   };
 }
 
@@ -76,25 +83,26 @@ export function NumberField({ label, unit, value, onCommit, placeholder, hint }:
   const id = useId();
   return (
     <div className="relative rounded-xl border border-line bg-surface px-3 py-2">
-      <label className="block">
-        <span className={`block text-xs text-muted ${hint ? "pr-6" : ""}`}>{label}</span>
-        <span className="flex items-baseline gap-0.5 text-lg">
-          <span className="inline-grid min-w-0">
-            <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
-              {draft.value || placeholder || ""}
-            </span>
-            <input {...draft} placeholder={placeholder} aria-describedby={hint ? id : undefined} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
+      {hint ? (
+        <Info id={id} label={label} hint={hint} className="relative -mx-3 -mt-2">
+          <span className="text-xs">{label}</span>
+        </Info>
+      ) : <label htmlFor={`${id}-input`} className="block text-xs text-muted">{label}</label>}
+      <span className="flex items-baseline text-lg">
+        <span className="inline-grid min-w-0">
+          <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
+            {draft.value || placeholder || ""}
           </span>
-          <span className="text-sm text-muted">{unit}</span>
+          <input {...draft} id={`${id}-input`} aria-label={label} placeholder={placeholder} aria-describedby={hint ? id : undefined} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
         </span>
-      </label>
-      {hint && <Info id={id} label={label} hint={hint} className="absolute top-0.5 right-0.5" />}
+        <span className="text-sm text-muted">{unit}</span>
+      </span>
     </div>
   );
 }
 
 /** Opens help on hover, focus or tap; Escape, blur and an outside tap dismiss it. */
-export function Info({ id, label, hint, className = "relative", wide = false }: { id?: string; label: string; hint: string; className?: string; wide?: boolean }) {
+export function Info({ id, label, hint, className = "relative", wide = false, children }: { id?: string; label: string; hint: string; className?: string; wide?: boolean; children?: React.ReactNode }) {
   const generatedId = useId();
   const helpId = id ?? generatedId;
   const [open, setOpen] = useState(false);
@@ -117,7 +125,7 @@ export function Info({ id, label, hint, className = "relative", wide = false }: 
   return (
     <span
       ref={root}
-      className={`inline-flex shrink-0 font-normal tracking-normal normal-case ${className}`}
+      className={`${children ? "flex" : "inline-flex"} shrink-0 font-normal tracking-normal normal-case ${className}`}
       onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
       onPointerLeave={() => { if (!pinned.current && !root.current?.contains(document.activeElement)) setOpen(false); }}
     >
@@ -130,9 +138,10 @@ export function Info({ id, label, hint, className = "relative", wide = false }: 
         onFocus={() => setOpen(true)}
         onBlur={close}
         onClick={() => { pinned.current = !pinned.current; setOpen(pinned.current); }}
-        className="flex size-8 items-center justify-center rounded-lg text-muted outline-none hover:text-accent focus-visible:ring-2 focus-visible:ring-accent"
+        className={`flex min-h-11 items-center gap-2 rounded-lg text-muted outline-none hover:text-accent focus-visible:ring-2 focus-visible:ring-accent ${children ? "w-full justify-between px-3 text-left" : "min-w-11 justify-center"}`}
       >
-        <svg aria-hidden viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        {children}
+        <svg aria-hidden viewBox="0 0 20 20" className="size-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
           <circle cx="10" cy="10" r="7.5" />
           <path d="M10 9v5M10 6v.1" />
         </svg>
@@ -157,7 +166,7 @@ export function TextInput({ value, onCommit, placeholder, className = "", "aria-
       value={draft ?? value}
       onChange={(e) => setDraft(e.target.value)}
       onBlur={commit}
-      onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+      onKeyDown={blurOnEnter}
       placeholder={placeholder}
       aria-label={label}
       className={`bg-transparent outline-none ${className}`}

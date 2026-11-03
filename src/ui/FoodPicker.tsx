@@ -29,11 +29,12 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
   const reference = useReference(true);
 
   const sections = useMemo((): [string, Food[]][] => {
+    const available = [...foods.values()].filter((food) => !food.archived);
     if (!query.trim()) {
-      const favs = [...foods.values()].filter((food) => food.fav).sort((a, b) => a.name.localeCompare(b.name));
+      const favs = available.filter((food) => food.fav).sort((a, b) => a.name.localeCompare(b.name));
       const recent = recentIds
         .map((id) => foods.get(id))
-        .filter((food): food is Food => !!food && !food.fav)
+        .filter((food): food is Food => !!food && !food.archived && !food.fav)
         .slice(0, 15);
       return [
         ["Favourites", favs],
@@ -42,7 +43,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
     }
     const unsaved = reference.filter((food) => !foods.has(food.id));
     return [
-      ["Your foods", searchFoods(foods.values(), query, 30, recentIds)],
+      ["Your foods", searchFoods(available, query, 30, recentIds)],
       ["Reference foods", searchFoods(unsaved, query, 40)],
     ];
   }, [foods, recentIds, reference, query]);
@@ -57,6 +58,12 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
             setQuery(e.target.value);
             setPicked(undefined);
           }}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter" || e.nativeEvent.isComposing || picked || !query.trim()) return;
+            e.preventDefault();
+            setPicked(sections.find(([, list]) => list.length)?.[1][0]);
+          }}
+          enterKeyHint="go"
           placeholder="Search foods"
           className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
         />
@@ -109,7 +116,7 @@ function FoodRow({ food, onPick, onToggleFav }: { food: Food; onPick: () => void
           {food.name}
         </span>
         <span className="shrink-0 text-right text-xs text-muted">
-          {Math.round(food.kcal)} kcal / {food.basis === "item" ? "item" : "100 g"}
+          {Math.round(food.kcal)}kcal / {food.basis === "item" ? "item" : "100 g"}
           {source && <span className="block">{source}</span>}
         </span>
       </button>
@@ -179,17 +186,19 @@ function Amount({ food, containers, addLabel, onBack, onAdd }: AmountProps) {
       )}
 
       <label className="flex items-center gap-2">
-        <input
-          autoFocus
-          inputMode="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onFocus={(e) => e.target.select()}
-          onKeyDown={(e) => e.key === "Enter" && submit(!addLabel)}
-          className="w-28 rounded-xl border border-line bg-surface px-3 py-2 text-right text-lg outline-none focus:border-accent"
-        />
-        <span className="text-muted">{item ? "×" : "g"}</span>
-        <span className="ml-auto text-muted">{Math.round(kcal)} kcal</span>
+        <span className="inline-flex items-baseline rounded-xl border border-line bg-surface focus-within:border-accent">
+          <input
+            autoFocus
+            inputMode="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onFocus={(e) => e.target.select()}
+            onKeyDown={(e) => e.key === "Enter" && submit(!addLabel)}
+            className="w-24 bg-transparent py-2 pl-3 text-right text-lg outline-none"
+          />
+          <span className="pr-3 text-muted">{item ? "×" : "g"}</span>
+        </span>
+        <span className="ml-auto text-muted">{Math.round(kcal)}kcal</span>
       </label>
       <Breakdown food={food} amount={amount} factor={variant?.factor} />
 
@@ -204,11 +213,11 @@ function Amount({ food, containers, addLabel, onBack, onAdd }: AmountProps) {
             <option value="">no container</option>
             {containers.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.name} · {c.grams} g
+                {c.name} · {c.grams}g
               </option>
             ))}
           </select>
-          {container && <span>= {Math.round(amount)} g</span>}
+          {container && <span>= {Math.round(amount)}g</span>}
         </label>
       )}
 

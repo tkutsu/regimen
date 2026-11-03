@@ -15,6 +15,7 @@ Sources:
 
 import csv
 import gzip
+import hashlib
 import html
 import io
 import json
@@ -184,7 +185,7 @@ def ciqual(path, estimates=None):
         yield normalize("ciqual", code, name, groups.get(group, ""), v, estimates)
 
 
-def off(path, estimates=None):
+def off(path, estimates=None, identities=None):
     """Products tagged as sold in Greece. The export is tab-separated and unquoted."""
     columns = {"energy-kcal_100g": "kcal", "proteins_100g": "prot", "fiber_100g": "fiber", "saturated-fat_100g": "sat",
                "monounsaturated-fat_100g": "mufa", "polyunsaturated-fat_100g": "pufa", "unsaturated-fat_100g": "unsat",
@@ -236,6 +237,10 @@ def off(path, estimates=None):
                 continue
             label = f"{name} ({brand})" if brand and brand.lower() not in name.lower() else name
             products[row[at["code"]]] = normalize("off", row[at["code"]], label, "packaged (Greece)", v, estimates)
+            if identities is not None:
+                identities[f"off-{row[at['code']]}"] = row_fingerprint([
+                    row[at[field]] if field in at else "" for field in
+                    ["product_name", "generic_name", "brands", "quantity", "ingredients_text"]])
     return products.values()
 
 
@@ -299,7 +304,12 @@ def deduplicate(foods):
     return kept
 
 
-def curate(foods, corrections):
+def row_fingerprint(row):
+    """Hash a normalized food row or source identity fields for a guarded review."""
+    return hashlib.sha256(json.dumps(row, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+
+
+def curate(foods, corrections, product_identities=None):
     """Apply reviewed product exclusions, names and equivalent-food merges on rebuild."""
     excluded = set(corrections.get("excludeNames", []))
     names = corrections.get("names", {})
@@ -328,18 +338,36 @@ def curate(foods, corrections):
         if canonical not in rows or not close_nutrients(rows[removed], rows[canonical], compatible=True):
             raise ValueError(f"Reviewed duplicate no longer matches: {removed} -> {canonical}")
         del rows[removed]
-    return deduplicate(rows.values())
+    # Collapse automatic equivalents before a reviewed removal can uncover one.
+    rows = {f"{row[0]}-{row[1]}": row for row in deduplicate(rows.values())}
+    for merge in corrections.get("identityDuplicates", []):
+        canonical, expected = merge["canonical"], merge["expectedRows"]
+        if not any(key != canonical and key in rows for key in expected):
+            continue
+        if canonical not in expected or canonical not in rows or any(
+                key not in rows or row_fingerprint(rows[key]) != fingerprint
+                for key, fingerprint in expected.items()):
+            raise ValueError(f"Reviewed food identity no longer matches: {canonical}")
+        if any((product_identities or {}).get(key) != fingerprint
+               for key, fingerprint in merge.get("expectedProducts", {}).items()):
+            raise ValueError(f"Reviewed product identity no longer matches: {canonical}")
+        for key in expected:
+            if key != canonical:
+                del rows[key]
+    return list(rows.values())
 
 
 def main(usda_zip, ciqual_zip, off_csv, out):
     estimates = set()
+    product_identities = {}
     corrections = json.loads(Path(__file__).with_name("food_cleanup.json").read_text())
     # Collapse exact source-export copies first, so a reviewed removal cannot uncover one.
     source_rows = {}
-    for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates), *off(off_csv, estimates)):
+    for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates),
+                 *off(off_csv, estimates, product_identities)):
         if food:
             source_rows.setdefault((food[0], clean_name(food[2]).casefold(), *food[3:]), food)
-    foods = curate(source_rows.values(), corrections)
+    foods = curate(source_rows.values(), corrections, product_identities)
     kept_ids = {f"{food[0]}-{food[1]}" for food in foods}
     aliases = json.loads(Path(__file__).with_name("food_keywords.el.json").read_text())
     translations = aliases["foods"]
@@ -351,7 +379,10 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         },
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
         "estimatedUnsatFat": sorted(estimates & kept_ids),
-        "keywords": reference_keywords(foods, translations),
+        "keywords": reference_keywords(foods, translations, {
+            merge["canonical"]: merge["aliases"]
+            for merge in corrections.get("identityDuplicates", [])
+        }),
         "foods": foods,
     }
     with open(out, "w") as f:
@@ -360,10 +391,19 @@ def main(usda_zip, ciqual_zip, off_csv, out):
     print(f"{len(foods)} foods {counts} -> {out}")
 
 
-def reference_keywords(foods, translations):
-    """Attach alternate Greek search terms without repeating words in the displayed name."""
-    return {f"{row[0]}-{row[1]}": cleaned for row in foods
-            if (cleaned := clean_keywords(row[2], translations.get(row[2], []), row[0] == "off"))}
+def reference_keywords(foods, translations, aliases=None):
+    """Keep translated keywords and reviewed alternate names on the retained food ID."""
+    aliases = aliases or {}
+    result = {}
+    for row in foods:
+        key = f"{row[0]}-{row[1]}"
+        keywords = clean_keywords(row[2], translations.get(row[2], []), row[0] == "off")
+        if key in aliases:
+            # Reviewed source names retain real brand aliases, unlike machine translations.
+            keywords = clean_keywords(row[2], [*keywords, *aliases[key]])
+        if keywords:
+            result[key] = keywords
+    return result
 
 
 if __name__ == "__main__":
