@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 /**
  * Edits locally and commits on blur or Enter, so typing doesn't write an event per
@@ -70,21 +70,76 @@ export function OptionalNumberInput({ value, onCommit, format, parse, placeholde
  * A labelled number with its unit right after it. The input is as wide as what it shows,
  * measured by an invisible copy of the text, so the unit follows the number.
  */
-export function NumberField({ label, unit, value, onCommit, placeholder }: Omit<Props, "className" | "aria-label"> & { label: string; unit: string }) {
+export function NumberField({ label, unit, value, onCommit, placeholder, hint }: Omit<Props, "className" | "aria-label"> & { label: string; unit: string; hint?: string }) {
   const draft = useDraft(value, (v) => v !== undefined && onCommit(v));
+  const id = useId();
   return (
-    <label className="rounded-xl border border-line bg-surface px-3 py-2">
-      <span className="block text-xs text-muted">{label}</span>
-      <span className="flex items-baseline text-lg">
-        <span className="inline-grid min-w-0">
-          <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
-            {`${draft.value || placeholder || ""} `}
+    <div className="relative rounded-xl border border-line bg-surface px-3 py-2">
+      <label className="block">
+        <span className={`block text-xs text-muted ${hint ? "pr-6" : ""}`}>{label}</span>
+        <span className="flex items-baseline text-lg">
+          <span className="inline-grid min-w-0">
+            <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
+              {`${draft.value || placeholder || ""} `}
+            </span>
+            <input {...draft} placeholder={placeholder} aria-describedby={hint ? id : undefined} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
           </span>
-          <input {...draft} placeholder={placeholder} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
+          <span className="text-sm text-muted">{unit}</span>
         </span>
-        <span className="text-sm text-muted">{unit}</span>
+      </label>
+      {hint && <Info id={id} label={label} hint={hint} className="absolute top-0.5 right-0.5" />}
+    </div>
+  );
+}
+
+/** Opens help on hover, focus or tap; Escape, blur and an outside tap dismiss it. */
+export function Info({ id, label, hint, className = "relative", wide = false }: { id?: string; label: string; hint: string; className?: string; wide?: boolean }) {
+  const generatedId = useId();
+  const helpId = id ?? generatedId;
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLSpanElement>(null);
+  const pinned = useRef(false);
+  const close = () => { pinned.current = false; setOpen(false); };
+
+  useEffect(() => {
+    if (!open) return;
+    const outside = (e: PointerEvent) => { if (!root.current?.contains(e.target as Node)) close(); };
+    const escape = (e: KeyboardEvent) => { if (e.key === "Escape") { e.preventDefault(); close(); } };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", escape);
+    };
+  }, [open]);
+
+  return (
+    <span
+      ref={root}
+      className={`inline-flex shrink-0 font-normal tracking-normal normal-case ${className}`}
+      onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
+      onPointerLeave={() => { if (!pinned.current && !root.current?.contains(document.activeElement)) setOpen(false); }}
+    >
+      <button
+        type="button"
+        aria-label={`About ${label}`}
+        aria-expanded={open}
+        aria-controls={helpId}
+        aria-describedby={helpId}
+        onFocus={() => setOpen(true)}
+        onBlur={close}
+        onClick={() => { pinned.current = !pinned.current; setOpen(pinned.current); }}
+        className="flex size-8 items-center justify-center rounded-lg text-muted outline-none hover:text-accent focus-visible:ring-2 focus-visible:ring-accent"
+      >
+        <svg aria-hidden viewBox="0 0 20 20" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+          <circle cx="10" cy="10" r="7.5" />
+          <path d="M10 9v5M10 6v.1" />
+        </svg>
+      </button>
+      <span id={helpId} role="tooltip" hidden={!open} className={`absolute top-full right-0 z-[3] max-w-[calc(100vw-2rem)] pt-1 ${wide ? "w-64" : "w-36"}`}>
+        <span className="block rounded-xl border border-line bg-surface p-3 text-left text-xs text-muted shadow-lg">{hint}</span>
       </span>
-    </label>
+    </span>
   );
 }
 
