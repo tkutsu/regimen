@@ -13,7 +13,7 @@ import { Weight } from "./ui/Weight";
 
 const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods, settings: Settings };
 type Tab = keyof typeof SCREENS | "system";
-const TABS: Tab[] = ["today", "training", "weight", "foods", "settings", "system"];
+const TABS: Tab[] = ["today", "foods", "training", "weight", "settings", "system"];
 
 export default function App() {
   const { config, state, peers, error, saveError, reload, commit, retrySave, dismissSaveError, saveConfig } = useRegimen();
