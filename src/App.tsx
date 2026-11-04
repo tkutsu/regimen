@@ -14,6 +14,14 @@ import { Weight } from "./ui/Weight";
 const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods, settings: Settings };
 type Tab = keyof typeof SCREENS | "system";
 const TABS: Tab[] = ["today", "foods", "weight", "training", "settings", "system"];
+const TAB_ICONS = {
+  today: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 10h18m-13 5 3 3 5-5" /></>,
+  foods: <path d="M5 3v7m3-7v7M2 3v7c0 3 6 3 6 0M5 12v9M20 3c-4 2-5 7-5 10h5V3Zm0 10v8" />,
+  weight: <><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M7 9a5 5 0 0 1 10 0M12 10l2-3" /></>,
+  training: <path d="M7 12h10M3 9v6m4-9v12m10-12v12m4-9v6M3 12h4m10 0h4" />,
+  settings: <><path d="M3 6h8m4 0h6M3 12h2m4 0h12M3 18h12m4 0h2" /><circle cx="13" cy="6" r="2" /><circle cx="7" cy="12" r="2" /><circle cx="17" cy="18" r="2" /></>,
+  system: <><rect x="3" y="3" width="18" height="13" rx="2" /><path d="M12 16v5m-4 0h8" /></>,
+};
 
 export default function App() {
   const { config, state, peers, error, saveError, reload, commit, retrySave, dismissSaveError, saveConfig } = useRegimen();
@@ -30,16 +38,21 @@ export default function App() {
     <div data-app className="mx-auto min-h-dvh max-w-md p-4 pt-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
       {/* Each tab grows into the space beside it, so a tap anywhere on the row lands on one. The
           end tabs take half a share and sit flush, keeping the labels evenly spaced. */}
-      <nav aria-label="Screens" className="sticky top-0 z-[2] -mx-4 mb-4 flex bg-bg px-4 pt-[max(0.5rem,env(safe-area-inset-top))] text-sm">
+      <nav aria-label="Screens" className="sticky top-0 z-[2] -mx-4 mb-4 flex bg-bg px-4 pt-[max(0.5rem,env(safe-area-inset-top))] text-xs min-[360px]:text-sm">
         {TABS.map((name) => (
           <button
             key={name}
             data-tab={name}
             onClick={() => go(name)}
             aria-current={tab === name ? "page" : undefined}
-            className={`grow py-2 capitalize transition-colors first:grow-[0.5] first:text-left last:grow-[0.5] last:text-right ${tab === name ? "font-medium" : "text-muted"}`}
+            className={`flex grow justify-center py-2 capitalize transition-colors first:grow-[0.5] first:justify-start last:grow-[0.5] last:justify-end ${tab === name ? "font-medium" : "text-muted"}`}
           >
-            {name}
+            <span className="flex flex-col items-center gap-1">
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                {TAB_ICONS[name]}
+              </svg>
+              <span>{name}</span>
+            </span>
           </button>
         ))}
       </nav>

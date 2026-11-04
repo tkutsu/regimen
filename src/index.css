@@ -72,7 +72,7 @@ body::before {
   background: linear-gradient(transparent, var(--color-bg));
 }
 html {
-  scroll-padding-top: calc(4rem + env(safe-area-inset-top));
+  scroll-padding-top: calc(5.5rem + env(safe-area-inset-top));
   scroll-padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
