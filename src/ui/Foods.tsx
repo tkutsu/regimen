@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { deleteFood } from "../domain/foodDeletion";
+import { deleteFood, deleteRecipe } from "../domain/foodDeletion";
 import { recipeAsFood, toggleFav, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
 import { recentFoodIds, searchFoods } from "../domain/search";
@@ -141,7 +141,7 @@ export function Foods({ state, commit }: Props) {
           onToggleFav={(food) => star(food.id)}
           onNewBatch={() => setCooking({ recipe: newBatch(cooking.recipe, newId()), replaces: cooking.recipe })}
           onDelete={async () => {
-            if (await commit({ type: "recipe.delete", recipeId: cooking.recipe.id })) setCooking(undefined);
+            if (await commit(...deleteRecipe(state, cooking.recipe.id))) setCooking(undefined);
           }}
           onClose={() => setCooking(undefined)}
         />

@@ -91,6 +91,8 @@ export type Recipe = {
   note?: string;
   /** An old batch: kept for the days that ate it, left out of the picker. */
   archived?: boolean;
+  /** Deleted while in use: an archived placeholder holding the recipe's last values. */
+  deleted?: true;
   /** Recipes are favourites unless unstarred. */
   fav?: false;
 };
