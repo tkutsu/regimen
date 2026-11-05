@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale } from "../domain/nutrition";
+import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale, usedName } from "../domain/nutrition";
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
 import type { Container, Food, Nutrients, Recipe } from "../domain/types";
 import { Dialog } from "./Dialog";
@@ -107,7 +107,7 @@ export function RecipeEditor(props: Props) {
                 return (
                   <li key={`${ingredient.foodId}-${i}`} className="flex items-center gap-2 py-1.5 pr-2 pl-4">
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate">{food?.name ?? "missing food"}</span>
+                      <span className="block truncate">{usedName(food)}</span>
                       {ingredient.variant && <span className="block truncate text-xs text-muted">{ingredient.variant} ×{ingredient.factor}</span>}
                       {food && amount ? (
                         <span className={`block text-xs ${shown === "kcal" ? "text-muted" : "text-accent"}`}>
@@ -252,12 +252,14 @@ export function RecipeEditor(props: Props) {
             </section>
           )}
 
-          {saved &&
-            (uses > 0 ? null : (
+          {saved && (
+            <section className="flex flex-col gap-2">
+              {uses > 0 && <p className="text-center text-sm text-muted">Days and staples that use it keep its values, marked as deleted.</p>}
               <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
                 {confirming ? "Tap again to delete" : "Delete recipe"}
               </button>
-            ))}
+            </section>
+          )}
         </div>
       </div>
       {picking && (

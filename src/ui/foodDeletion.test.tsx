@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { intake, missingStaples } from "../domain/day";
-import { deleteFood } from "../domain/foodDeletion";
-import { allFoods, pickableFoods, recipeAsFood } from "../domain/nutrition";
+import { deleteFood, deleteRecipe } from "../domain/foodDeletion";
+import { allFoods, pickableFoods, recipeAsFood, usedName } from "../domain/nutrition";
 import { applyEvents, fold, parseLogs, stamp } from "../domain/state";
 import type { Change, Food, Recipe } from "../domain/types";
 import { FoodEditor } from "./FoodEditor";
 import { FoodPicker } from "./FoodPicker";
 import { Foods } from "./Foods";
+import { RecipeEditor } from "./RecipeEditor";
 
 vi.mock("./Dialog", () => ({
   Dialog: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -43,6 +44,40 @@ const events = changes.map((change) => stamp(change, "desktop"));
 const state = fold(events);
 const deletion = stamp(deleteFood(state, oats.id)[0], "desktop");
 const deleted = applyEvents(state, [deletion]);
+
+describe("deleting a recipe", () => {
+  const removals = deleteRecipe(state, recipe.id).map((change) => stamp(change, "desktop"));
+  const next = applyEvents(state, removals);
+
+  it("leaves a marked placeholder with the same values, even if an ingredient later goes", () => {
+    const food = allFoods(next).get(recipe.id);
+    expect(usedName(food)).toBe("Porridge (deleted)");
+    expect(usedName(allFoods(state).get(recipe.id))).toBe("Porridge");
+    expect(intake(next, "2026-11-02")).toEqual(intake(state, "2026-11-02"));
+    expect(next.entries.get("e3")).toEqual(state.entries.get("e3"));
+
+    const later = applyEvents(next, deleteFood(next, oats.id, true).map((change) => stamp(change, "desktop")));
+    expect(intake(later, "2026-11-02")).toEqual(intake(state, "2026-11-02"));
+  });
+
+  it("hides the placeholder from the recipe list and pickers", () => {
+    expect(renderToStaticMarkup(<Foods state={next} commit={async () => true} />)).not.toContain(recipe.name);
+    expect(pickableFoods(next).has(recipe.id)).toBe(false);
+  });
+
+  it("removes a recipe nothing uses, and marks no old batch as deleted", () => {
+    const unused: Recipe = { ...recipe, id: "unused" };
+    const before = applyEvents(state, [stamp({ type: "recipe.upsert", recipe: unused }, "desktop")]);
+    expect(deleteRecipe(before, unused.id)).toEqual([{ type: "recipe.delete", recipeId: unused.id }]);
+    expect(usedName(recipeAsFood({ ...recipe, archived: true }, state.foods))).toBe("Porridge");
+  });
+
+  it("offers deletion when the recipe is used", () => {
+    const html = renderToStaticMarkup(<RecipeEditor recipe={recipe} saved foods={state.foods} recentIds={[]} containers={[]} uses={2}
+      onSave={() => {}} onNewBatch={() => {}} onDelete={() => {}} onToggleFav={() => {}} onClose={() => {}} />);
+    expect(html).toContain(">Delete recipe</button>");
+  });
+});
 
 describe("deleting a used food", () => {
   it("preserves repeated uses, names, nutrition and staple planning after saving and reloading", () => {
