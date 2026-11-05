@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- The Android launcher icon: black fork and knife on the app's green. A launcher shows the middle 72 of 108dp, so on a 24px tile the glyph spans 16px, leaving 4px of padding. -->
+  <rect width="1024" height="1024" fill="#60ba8d"/>
+  <g transform="translate(512 512) scale(24.5) translate(-11.44 -10)" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path transform="translate(-1 0)" d="M7.5,3L7.5,6.75 M7.5,10.88L7.5,17 M10.13,3l0.75,4.5c0,1.86 -1.51,3.38 -3.37,3.38s-3.37,-1.51 -3.37,-3.38l0.75,-4.5"/>
+    <path transform="translate(1 0)" d="M18.75,15h-2.92c-1.25,0 -2.2,-1.14 -1.97,-2.37 0.6,-3.19 2.02,-8.59 4.88,-9.63v14"/>
+  </g>
+</svg>
