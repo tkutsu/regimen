@@ -246,8 +246,8 @@ export function RecipeEditor(props: Props) {
                 New batch
               </button>
               <p className="px-1 text-xs text-muted">
-                Cooking it again? A new batch starts from these ingredients, and the days that ate this one keep its values. Saving here
-                instead changes them too.
+                Cooking it again? A new batch starts from these ingredients, and today's servings stay on this one. Saving here changes
+                today and later, never earlier days.
               </p>
             </section>
           )}
