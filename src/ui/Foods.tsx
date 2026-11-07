@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { localDate } from "../domain/day";
 import { deleteFood } from "../domain/foodDeletion";
+import { saveFood } from "../domain/foodSave";
 import { recipeAsFood, toggleFav, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
 import { deleteRecipe, saveRecipe } from "../domain/recipes";
@@ -110,7 +111,7 @@ export function Foods({ state, commit }: Props) {
           groups={groups}
           uses={food ? (uses.get(food.id) ?? 0) : 0}
           onSave={async (saved) => {
-            if (await commit({ type: "food.upsert", food: saved })) close();
+            if (await commit(...saveFood(state, saved, localDate()))) close();
           }}
           onDelete={food && state.foods.has(food.id) ? async (everywhere) => {
             if (await commit(...deleteFood(state, food.id, everywhere))) close();
