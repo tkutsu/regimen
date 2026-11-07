@@ -1,16 +1,5 @@
 import type { State } from "./state";
-import { recipeValues } from "./nutrition";
 import type { Change } from "./types";
-
-/** Removes an unused recipe; a used one leaves a placeholder with its values frozen. */
-export function deleteRecipe(state: State, recipeId: string): Change[] {
-  const recipe = state.recipes.get(recipeId);
-  if (!recipe) return [];
-  const used = [...state.entries.values(), ...state.settings.staples].some(({ foodId }) => foodId === recipeId);
-  if (!used) return [{ type: "recipe.delete", recipeId }];
-  const values = recipeValues(recipe, state.foods);
-  return [{ type: "recipe.upsert", recipe: { ...recipe, ingredients: [], values, archived: true, deleted: true } }];
-}
 
 /** Hides a food, or removes it and every direct use from the current state. */
 export function deleteFood(state: State, foodId: string, everywhere = false): Change[] {
