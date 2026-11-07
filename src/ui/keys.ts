@@ -5,7 +5,8 @@ import { useEffect } from "react";
  * move between the controls on the screen by where they are. Up and Down go to the
  * nearest row above or below, staying in the same column; Left and Right move along
  * the row, and leave a text field only from its start or end. Up from the top reaches
- * the screen tabs, where Left and Right switch screens. An open dialog keeps the arrows
+ * the screen tabs, where Left and Right switch screens. A select passes the arrows on
+ * too, and opens with Space or Enter to change its value. An open dialog keeps the arrows
  * inside it and Tab to itself.
  */
 
@@ -20,7 +21,8 @@ function scope() {
 
 /** Arrows that the focused control needs for itself. */
 function ownsArrow(el: Element, key: string) {
-  if (el instanceof HTMLSelectElement || el instanceof HTMLTextAreaElement) return true;
+  // A select opens with Space or Enter and takes its arrows in the open list.
+  if (el instanceof HTMLTextAreaElement) return true;
   if (!(el instanceof HTMLInputElement)) return false;
   const sideways = key === "ArrowLeft" || key === "ArrowRight";
   if (el.type === "range") return sideways;
