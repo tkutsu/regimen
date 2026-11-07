@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
-import { allFoods, parseAmount, pickableFoods, scale, toggleFav } from "../domain/nutrition";
+import { allFoods, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Nutrients, Phase, Variant } from "../domain/types";
@@ -217,7 +217,7 @@ function EntryRow({ entry, food, shown, onChange }: { entry: Entry; food?: Food;
         <Tick done={entry.done} onClick={() => onChange({ ...entry, done: !entry.done })} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
         <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left">
           <span className="truncate">
-            {food?.name ?? "unknown food"}
+            {usedName(food)}
             {entry.variant && <span className="text-muted"> · {entry.variant}</span>}
           </span>
           {shown ? (
