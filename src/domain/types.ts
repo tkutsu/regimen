@@ -45,7 +45,11 @@ export type Entry = {
   factor?: number;
   /** The staple this entry was planned from. */
   staple?: string;
+  /** Per-unit values the entry keeps after its food changed on a later day. */
+  frozen?: Frozen;
 };
+
+export type Frozen = Values & Pick<Food, "basis">;
 
 export type Container = { id: string; name: string; grams: number };
 

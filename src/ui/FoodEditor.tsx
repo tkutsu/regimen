@@ -98,7 +98,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
           <section>
             <Heading hint="blank = unknown">{form.basis === "item" ? "Per item" : "Per 100 g"}</Heading>
             <ValueFields values={form.values} onChange={(values) => patch({ values })} />
-            {food && uses > 0 && <p className="mt-2 text-xs text-muted">Changes also apply to past days that use it.</p>}
+            {food && uses > 0 && <p className="mt-2 text-xs text-muted">Changes apply from today on; earlier days keep these values.</p>}
           </section>
 
           <section>

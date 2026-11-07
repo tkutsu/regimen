@@ -1,5 +1,5 @@
 import type { State } from "./state";
-import type { Change, Food, Nutrients, Recipe, Values } from "./types";
+import type { Change, Entry, Food, Frozen, Nutrients, Recipe, Values } from "./types";
 
 export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt", "sugar"] as const;
 
@@ -73,6 +73,22 @@ export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
 
 /** A food's name where it's already used, marked once it has been deleted. */
 export const usedName = (food?: Food) => (food ? `${food.name}${food.archived ? " (deleted)" : ""}` : "unknown food");
+
+/** What a food counts by: its basis and the nutrients it knows. */
+export function countsOf(food: Food): Frozen {
+  const counts: Frozen = { basis: food.basis, kcal: food.kcal };
+  for (const key of NUTRIENTS) if (food[key] !== undefined) counts[key] = food[key];
+  return counts;
+}
+
+/** An entry's food, counting by the values the entry froze if it has them. */
+export function entryFood(entry: Entry, foods: Map<string, Food>): Food | undefined {
+  const food = foods.get(entry.foodId);
+  if (!food || !entry.frozen) return food;
+  const frozen: Food = { ...food, ...entry.frozen };
+  for (const key of NUTRIENTS) if (entry.frozen[key] === undefined) delete frozen[key];
+  return frozen;
+}
 
 /** Stars or unstars one of your foods or recipes. */
 export function toggleFav(state: State, id: string): Change[] {

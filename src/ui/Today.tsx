@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
-import { allFoods, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
+import { allFoods, entryFood, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Day, Entry, Food, Nutrients, Phase, Variant } from "../domain/types";
@@ -85,7 +85,7 @@ export function Today({ state, commit }: Props) {
 
       <ul className="flow overflow-hidden rounded-2xl border border-line bg-surface">
         {entries.map((entry) => (
-          <EntryRow key={entry.id} entry={entry} food={foods.get(entry.foodId)} shown={shown} onChange={putEntry} />
+          <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} />
         ))}
         {onlyStaples && (entries.length === 0 || yesterday.length > 0) && (
           <li className="flex items-center justify-between px-4 py-3 text-sm text-muted">

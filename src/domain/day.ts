@@ -1,4 +1,4 @@
-import { add, allFoods, scale, zero } from "./nutrition";
+import { add, allFoods, entryFood, scale, zero } from "./nutrition";
 import type { State } from "./state";
 import type { Day, Entry, Food, Limited, Nutrients, Range } from "./types";
 
@@ -117,14 +117,14 @@ export type Intake = Nutrients & { sugarIncomplete: boolean };
 export function intake(state: State, date: string, done?: boolean): Intake {
   const entries = entriesOn(state, date).filter((entry) => done === undefined || entry.done === done);
   const foods = allFoods(state);
-  const sugarIncomplete = entries.some((entry) => entry.amount * (entry.factor ?? 1) > 0 && foods.get(entry.foodId)?.sugar === undefined);
+  const sugarIncomplete = entries.some((entry) => entry.amount * (entry.factor ?? 1) > 0 && entryFood(entry, foods)?.sugar === undefined);
   return { ...sum(entries, foods), sugarIncomplete };
 }
 
 /** What the entries add up to; one whose food is gone counts as nothing. */
 export function sum(entries: Entry[], foods: Map<string, Food>): Nutrients {
   return entries.reduce((total, entry) => {
-    const food = foods.get(entry.foodId);
+    const food = entryFood(entry, foods);
     return food ? add(total, scale(food, entry.amount, entry.factor)) : total;
   }, zero());
 }
