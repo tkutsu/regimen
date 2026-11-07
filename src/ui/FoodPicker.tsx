@@ -4,7 +4,7 @@ import { searchFoods } from "../domain/search";
 import type { Container, Food, Variant } from "../domain/types";
 import { sourceOf, useReference } from "../reference";
 import { Dialog, useBack } from "./Dialog";
-import { Star } from "./fields";
+import { SearchInput, Star } from "./fields";
 import { transition } from "./motion";
 
 type Props = {
@@ -51,11 +51,11 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
   return (
     <Dialog label="Pick a food" onClose={onClose}>
       <header className="flex items-center gap-2 border-b border-line p-3">
-        <input
+        <SearchInput
           autoFocus
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
+          onChange={(value) => {
+            setQuery(value);
             setPicked(undefined);
           }}
           onKeyDown={(e) => {
@@ -63,9 +63,8 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
             e.preventDefault();
             setPicked(sections.find(([, list]) => list.length)?.[1][0]);
           }}
-          enterKeyHint="go"
           placeholder="Search foods"
-          className="flex-1 rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
+          className="flex-1"
         />
         <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel

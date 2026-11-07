@@ -13,7 +13,7 @@ import { Weight } from "./ui/Weight";
 
 const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods, settings: Settings };
 type Tab = keyof typeof SCREENS | "system";
-const TABS: Tab[] = ["today", "foods", "weight", "training", "settings", "system"];
+const TABS: Tab[] = ["today", "weight", "training", "foods", "settings", "system"];
 const TAB_ICONS = {
   today: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 10h18m-13 5 3 3 5-5" /></>,
   foods: <path d="M5 3v7m3-7v7M2 3v7c0 3 6 3 6 0M5 12v9M20 3c-4 2-5 7-5 10h5V3Zm0 10v8" />,

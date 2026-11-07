@@ -7,7 +7,7 @@ import { newId, type State } from "../domain/state";
 import type { Food, Recipe } from "../domain/types";
 import type { Commit } from "../store";
 import { FoodEditor } from "./FoodEditor";
-import { Star } from "./fields";
+import { SearchInput, Star } from "./fields";
 import { RecipeEditor } from "./RecipeEditor";
 
 type Props = { state: State; commit: Commit };
@@ -44,18 +44,16 @@ export function Foods({ state, commit }: Props) {
 
   return (
     <div className="flex flex-col gap-3 pb-24">
-      <input
+      <SearchInput
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={setQuery}
         onKeyDown={(e) => {
           if (e.key !== "Enter" || e.nativeEvent.isComposing || !query.trim()) return;
           e.preventDefault();
           if (recipes[0]) setCooking({ recipe: recipes[0] });
           else setEditing(sections.find(([, list]) => list.length)?.[1][0]);
         }}
-        enterKeyHint="go"
         placeholder={`Search ${foods.length} foods`}
-        className="rounded-xl border border-line bg-surface px-3 py-2 outline-none focus:border-accent"
       />
       {incomplete.length > 0 && (
         <button

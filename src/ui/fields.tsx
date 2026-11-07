@@ -1,5 +1,46 @@
 import { useEffect, useId, useRef, useState } from "react";
 
+/** A search field with an inline clear button that returns focus to the input. */
+export function SearchInput({ value, onChange, placeholder, autoFocus, onKeyDown, className = "" }: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  autoFocus?: boolean;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  className?: string;
+}) {
+  const input = useRef<HTMLInputElement>(null);
+  return (
+    <div className={`relative min-w-0 ${className}`}>
+      <input
+        ref={input}
+        autoFocus={autoFocus}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        enterKeyHint="go"
+        placeholder={placeholder}
+        aria-label="Search foods"
+        className="min-h-11 w-full rounded-xl border border-line bg-surface py-2 pr-11 pl-3 outline-none focus:border-accent"
+      />
+      {value && (
+        <button
+          type="button"
+          aria-label="Clear search"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            onChange("");
+            input.current?.focus();
+          }}
+          className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-xl text-xl text-muted hover:text-fg focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
 /** Enter finishes a field through its normal blur path. */
 export function blurOnEnter(e: React.KeyboardEvent<HTMLInputElement>) {
   if (e.key !== "Enter" || e.nativeEvent.isComposing) return;
@@ -80,20 +121,23 @@ export function OptionalNumberInput({ value, onCommit, format, parse, placeholde
  */
 export function NumberField({ label, unit, value, onCommit, placeholder, hint }: Omit<Props, "className" | "aria-label"> & { label: string; unit: string; hint?: string }) {
   const draft = useDraft(value, (v) => v !== undefined && onCommit(v));
+  const input = useRef<HTMLInputElement>(null);
   const id = useId();
   return (
-    <div className="relative rounded-xl border border-line bg-surface px-3 py-2">
+    <div onClick={() => input.current?.focus()} className="relative cursor-text rounded-xl border border-line bg-surface px-3 py-2">
       {hint ? (
-        <Info id={id} label={label} hint={hint} className="relative -mx-3 -mt-2">
-          <span className="text-xs">{label}</span>
-        </Info>
+        <div onClick={(e) => e.stopPropagation()} className="cursor-auto">
+          <Info id={id} label={label} hint={hint} className="relative -mx-3 -mt-2">
+            <span className="text-xs">{label}</span>
+          </Info>
+        </div>
       ) : <label htmlFor={`${id}-input`} className="block text-xs text-muted">{label}</label>}
       <span className="flex items-baseline text-lg">
         <span className="inline-grid min-w-0">
           <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
             {draft.value || placeholder || ""}
           </span>
-          <input {...draft} id={`${id}-input`} aria-label={label} placeholder={placeholder} aria-describedby={hint ? id : undefined} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
+          <input {...draft} ref={input} id={`${id}-input`} aria-label={label} placeholder={placeholder} aria-describedby={hint ? id : undefined} className="col-start-1 row-start-1 w-0 min-w-full bg-transparent outline-none placeholder:text-muted/50" />
         </span>
         <span className="text-sm text-muted">{unit}</span>
       </span>
