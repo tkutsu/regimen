@@ -54,7 +54,7 @@ export function recipeTotals(recipe: Recipe, foods: Map<string, Food>) {
 }
 
 /** Per item or 100 g: divided batch totals, or values written by hand without ingredients. */
-function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
+export function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
   if (!recipe.ingredients.length && recipe.values) return recipe.values;
   const { total, cookedG } = recipeTotals(recipe, foods);
   const divisor = recipe.basis === "item" ? recipe.items ?? 0 : cookedG / 100;
@@ -68,8 +68,11 @@ function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
 export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
   const values = recipeValues(recipe, foods);
   const fav = !recipe.archived && recipe.fav !== false;
-  return { ...values, id: recipe.id, name: recipe.name, basis: recipe.basis ?? "100g", group: "recipes", fav, note: recipe.note ?? "" };
+  return { ...values, id: recipe.id, name: recipe.name, basis: recipe.basis ?? "100g", group: "recipes", fav, note: recipe.note ?? "", archived: recipe.deleted };
 }
+
+/** A food's name where it's already used, marked once it has been deleted. */
+export const usedName = (food?: Food) => (food ? `${food.name}${food.archived ? " (deleted)" : ""}` : "unknown food");
 
 /** Stars or unstars one of your foods or recipes. */
 export function toggleFav(state: State, id: string): Change[] {

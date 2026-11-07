@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { LIMIT_UNITS, localDate } from "../domain/day";
-import { allFoods, LABELS, pickableFoods, toggleFav } from "../domain/nutrition";
+import { allFoods, LABELS, pickableFoods, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, SettingsPatch, Staple } from "../domain/types";
@@ -85,7 +85,7 @@ function Staples({ state, commit }: { state: State; commit: Commit }) {
         return (
           <div key={staple.id} className="flex items-center gap-2 px-4 py-2.5">
             <span className="min-w-0 flex-1 truncate">
-              {food?.name ?? "unknown food"}
+              {usedName(food)}
               {staple.variant && <span className="text-muted"> · {staple.variant}</span>}
             </span>
             <span className="inline-flex items-baseline">
