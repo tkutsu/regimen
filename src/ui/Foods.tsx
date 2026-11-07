@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
-import { deleteFood, deleteRecipe } from "../domain/foodDeletion";
+import { localDate } from "../domain/day";
+import { deleteFood } from "../domain/foodDeletion";
 import { recipeAsFood, toggleFav, unknownNutrients } from "../domain/nutrition";
 import { newBatch } from "../domain/recipeForm";
+import { deleteRecipe, saveRecipe } from "../domain/recipes";
 import { recentFoodIds, searchFoods } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Food, Recipe } from "../domain/types";
@@ -127,14 +129,7 @@ export function Foods({ state, commit }: Props) {
           containers={state.settings.containers}
           uses={uses.get(cooking.recipe.id) ?? 0}
           onSave={async (edited, added) => {
-            const old = cooking.replaces;
-            const archive = old ? [{ type: "recipe.upsert" as const, recipe: { ...old, archived: true } }] : [];
-            // A reference-table food becomes one of yours, as on Today.
-            const foods = added.map((food) => ({ type: "food.upsert" as const, food }));
-            // The editor doesn't show the star, so an unstarred recipe stays unstarred.
-            const fav = (state.recipes.get(edited.id) ?? old)?.fav;
-            const recipe = fav === false ? { ...edited, fav } : edited;
-            if (await commit(...archive, ...foods, { type: "recipe.upsert", recipe })) setCooking(undefined);
+            if (await commit(...saveRecipe(state, edited, added, localDate(), cooking.replaces))) setCooking(undefined);
           }}
           onToggleFav={(food) => star(food.id)}
           onNewBatch={() => setCooking({ recipe: newBatch(cooking.recipe, newId()), replaces: cooking.recipe })}
