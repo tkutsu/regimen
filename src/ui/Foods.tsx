@@ -32,13 +32,12 @@ export function Foods({ state, commit }: Props) {
     return query.trim() ? [["", searchFoods(shown, query, 200, recent)]] : byGroup(shown);
   }, [foods, incomplete, onlyUnknown, query, recent]);
 
-  const recipes = useMemo(
-    () =>
-      [...state.recipes.values()]
-        .filter((recipe) => !recipe.archived && recipe.name.toLowerCase().includes(query.trim().toLowerCase()))
-        .sort((a, b) => a.name.localeCompare(b.name)),
-    [state.recipes, query],
-  );
+  const recipes = useMemo(() => {
+    const current = [...state.recipes.values()].filter((recipe) => !recipe.archived);
+    if (!query.trim()) return current.sort((a, b) => a.name.localeCompare(b.name));
+    const found = searchFoods(current.map((recipe) => recipeAsFood(recipe, state.foods)), query, 200, recent);
+    return found.map((food) => state.recipes.get(food.id)!);
+  }, [state.recipes, state.foods, query, recent]);
 
   const star = (id: string) => commit(...toggleFav(state, id));
   const close = () => setEditing(undefined);

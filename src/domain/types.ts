@@ -81,6 +81,8 @@ export type Day = {
 export type Recipe = {
   id: string;
   name: string;
+  /** Alternate names and search terms, including translations. */
+  keywords?: string[];
   /** Omitted in older recipes, which use per-100g values. */
   basis?: Food["basis"];
   /** Items made by the batch, for ingredient-based per-item recipes. */
