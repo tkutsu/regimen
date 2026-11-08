@@ -1,4 +1,4 @@
-import { recipeValues } from "./nutrition";
+import { countsOf, recipeAsFood, recipeValues } from "./nutrition";
 import { newId, type State } from "./state";
 import type { Change, Food, Recipe } from "./types";
 
@@ -11,7 +11,7 @@ const freeze = (recipe: Recipe, foods: Map<string, Food>): Recipe => ({
 });
 
 /**
- * Saves an edited recipe without changing days before today. Once its values change and it was
+ * Saves an edited recipe without changing days before today. Once what it counts by changes and it was
  * eaten before today, the saved version stays frozen under its id for those days, and the edit
  * takes a new id that today's and later entries and the staples follow.
  * `added` are reference foods picked as ingredients; `replaces` is the batch a new batch follows.
@@ -28,8 +28,8 @@ export function saveRecipe(state: State, edited: Recipe, added: Food[], today: s
   ];
 
   const eatenBefore = [...state.entries.values()].some((entry) => entry.foodId === edited.id && entry.date < today);
-  const same = saved && JSON.stringify(recipeValues(saved, foods)) === JSON.stringify(recipeValues(recipe, foods));
-  if (!saved || !eatenBefore || same) return [...changes, { type: "recipe.upsert", recipe }];
+  const counts = (version: Recipe) => JSON.stringify(countsOf(recipeAsFood(version, foods)));
+  if (!saved || !eatenBefore || counts(saved) === counts(recipe)) return [...changes, { type: "recipe.upsert", recipe }];
 
   const id = newId();
   changes.push({ type: "recipe.upsert", recipe: freeze(saved, foods) }, { type: "recipe.upsert", recipe: { ...recipe, id } });
