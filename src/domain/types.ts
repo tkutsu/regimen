@@ -109,6 +109,8 @@ export type Settings = {
   weightNotes?: string;
   phaseOffsets: Record<Phase, number>;
   kcalPer1kSteps: number;
+  /** Days after a phase starts that real maintenance leaves out, while water and glycogen still move the scale. */
+  settleDays: number;
   limits: Record<Limited, Range>;
   containers: Container[];
   staples: Staple[];
