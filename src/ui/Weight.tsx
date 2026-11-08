@@ -66,7 +66,7 @@ export function Weight({ state, commit }: Props) {
         )}
       </section>
 
-      <Maintenance phases={phases} tdee={state.settings.tdee} onUse={(tdee) => commit({ type: "settings", settings: { tdee } })} />
+      <Maintenance phases={phases} tdee={state.settings.tdee} settleDays={state.settings.settleDays} onUse={(tdee) => commit({ type: "settings", settings: { tdee } })} />
 
       <section>
         <h2 className="mb-1 px-1 text-xs font-medium tracking-wide text-muted uppercase">Recent</h2>
@@ -146,14 +146,16 @@ function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
 const kcal = (n: number) => Math.round(n / 10) * 10;
 
 /** Maintenance shifts with the phase, so each phase gets its own reading; the current one leads. */
-function Maintenance({ phases, tdee, onUse }: { phases: Stretch[]; tdee: number; onUse: (tdee: number) => void }) {
+function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; tdee: number; settleDays: number; onUse: (tdee: number) => void }) {
   const current = phases.at(-1);
   if (!current) return null;
   const reading = current.tdee && kcal(current.tdee);
+  const counted = Math.max(0, daysBetween(current.fitFrom, current.to) + 1);
+  const skipped = settleDays > 0 ? ` Each phase skips its first ${settleDays === 1 ? "day" : `${settleDays} days`} while water settles.` : "";
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
-        <Info label="real maintenance" wide className="relative -mx-3 flex" hint={`${current.logged} of ${Math.max(0, daysBetween(current.fitFrom, current.to) + 1)} days with food ticked as eaten. Days without eaten entries are assumed to meet their target. Each phase gets its own estimate; the first days are left out while water settles.`}>
+        <Info label="real maintenance" wide className="relative -mx-3 flex" hint={`Calculated from your weight trend and the food you ate. Food is ticked as eaten on ${current.logged} of ${counted} days; the others count as on target.${skipped}`}>
           <span className="font-medium tracking-wide uppercase">Real maintenance</span>
         </Info>
       </h2>

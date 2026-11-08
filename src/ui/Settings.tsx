@@ -35,6 +35,12 @@ export function Settings({ state, commit }: Props) {
         </Row>
       </Section>
 
+      <Section title="Real maintenance" aside={<span className="text-xs text-muted normal-case">at the start of each phase</span>}>
+        <Row label="Skipped days" unit="days">
+          <NumberInput value={settings.settleDays} onCommit={(days) => set({ settleDays: Math.max(0, Math.round(days)) })} className="w-20 text-right" />
+        </Row>
+      </Section>
+
       <Limits limits={settings.limits} set={set} />
       <Staples state={state} commit={commit} />
       <Containers containers={settings.containers} set={set} />

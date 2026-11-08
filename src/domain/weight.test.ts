@@ -112,6 +112,17 @@ describe("stretches", () => {
     expect(early.readyOn).toBe(END);
     expect(stretches(s, END).at(-1)!.tdee).toBeCloseTo(2700);
   });
+
+  it("skips the set number of days after a phase starts", () => {
+    const skipping = (settleDays: number) => {
+      const s = state(settings, { type: "settings", settings: { settleDays } }, since("2026-10-01", "cut"), ...weighIns(31, () => 80));
+      return stretches(s, END)[0];
+    };
+    expect(skipping(4).fitFrom).toBe("2026-10-05");
+    expect(skipping(0).fitFrom).toBe("2026-10-01");
+    expect(skipping(10).fitFrom).toBe("2026-10-11");
+    expect(skipping(10).readyOn).toBe("2026-10-24");
+  });
 });
 
 describe("weightSeries", () => {

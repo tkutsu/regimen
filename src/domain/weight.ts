@@ -6,8 +6,6 @@ import type { Day, Entry, Phase } from "./types";
 export const KCAL_PER_KG = 7700;
 /** The fit reads the last six weeks of a phase, so a long cut shows where maintenance ended up. */
 const WINDOW = 42;
-/** Days after a phase starts when water and glycogen still move the scale. */
-const SETTLE = 4;
 /** A phase shorter than this between two of the same kind (a refeed, a diet break) doesn't split them. */
 const BREAK = 7;
 /** Weigh-ins needed, and the days they must span, before a phase gets a reading. */
@@ -72,7 +70,8 @@ export function stretches(state: State, to: string): Stretch[] {
  * Rollover changes that assumed intake, but is never counted as energy burned.
  */
 function read(state: State, phase: Phase, from: string, to: string, log: Log): Stretch {
-  const fitFrom = [shiftDate(from, SETTLE), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
+  const { settleDays } = state.settings;
+  const fitFrom = [shiftDate(from, settleDays), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
   const rows: { t: number; y: number }[] = [];
   let eaten = 0;
   let logged = 0;
@@ -94,7 +93,7 @@ function read(state: State, phase: Phase, from: string, to: string, log: Log): S
     fitFrom,
     intake: days ? eaten / days : 0,
     logged,
-    readyOn: shiftDate(from, SETTLE + MIN_SPAN),
+    readyOn: shiftDate(from, settleDays + MIN_SPAN),
   };
   if (rows.length < MIN_WEIGH_INS || rows.at(-1)!.t - rows[0].t < MIN_SPAN) return stretch;
 

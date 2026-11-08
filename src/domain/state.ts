@@ -23,6 +23,7 @@ export const defaultSettings: Settings = {
   tdee: 2300,
   phaseOffsets: { bulk: 100, maintain: 0, cut: -600 },
   kcalPer1kSteps: 37,
+  settleDays: 4,
   limits: {
     prot: { min: 1.6 },
     fiber: { min: 30 },
