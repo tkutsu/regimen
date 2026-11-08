@@ -140,6 +140,21 @@ class ReferenceImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'generic no longer matches'):
             build.curate([brand], rules)
 
+    def test_cut_groups_keep_listed_foods_and_rows_a_merge_retained(self):
+        row = lambda food_id, group: ['usda', food_id, f'Food {food_id}', group, *self.normalize()[4:]]
+        rules = {'dropGroups': {'usda': ['Baby Foods']}, 'keepFoods': ['usda-2'],
+                 'generics': [{'canonical': 'usda-3', 'members': ['usda-5']}]}
+        foods = [row('1', 'Baby Foods'), row('2', 'Baby Foods'), row('3', 'Baby Foods'), row('4', 'Dairy'), row('5', 'Dairy')]
+        self.assertEqual([food[1] for food in build.curate(foods, rules)], ['2', '3', '4'])
+        self.assertEqual(len(build.curate([['ciqual', *row('1', 'Baby Foods')[1:]]], rules)), 1)
+
+    def test_salted_rows_go_only_when_an_unsalted_twin_exists_and_they_are_not_kept(self):
+        row = lambda food_id, name: ['usda', food_id, name, 'Vegetables', *self.normalize()[4:]]
+        foods = [row('1', 'Beets, boiled, with salt'), row('2', 'Beets, boiled, without salt'),
+                 row('3', 'Corn, with salt'), row('4', 'Nuts, with salt added'), row('5', 'Nuts, without salt added')]
+        result = build.curate(foods, {'keepFoods': ['usda-4']})
+        self.assertEqual([food[1] for food in result], ['2', '3', '4', '5'])
+
     def test_generic_aliases_join_identity_aliases_on_the_retained_id(self):
         rules = {'identityDuplicates': [{'canonical': 'usda-1', 'aliases': ['Pasta, dry, enriched']}],
                  'generics': [{'canonical': 'usda-1', 'members': [], 'aliases': ['Misko', 'πένες']}]}

@@ -84,7 +84,18 @@ that drifts past that stops the rebuild. The retained row is a real product near
 the middle of its type, so values are never averaged, and the brands stay
 searchable. Foods further apart stay separate, such as whole-wheat pasta and
 high-protein pasta. Brand-specific biscuits, snacks and ready meals are not
-merged by type.
+merged by type. US meat cuts merge the same way within one animal and cut, so
+trim level, grade and cooking method can share a row, but raw and cooked never
+do, and offal stays apart by organ. Micronutrients aren't compared when merging,
+so a generic row shows its retained row's amounts. Search ranks generics above
+matches of the same quality.
+
+Foods not eaten here are cut after merging: baby food, fast food, US restaurant
+foods, Alaska Native foods and most of USDA's packaged groups (baked goods,
+sweets, snacks, cereals, soups and sauces, beverages, meals, deli meats).
+`keepFoods` holds the plain staples from those groups, such as bread, coffee,
+wine and baking soda, and rows that saved foods cite. A cooked or canned USDA row
+with salt goes when an unsalted twin exists, while salted nuts and spreads stay.
 Search keywords omit repeated English words
 and translated brand labels.
 
