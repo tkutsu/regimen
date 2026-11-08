@@ -113,8 +113,8 @@ export function Foods({ state, commit }: Props) {
           onSave={async (saved) => {
             if (await commit(...saveFood(state, saved, localDate()))) close();
           }}
-          onDelete={food && state.foods.has(food.id) ? async (everywhere) => {
-            if (await commit(...deleteFood(state, food.id, everywhere))) close();
+          onDelete={food && state.foods.has(food.id) ? async () => {
+            if (await commit(...deleteFood(state, food.id))) close();
           } : undefined}
           onClose={close}
         />

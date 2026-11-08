@@ -13,7 +13,7 @@ type Props = {
   /** Entries, recipe ingredients and staples that use the food. */
   uses: number;
   onSave: (food: Food) => void;
-  onDelete?: (everywhere: boolean) => void;
+  onDelete?: () => void;
   onClose: () => void;
 };
 
@@ -25,7 +25,6 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
   const [id] = useState(() => food?.id ?? newId());
   const [form, setForm] = useState(() => toForm(food));
   const [confirming, setConfirming] = useState(false);
-  const [everywhere, setEverywhere] = useState(false);
   const saved = fromForm(form, id);
   const patch = (changes: Partial<FoodForm>) => setForm({ ...form, ...changes });
   const setVariant = (i: number, changes: Partial<FoodForm["variants"][number]>) =>
@@ -161,19 +160,9 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
                   Used {uses} {uses === 1 ? "time" : "times"} in your log, recipes or staples.
                 </p>
               )}
-              {!everywhere && <p className="text-center text-sm text-muted">Deleting it keeps existing logs, recipes and staples.</p>}
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={everywhere} onChange={(e) => { setEverywhere(e.target.checked); setConfirming(false); }} className="accent-accent" />
-                Remove from everywhere
-              </label>
-              {everywhere && (
-                <p role="alert" className="text-sm text-bad">
-                  This deletes all log entries for this food and removes it from every recipe and staple.
-                  {" "}Past calorie totals will change. This cannot be undone.
-                </p>
-              )}
-              <button onClick={() => (confirming ? onDelete(everywhere) : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
-                {confirming ? (everywhere ? "Tap again to delete everywhere" : "Tap again to delete") : (everywhere ? "Delete everywhere" : "Delete food")}
+              <p className="text-center text-sm text-muted">Deleting it keeps existing logs, recipes and staples.</p>
+              <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
+                {confirming ? "Tap again to delete" : "Delete food"}
               </button>
             </div>
           )}
