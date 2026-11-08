@@ -398,7 +398,26 @@ def curate(foods, corrections, product_identities=None):
             del rows[key]
         if kept is not None and generic.get("name"):
             kept[2] = generic["name"]
-    return list(rows.values())
+    return list(drop_unused(rows, corrections).values())
+
+
+def drop_unused(rows, corrections):
+    """Cut food groups not eaten here and salted twins of unsalted foods.
+
+    This runs after the merges because a retained row can sit in a cut group.
+    """
+    groups = corrections.get("dropGroups", {})
+    kept = {*corrections.get("keepFoods", []),
+            *(merge["canonical"] for merge in corrections.get("identityDuplicates", [])),
+            *(generic["canonical"] for generic in corrections.get("generics", []))}
+    names = {row[2].casefold() for row in rows.values()}
+
+    def unused(key, row):
+        name = row[2].casefold()
+        return key not in kept and (row[3] in groups.get(row[0], ()) or (
+            "with salt" in name and name.replace("with salt", "without salt") in names))
+
+    return {key: row for key, row in rows.items() if not unused(key, row)}
 
 
 def main(usda_zip, ciqual_zip, off_csv, out):
@@ -423,6 +442,8 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         },
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
         "estimatedUnsatFat": sorted(estimates & kept_ids),
+        "generics": sorted(generic["canonical"] for generic in corrections.get("generics", [])
+                           if generic.get("name") and generic["canonical"] in kept_ids),
         "keywords": reference_keywords(foods, translations, merged_names(corrections)),
         "foods": foods,
     }
