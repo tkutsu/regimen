@@ -57,7 +57,8 @@ describe("deleting a recipe", () => {
     expect(intake(next, "2026-11-02")).toEqual(intake(state, "2026-11-02"));
     expect(next.entries.get("e3")).toEqual(state.entries.get("e3"));
 
-    const later = applyEvents(next, deleteFood(next, oats.id, true).map((change) => stamp(change, "desktop")));
+    // Older logs can still hold a food removed outright.
+    const later = applyEvents(next, [stamp({ type: "food.delete", foodId: oats.id }, "desktop")]);
     expect(intake(later, "2026-11-02")).toEqual(intake(state, "2026-11-02"));
   });
 
@@ -103,55 +104,13 @@ describe("deleting a used food", () => {
     const html = renderToStaticMarkup(<FoodEditor food={oats} groups={[]} uses={6} onSave={() => {}} onDelete={() => {}} onClose={() => {}} />);
     expect(html).toContain(">Delete food</button>");
     expect(html).toContain("Deleting it keeps existing logs, recipes and staples.");
-    expect(html).toContain("Remove from everywhere");
+    expect(html).not.toContain("everywhere");
     expect(html).not.toContain("can't be deleted");
   });
 
-  it("removes every direct use and updates recipe totals, including old batches, after reloading", () => {
-    const mixed: Recipe = {
-      ...recipe, id: "mixed", name: "Mixed batch", archived: true, fav: false, note: "Keep this note",
-      ingredients: [...recipe.ingredients, { foodId: rice.id, amount: 20 }],
-    };
-    const otherChanges: Change[] = [
-      { type: "recipe.upsert", recipe: mixed },
-      { type: "entry.upsert", entry: { id: "rice-entry", date: "2026-11-01", foodId: rice.id, amount: 20, done: true } },
-      { type: "entry.upsert", entry: { id: "s1@2026-11-02", date: "2026-11-02", foodId: oats.id, amount: 50, done: false, staple: "s1" } },
-      { type: "settings", settings: { staples: [...state.settings.staples, { id: "rice-staple", foodId: rice.id, amount: 20, from: "2026-11-01" }] } },
-    ];
-    const beforeEvents = [...events, ...otherChanges.map((change) => stamp(change, "desktop"))];
-    const before = fold(beforeEvents);
-    const removals = deleteFood(before, oats.id, true).map((change) => stamp(change, "desktop"));
-    const reloaded = fold(parseLogs([[...beforeEvents, ...removals].map((event) => JSON.stringify(event)).join("\n")]));
-    for (const next of [applyEvents(before, removals), reloaded]) {
-      expect(next.foods.has(oats.id)).toBe(false);
-      expect(next.foods.get(rice.id)).toEqual(rice);
-      expect([...next.entries.values()].some((entry) => entry.foodId === oats.id)).toBe(false);
-      expect(next.entries.get("rice-entry")).toEqual(before.entries.get("rice-entry"));
-      expect(next.entries.get("e3")).toEqual(before.entries.get("e3"));
-      expect(next.removed).toEqual(new Set(["e1", "e2", "s1@2026-11-02"]));
-      expect(next.recipes.get(recipe.id)?.ingredients).toEqual([]);
-      expect(next.recipes.get(mixed.id)).toEqual({ ...mixed, ingredients: [{ foodId: rice.id, amount: 20 }] });
-      expect(next.settings).toEqual({ ...before.settings, staples: [before.settings.staples[2]] });
-      expect(missingStaples(next, "2026-11-03").map((entry) => entry.foodId)).toEqual([rice.id]);
-      expect(intake(next, "2026-11-01").kcal).toBe(76);
-      expect(intake(next, "2026-11-02").kcal).toBe(0);
-    }
-    expect(before.entries.has("e1")).toBe(true);
-    expect(before.recipes.get(recipe.id)).toEqual(recipe);
-    expect(before.settings.staples).toHaveLength(3);
-  });
-
-  it("does not restore old handwritten nutrients when the last ingredient is removed", () => {
-    const before = applyEvents(state, [stamp({ type: "recipe.upsert", recipe: { ...recipe, values: { kcal: 900 } } }, "desktop")]);
-    const next = applyEvents(before, deleteFood(before, oats.id, true).map((change) => stamp(change, "desktop")));
-    expect(recipeAsFood(next.recipes.get(recipe.id)!, next.foods).kcal).toBe(0);
-  });
-
-  it("can remove an archived food everywhere and leaves an unknown food alone", () => {
-    const next = applyEvents(deleted, deleteFood(deleted, oats.id, true).map((change) => stamp(change, "desktop")));
-    expect(next.foods.has(oats.id)).toBe(false);
-    expect([...next.entries.values()].some((entry) => entry.foodId === oats.id)).toBe(false);
-    expect(deleteFood(state, "unknown", true)).toEqual([]);
+  it("writes one change, however often the food was used, and leaves an unknown food alone", () => {
+    expect(deleteFood(state, oats.id)).toEqual([{ type: "food.upsert", food: { ...oats, archived: true } }]);
+    expect(deleteFood(state, "unknown")).toEqual([]);
   });
 
   it("hides the food from the food list while retaining recipes that use it", () => {

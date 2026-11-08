@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { intake, missingStaples } from "./day";
-import { deleteFood } from "./foodDeletion";
 import { pickableFoods } from "./nutrition";
 import { saveRecipe } from "./recipes";
 import { applyEvents, fold, stamp, type State } from "./state";
@@ -35,9 +34,9 @@ describe("saving a recipe", () => {
     expect(pickableFoods(next).has(porridge.id)).toBe(false);
   });
 
-  it("keeps the frozen days when an ingredient is later removed everywhere", () => {
+  it("keeps the frozen days when an older log removed an ingredient outright", () => {
     const edited = apply(state, saveRecipe(state, more, [], today));
-    const next = apply(edited, deleteFood(edited, oats.id, true));
+    const next = apply(edited, [{ type: "food.delete", foodId: oats.id }]);
     expect(intake(next, "2026-11-06").kcal).toBe(200);
   });
 
