@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { LABELS, NUTRIENTS, parseAmount, scale } from "../domain/nutrition";
 import { searchFoods } from "../domain/search";
 import type { Container, Food, Variant } from "../domain/types";
-import { copiedFrom, sourceOf, useReference } from "../reference";
+import { copiedFrom, genericIds, sourceOf, useReference } from "../reference";
 import { Dialog, useBack } from "./Dialog";
 import { SearchInput, Star } from "./fields";
 import { transition } from "./motion";
@@ -45,7 +45,7 @@ export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, o
     const unsaved = reference.filter((food) => !foods.has(food.id) && !copied.has(food.id));
     return [
       ["Your foods", searchFoods(available, query, 30, recentIds)],
-      ["Reference foods", searchFoods(unsaved, query, 40)],
+      ["Reference foods", searchFoods(unsaved, query, 40, [], genericIds)],
     ];
   }, [foods, recentIds, reference, query]);
 
