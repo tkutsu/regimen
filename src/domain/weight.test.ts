@@ -105,6 +105,39 @@ describe("stretches", () => {
     expect(stretches(s, END).map((st) => st.phase)).toEqual(["cut"]);
   });
 
+  it("folds a maintain phase under three weeks into the cuts or bulks around it", () => {
+    const between = (outer: Phase, days: number, middle: Phase = "maintain") => {
+      const resume = shiftDate("2026-09-01", days);
+      const s = state(settings, since("2026-08-01", outer), since("2026-09-01", middle), since(resume, outer), ...weighIns(91, () => 80));
+      return stretches(s, END).map((st) => st.phase);
+    };
+    expect(between("cut", 20)).toEqual(["cut"]);
+    expect(between("bulk", 20)).toEqual(["bulk"]);
+    expect(between("cut", 21)).toEqual(["cut", "maintain", "cut"]);
+    // only maintaining pauses a phase: a longer bulk still counts as its own
+    expect(between("maintain", 10, "bulk")).toEqual(["maintain", "bulk", "maintain"]);
+  });
+
+  it("gives a short maintain phase between a cut and a bulk to the bulk", () => {
+    const runs = (first: Phase, then: Phase, days: number) => {
+      const s = state(settings, since("2026-08-01", first), since("2026-09-01", "maintain"), since(shiftDate("2026-09-01", days), then), ...weighIns(91, () => 80));
+      return stretches(s, END).map((st) => `${st.phase} ${st.from} ${st.to}`);
+    };
+    expect(runs("cut", "bulk", 20)).toEqual(["cut 2026-08-02 2026-08-31", `bulk 2026-09-01 ${END}`]);
+    expect(runs("bulk", "cut", 20)).toEqual(["bulk 2026-08-02 2026-09-20", `cut 2026-09-21 ${END}`]);
+    expect(runs("cut", "bulk", 21)).toEqual(["cut 2026-08-02 2026-08-31", "maintain 2026-09-01 2026-09-21", `bulk 2026-09-22 ${END}`]);
+  });
+
+  it("doesn't let a refeed turn a long maintain phase into a bulk", () => {
+    const s = state(settings, since("2026-08-02", "maintain"), since("2026-08-12", "bulk"), since("2026-08-14", "maintain"), since("2026-10-20", "cut"), ...weighIns(91, () => 80));
+    expect(stretches(s, END).map((st) => `${st.phase} ${st.from}`)).toEqual(["maintain 2026-08-02", "cut 2026-10-20"]);
+  });
+
+  it("keeps the maintain phase you are in as its own until the next phase starts", () => {
+    const s = state(settings, since("2026-08-01", "bulk"), since("2026-10-25", "maintain"), ...weighIns(91, () => 80));
+    expect(stretches(s, END).map((st) => st.phase)).toEqual(["bulk", "maintain"]);
+  });
+
   it("waits for two weeks of weigh-ins after a phase starts", () => {
     const s = state(settings, since("2026-08-01", "maintain"), since("2026-10-14", "bulk"), ...weighIns(60, () => 80));
     const early = stretches(s, "2026-10-30").at(-1)!;

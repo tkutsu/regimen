@@ -6,11 +6,18 @@ import type { Day, Entry, Phase } from "./types";
 export const KCAL_PER_KG = 7700;
 /** The fit reads the last six weeks of a phase, so a long cut shows where maintenance ended up. */
 const WINDOW = 42;
-/** A phase shorter than this between two of the same kind (a refeed, a diet break) doesn't split them. */
+/** A phase shorter than this between two of the same kind (a refeed) doesn't split them. */
 const BREAK = 7;
+/**
+ * Maintaining for less than this is a pause, not a phase. It joins the cuts or bulks around it, and
+ * next to a bulk it always joins the bulk: a cut lowers maintenance, so it shouldn't claim those days.
+ */
+const MAINTAIN_BREAK = 21;
 /** Weigh-ins needed, and the days they must span, before a phase gets a reading. */
 const MIN_WEIGH_INS = 10;
 const MIN_SPAN = 13;
+
+type Run = { phase: Phase; from: string; to: string };
 
 /** A run of days in one phase, with the maintenance its weigh-ins imply. */
 export type Stretch = {
@@ -42,7 +49,7 @@ export function stretches(state: State, to: string): Stretch[] {
   const first = [...state.weights.keys()].sort()[0];
   if (!first || first > to) return [];
   const days = daysFrom(state, first, to);
-  const runs: { phase: Phase; from: string; to: string }[] = [];
+  const runs: Run[] = [];
   for (const { date: d, phase } of days) {
     const [before, short] = [runs.at(-2), runs.at(-1)!];
     if (short?.phase === phase) short.to = d;
@@ -60,7 +67,27 @@ export function stretches(state: State, to: string): Stretch[] {
     const entries = byDate.get(day.date);
     return { day, kcal: entries && sum(entries, foods).kcal };
   });
-  return runs.map((run) => read(state, run.phase, run.from, run.to, log));
+  return foldPauses(runs).map((run) => read(state, run.phase, run.from, run.to, log));
+}
+
+/** Folds short maintain phases into their neighbours; the phase you are still in stays its own. */
+function foldPauses(runs: Run[]): Run[] {
+  const folded: Run[] = [];
+  for (const run of runs) {
+    const [before, last] = [folded.at(-2), folded.at(-1)];
+    const pause = last?.phase === "maintain" && daysBetween(last.from, last.to) + 1 < MAINTAIN_BREAK;
+    if (pause && before?.phase === run.phase) {
+      folded.pop();
+      before.to = run.to;
+    } else if (pause && run.phase === "bulk") {
+      last.phase = "bulk";
+      last.to = run.to;
+    } else {
+      if (pause && before?.phase === "bulk") before.to = folded.pop()!.to;
+      folded.push(run);
+    }
+  }
+  return folded;
 }
 
 /**
