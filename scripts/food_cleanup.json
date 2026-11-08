@@ -1,6 +1,7 @@
 {
-  "description": "Reviewed product exclusions, names, sourced nutrient corrections and equivalent-food merges.",
+  "description": "Reviewed product exclusions, names, sourced nutrient corrections, equivalent-food merges and generic rows for staple types.",
   "excludeNames": [
+    "Cargando… (Elviart)",
     "Chleb magnat",
     "Grčki Jogurt od Ovčijeg Mleka (ΝΕΟΓΑΛ)",
     "Hořká čokoláda (Delicata)",
@@ -11,7 +12,9 @@
     "Krem namaz",
     "Kukuřičné lupínky (Emma)",
     "Křupavé müsli s ořechy (Emma Grown for good)",
+    "Mapata (Μαρατα)",
     "Masło orzechowe crunchy",
+    "NAGHS Organic Porridge Oats iginal Custard Powder (Melissa)",
     "Oliwki zielone z migdałami",
     "Polníček/lambs lettuce",
     "SNICKERS (MARS POLSKA SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ)",
@@ -21,6 +24,7 @@
     "biely jogurt metro",
     "ořechy a kešu emco",
     "terezka čokoládová",
+    "version (marata)",
     "Špagety (Nature's Promise)"
   ],
   "names": {
@@ -126,7 +130,11 @@
     "off-5214002611019": "Smoothie #1 Mango & Orange (YumTales)",
     "off-5214002611033": "Smoothie #3 Raspberry & Strawberry (YumTales)",
     "off-5214002611040": "Smoothie #4 Kiwi & Spinach (YumTales)",
-    "off-5214002611163": "Smoothie #5 Beetroot (YumTales)"
+    "off-5214002611163": "Smoothie #5 Beetroot (YumTales)",
+    "off-5941194000740": "Crackers Ham (Croco)",
+    "off-5053990161669": "Pringles Paprika",
+    "off-3800233070026": "Brown Rice Cakes Himalaya Salt (Rice Up!)",
+    "off-5205941085566": "Plant-based mozzarella-style slices (Μικρές φάρμες του βουνού)"
   },
   "duplicates": {
     "off-05202296": "off-0052022960277",
@@ -340,6 +348,658 @@
         "from": 9441.0,
         "to": null,
         "reason": "Implausible Gouda salt/sodium entry; no exact-barcode label found. Keep unknown rather than borrow another barcode."
+      }
+    },
+    "off-8852707103308": {
+      "salt": {
+        "from": 21.64,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 8655.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201168915600": {
+      "salt": {
+        "from": 25.57,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 10228.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-8710912042907": {
+      "salt": {
+        "from": 17.7,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 7081.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5208046090831": {
+      "salt": {
+        "from": 17.7,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 7081.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-9319133334964": {
+      "salt": {
+        "from": 22.23,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 8890.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201044007924": {
+      "salt": {
+        "from": 17.3,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 6920.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-3083680074094": {
+      "salt": {
+        "from": 16.13,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 6450.26264,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5032543001416": {
+      "salt": {
+        "from": 15.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 6000.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "fiber": {
+        "from": 26.4,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201383506713": {
+      "salt": {
+        "from": 13.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 5200.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201673006954": {
+      "salt": {
+        "from": 10.9,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 4360.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5203064008844": {
+      "salt": {
+        "from": 10.1,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 4040.540541,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-8888221029275": {
+      "salt": {
+        "from": 5.47,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 2190.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-7445072001440": {
+      "salt": {
+        "from": 25.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 10000.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-4805358651050": {
+      "salt": {
+        "from": 62.5,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 25000.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-4426423271623": {
+      "salt": {
+        "from": 67.5,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 27000.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-4056489664567": {
+      "salt": {
+        "from": 33.8,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 13520.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5200251370142": {
+      "salt": {
+        "from": 20.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 8000.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201194001537": {
+      "salt": {
+        "from": 27.54,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 11015.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5200132754795": {
+      "salt": {
+        "from": 7.87,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 3147.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5202336093823": {
+      "salt": {
+        "from": 15.25,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 6100.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5202576460805": {
+      "salt": {
+        "from": 9.75,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 3900.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-4335619098312": {
+      "salt": {
+        "from": 0.01,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      },
+      "sodium": {
+        "from": 2400.0,
+        "to": null,
+        "reason": "Impossible salt for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201360347810": {
+      "fiber": {
+        "from": 42.5,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201005082205": {
+      "fiber": {
+        "from": 46.0,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-4056489263821": {
+      "fiber": {
+        "from": 50.0,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201013012706": {
+      "fiber": {
+        "from": 55.0,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-8033210743391": {
+      "fiber": {
+        "from": 33.0,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5200326423445": {
+      "fiber": {
+        "from": 22.7,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5201399020135": {
+      "fiber": {
+        "from": 27.0,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5907573338668": {
+      "fiber": {
+        "from": 35.0,
+        "to": null,
+        "reason": "Impossible fibre for this food in the source; no label checked, so it stays unknown."
+      }
+    },
+    "off-5202053001613": {
+      "salt": {
+        "from": 0.0,
+        "to": 1.7,
+        "reason": "Source salt is a unit slip; its 0.681 g sodium gives 1.70 g salt."
+      }
+    },
+    "off-5201066012722": {
+      "sodium": {
+        "from": 3.6,
+        "to": 3600.0,
+        "reason": "Source sodium is in g; 3.6 g matches its 9 g salt."
+      }
+    },
+    "off-5203064009384": {
+      "sodium": {
+        "from": 963.86,
+        "to": null,
+        "reason": "Sodium contradicts the row's salt; the salt is plausible for crispbread."
+      }
+    },
+    "off-0520333200002": {
+      "kcal": {
+        "from": 640.0,
+        "to": 153.0,
+        "reason": "Source kcal is the 640 kJ figure; 153 kcal matches 21 g protein and 7.6 g fat."
+      }
+    },
+    "off-5200120320445": {
+      "satFat": {
+        "from": 91.6,
+        "to": null,
+        "reason": "Source saturated fat holds the total fat."
+      }
+    },
+    "off-5202256067263": {
+      "prot": {
+        "from": 0.1,
+        "to": null,
+        "reason": "Source protein of 0.05 g is impossible for sunflower seeds."
+      }
+    },
+    "usda-170111": {
+      "salt": {
+        "from": 0.03,
+        "to": null,
+        "reason": "This 'with salt' row carries the unsalted row's sodium."
+      },
+      "sodium": {
+        "from": 10.0,
+        "to": null,
+        "reason": "This 'with salt' row carries the unsalted row's sodium."
+      }
+    },
+    "off-5411188102809": {
+      "calcium": {
+        "from": 0.12,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5202178083747": {
+      "calcium": {
+        "from": 0.3,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5202178005473": {
+      "calcium": {
+        "from": 0.00019,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5201415201289": {
+      "calcium": {
+        "from": 0.215,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5202234610887": {
+      "calcium": {
+        "from": 0.12,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5200305121850": {
+      "calcium": {
+        "from": 0.112,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5201083347531": {
+      "calcium": {
+        "from": 0.125,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5201953000375": {
+      "calcium": {
+        "from": 0.7,
+        "to": null,
+        "reason": "Calcium was entered in grams; the amount isn't verified, so it stays unknown."
+      }
+    },
+    "off-5202178007934": {
+      "fiber": {
+        "from": 4.0,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5201219487520": {
+      "fiber": {
+        "from": 0.6,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202292005847": {
+      "fiber": {
+        "from": 2.9,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5208046020289": {
+      "fiber": {
+        "from": 3.9,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5201704051595": {
+      "fiber": {
+        "from": 1.0,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202082002605": {
+      "fiber": {
+        "from": 1.2,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202258200088": {
+      "fiber": {
+        "from": 10.0,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5201066012845": {
+      "fiber": {
+        "from": 3.4,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5201054016855": {
+      "fiber": {
+        "from": 3.0,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202242000021": {
+      "fiber": {
+        "from": 2.8,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202258200071": {
+      "fiber": {
+        "from": 1.0,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202178084218": {
+      "fiber": {
+        "from": 6.0,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5200103891108": {
+      "fiber": {
+        "from": 3.1,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5201037508919": {
+      "fiber": {
+        "from": 3.0,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202336082308": {
+      "fiber": {
+        "from": 6.2,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5202336146468": {
+      "fiber": {
+        "from": 3.9,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5200112733369": {
+      "fiber": {
+        "from": 0.7,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5200252761635": {
+      "fiber": {
+        "from": 1.5,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5200101172261": {
+      "fiber": {
+        "from": 1.9,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5203149005355": {
+      "fiber": {
+        "from": 2.8,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5201231003760": {
+      "fiber": {
+        "from": 1.3,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5201231003500": {
+      "fiber": {
+        "from": 1.3,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5059944691190": {
+      "fiber": {
+        "from": 2.9,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5203278056273": {
+      "fiber": {
+        "from": 1.1,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-4056489886112": {
+      "fiber": {
+        "from": 1.8,
+        "to": null,
+        "reason": "Dairy and eggs have no fibre; a label slip."
+      }
+    },
+    "off-5202336155699": {
+      "fiber": {
+        "from": null,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5201037508902": {
+      "fiber": {
+        "from": null,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5202178002793": {
+      "fiber": {
+        "from": null,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5212002221733": {
+      "fiber": {
+        "from": null,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5202336137176": {
+      "fiber": {
+        "from": null,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
+      }
+    },
+    "off-5206546000176": {
+      "fiber": {
+        "from": null,
+        "to": 0.0,
+        "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
       }
     }
   },
@@ -2179,6 +2839,3154 @@
         "off-4751037281219": "0ee4e95bece61d20e745b0a759a39d096837e4503ef8b8294bb12f32fc70df49",
         "off-8720892511133": "1191bcf84b1f7d1e50aa941e6d7c798c9cd2e45d1a7f217165e308a3de24f911"
       }
+    },
+    {
+      "canonical": "usda-171031",
+      "expectedRows": {
+        "usda-171031": "2cd5adde240097d39e8f924886470b1900c7da9a61f249dcfbacd21cf56295c4",
+        "ciqual-17030": "91ad1528d8b620cfd2d006fa6e11a650c50604d42105084271fc2b0c08c3766c"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, almond",
+        "Λάδι",
+        "αμύγδαλο",
+        "Almond oil",
+        "Αμυγδαλέλαιο",
+        "αμύγδαλο"
+      ]
+    },
+    {
+      "canonical": "usda-171030",
+      "expectedRows": {
+        "usda-171030": "03c0593b16d5a014de8caa158ba484fdcd192a8e4f767ae70e031e94de5bddb0",
+        "ciqual-17220": "c531cac378647726fa7a290458ac4cbc9962ed7f5e1af47aa74b93f799f34556"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, walnut",
+        "Λάδι",
+        "καρυδιά",
+        "καρύδι",
+        "Walnut oil",
+        "Καρυδέλαιο",
+        "καρύδι"
+      ]
+    },
+    {
+      "canonical": "usda-171013",
+      "expectedRows": {
+        "usda-171013": "f6f9dd761b44264b612b9dd9df30cfa82444cd34cb218d3a243db95c87f40190",
+        "ciqual-17390": "93eb4ea4703a1cae0d9cd27db567b91178af4e9657a195bc1c042fd26f8231e6"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, rice bran",
+        "Λάδι",
+        "πίτουρο ρυζιού",
+        "ρύζι",
+        "Rice bran oil",
+        "Λάδι από πίτουρο ρυζιού",
+        "ρύζι"
+      ]
+    },
+    {
+      "canonical": "usda-171014",
+      "expectedRows": {
+        "usda-171014": "5bcf1a1617601942173baed6108b89515bb640d54463dee7acc96abb07285bfc",
+        "ciqual-17110": "f56bc11df7c6eea6e722fc9c585184db6a92507990b7450df606dc6863e89064"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, wheat germ",
+        "Λάδι",
+        "φύτρο σιταριού",
+        "σιτάρι",
+        "Wheat germ oil",
+        "Έλαιο φύτρων σιταριού",
+        "σιτάρι"
+      ]
+    },
+    {
+      "canonical": "usda-171015",
+      "expectedRows": {
+        "usda-171015": "9a589b09d3e0c98216931a368178aa157d98017c31f49b335cda01c530401539",
+        "ciqual-16129": "91bfd1d13e4de35b1375a18a3d148b6f7e59bfb12352985ed549e968b775ac90"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, palm",
+        "Λάδι",
+        "φοίνικας",
+        "Palm oil",
+        "Φοινικέλαιο"
+      ]
+    },
+    {
+      "canonical": "usda-171028",
+      "expectedRows": {
+        "usda-171028": "6bf97d43ceaffafd8461d313de569c1958cfd3eb67271b17a13d1ff15e690435",
+        "ciqual-17350": "51cc3d6e8a0fe49a00d3b4c5372fa376c7e5eaca1e7958e0d3ff091a90f3b054"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, grapeseed",
+        "Λάδι",
+        "σταφυλόσπορος",
+        "Grapeseed oil",
+        "Σταφυλέλαιο"
+      ]
+    },
+    {
+      "canonical": "usda-171032",
+      "expectedRows": {
+        "usda-171032": "c87789350a465b086273e18622b9aff64ff625466e5703673d20ac566bec4fb5",
+        "ciqual-17020": "813f484c938345a19dc52ae00fdd0e88ebfbcf17f44ae90cd8cb03a3468c1444"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, apricot kernel",
+        "Λάδι",
+        "κουκούτσι βερίκοκου",
+        "βερίκοκο",
+        "Apricot kernel oil",
+        "Λάδι από πυρήνα βερίκοκου",
+        "βερίκοκο"
+      ]
+    },
+    {
+      "canonical": "usda-171423",
+      "expectedRows": {
+        "usda-171423": "fd77a3816016d1d03ca860a00ff41d241473d8357435e62128a5031cb86e3870",
+        "ciqual-17325": "f014f610febd1f3e2decd9718c557b72cef3755859b150d04c2d1b677e5d8979"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, poppyseed",
+        "Λάδι",
+        "παπαρουνόσπορος",
+        "Poppyseed oil",
+        "Παπαρουνέλαιο"
+      ]
+    },
+    {
+      "canonical": "usda-171427",
+      "expectedRows": {
+        "usda-171427": "5775174b7a6d6c1336974f9191a96885dd0ef29cbb61cdf86c778c2a45c0939b",
+        "ciqual-17210": "04c2684ae1a16a73e754e6e88b310c6cafc782441b63a0a296a13ecd0d5f53ee"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, hazelnut",
+        "Λάδι",
+        "φουντούκι",
+        "Hazelnut oil",
+        "Φουντουκέλαιο",
+        "φουντούκι"
+      ]
+    },
+    {
+      "canonical": "usda-173573",
+      "expectedRows": {
+        "usda-173573": "37476a9ff2368e4078649f123d215bb22a64f3c554bd7b5e0aed5b2e7c50f8c0",
+        "ciqual-17100": "f31d7f65534100555b0eab5f5bddc4ddd1ee533d1d871c7e816aa8d458bea76a"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Oil, avocado",
+        "Λάδι",
+        "αβοκάντο",
+        "Avocado oil",
+        "Λάδι αβοκάντο",
+        "αβοκάντο"
+      ]
+    },
+    {
+      "canonical": "usda-172340",
+      "expectedRows": {
+        "usda-172340": "998707ad0857bdd35f67f0c11659e89c10eeef175dcd026b141df7bca6aa4e81",
+        "ciqual-17650": "9f6f52e954dbb83afb9110828b28bb097587e1522949fdfc317bb73ef6dc4679"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish oil, herring",
+        "Ιχθυέλαιο",
+        "ρέγγα",
+        "Herring oil",
+        "Έλαιο ρέγγας"
+      ]
+    },
+    {
+      "canonical": "usda-172343",
+      "expectedRows": {
+        "usda-172343": "c704b6cb5e62d144dbb7ff8e1c03d683b53eb3890cc0320c3ff4f957bec9d9d1",
+        "ciqual-17645": "e82dc9fe040588fe020d7edf36e6f40f5c75ef037d766dddabb0193ae22edf18"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish oil, salmon",
+        "Ιχθυέλαιο",
+        "σολομός",
+        "Salmon oil",
+        "Λάδι σολομού",
+        "σολομός"
+      ]
+    },
+    {
+      "canonical": "usda-173577",
+      "expectedRows": {
+        "usda-173577": "1fd64bff23ea5e4e48085ee282e35729d3eec9534843fde4e90debc2bfc32a54",
+        "ciqual-17630": "1104f9874366bc34cbe9db29d295dd51881e34b114781e0ab4ce672eb6893672"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish oil, cod liver",
+        "Ιχθυέλαιο",
+        "συκώτι μπακαλιάρου",
+        "συκώτι",
+        "μπακαλιάρος",
+        "Cod liver oil",
+        "Μουρουνέλαιο",
+        "συκώτι",
+        "μπακαλιάρος"
+      ]
+    },
+    {
+      "canonical": "usda-173578",
+      "expectedRows": {
+        "usda-173578": "9ffb3ec0020f522fa66dbfee22d05a5ca3cebcfa922a78dc3644c080a3c1ab3a",
+        "ciqual-17640": "2e4da32546926e4e727fdd36fed473323e235b045e5a215316c23716f5a9bc19"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish oil, sardine",
+        "Ιχθυέλαιο",
+        "σαρδέλα",
+        "Sardine oil",
+        "Σαρδέλαιο",
+        "σαρδέλα"
+      ]
+    },
+    {
+      "canonical": "usda-173564",
+      "expectedRows": {
+        "usda-173564": "f6fe86f914ad9bf2aeb9b1272a7b1e02787bb40c241ddeea8376c840a19b0664",
+        "ciqual-16540": "df4b0632002b90d35177efd3f51b79d94410105cc3339f0440431627d5338d88"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fat, chicken",
+        "Λίπος",
+        "κοτόπουλο",
+        "Chicken fat",
+        "Λίπος κοτόπουλου",
+        "κοτόπουλο"
+      ]
+    },
+    {
+      "canonical": "usda-173571",
+      "expectedRows": {
+        "usda-173571": "3a44060c3d77b09e163030d1943f625961e5c656d27efc711c66365e41f0d147",
+        "ciqual-16570": "b5bcc76f1fa94f7d6bf5703d2e07a1799b9614c88d5672d3c65aa2f81af67712"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fat, turkey",
+        "Λίπος",
+        "γαλοπούλα",
+        "Turkey fat",
+        "Γαλοπούλα λίπος",
+        "γαλοπούλα"
+      ]
+    },
+    {
+      "canonical": "usda-173572",
+      "expectedRows": {
+        "usda-173572": "c727f3f470bb4993d23142fd64b2225cc04e543bd25bac49da7ffd12af3d3db1",
+        "ciqual-16560": "622f11552e6495eedefce6baabeda39fc8510af3b224f5ea774d4139d9c9b618"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fat, goose",
+        "Χοντρός",
+        "χήνα",
+        "Goose fat",
+        "Χήνα λίπος",
+        "χήνα"
+      ]
+    },
+    {
+      "canonical": "usda-171950",
+      "expectedRows": {
+        "usda-171950": "ff5bbd9166de9d8dc994850c2f7c341588b577991015bf6db4c1b1e277d2ef88",
+        "ciqual-27023": "5ca7d585af414c534a774f68c980ac5c7c4a412167960b1ca376db92098a0364"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, burbot, raw",
+        "Ψάρι",
+        "μπούρμπο",
+        "ωμό",
+        "Burbot, raw",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-171964",
+      "expectedRows": {
+        "usda-171964": "e587f5b2f8afdc9f35f135702206f6e05b9fc519cb90db8cf69debf390d9b3ed",
+        "ciqual-26122": "ddd61c4f15c2d78b6b5201c65a5d46181709dea37a810ac640207b358eaae4e7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, haddock, raw",
+        "Ψάρι",
+        "μπακαλιάρος",
+        "ωμό",
+        "Haddock, raw",
+        "ακατέργαστος"
+      ]
+    },
+    {
+      "canonical": "usda-174199",
+      "expectedRows": {
+        "usda-174199": "75f3d8f96239cd7862fb9ed968f5da9b3c041a216f27b8e002fa72d483e7c179",
+        "ciqual-26090": "d4e04120fd3184b005836f6d7d85b3736898f34de0e44e6963f161da2ba13b28"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, haddock, smoked",
+        "Ψάρι",
+        "μπακαλιάρος",
+        "καπνιστό",
+        "Haddock, smoked",
+        "Χαντουκ",
+        "καπνιστός"
+      ]
+    },
+    {
+      "canonical": "usda-171965",
+      "expectedRows": {
+        "usda-171965": "cff7604ed5c2730181755a48b10e87e2237d8264c0b58af4113aabbc1593f898",
+        "ciqual-26154": "922e5586ebcc9a26cccd9fcc343f295663fd2373238929d2eed7e17e4a6475b3"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, halibut, Greenland, raw",
+        "Ψάρια",
+        "ιππόγλωσσα",
+        "Γροιλανδία",
+        "ωμά",
+        "Greenland halibut, raw",
+        "ιππόγλωσσα Γροιλανδίας",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-173670",
+      "expectedRows": {
+        "usda-173670": "a6bb56f4c78774ca1b57dc9683d5829706436aa091dd6506fd1c745d6782ae3c",
+        "ciqual-26130": "0852d5ff215c25adef3c556382be190468d05f742c701fbbd2db9c792467daa6"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, ling, raw",
+        "Ψάρι",
+        "λίπος",
+        "ωμό",
+        "Ling, raw",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-173680",
+      "expectedRows": {
+        "usda-173680": "9e5fe269841efd52e87c4f79e49c00adc1db5813d4231572b76081633b1ac656",
+        "ciqual-27011": "49a94f00fffb2050fdf7f755c22fb7188e82c667d38112569a1b62b6deb0a0af"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, pike, northern, raw",
+        "Ψάρι",
+        "λούτσος",
+        "βόρειο",
+        "ωμό",
+        "Northern pike, raw",
+        "Βόρειος λούτσος",
+        "ωμός"
+      ]
+    },
+    {
+      "canonical": "usda-173703",
+      "expectedRows": {
+        "usda-173703": "c4f2ce3075290195985a70496369f8ae32ab807c21116a171c4b526e9a3954d6",
+        "ciqual-26082": "a94bd9292fadd47a569125f906b64443d227e25a04ff36d9cafba6b6ea936882"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, swordfish, raw",
+        "Ψάρι",
+        "ξιφίας",
+        "ωμό",
+        "Swordfish, raw",
+        "Ξιφίας",
+        "ωμός"
+      ]
+    },
+    {
+      "canonical": "usda-173717",
+      "expectedRows": {
+        "usda-173717": "37b927a82c4e15c2aa577d23159acf631dcb9f1b9cabaf6fa3c770f43a10272c",
+        "ciqual-27009": "fbc0f16d0809c5c3993280382a382a42caac5be9111fac95711fe5e16f3398f0"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, trout, rainbow, farmed, raw",
+        "Ψάρια",
+        "πέστροφες",
+        "ουράνιο τόξο",
+        "εκτρεφόμενα",
+        "ωμά",
+        "πέστροφα",
+        "Rainbow trout, raw, farmed",
+        "Πέστροφα ουράνιο τόξο",
+        "ακατέργαστη",
+        "εκτρεφόμενη",
+        "πέστροφα"
+      ]
+    },
+    {
+      "canonical": "usda-173725",
+      "expectedRows": {
+        "usda-173725": "4cf125ea0c62a2e9f9eee9c7c4ee066810ee2042b89a2b1ea177d6c04f50374c",
+        "ciqual-26006": "a74d9a16654818277a8b665b2682234987a9d168e5427574b4579bb8bebc6350"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, pollock, Alaska, raw",
+        "Ψάρι",
+        "Αλάσκα",
+        "ωμό",
+        "Alaska pollock, raw",
+        "Αλάσκα",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-175116",
+      "expectedRows": {
+        "usda-175116": "cc9e4d01b22b84b48d655290d3bd1504c876b19573f0d26dc7a3ff3979bea9b2",
+        "ciqual-26011": "172507129a16e68f2a3dbcb97b58fbcea6371dc0afdde279983ac331de26bc7e"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, herring, Atlantic, raw",
+        "Ψάρια",
+        "ρέγγες",
+        "Ατλαντικού",
+        "ωμά",
+        "Atlantic herring, raw",
+        "Ρέγγα Ατλαντικού",
+        "ακατέργαστη"
+      ]
+    },
+    {
+      "canonical": "usda-175176",
+      "expectedRows": {
+        "usda-175176": "f51849e41cb32a23281d026355995a65e20983f9ad83b3647fe3d66bef25025b",
+        "ciqual-27019": "a5bc48abe7647ec1d32b39db30d565f9e009b13fa168685d4d13347762d0ce65"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Fish, tilapia, raw",
+        "Ψάρι",
+        "τιλάπια",
+        "ωμό",
+        "Tilapia, raw",
+        "Τιλάπια",
+        "ακατέργαστη"
+      ]
+    },
+    {
+      "canonical": "usda-167744",
+      "expectedRows": {
+        "usda-167744": "4eb0e60b5f8a14716b5cd4bcbfbd1bc3629930b957277fc87add354821962923",
+        "ciqual-10008": "73dcfc3f85fa37c1b73434118e69a5d1e1c83b97fc3ab30b3d9590cd2d786ffc"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mollusks, snail, raw",
+        "Μαλάκια",
+        "σαλιγκάρι",
+        "ωμά",
+        "Snail, raw",
+        "Σαλιγκάρι",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-174219",
+      "expectedRows": {
+        "usda-174219": "679f4a39fb9b7b1343f14e60cadccc5c3428530cb1faeb0f0bd4ce9be14ea6fd",
+        "ciqual-10035": "74bac45205b19a7da7fc17bf407d13f21c233ec2a4873eeb04ff44a8e50a3ed8"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mollusks, oyster, Pacific, raw",
+        "Μαλάκια",
+        "στρείδι",
+        "Ειρηνικός",
+        "ωμά",
+        "Pacific oyster, raw",
+        "Ειρηνικό στρείδι",
+        "ακατέργαστο"
+      ]
+    },
+    {
+      "canonical": "usda-175180",
+      "expectedRows": {
+        "usda-175180": "f4a415d6e2e04c05b7caa0dc1082c43ae0532324ec5fac0211e67d5dfb3b5926",
+        "ciqual-10006": "542c63ad611fb655d85d858f3d188e92b70ca0e09fbea9af844e59e31a777ebf"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Crustaceans, shrimp, cooked",
+        "Καρκινοειδή",
+        "γαρίδες",
+        "μαγειρευτά",
+        "Shrimp, cooked",
+        "Γαρίδες μαγειρεμένες",
+        "γαρίδες"
+      ]
+    },
+    {
+      "canonical": "usda-171052",
+      "expectedRows": {
+        "usda-171052": "a422ea724de6e7c64066e97ddd16b855af205e948964ad1044a38ae062e456f4",
+        "ciqual-36003": "2e4556653c22915900a4a702f025fce411865ea0e7c75aa790c742834acca970"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chicken, broilers or fryers, meat only, raw",
+        "Κοτόπουλο",
+        "κοτόπουλα κρεατοπαραγωγής",
+        "μόνο κρέας",
+        "ωμό",
+        "Chicken, meat, raw",
+        "Κοτόπουλο",
+        "κρέας",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-171474",
+      "expectedRows": {
+        "usda-171474": "5de9826d47c161b26437b0085b836d15f2210c618b579f989344ce68bee4b072",
+        "ciqual-36029": "c22821d8924aa3d874533aa5f84bb41fb4f1439afea7304c3f0b5e9bfa6b8b6d"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chicken, broilers or fryers, breast, meat and skin, raw",
+        "Κοτόπουλο",
+        "κοτόπουλα κρεατοπαραγωγής",
+        "στήθος",
+        "κρέας και δέρμα",
+        "ωμά",
+        "Chicken, breast, meat and skin, raw",
+        "Κοτόπουλο",
+        "στήθος",
+        "κρέας και δέρμα",
+        "ωμά"
+      ]
+    },
+    {
+      "canonical": "usda-172373",
+      "expectedRows": {
+        "usda-172373": "5246092a2a5ff7275ece5152a588784586d16630825df69f8bdace90ba3894eb",
+        "ciqual-36022": "8ca7c4ac3d8e56e33836b846f61158c40a8fde9191533517bc1ef05e44cd3c4a"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chicken, broilers or fryers, drumstick, meat and skin, raw",
+        "Κοτόπουλο",
+        "κοτόπουλα κρεατοπαραγωγής",
+        "μπαστούνι",
+        "κρέας και δέρμα",
+        "ωμά",
+        "Chicken, drumstick, raw",
+        "Κοτόπουλο",
+        "κοπανάκι",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-172378",
+      "expectedRows": {
+        "usda-172378": "4654d3a79c41b729c68dd30a96b2d3b69295f424d998cb4df7ce42c03fd003e2",
+        "ciqual-36002": "d805584bfea4730ee6849eed0c2b3aec76be72fa147f7edf9b8541499f35f983"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chicken, broilers or fryers, leg, meat and skin, raw",
+        "Κοτόπουλο",
+        "κοτόπουλα κρεατοπαραγωγής",
+        "μπούτι",
+        "κρέας και δέρμα",
+        "ωμά",
+        "Chicken, leg, meat and skin, raw",
+        "Κοτόπουλο",
+        "μπούτι",
+        "κρέας και δέρμα",
+        "ωμά"
+      ]
+    },
+    {
+      "canonical": "usda-173619",
+      "expectedRows": {
+        "usda-173619": "bb565ef7b415c803372c8657a6655b17788d801161935b218257cb23861ed103",
+        "ciqual-36024": "8d0e0fcba2e26807a09f33dd3acf6104b0c6bcd89b9317376c6d418cb285e7cb"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chicken, broilers or fryers, leg, meat only, raw",
+        "Κοτόπουλο",
+        "κοτόπουλα κρεατοπαραγωγής",
+        "μπούτι",
+        "κρέας μόνο",
+        "ωμό",
+        "Chicken, leg, meat, raw",
+        "Κοτόπουλο",
+        "μπούτι",
+        "κρέας",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-172390",
+      "expectedRows": {
+        "usda-172390": "e205abf261c779d0542d592bbbf361dc1505e75494afdb77f3a976a3e5b7d921",
+        "ciqual-36023": "96d16b22888fbab743a41dc43f66a14670f6b7c567367799c3cd92690b66672a"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chicken, broilers or fryers, wing, meat and skin, raw",
+        "Κοτόπουλο",
+        "κοτόπουλα κρεατοπαραγωγής",
+        "φτερούγες",
+        "κρέας και δέρμα",
+        "ωμά",
+        "Chicken, wing, meat and skin, raw",
+        "Κοτόπουλο",
+        "φτερούγες",
+        "κρέας και δέρμα",
+        "ωμά"
+      ]
+    },
+    {
+      "canonical": "usda-172415",
+      "expectedRows": {
+        "usda-172415": "c3ed7da4b5a6efdf22a4dafa38942898345c88f138debada63be90770d9e306b",
+        "ciqual-40120": "439d0abc330cd75963b09db9c7a1ac5ce23ef903eea0706db2222214dabbaf1c"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Goose, liver, raw",
+        "Χήνα",
+        "συκώτι",
+        "ακατέργαστο",
+        "Liver, goose, raw",
+        "Συκώτι",
+        "χήνα",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-174472",
+      "expectedRows": {
+        "usda-174472": "728536605826eaf56baae8e0420178fab137321c3123e17ae2613fce04c68d56",
+        "ciqual-36403": "d240507fbef6cf9ad6496dd49b116f26303970878741d5423e5be4b484cdaae9"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Pheasant, raw, meat and skin",
+        "Φασιανός",
+        "ωμός",
+        "κρέας και δέρμα",
+        "Pheasant, meat and skin, raw",
+        "Φασιανός",
+        "κρέας και δέρμα",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-174473",
+      "expectedRows": {
+        "usda-174473": "8222654fb936e746bfea7c5e10912dcfc770786d099a94219ca30e5d98c96c07",
+        "ciqual-36401": "5b51a6a71087621f00c48180d66e393c9370fed06fd6a53ed95005c6605c6ae0"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Pheasant, raw, meat only",
+        "Φασιανός",
+        "ωμός",
+        "μόνο κρέας",
+        "Pheasant, meat, raw",
+        "Φασιανός",
+        "κρέας",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-168148",
+      "expectedRows": {
+        "usda-168148": "a09f9c0e3f5e853b0cdfff3eacc50782c783060abe7dbe4bf802e55a82e5d12c",
+        "ciqual-34500": "7b6be35fef795ca1ab546be5e6736695651586dd18dbd1ec495cc393f0006075"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Frog legs, raw",
+        "Βατραχόποδα",
+        "ωμά",
+        "Frog, leg, raw",
+        "Βάτραχος",
+        "πόδι",
+        "ωμός"
+      ]
+    },
+    {
+      "canonical": "usda-167746",
+      "expectedRows": {
+        "usda-167746": "c51e2f4d0bf7d382ad99d29836c29506c0fdc6172a81377716fd34d203d62afe",
+        "ciqual-13009": "6c297ac865aaac4cb95b5f9b7cb2b69fc1eb6a255efe592430ac207c62b71130"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Lemons, raw, without peel",
+        "Λεμόνια ωμά",
+        "χωρίς φλούδα",
+        "λεμόνια",
+        "Lemon, pulp, raw",
+        "Λεμόνι",
+        "πολτός",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169977",
+      "expectedRows": {
+        "usda-169977": "c2b3c0f9eb5195acd7a1efa18f3d41146bf77a2e7c002a8217c311bb73264812",
+        "ciqual-20014": "0b488f684797254a81924e23ddd0e025b2fdc7b5846c35b4df1e9b99c6269da7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Cabbage, red, raw",
+        "Λάχανο",
+        "κόκκινο",
+        "ωμό",
+        "Red cabbage, raw",
+        "Λάχανο κόκκινο",
+        "ωμό",
+        "λάχανο"
+      ]
+    },
+    {
+      "canonical": "usda-168436",
+      "expectedRows": {
+        "usda-168436": "6f7e8f3421df090106a7f34a992af496f4aad493fe8176464fa528142af5c3c7",
+        "ciqual-20211": "af86fe7f2c34945dff5892f6d4f13b104734eda12a28b28b470bbd3af63e31ee"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mushrooms, shiitake, dried",
+        "Μανιτάρια",
+        "αποξηραμένα",
+        "Shiitake mushroom, dried",
+        "Μανιτάρι",
+        "αποξηραμένο"
+      ]
+    },
+    {
+      "canonical": "usda-168437",
+      "expectedRows": {
+        "usda-168437": "e03f040f3dcea71a8d5a0997e332af085bb6f708120842f3b600846cc918c3b8",
+        "ciqual-20212": "c963fdc3e909580ab3e76ed62269ff7b880e523e2a0160ae07367aed99cf14e3"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mushrooms, shiitake, cooked, without salt",
+        "Μανιτάρια",
+        "μαγειρευτά",
+        "χωρίς αλάτι",
+        "αλάτι",
+        "Shiitake mushroom, cooked",
+        "Μανιτάρι",
+        "μαγειρεμένο"
+      ]
+    },
+    {
+      "canonical": "usda-168580",
+      "expectedRows": {
+        "usda-168580": "8d6c22e0e118cea3ca66437a11c7bdc0b069bce16142c5be546d7bb91e282fb4",
+        "ciqual-20114": "598a8a3a7959523d69ea8bde8351dec318044be7ec7eb4957d8d1df2409ef231"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mushrooms, oyster, raw",
+        "Μανιτάρια",
+        "στρείδια",
+        "ωμά",
+        "Oyster mushroom, raw",
+        "Μανιτάρι στρείδια",
+        "ωμό",
+        "μανιτάρι"
+      ]
+    },
+    {
+      "canonical": "usda-169236",
+      "expectedRows": {
+        "usda-169236": "b610b34be0093611f991c1c058b150ef3d1af1f93fb7de90ae6c8eb24976f4be",
+        "ciqual-20196": "78606d2baec6cef2900300fd2f837c99e61295c03c03518064a4dc1a07fe9bca"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Jerusalem-artichokes, raw",
+        "Ιερουσαλήμ αγκινάρα",
+        "ακατέργαστη",
+        "αγκινάρες",
+        "Jerusalem artichoke, raw",
+        "Αγκινάρα Ιερουσαλήμ",
+        "ακατέργαστη",
+        "αγκινάρα"
+      ]
+    },
+    {
+      "canonical": "usda-170108",
+      "expectedRows": {
+        "usda-170108": "27a0e9c08fa8c7512de574be4d98ec1098654d4da81452f9fc045e4235225632",
+        "ciqual-20087": "ed406671423e7db81e349024940b3bbf42898c0096fbf7e76ddebd5e4064e1e4"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Peppers, sweet, red, raw",
+        "Πιπεριές",
+        "γλυκές",
+        "κόκκινες",
+        "ωμές",
+        "Sweet pepper, red, raw",
+        "Γλυκό πιπέρι",
+        "κόκκινο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-169383",
+      "expectedRows": {
+        "usda-169383": "443dabb72c250944e56b2854980a8d24136e0f30ed45d1cde9fb12b09e7f2a31",
+        "ciqual-20168": "31c65fd583c2ff80d7d37715421f4452ca674a605d6ce70498dc02262dc10164"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Peppers, sweet, yellow, raw",
+        "Πιπεριές",
+        "γλυκές",
+        "κίτρινες",
+        "ωμές",
+        "Sweet pepper, yellow, raw",
+        "Γλυκό πιπέρι",
+        "κίτρινο",
+        "ωμό"
+      ]
+    },
+    {
+      "canonical": "usda-170427",
+      "expectedRows": {
+        "usda-170427": "47451582743e23e4b18bfe74dec70a2f03b6c9c704b3a1d9be89836bf4bc4533",
+        "ciqual-20085": "37e73d62c185ba2893b776046d865a344b33dde771c24cb520044d6d69a93df9"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Peppers, sweet, green, raw",
+        "Πιπεριές",
+        "γλυκές",
+        "πράσινες",
+        "ωμές",
+        "Sweet pepper, green, raw",
+        "Γλυκό πιπέρι",
+        "πράσινη",
+        "ωμή"
+      ]
+    },
+    {
+      "canonical": "usda-167781",
+      "expectedRows": {
+        "usda-167781": "5e2e2c202f8845e1c367ef7a6c31f2cb71af52866d69e36615ede27d918605b9",
+        "ciqual-31027": "3d156a0c117561b83b5b7616505a4488b0430de087c4a67356640a663c80b83d"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Candied fruit",
+        "Γλασαρισμένα φρούτα",
+        "Candied fruits",
+        "Γλασαρισμένα φρούτα"
+      ]
+    },
+    {
+      "canonical": "usda-168771",
+      "expectedRows": {
+        "usda-168771": "ef9342dfa44aedadd1fa7066dbbb5ce06701ae0660887c054a67847e1726c727",
+        "ciqual-31007": "1dcb0c5f376041d93dc211a1f57f95a6454d0b4850d7d0804596ba0b0c4eff05"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Chewing gum",
+        "Τσίχλα",
+        "Chewing gum, with sugar",
+        "Τσίχλα",
+        "με ζάχαρη",
+        "ζάχαρη"
+      ]
+    },
+    {
+      "canonical": "usda-168819",
+      "expectedRows": {
+        "usda-168819": "75b15fab3ed8c1ae662a8df0b8ab6c92b8495896d901f4b917975769fcdd8281",
+        "ciqual-31039": "68834558cb121c6b40025c1af41ff8b275bdaa85b9b2875fecd690fcb78a3ead"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Marmalade, orange",
+        "Μαρμελάδα",
+        "πορτοκάλι",
+        "Marmalade, orange",
+        "Μαρμελάδα",
+        "πορτοκάλι"
+      ]
+    },
+    {
+      "canonical": "usda-174573",
+      "expectedRows": {
+        "usda-174573": "4f5fa6d382cea24751139b0c07c5c121f7569295d49710744263aef6f6e0efda",
+        "ciqual-30791": "67100784d7f320120d756aedcd780e26cd939895b1d558207dc7fe93f2fed687"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Mortadella, beef, pork",
+        "μοσχαρίσιο",
+        "χοιρινό",
+        "μοσχάρι",
+        "μοσχαρίσιο κρέας",
+        "Pork and beef mortadella",
+        "Μορταδέλα χοιρινό και μοσχαρίσιο",
+        "μοσχάρι",
+        "μοσχαρίσιο κρέας",
+        "χοιρινό"
+      ]
+    },
+    {
+      "canonical": "usda-174272",
+      "expectedRows": {
+        "usda-174272": "b94908d4c79a55ea184ea90c8f3bc0d2cc4aac4b5d80afd43845dc40d9998702",
+        "ciqual-20917": "627dcadad9399309c081bd2beea02aa596a8b659ff337870394b3078dd0929bb"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Tempeh",
+        "Τέμπε",
+        "Tempeh",
+        "Τέμπε"
+      ]
+    },
+    {
+      "canonical": "usda-172240",
+      "expectedRows": {
+        "usda-172240": "98b1b80776032a76936fc7a79f8d25a419287d1e3eb21e18f645bd92199a57b8",
+        "ciqual-11220": "dd57c70d62d2053bb6a7a8f57f64e934d83fab169827e95b8f0894a8d898e5e7"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Vinegar, red wine",
+        "Ξύδι",
+        "κόκκινο κρασί",
+        "κρασί",
+        "Vinegar from red wine",
+        "Ξύδι από κόκκινο κρασί",
+        "ξύδι",
+        "κρασί"
+      ]
+    },
+    {
+      "canonical": "usda-173471",
+      "expectedRows": {
+        "usda-173471": "fdf4513cfa561b9c7fb7252458e589c29652ae61148ad833ffcf32b86585f8cb",
+        "ciqual-11065": "c4278007894d675dfaf0e50db80f4bea9415bf2102835078472da431046b861b"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Vanilla extract",
+        "Εκχύλισμα βανίλιας",
+        "βανίλια",
+        "Vanilla, alcoholic extract",
+        "Βανίλια",
+        "αλκοολούχο εκχύλισμα"
+      ]
+    },
+    {
+      "canonical": "ciqual-18069",
+      "expectedRows": {
+        "usda-174133": "d1c5c0bfe8e0f886496323374d769c2ef596a1334daa351e136366403b6aa4c5",
+        "ciqual-18069": "ce5fdc47c21fbb57d446976b50943eab0573dea5b28b47ac5bd3b1eeb2dcee7c"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Beverages, coffee, instant, decaffeinated, powder",
+        "Ποτά",
+        "καφές",
+        "στιγμιαίος",
+        "ντεκαφεϊνέ",
+        "σκόνη",
+        "Decaffeinated coffee, powder, instant",
+        "Καφές ντεκαφεϊνέ",
+        "σκόνη",
+        "στιγμιαίος",
+        "καφές"
+      ]
+    },
+    {
+      "canonical": "usda-171917",
+      "expectedRows": {
+        "usda-171917": "9de894b257fe36a4f6f0316f3c1804d1934f7ad1c56899a3ea08e5060d92de18",
+        "ciqual-18155": "1776f64567bc5d863966e56c0bccfc58f7224325a3be495a654fd45783ec1cf3"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Beverages, tea, green, brewed, regular",
+        "Ποτά",
+        "τσάι",
+        "πράσινο",
+        "παρασκευασμένο",
+        "κανονικό",
+        "Green tea, brewed, without sugar",
+        "Πράσινο τσάι",
+        "βρασμένο",
+        "χωρίς ζάχαρη",
+        "ζάχαρη",
+        "τσάι"
+      ]
+    },
+    {
+      "canonical": "usda-174120",
+      "expectedRows": {
+        "usda-174120": "a659ff43eae0dfb26fcc7d6d87b752c1406ad13e89a65041d241f175be88642e",
+        "ciqual-18156": "f44d7419aca379b0ded92c2f98148b25bdbc70cdf9121110ca25a1c4db2291de"
+      },
+      "reason": "Same generic food, edible portion and preparation across composition tables; keep one whole source profile despite sampling, calculation and coverage differences.",
+      "aliases": [
+        "Beverages, tea, Oolong, brewed",
+        "Ποτά",
+        "τσάι",
+        "παρασκευασμένα",
+        "Oolong tea, brewed, without sugar",
+        "Τσάι",
+        "παρασκευασμένο",
+        "χωρίς ζάχαρη",
+        "ζάχαρη"
+      ]
+    },
+    {
+      "canonical": "ciqual-18430",
+      "expectedRows": {
+        "ciqual-18008": "f1c1d2cf10f2c4cb670d6aa79108a1169c582b4b2a5fe87e28d6e2936e392030",
+        "ciqual-18430": "c45761edd628e7f3f4eff588de0636ac4cad08be2b9cdfe6ea5aebf9f0cc2a06"
+      },
+      "reason": "The same bottled water twice in CIQUAL.",
+      "aliases": [
+        "Water, bottled (average)",
+        "Νερό",
+        "εμφιαλωμένο μέσος όρος"
+      ]
+    }
+  ],
+  "generics": [
+    {
+      "canonical": "usda-171688",
+      "members": [
+        "off-2000000135537"
+      ],
+      "aliases": [
+        "Apple"
+      ],
+      "reason": "An Open Food Facts copy of the USDA row."
+    },
+    {
+      "canonical": "off-5059319024592",
+      "members": [
+        "off-5059319024653"
+      ],
+      "aliases": [
+        "Kellogg's Coco pops chocos"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-8410076600790",
+      "members": [
+        "off-8410076600837"
+      ],
+      "aliases": [
+        "Crunchy Oats & Honey (Nature Valley)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201004066497",
+      "members": [
+        "off-5201004166494"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201004166456",
+      "members": [
+        "off-5201004066459"
+      ],
+      "aliases": [
+        "Digestive Bar"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201004020963",
+      "members": [
+        "off-5201004020840"
+      ],
+      "aliases": [
+        "Digestive with palm oil (Papadopoulos)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203927863115",
+      "members": [
+        "off-5203927863122"
+      ],
+      "aliases": [
+        "Protein Bar Digestive (Hungry Not)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201415205737",
+      "members": [
+        "off-5201415205713"
+      ],
+      "aliases": [
+        "Zemitha protein bar, banana chocolate (Ήπειρος)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201415204983",
+      "members": [
+        "off-5201415204969"
+      ],
+      "aliases": [
+        "Protein bars (Ήπειρος)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202646003642",
+      "members": [
+        "off-5202646004106"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5059319025681",
+      "members": [
+        "off-5059319025841"
+      ],
+      "aliases": [
+        "Special K Classic (Kellogg Europe Trading Ltd)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202576872219",
+      "members": [
+        "off-5208046089606"
+      ],
+      "aliases": [
+        "Digestive (Bonora)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203064006802",
+      "members": [
+        "off-5203064045269"
+      ],
+      "aliases": [
+        "Elite crackers"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201002009168",
+      "members": [
+        "off-5201002009786",
+        "off-5201002008994"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-7622202010460",
+      "members": [
+        "off-7622202010866",
+        "off-7622202010507"
+      ],
+      "aliases": [
+        "chipita ρίγανη"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5200040332085",
+      "members": [
+        "off-5200040332078"
+      ],
+      "aliases": [
+        "Crunchy Peas, Salt & Pepper (Palse)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202178002199",
+      "members": [
+        "off-5202178002274"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202178007934",
+      "members": [
+        "off-5202178007804"
+      ],
+      "aliases": [
+        "στραγγιστό γιαούρτι 5% (ΟΛΥΜΠΟΣ)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5206851071427",
+      "members": [
+        "off-5206851071410",
+        "off-18664043"
+      ],
+      "aliases": [
+        "Νουνού στραγγίστο 1,5%"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201037713719",
+      "members": [
+        "off-5201037713733"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201083323511",
+      "members": [
+        "off-5201083351361"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201037509237",
+      "members": [
+        "off-7238437500845"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201083352061",
+      "members": [
+        "off-5201083344080"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201168415230",
+      "members": [
+        "off-5201168415193"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202736000117",
+      "members": [
+        "off-5202736700000"
+      ],
+      "aliases": [
+        "Πρόβειο γιαούρτι (ΣΤΑΜΟΥ)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5208046020296",
+      "members": [
+        "off-5202576043619"
+      ],
+      "aliases": [
+        "Strained yoghurt 10% fat (Μαράτα)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202234620558",
+      "members": [
+        "off-5202234611433"
+      ],
+      "aliases": [
+        "mein original griechischer sahne Joghurt (Kri Kri)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202234211015",
+      "members": [
+        "off-5202234211022"
+      ],
+      "aliases": [
+        "Ice Cream Greek Frozen Yogurt (Kri Kri)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-4100290027780",
+      "members": [
+        "off-4100290077617"
+      ],
+      "aliases": [
+        "Protein salted caramel pudding (Arla)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5711953197499",
+      "members": [
+        "off-5711953197611"
+      ],
+      "aliases": [
+        "Protein Food To Go (Arla)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-4205228040814",
+      "members": [
+        "off-5203278040814"
+      ],
+      "aliases": [
+        "Συμπυκνωμένο γάλα παστεριωμένο (MR. GRAND)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201005080157",
+      "members": [
+        "off-5201005028371"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201034001468",
+      "members": [
+        "off-5201034001550"
+      ],
+      "aliases": [
+        "Lipton Ice Tea -lemon"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5601165005791",
+      "members": [
+        "off-5063270103524"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201037403306",
+      "members": [
+        "off-5201037404129"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5206769330111",
+      "members": [
+        "off-5206769337028"
+      ],
+      "aliases": [
+        "Juice Apple, Orange And Carrot (Christodoulou)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201171150173",
+      "members": [
+        "off-5201171151163"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201261011322",
+      "members": [
+        "off-5201261011360"
+      ],
+      "aliases": [
+        "Free Lemon 0.0% (AMSTEL)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202178083747",
+      "members": [
+        "off-5202178005640"
+      ],
+      "aliases": [
+        "Carpos Almond (Olympus)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201037507738",
+      "members": [
+        "off-5201037509022"
+      ],
+      "aliases": [
+        "Almond Without Added Sugar (ΔΕΛΤΑ)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202178004964",
+      "members": [
+        "off-5202173015569"
+      ],
+      "aliases": [
+        "Καρπος αμυγδαλο με κακαο"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-87157635",
+      "members": [
+        "off-87157260"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203278061246",
+      "members": [
+        "off-12032785"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201066003003",
+      "members": [
+        "off-5201066014009"
+      ],
+      "aliases": [
+        "Τομάτες Τριμμένες (Kyknos)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201066111128",
+      "members": [
+        "off-5201066112118"
+      ],
+      "aliases": [
+        "Tomaten Mark (KYKNOS)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-2000000121721",
+      "members": [
+        "off-5212002209144"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-12080465",
+      "members": [
+        "off-5208046072516"
+      ],
+      "aliases": [
+        "Βερίκοκα αποξηραμένα (Μαράτα)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-8850344805005",
+      "members": [
+        "off-8850344810290"
+      ],
+      "aliases": [
+        "Sweet Chilli (Monkey Brand)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201002003678",
+      "members": [
+        "off-5201002003142"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202460022256",
+      "members": [
+        "off-5202460062634"
+      ],
+      "aliases": [
+        "Κουβερτουρα (Oscar)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203997119549",
+      "members": [
+        "off-5203997119631"
+      ],
+      "aliases": [
+        "Πιτα Ολικής Άλεσης (Αλεξάκης)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-2210633005084",
+      "members": [
+        "off-2210633005107"
+      ],
+      "aliases": [
+        "Σνίτσελ Κοτόπουλο Πανέ Προψημένο Νωπό (Σκλαβενίτης)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-8606018618187",
+      "members": [
+        "off-8606018618040"
+      ],
+      "aliases": [
+        "Cookies & Cream Ice Cream (Nirvana)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-2248478039384",
+      "members": [
+        "off-5202378039384"
+      ],
+      "aliases": [
+        "Caramel Ice Cream (Galaxias)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202336137176",
+      "members": [
+        "off-5202336162185"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5740900401624",
+      "members": [
+        "off-5200305120921",
+        "off-5740900837201"
+      ],
+      "aliases": [
+        "Butter Βούτυρο (Lurpak)",
+        "Butter (Lurpak)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5012501022097",
+      "members": [
+        "off-5201127012449"
+      ],
+      "aliases": [
+        "Milk Chocolate With Almonds (ION)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201024775430",
+      "members": [
+        "off-5201024781875",
+        "off-5201024781882"
+      ],
+      "aliases": [
+        "Chips origan",
+        "Oregano Crisps (Lay's)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5208069003191",
+      "members": [
+        "off-5208069000084"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201037508506",
+      "members": [
+        "off-5201037508476"
+      ],
+      "aliases": [
+        "ΤΟΥ ΤΌΠΟΥ ΜΑΣ (Δέλτα)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201037508469",
+      "members": [
+        "off-5201037508513"
+      ],
+      "aliases": [
+        "ΓΑΛΑ ΒΙΟΛΟΓΙΚΟ ΤΟΥ ΤΟΠΟΥ ΜΑΣ ΚΕΡΚΙΝΗ 1.5% (ΔΕΛΤΑ)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5202234630366",
+      "members": [
+        "off-5202234630380",
+        "off-5202234630359"
+      ],
+      "aliases": [
+        "High protein super spoon (Kri Kri)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201083350241",
+      "members": [
+        "off-5201083341638"
+      ],
+      "aliases": [
+        "High Protein Vanilla Drink (Μεβγάλ)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203064008929",
+      "members": [
+        "off-5203064008905"
+      ],
+      "aliases": [
+        "Soft cookie (Kings)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203985255006",
+      "members": [
+        "off-5203985255051"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5203342510038",
+      "members": [
+        "off-5203342510069"
+      ],
+      "aliases": [],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "off-5201024777182",
+      "members": [
+        "off-5201024009733"
+      ],
+      "aliases": [
+        "ruffles BBQ 95gr (tasty)"
+      ],
+      "reason": "The same product under several barcodes."
+    },
+    {
+      "canonical": "usda-173933",
+      "members": [
+        "usda-167771"
+      ],
+      "aliases": [
+        "Apple juice, canned or bottled, unsweetened, with added ascorbic acid"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-173935",
+      "members": [
+        "usda-167775"
+      ],
+      "aliases": [
+        "Apple juice, frozen concentrate, unsweetened, diluted with 3 volume water, with added ascorbic acid"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169940",
+      "members": [
+        "usda-168186"
+      ],
+      "aliases": [
+        "Pear nectar, canned, with added ascorbic acid"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169947",
+      "members": [
+        "usda-168187"
+      ],
+      "aliases": [
+        "Pineapple juice, canned or bottled, unsweetened, with added ascorbic acid"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-173934",
+      "members": [
+        "usda-168188"
+      ],
+      "aliases": [
+        "Apple juice, frozen concentrate, unsweetened, undiluted, with added ascorbic acid"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-173042",
+      "members": [
+        "usda-168207",
+        "usda-173041"
+      ],
+      "aliases": [
+        "Grape juice, canned or bottled, unsweetened, with added ascorbic acid and calcium",
+        "Grape juice, canned or bottled, unsweetened, with added ascorbic acid"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-168929",
+      "members": [
+        "usda-168867"
+      ],
+      "aliases": [
+        "Cornmeal, degermed, enriched, yellow"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169756",
+      "members": [
+        "usda-168877"
+      ],
+      "aliases": [
+        "Rice, white, long-grain, regular, raw, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169760",
+      "members": [
+        "usda-168879"
+      ],
+      "aliases": [
+        "Rice, white, medium-grain, raw, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-168930",
+      "members": [
+        "usda-168880"
+      ],
+      "aliases": [
+        "Rice, white, medium-grain, enriched, cooked"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-168932",
+      "members": [
+        "usda-168882"
+      ],
+      "aliases": [
+        "Rice, white, short-grain, enriched, cooked"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172015",
+      "members": [
+        "usda-168922"
+      ],
+      "aliases": [
+        "Cornmeal, degermed, enriched, white"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169736",
+      "members": [
+        "usda-168927"
+      ],
+      "aliases": [
+        "Pasta, dry, unenriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169715",
+      "members": [
+        "usda-168933"
+      ],
+      "aliases": [
+        "Semolina, unenriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-168935",
+      "members": [
+        "usda-169753"
+      ],
+      "aliases": [
+        "Rice, white, long-grain, regular, cooked, enriched, with salt"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-168940",
+      "members": [
+        "usda-168939"
+      ],
+      "aliases": [
+        "Wheat flour, white (industrial), 11.5% protein, bleached, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172020",
+      "members": [
+        "usda-168942"
+      ],
+      "aliases": [
+        "Wheat flour, white (industrial), 13% protein, bleached, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169101",
+      "members": [
+        "usda-169920"
+      ],
+      "aliases": [
+        "Orange juice, chilled, includes from concentrate, with added calcium"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169122",
+      "members": [
+        "usda-169123"
+      ],
+      "aliases": [
+        "Pears, dried, sulfured, stewed, with added sugar"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169696",
+      "members": [
+        "usda-169694"
+      ],
+      "aliases": [
+        "Corn flour, masa, enriched, white"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169758",
+      "members": [
+        "usda-169707"
+      ],
+      "aliases": [
+        "Rice, white, long-grain, parboiled, enriched, dry"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169759",
+      "members": [
+        "usda-169708"
+      ],
+      "aliases": [
+        "Rice, white, long-grain, parboiled, enriched, cooked"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-169755",
+      "members": [
+        "usda-169731"
+      ],
+      "aliases": [
+        "Noodles, egg, dry, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-170651",
+      "members": [
+        "usda-170249"
+      ],
+      "aliases": [
+        "Snacks, pretzels, hard, plain, made with enriched flour, unsalted"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-171290",
+      "members": [
+        "usda-170853"
+      ],
+      "aliases": [
+        "Cheese, pasteurized process, American, fortified with vitamin D"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172205",
+      "members": [
+        "usda-170870",
+        "usda-171267",
+        "usda-172193"
+      ],
+      "aliases": [
+        "Milk, reduced fat, fluid, 2% milkfat, with added nonfat milk solids and vitamin A and vitamin D",
+        "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+        "Milk, reduced fat, fluid, 2% milkfat, with added nonfat milk solids, without added vitamin A"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-173454",
+      "members": [
+        "usda-170876"
+      ],
+      "aliases": [
+        "Milk, dry, whole, with added vitamin D"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-170877",
+      "members": [
+        "usda-172195"
+      ],
+      "aliases": [
+        "Milk, dry, nonfat, regular, with added vitamin A and vitamin D"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-170880",
+      "members": [
+        "usda-173450"
+      ],
+      "aliases": [
+        "Milk, chocolate, fluid, commercial, reduced fat, with added calcium"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172217",
+      "members": [
+        "usda-171265"
+      ],
+      "aliases": [
+        "Milk, whole, 3.25% milkfat, with added vitamin D"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-173432",
+      "members": [
+        "usda-171269"
+      ],
+      "aliases": [
+        "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172196",
+      "members": [
+        "usda-171272"
+      ],
+      "aliases": [
+        "Milk, dry, nonfat, instant, with added vitamin A and vitamin D"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-171276",
+      "members": [
+        "usda-172194"
+      ],
+      "aliases": [
+        "Milk, canned, evaporated, with added vitamin A"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-171914",
+      "members": [
+        "usda-174151"
+      ],
+      "aliases": [
+        "Beverages, Fruit punch drink, with added nutrients, canned"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172017",
+      "members": [
+        "usda-172016"
+      ],
+      "aliases": [
+        "Wheat flour, white (industrial), 9% protein, bleached, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172019",
+      "members": [
+        "usda-172018"
+      ],
+      "aliases": [
+        "Wheat flour, white (industrial), 10% protein, bleached, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172022",
+      "members": [
+        "usda-172021"
+      ],
+      "aliases": [
+        "Wheat flour, white (industrial), 15% protein, bleached, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172817",
+      "members": [
+        "usda-172680"
+      ],
+      "aliases": [
+        "Bread, raisin, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-175052",
+      "members": [
+        "usda-172700"
+      ],
+      "aliases": [
+        "Cake, coffeecake, cinnamon with crumb topping, commercially prepared, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172820",
+      "members": [
+        "usda-172716"
+      ],
+      "aliases": [
+        "Cookies, chocolate chip, commercially prepared, regular, higher fat, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172824",
+      "members": [
+        "usda-172753"
+      ],
+      "aliases": [
+        "Danish pastry, cinnamon, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-175066",
+      "members": [
+        "usda-172792"
+      ],
+      "aliases": [
+        "Popovers, dry mix, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-174915",
+      "members": [
+        "usda-172816"
+      ],
+      "aliases": [
+        "Bread, pita, white, unenriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172819",
+      "members": [
+        "usda-174950"
+      ],
+      "aliases": [
+        "Cookies, butter, commercially prepared, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-172828",
+      "members": [
+        "usda-173238",
+        "usda-175063"
+      ],
+      "aliases": [
+        "English muffins, plain, unenriched, without calcium propionate (includes sourdough)",
+        "English muffins, plain, enriched, without calcium propionate(includes sourdough)"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-173239",
+      "members": [
+        "usda-175011"
+      ],
+      "aliases": [
+        "Pie, apple, commercially prepared, enriched flour"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "usda-175053",
+      "members": [
+        "usda-174940"
+      ],
+      "aliases": [
+        "Cake, pound, commercially prepared, other than all butter, enriched"
+      ],
+      "reason": "Differs only by enrichment or added vitamins, not by macros."
+    },
+    {
+      "canonical": "off-5201010144776",
+      "name": "Pasta, dry",
+      "members": [
+        "usda-169736",
+        "off-5201010144523",
+        "off-5201010144721",
+        "off-5201193106011",
+        "off-5201193106028",
+        "off-8076800195033",
+        "off-8076800195057",
+        "off-8076802085738",
+        "off-8076802085899",
+        "off-8076802085981",
+        "off-8076808150072",
+        "off-8076809523509",
+        "off-5202576282117",
+        "off-8076809575416",
+        "off-5201010103025",
+        "off-5201013012508",
+        "off-5201010012327",
+        "off-5201077010007",
+        "off-5201193100019",
+        "off-5201010012266",
+        "off-5201193101078",
+        "off-5201193101061",
+        "off-5201193101023",
+        "off-5200454069706",
+        "off-5202336099689",
+        "off-5201193790210",
+        "off-5201077015002",
+        "off-5201010103100",
+        "off-5201010001505",
+        "off-5201013003520",
+        "off-5201193100026",
+        "off-5201193109302",
+        "off-5202336099054",
+        "off-5201193112043",
+        "off-20344009",
+        "off-4056489167099",
+        "off-5200113980052",
+        "off-5212002223652",
+        "off-5202576630222",
+        "off-5201010012242",
+        "off-5201193217175",
+        "off-5201013012546",
+        "off-5203278017960",
+        "off-5201010007934",
+        "off-5202576185913",
+        "off-5202576300927",
+        "off-5201077015552",
+        "off-5201010144837",
+        "off-5202576630369",
+        "off-5201013013406",
+        "off-4056489167242",
+        "off-5202336146727",
+        "off-5201193106110",
+        "off-5202336151769",
+        "off-5201010143786",
+        "off-5201193106158",
+        "off-5207066127497",
+        "off-20500832",
+        "off-5212002208635",
+        "off-5201010161025",
+        "off-5202378010086",
+        "off-5202378010475",
+        "off-5202378010284",
+        "off-5201193111626",
+        "off-5212002208765",
+        "off-5202378010017",
+        "off-5202336146826",
+        "off-5202576630208",
+        "off-5201013004701",
+        "off-5202576302297",
+        "off-5201010015144",
+        "off-5208046287620",
+        "off-5212002208703",
+        "off-4056489465256",
+        "off-5202576118997",
+        "off-5201013012584",
+        "off-5200136580772",
+        "off-5201013020183"
+      ],
+      "aliases": [
+        "ζυμαρικά",
+        "μακαρόνια",
+        "σπαγγέτι",
+        "πένες",
+        "κριθαράκι",
+        "βίδες",
+        "λαζανάκι",
+        "penne",
+        "spaghetti",
+        "fusilli",
+        "orzo",
+        "macaroni",
+        "Barilla",
+        "BARILLA",
+        "combini",
+        "Combino",
+        "Eurimac",
+        "Galaxias",
+        "Melissa",
+        "Miami",
+        "Misko",
+        "MISKO",
+        "My Gusto",
+        "My Kouzina",
+        "My Market",
+        "MyKouzina",
+        "Nostimon",
+        "Primo gusto",
+        "Stella",
+        "stella",
+        "Target is",
+        "WORLD'S MARKET",
+        "World's market",
+        "Worlds Market",
+        "Γαλαξίας",
+        "Ελληνικός Sitos",
+        "Επιλογή Μου",
+        "Μέλισσα",
+        "ΜΑΚΒΕΛ",
+        "Μακβελ",
+        "Μαράτα",
+        "Μαρατα",
+        "ΜΑΡΑΤΑ",
+        "νῶμα",
+        "ζυμαρικά"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5208046088289",
+      "name": "Pasta, whole wheat, dry",
+      "members": [
+        "off-5201193111916",
+        "off-8076809529419",
+        "off-8076809529433",
+        "off-5201193121700",
+        "off-8076809578363",
+        "off-5201193206469",
+        "off-5201193111961",
+        "off-5201193111992",
+        "off-5201010009419",
+        "off-5201193209323",
+        "off-5202576300941",
+        "off-5201010015083",
+        "off-5201010015106",
+        "off-5201010009433",
+        "off-5208046088265",
+        "off-5201193111954",
+        "off-5201193111909",
+        "off-5208046088272",
+        "off-5202336095681",
+        "off-5200385114124",
+        "off-4335619036550",
+        "off-4335619010420",
+        "off-5202576182943",
+        "off-5202576630291",
+        "off-5201013020138",
+        "off-5208046287637",
+        "off-5201193203321",
+        "off-5204217914104",
+        "off-5201013020268",
+        "off-4056489167082"
+      ],
+      "aliases": [
+        "ζυμαρικά ολικής άλεσης",
+        "μακαρόνια ολικής",
+        "σπαγγέτι ολικής",
+        "πένες ολικής",
+        "κριθαράκι ολικής",
+        "AB",
+        "Barilla",
+        "Combino",
+        "Combino Lidl",
+        "Eurimac",
+        "Marata",
+        "Melissa",
+        "Misko",
+        "MISKO",
+        "Pasta manía",
+        "Primo Gusto",
+        "Ελλήνων Στάχη",
+        "Ελληνική Σπορα",
+        "Μαράτα",
+        "ΜΑΡΑΤΑ",
+        "Σκλαβενίτης",
+        "κριθαράκι μέτριο ολικής άλεσης"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202336155699",
+      "name": "Milk, whole 3.5%",
+      "members": [
+        "usda-172217",
+        "off-20119867",
+        "off-5201083335231",
+        "off-5202178001208",
+        "off-5202178003226",
+        "off-5200106870018",
+        "off-5202576203570",
+        "off-5202178000720",
+        "off-5201083347135",
+        "off-5203190210012",
+        "off-5212002253642",
+        "off-5208046090985",
+        "off-5201037509107",
+        "off-5208046089170",
+        "off-5200134060009",
+        "off-4056489125624",
+        "off-5202242000021",
+        "off-5200103891108",
+        "off-5201037508919",
+        "off-5200107080324",
+        "off-758419815113807828131",
+        "off-5208120000008",
+        "off-5203149001791",
+        "off-5203278036886",
+        "off-5200107080010",
+        "off-5202632001003",
+        "off-5207066128838",
+        "off-5202632007265",
+        "off-5200104810009",
+        "off-5202178000010",
+        "off-5203190216014",
+        "off-5205941062802",
+        "off-5202336168927",
+        "off-5202336169160",
+        "off-5204139001012",
+        "off-5201083010336",
+        "off-5207066109042",
+        "off-5204139001029",
+        "off-5202382700003",
+        "off-4056489907350",
+        "off-5203278062786"
+      ],
+      "aliases": [
+        "γάλα πλήρες",
+        "φρέσκο γάλα 3.5%",
+        "γάλα 3,5%",
+        "γάλα 3,7%",
+        "AB",
+        "aplos",
+        "Arkadikon",
+        "Delta",
+        "lami",
+        "Mr.Grand",
+        "My fresco",
+        "ΑΒ",
+        "ΑΓΝΟ",
+        "Από τον τόπο μας",
+        "ΓΑΛΠΟ",
+        "ΕΒΟΛ",
+        "Επιλογή Μου",
+        "Κουκάκη",
+        "Λύκας",
+        "Μαράτα",
+        "ΜΑΡΑΤΑ",
+        "Μεβγάλ",
+        "Μεβγαλ",
+        "Μικρές Φάρμες Του Βουνού",
+        "Ολυμπος",
+        "ΟΛΥΜΠΟΣ",
+        "Πρώτο",
+        "Ροδόπη",
+        "Σέρφερ",
+        "σεργαλ 2 Λίτρα 3.5%",
+        "ΤΡΙΚΚΗ Α.Ε",
+        "Φάρμα Κάστρου Φρέσκο",
+        "Όλυμπος",
+        "Γάλα 3",
+        "γάλα"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5201037508902",
+      "name": "Milk, semi-skimmed 1.5%",
+      "members": [
+        "off-5202576302365",
+        "off-4056489190042",
+        "off-5202178050084",
+        "off-5208046089163",
+        "off-5202632002048",
+        "off-5204139001425",
+        "off-5207066131043",
+        "off-5204139001036",
+        "off-5201037509114",
+        "off-5200385103128",
+        "off-5203149001807",
+        "off-5204139001043",
+        "off-5208046090992",
+        "off-5202082000076",
+        "off-5201389400534",
+        "off-5207066114442",
+        "off-5200123950021",
+        "off-5203278056945",
+        "off-3451791340412"
+      ],
+      "aliases": [
+        "γάλα ελαφρύ",
+        "γάλα 1,5%",
+        "φρέσκο γάλα 1.5%",
+        "ημιαποβουτυρωμένο γάλα",
+        "Delta",
+        "Elle & Vire",
+        "Evol",
+        "Galpo",
+        "Marata",
+        "Olympos",
+        "Rodopi",
+        "ΔΕΛΤΑ",
+        "επιλογή μου",
+        "Μανδρέκας",
+        "Μαρατα",
+        "Νεογαλ",
+        "Οι Φάρμες Μας",
+        "Σεργαλ",
+        "ΣΠΥΡΑΓΓ. ΤΖΩΡΤΖΑΤΟΣ & ΣΙΑ Ε.Ε",
+        "Cape Cod Railroad"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202336111480",
+      "name": "Yogurt, strained 0%",
+      "members": [
+        "off-5202082002247",
+        "off-5201168415155",
+        "off-5201054018866",
+        "off-5201054018781",
+        "off-5201054018828",
+        "off-5201037713993",
+        "off-5203278063950"
+      ],
+      "aliases": [
+        "στραγγιστό γιαούρτι 0%",
+        "γιαούρτι 0%",
+        "greek yogurt 0%",
+        "Dodoni",
+        "FAGE",
+        "Fage Total",
+        "Galaos",
+        "ΑΒ",
+        "Δέλτα",
+        "Μασούτις",
+        "Φάγε"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202178002793",
+      "name": "Yogurt, strained 2%",
+      "members": [
+        "off-5201168715217",
+        "off-5202178002199",
+        "off-5202234143088",
+        "off-5202178005718",
+        "off-5202736900035",
+        "off-5207091000086",
+        "off-5208046020289",
+        "off-5202378009516",
+        "off-5212002253420",
+        "off-5202234620893",
+        "off-5202336082278",
+        "off-4056489055969",
+        "off-5203278035476",
+        "off-5201037713221",
+        "off-5201054016862",
+        "off-5202576043992",
+        "off-5201054016879",
+        "off-5200106870827",
+        "off-5201168215373",
+        "off-5201704064694",
+        "off-5200385103098",
+        "off-9310653102862",
+        "off-5200113900234",
+        "off-5203287152010",
+        "off-5200141740048",
+        "off-0856290002374",
+        "off-5201054031612",
+        "off-5200112010422",
+        "off-5200117800653"
+      ],
+      "aliases": [
+        "στραγγιστό γιαούρτι 2%",
+        "γιαούρτι 2%",
+        "greek yogurt 2%",
+        "Araxos",
+        "Delta Little Farms",
+        "DODONI",
+        "Fage",
+        "Farmes Tou Vounou",
+        "KOLIOS",
+        "Marata",
+        "My gusto",
+        "My Gusto",
+        "Olympos",
+        "Sellia Farm",
+        "Από τον τόπο μας",
+        "Γαλαξίας",
+        "ΓΑΛΠΟ",
+        "Ζαγόρι",
+        "Κουκακη",
+        "Κρι Κρι",
+        "Μαρατα",
+        "ΟΛΥΜΠΟΣ",
+        "ΣΤΑΜΟΥ",
+        "Στραγγιστο 2%",
+        "Το Γάλα Του Μοριά",
+        "Φάρμα Νότας",
+        "γιαούρτι στραγγιστό 2%",
+        "γιαούρτι"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202178007934",
+      "name": "Yogurt, strained 5%",
+      "members": [
+        "off-5201704064687",
+        "off-5202234620923",
+        "off-5202242000441"
+      ],
+      "aliases": [
+        "στραγγιστό γιαούρτι 5%",
+        "γιαούρτι 5%",
+        "greek yogurt 5%",
+        "Amerikanikis Georgikis Sxolis",
+        "Kolios",
+        "Kri Kri",
+        "Όλυμπος"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202336082308",
+      "name": "Yogurt, strained 10%",
+      "members": [
+        "off-5203278035483",
+        "off-5208046020296",
+        "off-5208086449972",
+        "off-5202082000359",
+        "off-5212002253413",
+        "off-5201037712620"
+      ],
+      "aliases": [
+        "στραγγιστό γιαούρτι 10%",
+        "γιαούρτι 10%",
+        "greek yogurt 10%",
+        "MyGusto",
+        "ΑΒ Βασιλόπουλος",
+        "Από Τον Τόπο Μας",
+        "ΔΕΛΤΑ",
+        "Η ΣΤΡΟΥΓΓΑ",
+        "ΜΑΡΑΤΑ",
+        "Νεογαλ 10% Λιπαρά",
+        "γάλα",
+        "γιαούρτι",
+        "κρέμα"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "usda-171413",
+      "name": "Olive oil",
+      "members": [
+        "ciqual-17270",
+        "off-5200119890133",
+        "off-5602162700009",
+        "off-6354650016541",
+        "off-5201190150017",
+        "off-5200117460574",
+        "off-5200000013214",
+        "off-5200103670031",
+        "off-5200101805206",
+        "off-5200101809273",
+        "off-5214000157014",
+        "off-0745125850993",
+        "off-5214001304011",
+        "off-5201341604529",
+        "off-5213000450354",
+        "off-5214001601028",
+        "off-5201106010107",
+        "off-5204472400350",
+        "off-5214001345069",
+        "off-5200405500586",
+        "off-5200305093874",
+        "off-5205478000315",
+        "off-5202336008865",
+        "off-5203278061246",
+        "off-5201216201174",
+        "off-5200108383295",
+        "off-5200252261364",
+        "off-0004179000160",
+        "off-5200141020201",
+        "off-4335619097896",
+        "off-4779048080317"
+      ],
+      "aliases": [
+        "ελαιόλαδο",
+        "παρθένο ελαιόλαδο",
+        "extra virgin olive oil",
+        "EVOO",
+        "AB",
+        "agricultural coop of Chainia",
+        "Azeitorem",
+        "Creta Eleon",
+        "Kléos",
+        "Latzimas",
+        "Lidl",
+        "masoutis",
+        "Naturalisimo",
+        "Nutria",
+        "Oevotas",
+        "Olivartia LTD",
+        "Physis",
+        "Terra Creta",
+        "Xenia",
+        "Xilouris Family",
+        "ΜΙΝΕΡΒΑ",
+        "Ελαιόλαδο για σαλάτα ή μαγείρεμα",
+        "ελαιόλαδο",
+        "σαλάτα"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5207066110529",
+      "name": "Honey",
+      "members": [
+        "usda-169640",
+        "off-5201098110106",
+        "off-8413524000012",
+        "off-5200104491840",
+        "off-5202336038237",
+        "off-5200124180670",
+        "off-5200040213018",
+        "off-4056489381174",
+        "off-5202336133673",
+        "off-5207333010125",
+        "off-5200378902028",
+        "off-5214002078164",
+        "off-5200100557632",
+        "off-5200131600147",
+        "off-4056489771289",
+        "off-5205941085832",
+        "off-5200378900949",
+        "off-5203278046755",
+        "off-5200378901465",
+        "off-5202336133796",
+        "off-20483265",
+        "off-5205941085863",
+        "off-5203278051681",
+        "off-5203278046816",
+        "off-5200378901809"
+      ],
+      "aliases": [
+        "μέλι",
+        "honey",
+        "AB Foods",
+        "Arcadia",
+        "Atto",
+        "Economy",
+        "Family Karimali",
+        "Melea",
+        "Melira",
+        "Mr Grand",
+        "Mr grand",
+        "Stayia farm",
+        "The Grecials",
+        "ΑΒ",
+        "ΑΠΟ ΤΟΝ ΤΟΠΟ ΜΑΣ",
+        "Γκυκάνθη",
+        "Εποχή",
+        "ΗΛΙΑΝΘΗ",
+        "Λακωνίας",
+        "Μέλο",
+        "Ροδανθη",
+        "μέλι"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202336128600",
+      "name": "Sugar, white",
+      "members": [
+        "usda-169655",
+        "off-5213004880003",
+        "off-5206558099120",
+        "off-5202576101616"
+      ],
+      "aliases": [
+        "ζάχαρη",
+        "λευκή ζάχαρη",
+        "AB",
+        "Cristae",
+        "Sugartia",
+        "ΜΑΡΑΤΑ"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5212002222884",
+      "name": "Flour, white wheat",
+      "members": [
+        "usda-169761",
+        "off-5203064042404",
+        "off-6203875489565",
+        "off-20212599",
+        "off-5202576682573",
+        "off-5203064003269",
+        "off-5201002000547",
+        "off-5201002000530",
+        "off-5203064008448",
+        "off-5202576682580",
+        "off-5201544450114",
+        "off-20775360"
+      ],
+      "aliases": [
+        "αλεύρι",
+        "αλεύρι σίτου",
+        "αλεύρι για όλες τις χρήσεις",
+        "φαρίνα",
+        "Alatini",
+        "Chrisos Milos Lidl",
+        "Giotis",
+        "Marata",
+        "My Gusto",
+        "Γιώτης",
+        "Μύλοι Αγίου Γεωργίου",
+        "Χρυσός Μύλος",
+        "Αλεύρι για όλες τις χρήσεις",
+        "αλεύρι"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202576250024",
+      "name": "Rice, white, dry",
+      "members": [
+        "usda-169756",
+        "off-5200315716015",
+        "off-8002130203292",
+        "off-5201502110074",
+        "off-5202576100626",
+        "off-5201399020173",
+        "off-5207037003270",
+        "off-5202576250031",
+        "off-5202336136698",
+        "off-5201502110050",
+        "off-5201399020135",
+        "off-5202336098316",
+        "off-5201399020180",
+        "off-4056489152941",
+        "off-20927257",
+        "off-5203278043624",
+        "off-5201502111972",
+        "off-4056489772835",
+        "off-4056489168225",
+        "off-4335619046368",
+        "off-5213002923436",
+        "off-5202336158171",
+        "off-5202336158133",
+        "off-8590421073292",
+        "off-5208046287521",
+        "off-5204458021098",
+        "off-4056489541073",
+        "off-20927226",
+        "off-5213001070544",
+        "off-7141221899073",
+        "off-5204217906109",
+        "off-4056489152934",
+        "off-5202576250017",
+        "off-0520336158171",
+        "off-4056489604181",
+        "off-5203278044133"
+      ],
+      "aliases": [
+        "ρύζι",
+        "λευκό ρύζι",
+        "ρύζι καρολίνα",
+        "ρύζι γλασσέ",
+        "ρύζι μπασμάτι",
+        "basmati",
+        "carolina",
+        "bonnet",
+        "3 ΑΛΦΑ",
+        "3alfa",
+        "3αλφα",
+        "AB",
+        "Agrimon",
+        "Agrino",
+        "Golden Sun",
+        "Lidl",
+        "LIDL",
+        "Lidl Επιλογής",
+        "OLA BIO",
+        "Riseria Vignola Giovanni S.p.A.",
+        "Skalvenhths",
+        "Sklavenitis",
+        "World's market",
+        "ΑΒ",
+        "ΑΒ Βασιλόπουλος",
+        "ΑΒ Επιλογή",
+        "Από Τον Τόπο Μας",
+        "Ελομάς",
+        "Επιλογής",
+        "Μασούτης",
+        "Νωμα",
+        "Νώμα",
+        "ΟΜΟΣΠΟΝΔΙΑ",
+        "Σκλαβενίτης",
+        "Σκλαβενιτης",
+        "Χαλκιαδάκης"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202646001136",
+      "name": "Oats, rolled",
+      "members": [
+        "off-5202646002836",
+        "off-5202336119691",
+        "off-5202378022393",
+        "off-5203278043013",
+        "off-5201059017451"
+      ],
+      "aliases": [
+        "βρώμη",
+        "νιφάδες βρώμης",
+        "rolled oats",
+        "oat flakes",
+        "κουάκερ",
+        "AB",
+        "fytro",
+        "Millhouse",
+        "Mr.Grand"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202576358584",
+      "name": "Lentils, dry",
+      "members": [
+        "off-5200101472095",
+        "off-5202336137657"
+      ],
+      "aliases": [
+        "φακές",
+        "lentils",
+        "ψιλές φακές",
+        "χοντρές φακές",
+        "άροσις",
+        "ΑΒ",
+        "Σκλαβενίτης"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5212002221733",
+      "name": "Tuna in water, canned",
+      "members": [
+        "off-5201340011106",
+        "off-8590421069981",
+        "off-4335619005341",
+        "off-5202336136056",
+        "off-5201340800885",
+        "off-5202336136018",
+        "off-8852707103308",
+        "off-5208116170043",
+        "off-5201340003033",
+        "off-8852707103131"
+      ],
+      "aliases": [
+        "τόνος σε νερό",
+        "τόνος σε άλμη",
+        "τόνος κονσέρβα",
+        "tuna in water",
+        "tuna in brine",
+        "tuna chunks",
+        "AB",
+        "Geisha",
+        "GEISHA",
+        "KALIMANIS",
+        "My Gusto",
+        "Nixe",
+        "TRATA",
+        "ΑΒ",
+        "ΤΡΑΤΑ",
+        "Τρατα"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202336137176",
+      "name": "Eggs, whole",
+      "members": [
+        "off-5201458094565",
+        "off-5202930972401",
+        "off-5202242000052",
+        "off-0940664141360",
+        "off-5202930120055",
+        "off-5202336163281",
+        "off-5202558060016",
+        "off-5203683110232",
+        "off-5202336163342",
+        "off-5202944130101",
+        "off-5201458210286",
+        "off-5202336163366",
+        "off-5212002224963"
+      ],
+      "aliases": [
+        "αυγά",
+        "αβγά",
+        "φρέσκα αυγά",
+        "eggs",
+        "AB",
+        "Ladakis Farm",
+        "Megafarm",
+        "MyKouzina",
+        "Tsakiri",
+        "Xrusa Auga",
+        "ΑΒ",
+        "Αμερικανική γεωργική σχολής",
+        "Αυγά Βλαχάκη",
+        "Βλαχάκη",
+        "Φρέσκα Αχυρωνα",
+        "ΧΡΥΣΑ ΑΥΓΑ",
+        "Μεσαία αυγά",
+        "αυγά",
+        "αβγά"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5206546000176",
+      "name": "Butter",
+      "members": [
+        "usda-173430",
+        "off-5740900401624",
+        "off-5202178082603",
+        "off-5201415200350",
+        "off-5202178003493",
+        "off-5201106167283",
+        "off-5202178000607",
+        "off-5201415202064",
+        "off-5201106167764",
+        "off-5201168215359"
+      ],
+      "aliases": [
+        "βούτυρο",
+        "αγελαδινό βούτυρο",
+        "butter",
+        "ADORO",
+        "Lurpak",
+        "Ήπειρος",
+        "Δωδωνη",
+        "ΟΛΥΜΠΟΣ",
+        "ΣΑΒΟΙ",
+        "Χωριό",
+        "Όλυμπος",
+        "Βούτυρο"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5212002220392",
+      "name": "Tahini",
+      "members": [
+        "off-5201049211418",
+        "off-5201049211401",
+        "off-5202336032624",
+        "off-5206620000177",
+        "off-5212002208130",
+        "off-5212002251389",
+        "off-5202336109159",
+        "off-5212002220514"
+      ],
+      "aliases": [
+        "ταχίνι",
+        "tahini",
+        "tahin",
+        "πολτός σουσαμιού",
+        "Best Price",
+        "BEST PRICE",
+        "Drapetsonas",
+        "Filos",
+        "HAITOGLOU BROS S.A.",
+        "My Gusto",
+        "Nature's Promise"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-4056489150589",
+      "name": "Feta",
+      "members": [
+        "off-20262969",
+        "off-5200103400690",
+        "off-5201415201630",
+        "off-5201704054923",
+        "off-5200112730016",
+        "off-5200108252010",
+        "off-5200112733949",
+        "off-4056489465867",
+        "off-5201704053254",
+        "off-5201704051595",
+        "off-5202258058276",
+        "off-5202082002681",
+        "off-5202425001623",
+        "off-5202082002674",
+        "off-5200103211081",
+        "off-5202178005664",
+        "off-5203149002521",
+        "off-5202178004292",
+        "off-5206252237101",
+        "off-5202178086182"
+      ],
+      "aliases": [
+        "φέτα",
+        "feta",
+        "τυρί φέτα",
+        "Apolonis",
+        "Bio Farm",
+        "Chelmos",
+        "Eridanous",
+        "Greco",
+        "hepiros",
+        "Kolios",
+        "Neogal",
+        "Olympos",
+        "Omiros",
+        "Rodopi",
+        "Samarina",
+        "ΓΑΛΠΟ",
+        "Θεσσαλία",
+        "Καραλής",
+        "Ολυμπος",
+        "πάσο",
+        "φέτα"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+    },
+    {
+      "canonical": "off-5202576252103",
+      "name": "Almonds, raw",
+      "members": [
+        "off-2000000121740",
+        "off-5202576250925",
+        "off-1962556252106"
+      ],
+      "aliases": [
+        "αμύγδαλα",
+        "ωμά αμύγδαλα",
+        "ψίχα αμυγδάλου",
+        "almonds",
+        "Sklavenitis",
+        "Σκλαβενίτης",
+        "Ακατέργαστα αμύγδαλα σε νιφάδες Σκλαβενίτιδα",
+        "αμύγδαλα"
+      ],
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
     }
   ]
 }
