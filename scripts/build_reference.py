@@ -78,6 +78,22 @@ OFF_MICROS = {
     "vitamin-b6": "vitaminB6", "biotin": "biotin", "folates": "folate",
     "vitamin-b9": "folicAcid", "vitamin-b12": "vitaminB12",
 }
+# Open Food Facts amounts above these per 100 g are unit slips, even in fortified foods.
+# The composition tables keep their real extremes, such as iodine in dried seaweed.
+OFF_MICRO_LIMITS = {
+    "calcium": 3000, "iron": 100, "magnesium": 1500, "phosphorus": 3000, "potassium": 10000,
+    "zinc": 100, "copper": 30, "manganese": 100, "selenium": 2000, "iodine": 5000,
+    "vitaminA": 30000, "vitaminD": 100, "vitaminE": 200, "vitaminK": 2000, "vitaminC": 3000,
+    "vitaminB1": 30, "vitaminB2": 30, "vitaminB3": 200, "vitaminB5": 100, "vitaminB6": 30,
+    "biotin": 500, "folate": 3000, "folicAcid": 3000, "vitaminB12": 200,
+}
+# On a label, fat this far above saturated + mono + poly means those columns can't be right.
+# Composition tables measure them, and their fat can include more than fatty acids.
+FATTY_ACID_GAP, FATTY_ACID_SHARE = 2, .25
+# Foods of one type may merge when each macro is within this share or the absolute amount,
+# whichever is larger: labels round small amounts, so a percentage alone would split them.
+SAME_TYPE_SHARE = .1
+SAME_TYPE_FLOORS = {"kcal": 15, "prot": 1, "fiber": 1, "satFat": 1, "unsatFat": 1, "salt": .2, "sugar": 1.5}
 
 
 def micronutrients(values):
@@ -117,6 +133,11 @@ def normalize(source, food_id, name, group, v, estimates=None):
     unsat = v.get("unsat")
     if unsat is None and v.get("mufa") is not None and v.get("pufa") is not None:
         unsat = v["mufa"] + v["pufa"]
+        if source == "off" and fat and sat is not None:
+            if sat == 0 and unsat == 0 and fat >= 1:
+                sat = unsat = None  # Every fatty acid is a placeholder zero.
+            elif fat - sat - unsat > max(FATTY_ACID_GAP, fat * FATTY_ACID_SHARE):
+                unsat = None  # Placeholder or wrong-unit fatty acids: estimate from the total below.
     if unsat is None and none_if(fat):
         unsat = 0.0
     estimated = unsat is None and fat is not None and sat is not None and fat >= sat
@@ -215,6 +236,8 @@ def off(path, estimates=None, identities=None):
                     v[key] = float(row[at[column]]) * (1000 if MICRO_UNITS[key] == "mg" else 1_000_000)
                 except (KeyError, ValueError):
                     v[key] = None
+                if v[key] is not None and v[key] > OFF_MICRO_LIMITS.get(key, math.inf):
+                    v[key] = None
             if not 0 < (v["kcal"] or 0) <= 900 or v["prot"] is None or v["prot"] > 100:
                 continue
             try:
@@ -304,6 +327,15 @@ def deduplicate(foods):
     return kept
 
 
+def same_type(row, canonical):
+    """Whether a food can share a type's row: every macro both report is close enough."""
+    for i, (key, floor) in enumerate(SAME_TYPE_FLOORS.items()):
+        a, b = row[4 + i], canonical[4 + i]
+        if a is not None and b is not None and abs(a - b) > max(floor, max(a, b) * SAME_TYPE_SHARE) + 1e-9:
+            return False
+    return True
+
+
 def row_fingerprint(row):
     """Hash a normalized food row or source identity fields for a guarded review."""
     return hashlib.sha256(json.dumps(row, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
@@ -354,6 +386,18 @@ def curate(foods, corrections, product_identities=None):
         for key in expected:
             if key != canonical:
                 del rows[key]
+    # The nutrients themselves are the guard here: a member that drifts stops the rebuild.
+    for generic in corrections.get("generics", []):
+        kept = rows.get(generic["canonical"])
+        members = [key for key in generic["members"] if key in rows]
+        if members and kept is None:
+            raise ValueError(f"Reviewed generic no longer matches: {generic['canonical']}")
+        for key in members:
+            if not same_type(rows[key], kept):
+                raise ValueError(f"Reviewed generic no longer matches: {key} -> {generic['canonical']}")
+            del rows[key]
+        if kept is not None and generic.get("name"):
+            kept[2] = generic["name"]
     return list(rows.values())
 
 
@@ -379,16 +423,23 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         },
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
         "estimatedUnsatFat": sorted(estimates & kept_ids),
-        "keywords": reference_keywords(foods, translations, {
-            merge["canonical"]: merge["aliases"]
-            for merge in corrections.get("identityDuplicates", [])
-        }),
+        "keywords": reference_keywords(foods, translations, merged_names(corrections)),
         "foods": foods,
     }
     with open(out, "w") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     counts = {source: sum(food[0] == source for food in foods) for source in data["sources"]}
     print(f"{len(foods)} foods {counts} -> {out}")
+
+
+def merged_names(corrections):
+    """Alternate names by retained ID, so merged foods stay findable under their old names."""
+    aliases = {}
+    for merge in corrections.get("identityDuplicates", []):
+        aliases.setdefault(merge["canonical"], []).extend(merge["aliases"])
+    for generic in corrections.get("generics", []):
+        aliases.setdefault(generic["canonical"], []).extend(generic.get("aliases", []))
+    return aliases
 
 
 def reference_keywords(foods, translations, aliases=None):

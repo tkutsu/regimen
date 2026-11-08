@@ -37,3 +37,14 @@ export function useReference(enabled: boolean): Food[] {
 }
 
 export const sourceOf = (food: Food) => LABELS[food.id.split("-")[0]];
+
+/**
+ * The reference food a saved food copies, from the "source: USDA FDC 168153" line of its note.
+ * A per-item food only starts from the row, so that row stays pickable per 100 g.
+ */
+export function copiedFrom(food: Food): string | undefined {
+  if (food.basis !== "100g") return undefined;
+  const line = food.note.match(/^source: (.+?) (\d+)\b/m);
+  const source = line && Object.keys(LABELS).find((key) => LABELS[key] === line[1]);
+  return source ? `${source}-${line[2]}` : undefined;
+}
