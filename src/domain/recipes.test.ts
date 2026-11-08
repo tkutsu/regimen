@@ -41,11 +41,13 @@ describe("saving a recipe", () => {
     expect(intake(next, "2026-11-06").kcal).toBe(200);
   });
 
-  it("edits in place when nothing before today used it, or only the name changed", () => {
+  it("edits in place when nothing before today used it, or only the name or keywords changed", () => {
     const fresh = apply(state, [{ type: "entry.delete", entryId: "past" }]);
     expect(saveRecipe(fresh, more, [], today)).toEqual([{ type: "recipe.upsert", recipe: more }]);
     const renamed = { ...porridge, name: "Oat porridge" };
     expect(saveRecipe(state, renamed, [], today)).toEqual([{ type: "recipe.upsert", recipe: renamed }]);
+    const tagged = { ...porridge, keywords: ["βρώμη"] };
+    expect(saveRecipe(state, tagged, [], today)).toEqual([{ type: "recipe.upsert", recipe: tagged }]);
   });
 
   it("freezes the batch a new batch replaces", () => {

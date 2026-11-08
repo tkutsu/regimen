@@ -64,17 +64,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             </button>
           </div>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Search keywords
-            <textarea
-              value={form.keywords}
-              onChange={(e) => patch({ keywords: e.target.value })}
-              placeholder="κοτόπουλο, στήθος, poultry"
-              rows={2}
-              className={`${box} w-full resize-y border-line`}
-            />
-            <span className="text-xs text-muted">Separate names and terms with commas. Include the Greek name here.</span>
-          </label>
+          <KeywordsField value={form.keywords} onChange={(keywords) => patch({ keywords })} />
 
           <div className="flex gap-2">
             <GroupInput
@@ -180,6 +170,23 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
         </div>
       </div>
     </Dialog>
+  );
+}
+
+/** Other names a food or recipe can be searched by. */
+export function KeywordsField({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <label className="flex flex-col gap-1 text-sm">
+      Search keywords
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="κοτόπουλο, στήθος, poultry"
+        rows={2}
+        className={`${box} w-full resize-y border-line`}
+      />
+      <span className="text-xs text-muted">Separate names and terms with commas. Include the Greek name here.</span>
+    </label>
   );
 }
 

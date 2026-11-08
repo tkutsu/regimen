@@ -54,6 +54,9 @@ export function readValues(texts: ValueTexts): Values | undefined {
   return values;
 }
 
+/** Comma-separated search terms, trimmed and without repeats. */
+export const readKeywords = (text: string) => [...new Set(text.split(",").map((word) => word.trim()).filter(Boolean))];
+
 /** The edited food, or undefined while something is missing or not a number. */
 export function fromForm(form: FoodForm, id: string): Food | undefined {
   const name = form.name.trim();
@@ -61,7 +64,7 @@ export function fromForm(form: FoodForm, id: string): Food | undefined {
   if (!name || !values) return undefined;
 
   const food: Food = { id, name, basis: form.basis, group: form.group.trim(), fav: form.fav, note: form.note.trim(), ...values };
-  const keywords = [...new Set(form.keywords.split(",").map((word) => word.trim()).filter(Boolean))];
+  const keywords = readKeywords(form.keywords);
   if (keywords.length) food.keywords = keywords;
 
   const variants = form.variants

@@ -1,10 +1,11 @@
-import { readValues, valueTexts, type ValueTexts } from "./foodForm";
+import { readKeywords, readValues, valueTexts, type ValueTexts } from "./foodForm";
 import { parseAmount, recipeTotals } from "./nutrition";
 import type { Food, Recipe } from "./types";
 
 /** A recipe being edited, amounts kept as typed. */
 export type RecipeForm = {
   name: string;
+  keywords: string;
   basis: Food["basis"];
   items: string;
   ingredients: (Omit<Recipe["ingredients"][number], "amount"> & { amount: string })[];
@@ -19,6 +20,7 @@ export type RecipeForm = {
 export function toRecipeForm(recipe?: Recipe): RecipeForm {
   return {
     name: recipe?.name ?? "",
+    keywords: recipe?.keywords?.join(", ") ?? "",
     basis: recipe?.basis ?? "100g",
     items: String(recipe?.items ?? 1),
     ingredients: (recipe?.ingredients ?? []).map((ingredient) => ({ ...ingredient, amount: String(ingredient.amount) })),
@@ -43,6 +45,8 @@ export function fromRecipeForm(form: RecipeForm, id: string, foods: Map<string, 
   if (!name || ingredients.some((i) => i.amount <= 0)) return undefined;
   if (totalG === undefined || (totalG > 0 && totalG <= form.containerG)) return undefined;
   const recipe: Recipe = { id, name, ingredients, totalG, containerG: item ? 0 : form.containerG };
+  const keywords = readKeywords(form.keywords);
+  if (keywords.length) recipe.keywords = keywords;
   if (item) recipe.basis = "item";
   if (!ingredients.length) {
     const values = readValues(form.values);
