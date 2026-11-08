@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { allFoods, recipeAsFood, recipeTotals, scale } from "./nutrition";
 import { fromRecipeForm, newBatch, toRecipeForm } from "./recipeForm";
+import { searchFoods } from "./search";
 import { fold, parseLogs, stamp } from "./state";
 import type { Food, Recipe } from "./types";
 
@@ -178,6 +179,20 @@ describe("recipe form", () => {
     expect(saved).toEqual(recipe);
     expect(recipeAsFood(saved, foods).basis).toBe("100g");
     expect(recipeAsFood(saved, foods).kcal).toBeCloseTo(171.25);
+  });
+
+  it("saves comma-separated keywords, and finds the recipe by them as a food", () => {
+    const saved = fromRecipeForm({ ...toRecipeForm(recipe), keywords: " ρύζι, pilaf, , ρύζι " }, "r", foods)!;
+    expect(saved.keywords).toEqual(["ρύζι", "pilaf"]);
+    expect(toRecipeForm(saved).keywords).toBe("ρύζι, pilaf");
+    expect(searchFoods([recipeAsFood({ ...saved, name: "Sunday pot" }, foods)], "ρυζι").map((food) => food.id)).toEqual(["r"]);
+    expect(newBatch(saved, "r2").keywords).toEqual(saved.keywords);
+  });
+
+  it("leaves keywords out when there are none", () => {
+    const saved = fromRecipeForm({ ...toRecipeForm({ ...recipe, keywords: ["pilaf"] }), keywords: " , " }, "r", foods)!;
+    expect(saved).toEqual(recipe);
+    expect(saved).not.toHaveProperty("keywords");
   });
 
   it("starts a new batch unweighed", () => {

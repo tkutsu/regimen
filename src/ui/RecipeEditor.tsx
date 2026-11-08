@@ -3,7 +3,7 @@ import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale, used
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
 import type { Container, Food, Nutrients, Recipe } from "../domain/types";
 import { Dialog } from "./Dialog";
-import { box, Heading, ValueFields } from "./FoodEditor";
+import { box, Heading, KeywordsField, ValueFields } from "./FoodEditor";
 import { FoodPicker } from "./FoodPicker";
 import { blurOnEnter } from "./fields";
 import { transition } from "./motion";
@@ -82,6 +82,8 @@ export function RecipeEditor(props: Props) {
             placeholder="Name"
             className={`${box} border-line text-lg`}
           />
+
+          <KeywordsField value={form.keywords} onChange={(keywords) => patch({ keywords })} />
 
           <div className="flex gap-1 self-start rounded-xl bg-line/50 p-1 text-sm">
             {(["100g", "item"] as const).map((basis) => (
