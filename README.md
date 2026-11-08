@@ -48,10 +48,10 @@ key and unit of every numeric column, in order. Micronutrients use `mg` or `ug`
 specified in its [nutrition schema](https://openfoodfacts.github.io/documentation/docs/Product-Opener/schemas/schemas/product_nutrition/).
 The current UI continues to read only the original seven nutrients.
 
-Food names stay separate from comma-separated search keywords. Keywords can
-include Greek names, alternate spellings and other terms; the food picker and
+Food and recipe names stay separate from comma-separated search keywords. Keywords
+can include Greek names, alternate spellings and other terms; the food picker and
 Foods tab use the same fuzzy matching for both fields. Accents and final sigma
-do not affect Greek matching. Keywords are saved and synced with the food.
+do not affect Greek matching. Keywords are saved and synced with the food or recipe.
 
 The reference catalogue includes Greek keywords from
 `scripts/food_keywords.el.json`, attached by exact source name during a rebuild.

@@ -68,7 +68,7 @@ export function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
 export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
   const values = recipeValues(recipe, foods);
   const fav = !recipe.archived && recipe.fav !== false;
-  return { ...values, id: recipe.id, name: recipe.name, basis: recipe.basis ?? "100g", group: "recipes", fav, note: recipe.note ?? "", archived: recipe.deleted };
+  return { ...values, id: recipe.id, name: recipe.name, keywords: recipe.keywords, basis: recipe.basis ?? "100g", group: "recipes", fav, note: recipe.note ?? "", archived: recipe.deleted };
 }
 
 /** A food's name where it's already used, marked once it has been deleted. */
