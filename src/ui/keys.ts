@@ -6,7 +6,8 @@ import { useEffect } from "react";
  * nearest row above or below, staying in the same column; Left and Right move along
  * the row, and leave a text field only from its start or end. Up from the top reaches
  * the screen tabs, where Left and Right switch screens. An open dialog keeps the arrows
- * inside it and Tab to itself.
+ * inside it and Tab to itself. Enter with nothing selected presses the screen's
+ * [data-enter] control.
  */
 
 const FOCUSABLE = "button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex]:not([tabindex='-1'])";
@@ -29,6 +30,11 @@ function ownsArrow(el: Element, key: string) {
   if (!sideways || start === null) return false;
   if (start !== end) return true;
   return key === "ArrowLeft" ? start > 0 : start < el.value.length;
+}
+
+/** Enter landed on nothing the arrows selected: no focus, or a button the mouse left it on. */
+function unselected(el: EventTarget | null) {
+  return el === document.body || (el instanceof HTMLButtonElement && !document.documentElement.hasAttribute("data-keys"));
 }
 
 /** The control the arrow points at, from `from`'s box. */
@@ -84,6 +90,13 @@ export function useKeys<T extends string>(tabs: readonly T[], tab: T, setTab: (t
         const i = tabs.indexOf(tab);
         (document.activeElement as HTMLElement | null)?.blur();
         setTab(tabs[(i + (e.shiftKey ? tabs.length - 1 : 1)) % tabs.length]);
+        return;
+      }
+      if (e.key === "Enter" && !dialog && !e.repeat && unselected(e.target)) {
+        const primary = root.querySelector<HTMLElement>("[data-enter]");
+        if (!primary) return;
+        e.preventDefault();
+        primary.click();
         return;
       }
       if (!ARROWS.includes(e.key) || e.shiftKey) return;
