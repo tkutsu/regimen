@@ -79,8 +79,8 @@ export function Today({ state, commit }: Props) {
           onCommit={(kg) => kg > 0 && commit({ type: "weight", date, kg })}
         />
         <NumberField label="steps" unit="k" value={day.steps / 1000} onCommit={(k) => setDay({ steps: Math.round(k * 1000) })} />
-        <NumberField label="extra burned" unit="kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} hint="Activity calories beyond those already counted from steps. This increases your allowance and counts as extra energy burned in the maintenance estimate." />
-        <NumberField label="rollover" unit="kcal" value={day.rolloverKcal ?? 0} onCommit={(rolloverKcal) => setDay({ rolloverKcal })} hint="Unused calories carried into this day's allowance. Use a negative amount to carry an overspend. Rollover does not count as extra energy burned." />
+        <NumberField label="extra burned" unit="kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} hint="Calories burned today beyond your steps." />
+        <NumberField label="rollover" unit="kcal" value={day.rolloverKcal ?? 0} onCommit={(rolloverKcal) => setDay({ rolloverKcal })} hint="Calories moved from the previous day. Negative if you went over." />
       </div>
 
       <ul className="flow overflow-hidden rounded-2xl border border-line bg-surface">
