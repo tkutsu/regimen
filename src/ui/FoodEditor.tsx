@@ -210,10 +210,11 @@ export function GroupInput({ value, onChange, groups }: { value: string; onChang
         onFocus={() => setOpen(true)}
         onChange={(e) => { onChange(e.target.value); setOpen(true); setActive(-1); }}
         onKeyDown={(e) => {
-          if ((e.key === "ArrowDown" || e.key === "ArrowUp") && matches.length) {
+          // The field sits above the first match; past either end the arrow moves on from the field.
+          const next = active + (e.key === "ArrowDown" ? 1 : -1);
+          if ((e.key === "ArrowDown" || e.key === "ArrowUp") && matches.length && next >= -1 && next < matches.length) {
             e.preventDefault();
             setOpen(true);
-            const next = active < 0 ? (e.key === "ArrowDown" ? 0 : matches.length - 1) : (active + (e.key === "ArrowDown" ? 1 : -1) + matches.length) % matches.length;
             setActive(next);
             document.getElementById(`${id}-${next}`)?.scrollIntoView({ block: "nearest" });
           } else if (e.key === "Enter" && shown && active >= 0) {
