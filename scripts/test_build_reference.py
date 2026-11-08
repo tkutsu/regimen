@@ -122,6 +122,51 @@ class ReferenceImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'food identity no longer matches'):
             build.curate([duplicate], rules)
 
+    def test_generics_merge_one_type_within_ten_percent_and_stop_when_a_member_drifts(self):
+        canonical = self.normalize(kcal=360, prot=12, fiber=3, sugar=3.5)
+        brand = ['off', '2', 'Penne (Brand)', *self.normalize(kcal=352, prot=13, fiber=3.4, sugar=2.6)[3:]]
+        rules = {'generics': [{'canonical': 'usda-1', 'name': 'Pasta, dry', 'members': ['off-2']}]}
+        result = build.curate([canonical, brand], rules)
+        self.assertEqual([row[1] for row in result], ['1'])
+        self.assertEqual(result[0][2], 'Pasta, dry')
+        self.assertEqual(result[0][4:], canonical[4:])
+        self.assertEqual(canonical[2], 'Example food')
+        self.assertEqual(build.curate(result, rules), result)
+        for changed in [dict(kcal=420), dict(prot=20), dict(fiber=7)]:
+            drifted = ['off', '2', 'Penne (Brand)',
+                       *self.normalize(**{'kcal': 352, 'prot': 13, 'fiber': 3.4, 'sugar': 2.6, **changed})[3:]]
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, 'generic no longer matches'):
+                build.curate([canonical, drifted], rules)
+        with self.assertRaisesRegex(ValueError, 'generic no longer matches'):
+            build.curate([brand], rules)
+
+    def test_generic_aliases_join_identity_aliases_on_the_retained_id(self):
+        rules = {'identityDuplicates': [{'canonical': 'usda-1', 'aliases': ['Pasta, dry, enriched']}],
+                 'generics': [{'canonical': 'usda-1', 'members': [], 'aliases': ['Misko', 'πένες']}]}
+        self.assertEqual(build.merged_names(rules), {'usda-1': ['Pasta, dry, enriched', 'Misko', 'πένες']})
+
+    def test_placeholder_fatty_acids_fall_back_to_total_fat(self):
+        estimates = set()
+        values = {**self.values(), 'fat': 30.7, 'sat': 10.7, 'mufa': 0, 'pufa': 0}
+        row = build.normalize('off', '1', 'Spread', 'Group', values, estimates)
+        self.assertEqual(row[7:9], [10.7, 20.0])
+        self.assertEqual(estimates, {'off-1'})
+        label = lambda **changes: build.normalize('off', '1', 'Spread', 'Group', {**self.values(), **changes})
+        self.assertEqual(label(fat=35, sat=22, mufa=.04, pufa=.005)[8], 13)
+        self.assertEqual(label(fat=63, sat=0, mufa=0, pufa=0)[7:9], [None, None])
+        # Fatty acids that nearly account for the fat are real, and a stated value is kept.
+        self.assertEqual(label(fat=20, sat=5, mufa=7, pufa=4)[8], 11)
+        self.assertEqual(label(fat=30, sat=5, unsat=10, mufa=0, pufa=0)[8], 10)
+        # Composition tables report these columns as measured.
+        self.assertEqual(self.normalize(fat=20, sat=5, mufa=3, pufa=1)[8], 4)
+
+    def test_off_drops_impossible_micronutrients_but_tables_keep_real_extremes(self):
+        row = self.off_rows([{'vitamin-b12_100g': '4.6875', 'selenium_100g': '2.2', 'calcium_100g': '.12'}])[0]
+        self.assertIsNone(self.micro(row, 'vitaminB12'))
+        self.assertIsNone(self.micro(row, 'selenium'))
+        self.assertEqual(self.micro(row, 'calcium'), 120)
+        self.assertEqual(self.micro(self.normalize(iodine=494000), 'iodine'), 494000)
+
     def test_identity_removal_does_not_uncover_an_automatic_equivalent(self):
         canonical = self.normalize()
         removed = ['ciqual', '2', 'Other name', *self.normalize(kcal=110)[3:]]

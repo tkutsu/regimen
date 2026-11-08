@@ -77,6 +77,14 @@ keeps its own nutrient profile; values are never averaged or filled from a
 different source. Cultivar, edible
 portion, preparation, fat percentage and known formulation differences remain
 separate.
+Staple types such as dry pasta, milk, olive oil and rice share one generic row,
+and so does one product under several barcodes. Every macro of a merged food
+must be within 10% of the retained row, or within label rounding, and a member
+that drifts past that stops the rebuild. The retained row is a real product near
+the middle of its type, so values are never averaged, and the brands stay
+searchable. Foods further apart stay separate, such as whole-wheat pasta and
+high-protein pasta. Brand-specific biscuits, snacks and ready meals are not
+merged by type.
 Search keywords omit repeated English words
 and translated brand labels.
 
@@ -95,6 +103,10 @@ total fat minus saturated fat, provided the result is nonnegative. These rows ar
 listed in `estimatedUnsatFat` and labelled in the food's note when loaded or saved.
 This is an approximation because total fat also includes non-fatty-acid components
 ([FAO](https://www.fao.org/4/y4705e/y4705e22.htm)). Existing reported values are preserved.
+Open Food Facts mono- and polyunsaturated values often hold placeholder zeros or
+the wrong unit, so they're ignored when they leave over a quarter of the fat, and
+at least 2 g, unaccounted for. Its micronutrient amounts above a plausible limit
+for fortified food stay unknown too.
 
 The importer rejects unusable names, impossible nutrient amounts and inconsistent
 nutrition. It also excludes Open Food Facts products with source-reported
