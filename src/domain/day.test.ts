@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { dayOf, intake, missingStaples, shiftDate, targets, trendWeight } from "./day";
+import { dayOf, intake, kcalTarget, missingStaples, shiftDate, targets, trendWeight } from "./day";
 import { recipeAsFood } from "./nutrition";
-import { defaultSettings, fold, stamp } from "./state";
+import { applyEvents, defaultSettings, fold, stamp, type State } from "./state";
 import type { Change, Food } from "./types";
 
 const food = (id: string, basis: Food["basis"], kcal: number, prot = 0): Food => ({
@@ -116,6 +116,18 @@ describe("targets", () => {
     const s = fold([at("2026-10-10", 2200), at("2026-10-20", 2400)]);
     const maintain = (date: string) => targets(s, date).kcal;
     expect([maintain("2026-10-01"), maintain("2026-10-15"), maintain("2026-10-20"), maintain("2026-10-31")]).toEqual([2200, 2200, 2400, 2400]);
+  });
+
+  it("keeps past days on the phase offset and steps rate set at the time", () => {
+    const cutOn = (date: string, offset: number, kcalPer1kSteps = 37) =>
+      stamp({ type: "settings", settings: { phaseOffsets: { ...defaultSettings.phaseOffsets, cut: offset }, kcalPer1kSteps } }, "desktop", new Date(`${date}T12:00:00`));
+    const walked = (date: string): Change => ({ type: "day.upsert", day: { date, phase: "cut", steps: 1000, extraKcal: 0 } });
+    const days = ["2026-10-05", "2026-10-15", "2026-10-25"];
+    const before = fold([cutOn("2026-10-10", -800), ...days.map((date) => stamp(walked(date), "desktop"))]);
+    const after = applyEvents(before, [cutOn("2026-10-20", -700, 50)]);
+    const target = (s: State, date: string) => kcalTarget(s, dayOf(s, date));
+    expect(days.map((date) => target(after, date))).toEqual([2300 - 600 + 37, 2300 - 800 + 37, 2300 - 700 + 50]);
+    expect(target(before, "2026-10-25")).toBe(2300 - 800 + 37);
   });
 
   it("bases protein on the 7-day average weight", () => {

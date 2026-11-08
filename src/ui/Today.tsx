@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { dayOf, entriesOn, intake, localDate, missingStaples, shiftDate, targets, trendWeight } from "../domain/day";
+import { dayOf, entriesOn, intake, localDate, missingStaples, ratesOn, shiftDate, targets, trendWeight } from "../domain/day";
 import { allFoods, entryFood, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
@@ -61,7 +61,7 @@ export function Today({ state, commit }: Props) {
           </button>
         ))}
       </div>
-      {day.offset !== undefined && day.offset !== state.settings.phaseOffsets[day.phase] && (
+      {day.offset !== undefined && day.offset !== ratesOn(state, date).phaseOffsets[day.phase] && (
         <p className="-mt-2 text-center text-xs text-muted">
           custom offset {day.offset > 0 ? "+" : ""}
           {day.offset}kcal

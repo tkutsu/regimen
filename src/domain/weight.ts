@@ -1,4 +1,4 @@
-import { daysFrom, kcalTarget, shiftDate, sum } from "./day";
+import { daysFrom, kcalTarget, ratesOn, shiftDate, sum } from "./day";
 import { allFoods } from "./nutrition";
 import type { State } from "./state";
 import type { Day, Entry, Phase } from "./types";
@@ -73,7 +73,6 @@ export function stretches(state: State, to: string): Stretch[] {
  */
 function read(state: State, phase: Phase, from: string, to: string, log: Log): Stretch {
   const fitFrom = [shiftDate(from, SETTLE), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
-  const { kcalPer1kSteps } = state.settings;
   const rows: { t: number; y: number }[] = [];
   let eaten = 0;
   let logged = 0;
@@ -83,7 +82,7 @@ function read(state: State, phase: Phase, from: string, to: string, log: Log): S
     const kg = state.weights.get(day.date);
     if (kg !== undefined) rows.push({ t, y: kg - eaten / KCAL_PER_KG });
     logged += Number(kcal !== undefined);
-    eaten += (kcal ?? kcalTarget(state, day)) - ((day.steps / 1000) * kcalPer1kSteps + day.extraKcal);
+    eaten += (kcal ?? kcalTarget(state, day)) - ((day.steps / 1000) * ratesOn(state, day.date).kcalPer1kSteps + day.extraKcal);
   }
 
   const days = Math.max(0, daysBetween(fitFrom, to) + 1);
