@@ -34,6 +34,14 @@ describe("saving a recipe", () => {
     expect(pickableFoods(next).has(porridge.id)).toBe(false);
   });
 
+  it("keeps days before today when a handwritten recipe only changes basis", () => {
+    const written: Recipe = { ...porridge, basis: "100g", ingredients: [], values: { kcal: 200 } };
+    const before = apply(state, [{ type: "recipe.upsert", recipe: written }]);
+    const next = apply(before, saveRecipe(before, { ...written, basis: "item" }, [], today));
+    expect(intake(next, "2026-11-06").kcal).toBe(2);
+    expect(intake(next, today).kcal).toBe(200);
+  });
+
   it("keeps the frozen days when an older log removed an ingredient outright", () => {
     const edited = apply(state, saveRecipe(state, more, [], today));
     const next = apply(edited, [{ type: "food.delete", foodId: oats.id }]);
