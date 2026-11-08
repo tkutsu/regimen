@@ -3,9 +3,12 @@ import { NUTRIENTS } from "./domain/nutrition";
 import type { Food } from "./domain/types";
 
 type Row = [source: string, id: string, name: string, group: string, kcal: number, ...values: (number | null)[]];
-type Data = { sources: Record<string, string>; foods: Row[]; estimatedUnsatFat?: string[]; keywords?: Record<string, string[]> };
+type Data = { sources: Record<string, string>; foods: Row[]; estimatedUnsatFat?: string[]; generics?: string[]; keywords?: Record<string, string[]> };
 
 const LABELS: Record<string, string> = { usda: "USDA FDC", ciqual: "CIQUAL", off: "Open Food Facts" };
+
+/** Rows standing for a whole type of food. Kept off Food, so copying a row doesn't save it. */
+export const genericIds = new Set<string>();
 
 let loading: Promise<Food[]> | undefined;
 
@@ -15,6 +18,7 @@ function loadReference(): Promise<Food[]> {
     .then((response) => response.json() as Promise<Data>)
     .then((data) => {
       const estimates = new Set(data.estimatedUnsatFat);
+      data.generics?.forEach((id) => genericIds.add(id));
       return data.foods.map(([source, id, name, group, kcal, ...values]): Food => {
         const note = `source: ${LABELS[source] ?? source} ${id}` +
           (estimates.has(`${source}-${id}`) ? "\nunsaturated fat estimate: total fat minus saturated fat" : "");

@@ -28,9 +28,10 @@ const parse = (name: string): Name => {
  * start one (so "egg" ranks "egg, whole" over "eggplant"), then shorter names,
  * which tend to be the plain version of a food. Typos cost rank.
  *
- * `recent` lists food ids, most recently used first.
+ * `recent` lists food ids, most recently used first. `generics` are foods standing for a
+ * whole type, which beat a same-quality match but not a better one.
  */
-export function searchFoods(foods: Iterable<Food>, query: string, limit = 50, recent: string[] = []): Food[] {
+export function searchFoods(foods: Iterable<Food>, query: string, limit = 50, recent: string[] = [], generics?: ReadonlySet<string>): Food[] {
   const words = normalize(query).split(/[\s,]+/).filter(Boolean).map(matcher);
   if (!words.length) return [];
   const recency = new Map(recent.map((id, rank) => [id, 30 / (1 + rank / 3)]));
@@ -38,7 +39,7 @@ export function searchFoods(foods: Iterable<Food>, query: string, limit = 50, re
   for (const food of foods) {
     const name = parse(food.name);
     const candidates = [name, ...(food.keywords ?? []).map(parse)];
-    let score = Number(food.fav) * 100 + (recency.get(food.id) ?? 0) - name.text.length / 100;
+    let score = Number(food.fav) * 100 + (recency.get(food.id) ?? 0) + (generics?.has(food.id) ? 6 : 0) - name.text.length / 100;
     if (candidates.some((candidate) => candidate.text.startsWith(words[0].word))) score += 5;
     for (const word of words) {
       const points = Math.max(...candidates.map((candidate) => word.score(candidate) ?? -Infinity));

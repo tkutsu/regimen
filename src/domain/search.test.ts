@@ -20,6 +20,21 @@ const food = (name: string, fav = false): Food => ({
 
 const names = (foods: Food[]) => foods.map((f) => f.name);
 
+describe("searchFoods generics", () => {
+  const generic = { ...food("Rice, white, dry"), keywords: ["ρύζι"] };
+  const brand = food("Ρύζι");
+
+  it("ranks a generic above a same-quality match, however short that name is", () => {
+    expect(names(searchFoods([brand, generic], "ρύζι"))).toEqual(["Ρύζι", "Rice, white, dry"]);
+    expect(names(searchFoods([brand, generic], "ρύζι", 50, [], new Set([generic.id])))).toEqual(["Rice, white, dry", "Ρύζι"]);
+  });
+
+  it("doesn't lift a weaker match over a whole word", () => {
+    const longer = food("Eggplant");
+    expect(names(searchFoods([longer, food("Egg")], "egg", 50, [], new Set([longer.id])))).toEqual(["Egg", "Eggplant"]);
+  });
+});
+
 describe("searchFoods", () => {
   it("searches Greek keywords with accents, final sigma and fuzzy typos", () => {
     const chicken = { ...food("Chicken breast"), keywords: ["κοτόπουλο", "στήθος", "poultry"] };
