@@ -13,6 +13,8 @@ export type State = {
   settings: Settings;
   /** Every maintenance change with the local date it was made, oldest first. */
   tdeeHistory: { date: string; tdee: number }[];
+  /** Phase offsets and kcal per 1000 steps with the local date they were set, oldest first. */
+  rateHistory: ({ date: string } & Pick<Settings, "phaseOffsets" | "kcalPer1kSteps">)[];
   /** Deleted entries, so a staple removed from a day isn't planned there again. */
   removed: Set<string>;
 };
@@ -87,6 +89,7 @@ export function fold(events: Event[]): State {
     sessions: new Map(),
     settings: defaultSettings,
     tdeeHistory: [],
+    rateHistory: [{ date: "", phaseOffsets: defaultSettings.phaseOffsets, kcalPer1kSteps: defaultSettings.kcalPer1kSteps }],
     removed: new Set(),
   };
   for (const event of events) {
@@ -109,7 +112,7 @@ const TOUCHES: Record<Event["type"], (keyof State)[]> = {
   weight: ["weights"],
   "recipe.upsert": ["recipes"],
   "recipe.delete": ["recipes"],
-  settings: ["tdeeHistory"],
+  settings: ["tdeeHistory", "rateHistory"],
   "exercise.upsert": ["exercises"],
   "exercise.delete": ["exercises"],
   "workout.upsert": ["workouts"],
@@ -190,8 +193,12 @@ export function apply(state: State, event: Event): void {
       if (proteinPerKg !== undefined) limits.prot = { ...limits.prot, min: proteinPerKg };
       if (sugarPct !== undefined) limits.sugar = { ...limits.sugar, max: sugarPct };
       state.settings = { ...state.settings, ...patch, limits };
-      if (event.settings.tdee !== undefined)
-        state.tdeeHistory.push({ date: localDate(new Date(event.t)), tdee: event.settings.tdee });
+      const date = localDate(new Date(event.t));
+      if (patch.tdee !== undefined) state.tdeeHistory.push({ date, tdee: patch.tdee });
+      if (patch.phaseOffsets !== undefined || patch.kcalPer1kSteps !== undefined) {
+        const { phaseOffsets, kcalPer1kSteps } = state.settings;
+        state.rateHistory.push({ date, phaseOffsets, kcalPer1kSteps });
+      }
       break;
     }
   }

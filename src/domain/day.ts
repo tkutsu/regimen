@@ -49,8 +49,11 @@ export function tdeeOn(state: State, date: string): number {
   return history.findLast((change) => change.date <= date)?.tdee ?? history[0]?.tdee ?? state.settings.tdee;
 }
 
+/** Phase offsets and kcal per 1000 steps as set on that date, for the same reason. */
+export const ratesOn = (state: State, date: string) => state.rateHistory.findLast((change) => change.date <= date)!;
+
 export function kcalTarget(state: State, day: Day): number {
-  const { phaseOffsets, kcalPer1kSteps } = state.settings;
+  const { phaseOffsets, kcalPer1kSteps } = ratesOn(state, day.date);
   const offset = day.offset ?? phaseOffsets[day.phase];
   return tdeeOn(state, day.date) + offset + (day.steps / 1000) * kcalPer1kSteps + day.extraKcal + (day.rolloverKcal ?? 0);
 }
