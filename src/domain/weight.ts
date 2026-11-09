@@ -59,15 +59,19 @@ export function stretches(state: State, to: string): Stretch[] {
     } else runs.push({ phase, from: d, to: d });
   }
 
-  // Only what was eaten: a plan left unticked doesn't count.
+  const log = logOf(state, days);
+  return foldPauses(runs).map((run) => read(state, run.phase, run.from, run.to, log));
+}
+
+/** Only what was eaten: a plan left unticked doesn't count. */
+function logOf(state: State, days: Day[]): Log {
   const byDate = new Map<string, Entry[]>();
   for (const entry of state.entries.values()) if (entry.done) byDate.set(entry.date, [...(byDate.get(entry.date) ?? []), entry]);
   const foods = allFoods(state);
-  const log: Log = days.map((day) => {
+  return days.map((day) => {
     const entries = byDate.get(day.date);
     return { day, kcal: entries && sum(entries, foods).kcal };
   });
-  return foldPauses(runs).map((run) => read(state, run.phase, run.from, run.to, log));
 }
 
 /** Folds short maintain phases into their neighbours; the phase you are still in stays its own. */
@@ -99,37 +103,82 @@ function foldPauses(runs: Run[]): Run[] {
 function read(state: State, phase: Phase, from: string, to: string, log: Log): Stretch {
   const { settleDays } = state.settings;
   const fitFrom = [shiftDate(from, settleDays), shiftDate(to, -(WINDOW - 1))].sort().at(-1)!;
-  const rows: { t: number; y: number }[] = [];
-  let eaten = 0;
-  let logged = 0;
   const start = daysBetween(log[0].day.date, fitFrom);
-  for (const [t, { day, kcal }] of log.slice(start, daysBetween(log[0].day.date, to) + 1).entries()) {
-    // a morning weigh-in reflects what was eaten up to the day before
-    const kg = state.weights.get(day.date);
-    if (kg !== undefined) rows.push({ t, y: kg - eaten / KCAL_PER_KG });
-    logged += Number(kcal !== undefined);
-    eaten += (kcal ?? kcalTarget(state, day)) - ((day.steps / 1000) * ratesOn(state, day.date).kcalPer1kSteps + day.extraKcal);
-  }
-
-  const days = Math.max(0, daysBetween(fitFrom, to) + 1);
+  const { rows, intake, logged, tdee } = fit(state, log.slice(start, daysBetween(log[0].day.date, to) + 1));
   const stretch: Stretch = {
     phase,
     from,
     to,
     days: daysBetween(from, to) + 1,
     fitFrom,
-    intake: days ? eaten / days : 0,
+    intake,
     logged,
     readyOn: shiftDate(from, settleDays + MIN_SPAN),
   };
-  if (rows.length < MIN_WEIGH_INS || rows.at(-1)!.t - rows[0].t < MIN_SPAN) return stretch;
+  if (tdee === undefined || rows.length < MIN_WEIGH_INS || rows.at(-1)!.t - rows[0].t < MIN_SPAN) return stretch;
+  return { ...stretch, tdee, kgPerWeek: ((intake - tdee) * 7) / KCAL_PER_KG };
+}
 
+/** The reading over exactly `log`'s days; `tdee` needs two weigh-ins, and is noisy with few. */
+function fit(state: State, log: Log) {
+  const rows: { t: number; kg: number; y: number }[] = [];
+  let eaten = 0;
+  let logged = 0;
+  for (const [t, { day, kcal }] of log.entries()) {
+    // a morning weigh-in reflects what was eaten up to the day before
+    const kg = state.weights.get(day.date);
+    if (kg !== undefined) rows.push({ t, kg, y: kg - eaten / KCAL_PER_KG });
+    logged += Number(kcal !== undefined);
+    eaten += (kcal ?? kcalTarget(state, day)) - ((day.steps / 1000) * ratesOn(state, day.date).kcalPer1kSteps + day.extraKcal);
+  }
+  const slope = rows.length > 1 ? lineThrough(rows.map(({ t, y }) => ({ t, y }))).slope : undefined;
+  return { rows, logged, intake: log.length ? eaten / log.length : 0, tdee: slope === undefined ? undefined : -slope * KCAL_PER_KG };
+}
+
+/** The least-squares line, as its slope and value at `t`; two or more distinct `t` needed. */
+function lineThrough(rows: { t: number; y: number }[]) {
   const t0 = rows.reduce((sum, r) => sum + r.t, 0) / rows.length;
   const y0 = rows.reduce((sum, r) => sum + r.y, 0) / rows.length;
   const num = rows.reduce((sum, r) => sum + (r.t - t0) * (r.y - y0), 0);
   const den = rows.reduce((sum, r) => sum + (r.t - t0) ** 2, 0);
-  const tdee = (-num / den) * KCAL_PER_KG;
-  return { ...stretch, tdee, kgPerWeek: ((stretch.intake - tdee) * 7) / KCAL_PER_KG };
+  const slope = num / den;
+  return { slope, at: (t: number) => y0 + slope * (t - t0) };
+}
+
+/** A span picked by hand: every day of it counts, with no settling days or window. */
+export type Region = {
+  from: string;
+  to: string;
+  days: number;
+  weighIns: number;
+  logged: number;
+  intake: number;
+  /** Maintenance before steps and extra kcal, by the same fit as a phase's reading. */
+  tdee: number;
+  /** The straight line through the weigh-ins themselves. */
+  kgPerWeek: number;
+  fromKg: number;
+  toKg: number;
+};
+
+/** What the weigh-ins from `from` to `to` say; undefined with fewer than two of them. */
+export function regionReading(state: State, from: string, to: string): Region | undefined {
+  const log = logOf(state, daysFrom(state, from, to));
+  const { rows, logged, intake, tdee } = fit(state, log);
+  if (tdee === undefined) return undefined;
+  const line = lineThrough(rows.map(({ t, kg }) => ({ t, y: kg })));
+  return {
+    from,
+    to,
+    days: log.length,
+    weighIns: rows.length,
+    logged,
+    intake,
+    tdee,
+    kgPerWeek: line.slope * 7,
+    fromKg: line.at(0),
+    toKg: line.at(log.length - 1),
+  };
 }
 
 /** Runs of days in the same phase, as set on each day, from `from` to `to`. */

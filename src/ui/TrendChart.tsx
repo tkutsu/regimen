@@ -45,12 +45,20 @@ type ChartProps = {
   format: (value: number) => string;
   volume?: boolean;
   to?: string;
+  /** The picked stretch, with its best fit line's ends, and `onRegion` to let a drag pick one. */
+  region?: { from: string; to: string; fromKg: number; toKg: number };
+  onRegion?: (range?: { from: string; to: string }) => void;
 };
 
+/** A press that travels no further than this is a tap. */
+const TAP = 6;
+
 /** Raw values and a rolling average, with daily phase strips and pointer, touch, or arrow-key readings. */
-export function TrendChart({ points, bands, averageLabel, valueLabel, format, volume = false, to }: ChartProps) {
+export function TrendChart({ points, bands, averageLabel, valueLabel, format, volume = false, to, region, onRegion }: ChartProps) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number>();
+  const press = useRef<{ px: number; from: number; to: number; moved: boolean }>(undefined);
+  const keyAnchor = useRef<number>(undefined);
   const left = volume ? 44 : PAD.left;
 
   const first = points[0].date;
@@ -74,11 +82,35 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
   const halfDay = innerW / span / 2;
   const clampX = (px: number) => Math.min(Math.max(px, left), width - PAD.right);
 
-  const onPointer = (e: React.PointerEvent<SVGSVGElement>) => {
+  const pick = (a: number, b: number) =>
+    onRegion?.(a === b ? undefined : { from: points[Math.min(a, b)].date, to: points[Math.max(a, b)].date });
+  const nearest = (e: React.PointerEvent<SVGSVGElement>) => {
     const px = e.clientX - e.currentTarget.getBoundingClientRect().left;
     let best = 0;
     points.forEach((p, i) => Math.abs(x(p.date) - px) < Math.abs(x(points[best].date) - px) && (best = i));
+    return { px, best };
+  };
+  const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    const { px, best } = nearest(e);
     setHover(best);
+    if (!onRegion || e.button !== 0 || !e.isPrimary) return;
+    press.current = { px, from: best, to: best, moved: false };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    const { px, best } = nearest(e);
+    setHover(best);
+    const held = press.current;
+    if (!held) return;
+    held.moved ||= Math.abs(px - held.px) > TAP;
+    if (!held.moved || best === held.to) return;
+    held.to = best;
+    pick(held.from, best);
+  };
+  const onPointerUp = () => {
+    // A tap clears what's picked, and a drag back onto its start has already.
+    if (press.current && !press.current.moved) onRegion?.(undefined);
+    press.current = undefined;
   };
 
   return (
@@ -95,16 +127,24 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
       </p>
       {read.note && <p className="mb-1 text-xs text-muted">{read.note}</p>}
       {width > 0 && (
-        <svg width={width} height={H} onPointerMove={onPointer} onPointerDown={onPointer} onPointerLeave={() => setHover(undefined)}
-          tabIndex={0} role="slider" aria-label={`${valueLabel} history; use arrow keys to read values`}
+        <svg width={width} height={H} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp}
+          onPointerCancel={() => { press.current = undefined; }} onPointerLeave={() => setHover(undefined)}
+          tabIndex={0} role="slider" aria-label={`${valueLabel} history; use arrow keys to read values${onRegion ? ", with Shift to select a stretch" : ""}`}
           aria-valuemin={0} aria-valuemax={points.length - 1} aria-valuenow={Math.min(hover ?? points.length - 1, points.length - 1)}
           aria-valuetext={`${short(read.date)}: ${format(read.kg)}, ${averageLabel} ${format(read.avg)}`}
           onKeyDown={(e) => {
             if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
             e.preventDefault();
-            setHover(e.key === "Home" ? 0 : e.key === "End" ? points.length - 1 : Math.max(0, Math.min(points.length - 1, (hover ?? points.length - 1) + (e.key === "ArrowLeft" ? -1 : 1))));
+            const at = hover ?? points.length - 1;
+            const next = e.key === "Home" ? 0 : e.key === "End" ? points.length - 1 : Math.max(0, Math.min(points.length - 1, at + (e.key === "ArrowLeft" ? -1 : 1)));
+            setHover(next);
+            keyAnchor.current = e.shiftKey ? (keyAnchor.current ?? at) : undefined;
+            if (keyAnchor.current !== undefined) pick(keyAnchor.current, next);
           }}
-          className="touch-pan-y select-none focus-visible:outline-accent">
+          className="touch-pan-y outline-none select-none">
+          {region && (
+            <rect x={x(region.from)} width={x(region.to) - x(region.from)} y={PAD.top} height={H - PAD.top - PAD.bottom} className="fill-accent" opacity={0.14} />
+          )}
           {bands
             .filter((band) => PHASE_FILL[band.phase])
             .map((band) => {
@@ -138,6 +178,9 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
             <circle key={p.date} cx={x(p.date)} cy={y(p.kg)} r={2} className="fill-muted" opacity={0.45} />
           ))}
           <path d={line} fill="none" className="stroke-accent" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+          {region && (
+            <line x1={x(region.from)} x2={x(region.to)} y1={y(region.fromKg)} y2={y(region.toKg)} className="stroke-fg" strokeWidth={2} strokeDasharray="5 3" strokeLinecap="round" />
+          )}
           <circle cx={x(read.date)} cy={y(read.avg)} r={4} className="fill-accent stroke-surface" strokeWidth={2} />
         </svg>
       )}
@@ -148,6 +191,11 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
         <span className="flex items-center gap-1.5">
           <span className="h-0.5 w-3 rounded-full bg-accent" /> {averageLabel}
         </span>
+        {region && (
+          <span className="flex items-center gap-1.5">
+            <span className="w-3 border-t-2 border-dashed border-fg" /> best fit
+          </span>
+        )}
         {MARKED.filter((phase) => bands.some((band) => band.phase === phase)).map((phase) => (
           <span key={phase} className="flex items-center gap-1.5">
             <span className={`h-1.5 w-3 ${PHASE_BG[phase]}`} /> {phase}
