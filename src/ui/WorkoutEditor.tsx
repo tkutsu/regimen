@@ -106,7 +106,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
 
           <section>
             <Heading>Note</Heading>
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3} className={`${box} w-full resize-y border-line text-sm`} />
+            <textarea value={note} onChange={(e) => setNote(e.target.value)} className={`${box} w-full border-line text-sm`} />
           </section>
 
           {saved && (

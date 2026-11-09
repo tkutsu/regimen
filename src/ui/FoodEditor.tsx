@@ -138,8 +138,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
             <textarea
               value={form.note}
               onChange={(e) => patch({ note: e.target.value })}
-              rows={3}
-              className={`${box} w-full resize-y border-line text-sm`}
+              className={`${box} w-full border-line text-sm`}
             />
           </section>
 
@@ -171,8 +170,7 @@ export function KeywordsField({ value, onChange }: { value: string; onChange: (v
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="κοτόπουλο, στήθος, poultry"
-        rows={2}
-        className={`${box} w-full resize-y border-line`}
+        className={`${box} w-full border-line`}
       />
       <span className="text-xs text-muted">Separate names and terms with commas. Include the Greek name here.</span>
     </label>
