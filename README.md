@@ -5,12 +5,14 @@ server and no account: each device writes its own log into a folder that
 Syncthing keeps in sync, and every device reads all the logs.
 
 - Today: log what you eat and see what's left of the day's calories and nutrients.
+  Hold a planned food and drag it to reorder the list.
 - Foods: your own foods with groups, variants and containers, plus bundled
   reference foods you can search offline.
 - Recipes: weigh the cooked pot to get values per 100 g, and start a new batch
   when you cook it again.
 - Weight: a weigh-in chart and an estimate of maintenance calories for each
-  cut or bulk phase.
+  cut or bulk phase. Drag across the chart to read maintenance over any stretch,
+  with its best fit line.
 
 Built with Tauri 2, React and Tailwind.
 

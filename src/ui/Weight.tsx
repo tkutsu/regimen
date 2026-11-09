@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
-import { daysBetween, phaseRuns, stretches, weightSeries, type Stretch } from "../domain/weight";
+import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Region, type Stretch } from "../domain/weight";
 import type { Commit } from "../store";
-import { Info, NumberInput } from "./fields";
+import { Info } from "./fields";
 import { useRemembered } from "./look";
 import { Segmented, TrendChart } from "./TrendChart";
 
@@ -13,21 +13,21 @@ const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
 /** Days the average line spans. */
 const AVERAGES = [3, 7, 14];
-/** Weigh-ins listed under Recent, and how many more each Show more adds. */
-const RECENT = 14;
-const MORE = 30;
-const short = (date: string, weekday = false) =>
-  new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", ...(weekday && { weekday: "short" }) });
+/** Days a picked stretch should span before its reading means much; less is mostly water. */
+const STEADY_SPAN = 14;
+const short = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
 export function Weight({ state, commit }: Props) {
   const today = localDate();
   const [range, setRange] = useRemembered<keyof typeof RANGES>("weight.range", "3M", RANGE_NAMES);
   const [days, setDays] = useRemembered("weight.average", 7, AVERAGES);
-  const [listed, setListed] = useState(RECENT);
+  const [picked, setPicked] = useState<{ from: string; to: string }>();
   const series = useMemo(() => weightSeries(state, days), [state, days]);
   const phases = useMemo(() => stretches(state, today), [state, today]);
   const shown = series.filter((p) => daysBetween(p.date, today) < RANGES[range]);
   const bands = shown.length ? phaseRuns(state, shown[0].date, shown.at(-1)!.date) : [];
+  const region = useMemo(() => picked && regionReading(state, picked.from, picked.to), [state, picked]);
+  const onUse = (tdee: number) => commit({ type: "settings", settings: { tdee } });
 
   const latest = series.at(-1);
   const weekAgo = series.findLast((p) => p.date <= shiftDate(today, -7));
@@ -56,55 +56,23 @@ export function Weight({ state, commit }: Props) {
           </span>
         </div>
         <div className="mt-4 flex gap-2 text-sm">
-          <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
+          <Segmented options={RANGE_NAMES} value={range} onChange={(next) => { setRange(next); setPicked(undefined); }} label={(name) => name} className="flex-[3]" />
           <Segmented options={AVERAGES} value={days} onChange={setDays} label={(n) => `${n}d`} className="flex-[2]" />
         </div>
         {shown.length > 1 ? (
-          <TrendChart points={shown} bands={bands} averageLabel={`${days}-day average`} valueLabel="weigh-in" format={(kg) => `${kg.toFixed(1)}kg`} />
+          <TrendChart points={shown} bands={bands} averageLabel={`${days}-day average`} valueLabel="weigh-in" format={(kg) => `${kg.toFixed(1)}kg`} region={region} onRegion={setPicked} />
         ) : (
           <p className="py-6 text-center text-sm text-muted">Not enough weigh-ins in this range.</p>
         )}
-      </section>
-
-      <Maintenance phases={phases} tdee={state.settings.tdee} settleDays={state.settings.settleDays} onUse={(tdee) => commit({ type: "settings", settings: { tdee } })} />
-
-      <section>
-        <h2 className="mb-1 px-1 text-xs font-medium tracking-wide text-muted uppercase">Recent</h2>
-        <table className="w-full overflow-hidden rounded-2xl bg-surface text-sm outline outline-line">
-          <thead className="text-xs text-muted">
-            <tr>
-              <th className="px-4 py-2 text-left font-normal">date</th>
-              <th className="px-4 py-2 text-right font-normal">weight</th>
-              <th className="px-4 py-2 text-right font-normal">{days}-day avg</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-line border-t border-line">
-            {series
-              .slice(-listed)
-              .reverse()
-              .map((p) => (
-                <tr key={p.date}>
-                  <td className="px-4 py-2">{short(p.date, true)}</td>
-                  <td className="px-4 py-2 text-right">
-                    <NumberInput
-                      value={p.kg}
-                      onCommit={(kg) => kg > 0 && commit({ type: "weight", date: p.date, kg })}
-                      format={(kg) => kg.toFixed(1)}
-                      aria-label={`weight on ${short(p.date)}`}
-                      className="w-14 text-right"
-                    />
-                  </td>
-                  <td className="px-4 py-2 text-right text-muted">{p.avg.toFixed(1)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-        {series.length > listed && (
-          <button onClick={() => setListed(listed + MORE)} className="mt-2 w-full rounded-xl border border-line py-2.5 text-sm text-accent">
-            Show more
-          </button>
+        {region ? (
+          <RegionReading region={region} tdee={state.settings.tdee} onUse={onUse} onClear={() => setPicked(undefined)} />
+        ) : (
+          shown.length > 1 && <p className="mt-2 text-xs text-muted">Drag across the chart to read maintenance over that stretch.</p>
         )}
       </section>
+
+      <Maintenance phases={phases} tdee={state.settings.tdee} settleDays={state.settings.settleDays} onUse={onUse} />
+
       {notes}
     </div>
   );
@@ -144,6 +112,38 @@ function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
 }
 
 const kcal = (n: number) => Math.round(n / 10) * 10;
+const trend = (kgPerWeek: number) =>
+  Math.abs(kgPerWeek) < 0.005 ? "held steady" : `went ${kgPerWeek > 0 ? "up" : "down"} ${Math.abs(kgPerWeek).toFixed(2)} kg a week`;
+
+/** The maintenance a stretch picked on the chart implies, updating as the drag goes. */
+function RegionReading({ region, tdee, onUse, onClear }: { region: Region; tdee: number; onUse: (tdee: number) => void; onClear: () => void }) {
+  const reading = kcal(region.tdee);
+  return (
+    <div className="mt-3 border-t border-line pt-3">
+      <div className="flex items-baseline justify-between">
+        <span className="text-3xl font-semibold">
+          ≈ {reading}
+          <span className="text-base font-normal text-muted">kcal</span>
+        </span>
+        <button onClick={onClear} aria-label="Clear the selected stretch" className="text-sm text-accent">
+          Clear
+        </button>
+      </div>
+      <p className="mt-2 text-sm">
+        {short(region.from)} – {short(region.to)}. Eating {Math.round(region.intake)} kcal a day, weight {trend(region.kgPerWeek)}.
+      </p>
+      <p className="mt-1 text-xs text-muted">
+        {region.weighIns} weigh-ins over {region.days} days, food ticked on {region.logged}.
+        {region.days < STEADY_SPAN && " Under two weeks, water can swamp this."}
+      </p>
+      {Math.abs(reading - tdee) >= 30 && (
+        <button onClick={() => onUse(reading)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
+          Use {reading} as maintenance
+        </button>
+      )}
+    </div>
+  );
+}
 
 /** Maintenance shifts with the phase, so each phase gets its own reading; the current one leads. */
 function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; tdee: number; settleDays: number; onUse: (tdee: number) => void }) {
@@ -172,10 +172,7 @@ function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; t
           <p className="mt-2 text-sm">
             <span className="capitalize">{current.phase}</span> since {short(current.from)}. Eating {Math.round(current.intake)} kcal a day from{" "}
             {short(current.fitFrom)}, weight{" "}
-            {Math.abs(current.kgPerWeek) < 0.005
-              ? "held steady"
-              : `went ${current.kgPerWeek > 0 ? "up" : "down"} ${Math.abs(current.kgPerWeek).toFixed(2)} kg a week`}
-            .
+            {trend(current.kgPerWeek)}.
           </p>
           {Math.abs(reading - tdee) >= 30 && (
             <button onClick={() => onUse(reading)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">

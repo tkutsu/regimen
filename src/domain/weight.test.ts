@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { shiftDate } from "./day";
 import { fold, stamp } from "./state";
 import type { Change, Food, Phase } from "./types";
-import { daysBetween, KCAL_PER_KG, stretches, weightSeries } from "./weight";
+import { daysBetween, KCAL_PER_KG, regionReading, stretches, weightSeries } from "./weight";
 
 const END = "2026-10-31";
 const meal: Food = { id: "meal", name: "meal", basis: "item", group: "", fav: false, note: "", kcal: 2000 };
@@ -20,6 +20,31 @@ const weighIns = (days: number, kg: (date: string) => number): Change[] =>
     const date = shiftDate(END, i - days + 1);
     return { type: "weight", date, kg: kg(date) };
   });
+
+describe("regionReading", () => {
+  const steady = state(settings, since("2026-08-01", "cut"), ...weighIns(60, (d) => 80 + daysBetween(d, END) * 0.05));
+
+  it("reads every day it was given, with a line through the weigh-ins", () => {
+    const region = regionReading(steady, shiftDate(END, -6), END)!;
+    expect(region.days).toBe(7);
+    expect(region.weighIns).toBe(7);
+    expect(region.intake).toBeCloseTo(2000);
+    expect(region.tdee).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
+    expect(region.kgPerWeek).toBeCloseTo(-0.35);
+    expect(region.fromKg).toBeCloseTo(80.3);
+    expect(region.toKg).toBeCloseTo(80);
+  });
+
+  it("matches a phase's reading over the same days", () => {
+    const [cut] = stretches(steady, END);
+    expect(regionReading(steady, cut.fitFrom, END)!.tdee).toBeCloseTo(cut.tdee!);
+  });
+
+  it("needs two weigh-ins", () => {
+    expect(regionReading(steady, END, END)).toBeUndefined();
+    expect(regionReading(steady, "2020-01-01", "2020-02-01")).toBeUndefined();
+  });
+});
 
 describe("stretches", () => {
   it("reads maintenance as intake minus the weight trend", () => {
