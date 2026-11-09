@@ -45,6 +45,8 @@ export type Entry = {
   factor?: number;
   /** The staple this entry was planned from. */
   staple?: string;
+  /** Its place in the day's list once dragged; entries without one come after, oldest first. */
+  order?: number;
   /** Per-unit values the entry keeps after its food changed on a later day. */
   frozen?: Frozen;
 };

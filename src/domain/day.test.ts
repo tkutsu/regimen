@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dayOf, intake, kcalTarget, missingStaples, shiftDate, targets, trendWeight } from "./day";
+import { dayOf, intake, kcalTarget, listedEntries, missingStaples, shiftDate, targets, trendWeight } from "./day";
 import { recipeAsFood } from "./nutrition";
 import { applyEvents, defaultSettings, fold, stamp, type State } from "./state";
 import type { Change, Food } from "./types";
@@ -26,6 +26,15 @@ const omega3 = food("omega3", "item", 10);
 let clock = 0;
 const state = (...changes: Change[]) =>
   fold(changes.map((change) => stamp(change, "desktop", new Date(Date.UTC(2026, 0, 1, 0, 0, clock++)))));
+
+describe("listedEntries", () => {
+  const entry = (id: string, done: boolean, order?: number): Change => ({ type: "entry.upsert", entry: { id, date: "2026-11-09", foodId: "oats", amount: 1, done, order } });
+
+  it("keeps the dragged order, with new entries after it and eaten ones last", () => {
+    const s = state(entry("eaten", true, 0), entry("a", false, 1), entry("new", false), entry("b", false, 0), entry("newer", false));
+    expect(listedEntries(s, "2026-11-09").map((e) => e.id)).toEqual(["b", "a", "new", "newer", "eaten"]);
+  });
+});
 
 describe("intake", () => {
   it("scales per-100g foods by grams and item foods by count", () => {

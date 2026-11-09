@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { dayOf, entriesOn, intake, localDate, missingStaples, ratesOn, shiftDate, targets, trendWeight } from "../domain/day";
+import { dayOf, entriesOn, intake, listedEntries, localDate, missingStaples, ratesOn, shiftDate, targets, trendWeight } from "../domain/day";
 import { allFoods, entryFood, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
@@ -9,6 +9,7 @@ import { NumberField, Tick } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { transition } from "./motion";
 import { Remaining } from "./Remaining";
+import { useReorder } from "./reorder";
 
 type Props = { state: State; commit: Commit };
 
@@ -20,7 +21,12 @@ export function Today({ state, commit }: Props) {
   const foods = useMemo(() => allFoods(state), [state]);
   const pickable = useMemo(() => pickableFoods(state), [state]);
   const day = dayOf(state, date);
-  const entries = entriesOn(state, date).sort((a, b) => Number(a.done) - Number(b.done));
+  const entries = listedEntries(state, date);
+  const planned = useReorder(
+    entries.filter((entry) => !entry.done),
+    (entry) => entry.id,
+    (next) => commit(...next.flatMap((entry, order): Change[] => (entry.order === order ? [] : [{ type: "entry.upsert", entry: { ...entry, order } }]))),
+  );
   // Staples are planned anyway, so "Plan yesterday's" copies the rest.
   const yesterday = entriesOn(state, shiftDate(date, -1)).filter((entry) => !entry.staple);
   const onlyStaples = entries.every((entry) => entry.staple);
@@ -83,8 +89,11 @@ export function Today({ state, commit }: Props) {
         <NumberField label="rollover" unit="kcal" value={day.rolloverKcal ?? 0} onCommit={(rolloverKcal) => setDay({ rolloverKcal })} hint="Calories moved from the previous day. Negative if you went over." />
       </div>
 
-      <ul className="flow overflow-hidden rounded-2xl border border-line bg-surface">
-        {entries.map((entry) => (
+      <ul ref={planned.holdList} className="flow overflow-hidden rounded-2xl border border-line bg-surface">
+        {planned.shown.map((entry) => (
+          <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} hold={planned.hold(entry)} dragging={planned.dragging === entry.id} />
+        ))}
+        {entries.filter((entry) => entry.done).map((entry) => (
           <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} />
         ))}
         {onlyStaples && (entries.length === 0 || yesterday.length > 0) && (
@@ -208,15 +217,25 @@ function DateNav({ date, onChange }: { date: string; onChange: (date: string) =>
   );
 }
 
+type RowProps = {
+  entry: Entry;
+  food?: Food;
+  shown?: keyof Nutrients;
+  onChange: (entry: Entry) => void;
+  /** Given to planned rows, which can be held and dragged. */
+  hold?: ReturnType<ReturnType<typeof useReorder<Entry>>["hold"]>;
+  dragging?: boolean;
+};
+
 /** An entry's food and amount, or with `shown`, its share of that total. */
-function EntryRow({ entry, food, shown, onChange }: { entry: Entry; food?: Food; shown?: keyof Nutrients; onChange: (entry: Entry) => void }) {
+function EntryRow({ entry, food, shown, onChange, hold, dragging }: RowProps) {
   const [open, setOpen] = useState(false);
   const unit = food?.basis === "item" ? "×" : "g";
   return (
-    <li className="border-b border-line last:border-b-0">
+    <li data-row={hold && entry.id} className={`border-b border-line last:border-b-0 ${dragging ? "bg-line/40" : ""}`}>
       <div className={`flex items-center gap-3 px-3 py-2 ${entry.done ? "" : "text-muted"}`}>
         <Tick done={entry.done} onClick={() => onChange({ ...entry, done: !entry.done })} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
-        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left">
+        <button {...hold} onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left select-none">
           <span className="truncate">
             {usedName(food)}
             {entry.variant && <span className="text-muted"> · {entry.variant}</span>}

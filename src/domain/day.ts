@@ -93,6 +93,12 @@ export function entriesOn(state: State, date: string): Entry[] {
   return [...state.entries.values()].filter((entry) => entry.date === date);
 }
 
+/** The day as listed: what's still planned, then what's eaten, each in its dragged order. */
+export function listedEntries(state: State, date: string): Entry[] {
+  const place = (entry: Entry) => entry.order ?? Infinity;
+  return entriesOn(state, date).sort((a, b) => Number(a.done) - Number(b.done) || (place(a) === place(b) ? 0 : place(a) - place(b)));
+}
+
 /**
  * Staple entries the day doesn't have yet: from the day a staple was added on, and
  * never again on a day it was removed from. The id is fixed per staple and day, so two
