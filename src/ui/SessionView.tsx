@@ -97,8 +97,7 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
             onChange={(e) => setNote(e.target.value)}
             onBlur={() => note.trim() !== (session.note ?? "") && onChange({ ...session, note: note.trim() || undefined })}
             placeholder="Note"
-            rows={2}
-            className={`${box} w-full resize-y border-line text-sm`}
+            className={`${box} w-full border-line text-sm`}
           />
 
           <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">

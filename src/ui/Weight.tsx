@@ -102,10 +102,9 @@ function WeightNotes({ value, commit }: { value: string; commit: Commit }) {
         value={draft ?? value}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={save}
-        rows={4}
         placeholder="Add your weight and progress notes..."
         aria-describedby="weight-notes-hint"
-        className="block w-full resize-y rounded-2xl border border-line bg-surface p-4 text-sm outline-none placeholder:text-muted/60 focus:border-accent"
+        className="block w-full rounded-2xl border border-line bg-surface p-4 text-sm outline-none placeholder:text-muted/60 focus:border-accent"
       />
     </section>
   );

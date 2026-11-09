@@ -111,7 +111,7 @@ export function Today({ state, commit }: Props) {
       <button
         data-enter
         onClick={() => setPicking(true)}
-        className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto max-w-md rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg"
+        className="page-actions fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto max-w-md rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg"
       >
         Add food
       </button>

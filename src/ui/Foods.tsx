@@ -96,7 +96,7 @@ export function Foods({ state, commit }: Props) {
       )}
       {query.trim() && !sections[0][1].length && !recipes.length && <p className="py-6 text-center text-sm text-muted">No foods match “{query.trim()}”</p>}
 
-      <div className="fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto grid max-w-md grid-cols-2 gap-2">
+      <div className="page-actions fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto grid max-w-md grid-cols-2 gap-2">
         <button onClick={() => setCooking({ recipe: emptyRecipe() })} className="rounded-2xl border border-line bg-surface py-3.5 font-medium shadow-lg">
           New recipe
         </button>

@@ -237,8 +237,7 @@ export function RecipeEditor(props: Props) {
             <textarea
               value={form.note}
               onChange={(e) => patch({ note: e.target.value })}
-              rows={3}
-              className={`${box} w-full resize-y border-line text-sm`}
+              className={`${box} w-full border-line text-sm`}
             />
           </section>
 
