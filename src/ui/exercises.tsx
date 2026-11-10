@@ -21,7 +21,7 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
         />
         <span>% bodyweight for volume</span>
       </label>
-      <Info label={`${exercise.name} bodyweight percentage`} inline hint="Adds 0-100% of (bodyweight + 3 kg) to the load, using the latest weigh-in by the session date. Updates this exercise everywhere, including past volume. Blank = 0%." />
+      <Info label={`${exercise.name} bodyweight percentage`} inline hint="How much of your weight (+3 kg) the exercise moves, added to the kg. Updates past volume too." />
       <label className="ml-2 flex items-center gap-1 text-xs text-muted">
         <input
           type="checkbox"
@@ -31,7 +31,7 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
         />
         <span>Unilateral</span>
       </label>
-      <Info label={`${exercise.name} unilateral`} inline hint="One arm or leg at a time, with kg logged per side. Volume counts the logged kg twice; bodyweight is not doubled. Updates past volume too." />
+      <Info label={`${exercise.name} unilateral`} inline hint="One side at a time, kg logged per side. Volume doubles the kg, not your weight. Updates past volume too." />
     </div>
   );
 }

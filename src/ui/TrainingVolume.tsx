@@ -28,7 +28,7 @@ export function TrainingVolume({ state }: { state: State }) {
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
-        <Info label="weekly volume" wide className="relative -mx-3 flex" hint="Monday-Sunday total of reps × load for every set marked done, including drops. Load is added kg + (bodyweight + 3 kg) × the exercise's bodyweight percentage / 100. Uses the latest weigh-in on or before the session date. Changing a percentage recalculates past volume. Averages include zero weeks and this week so far.">
+        <Info label="weekly volume" wide className="relative -mx-3 flex" hint="Reps × kg of every done set, Monday to Sunday. Bodyweight exercises add their share of your weight. Averages count empty weeks and this week so far.">
           <span className="font-medium tracking-wide uppercase">Weekly volume</span>
         </Info>
       </h2>
