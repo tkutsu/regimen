@@ -125,13 +125,13 @@ export function NumberField({ label, unit, value, onCommit, placeholder, hint }:
   const id = useId();
   return (
     <div onClick={() => input.current?.focus()} className="relative cursor-text rounded-xl border border-line bg-surface px-3 py-2">
-      {hint ? (
-        <div onClick={(e) => e.stopPropagation()} className="cursor-auto">
-          <Info id={id} label={label} hint={hint} className="relative -mx-3 -mt-2">
-            <span className="text-xs">{label}</span>
-          </Info>
-        </div>
-      ) : <label htmlFor={`${id}-input`} className="block text-xs text-muted">{label}</label>}
+      <label htmlFor={`${id}-input`} className="block text-xs text-muted">{label}</label>
+      {/* Only the corner icon opens help, so taps meant for the number reach it. */}
+      {hint && (
+        <span onClick={(e) => e.stopPropagation()} className="absolute top-0 right-0 cursor-auto">
+          <Info id={id} label={label} hint={hint} />
+        </span>
+      )}
       <span className="flex items-baseline text-lg">
         <span className="inline-grid min-w-0">
           <span aria-hidden className="invisible col-start-1 row-start-1 whitespace-pre">
