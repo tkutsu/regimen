@@ -145,8 +145,8 @@ export function NumberField({ label, unit, value, onCommit, placeholder, hint }:
   );
 }
 
-/** Opens help on hover, focus or tap; Escape, blur and an outside tap dismiss it. */
-export function Info({ id, label, hint, className = "relative", wide = false, children }: { id?: string; label: string; hint: string; className?: string; wide?: boolean; children?: React.ReactNode }) {
+/** Opens help on hover, focus or tap; inline help fills a row in a wrapping flex container. */
+export function Info({ id, label, hint, className = "relative", wide = false, inline = false, children }: { id?: string; label: string; hint: string; className?: string; wide?: boolean; inline?: boolean; children?: React.ReactNode }) {
   const generatedId = useId();
   const helpId = id ?? generatedId;
   const [open, setOpen] = useState(false);
@@ -169,7 +169,7 @@ export function Info({ id, label, hint, className = "relative", wide = false, ch
   return (
     <span
       ref={root}
-      className={`${children ? "flex" : "inline-flex"} shrink-0 font-normal tracking-normal normal-case ${className}`}
+      className={`${inline ? "contents" : children ? "flex" : "inline-flex"} shrink-0 font-normal tracking-normal normal-case ${className}`}
       onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
       onPointerLeave={() => { if (!pinned.current && !root.current?.contains(document.activeElement)) setOpen(false); }}
     >
@@ -190,7 +190,7 @@ export function Info({ id, label, hint, className = "relative", wide = false, ch
           <path d="M10 9v5M10 6v.1" />
         </svg>
       </button>
-      <span id={helpId} role="tooltip" hidden={!open} className={`absolute top-full right-0 z-[3] max-w-[calc(100vw-2rem)] pt-1 ${wide ? "w-64" : "w-36"}`}>
+      <span id={helpId} role="tooltip" hidden={!open} className={inline ? "basis-full py-1" : `absolute top-full right-0 z-[3] max-w-[calc(100vw-2rem)] pt-1 ${wide ? "w-64" : "w-36"}`}>
         <span className="block rounded-xl border border-line bg-surface p-3 text-left text-xs text-muted shadow-lg">{hint}</span>
       </span>
     </span>
