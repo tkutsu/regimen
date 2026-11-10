@@ -150,12 +150,12 @@ function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; t
   if (!current) return null;
   const reading = current.tdee && kcal(current.tdee);
   const counted = Math.max(0, daysBetween(current.fitFrom, current.to) + 1);
-  const logged = counted > 0 ? ` over the last ${counted === 1 ? "day" : `${counted} days`}. You ticked food on ${current.logged} of them; any others are assumed on target.` : ".";
-  const skipped = settleDays > 0 ? ` Each phase skips its first ${settleDays === 1 ? "day" : `${settleDays} days`} while water settles.` : "";
+  const logged = counted > 0 ? ` over the last ${counted === 1 ? "day" : `${counted} days`}. Food ticked on ${current.logged}; the rest count as on target.` : ".";
+  const skipped = settleDays > 0 ? ` Skips the first ${settleDays === 1 ? "day" : `${settleDays} days`} of each phase for water weight.` : "";
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
-        <Info label="real maintenance" wide className="relative -mx-3 flex" hint={`Calculated from your weight trend and the food you ate${logged}${skipped}`}>
+        <Info label="real maintenance" wide className="relative -mx-3 flex" hint={`From your weight trend and food${logged}${skipped}`}>
           <span className="font-medium tracking-wide uppercase">Real maintenance</span>
         </Info>
       </h2>
