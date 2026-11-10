@@ -10,8 +10,8 @@ export const fieldBox = "w-14 rounded-lg border border-line bg-bg px-2 py-1 text
 /** An exercise's optional bodyweight contribution and unilateral flag, shared by its workouts and past sessions. */
 export function BodyweightField({ exercise, onChange }: { exercise: Exercise; onChange: (exercise: Exercise) => void }) {
   return (
-    <div className="flex flex-wrap items-center gap-x-1">
-      <label className="flex items-baseline gap-1 text-xs text-muted">
+    <div className="grid w-fit grid-cols-[auto_auto] items-center gap-x-1 text-xs text-muted">
+      <label className="flex items-baseline gap-1">
         <OptionalNumberInput
           value={exercise.bodyweightPct}
           onCommit={(pct) => (pct === undefined || (pct >= 0 && pct <= 100)) && onChange({ ...exercise, bodyweightPct: pct || undefined })}
@@ -21,8 +21,8 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
         />
         <span>% bodyweight for volume</span>
       </label>
-      <Info label={`${exercise.name} bodyweight percentage`} inline hint="How much of your weight (+3 kg) the exercise moves, added to the kg. Updates past volume too." />
-      <label className="ml-2 flex items-center gap-1 text-xs text-muted">
+      <Info label={`${exercise.name} bodyweight percentage`} wide className="relative -my-2.5" hint="How much of your weight (+3 kg) the exercise moves, added to the kg. Updates past volume too." />
+      <label className="flex items-center gap-1">
         <input
           type="checkbox"
           checked={!!exercise.unilateral}
@@ -31,7 +31,7 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
         />
         <span>Unilateral</span>
       </label>
-      <Info label={`${exercise.name} unilateral`} inline hint="One side at a time, kg logged per side. Volume doubles the kg, not your weight. Updates past volume too." />
+      <Info label={`${exercise.name} unilateral`} wide className="relative -my-2.5" hint="One side at a time, kg logged per side. Volume doubles the kg, not your weight. Updates past volume too." />
     </div>
   );
 }

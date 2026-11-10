@@ -136,6 +136,11 @@ html {
     view-transition-name: page-actions;
   }
 }
+/* A named row is its own stacking context, so an open hint lifts its row over the next. */
+.flow > :has([role="tooltip"]:not([hidden])) {
+  position: relative;
+  z-index: 3;
+}
 ::view-transition-group(*) {
   animation-duration: 200ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);

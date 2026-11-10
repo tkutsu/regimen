@@ -66,7 +66,7 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
           </div>
 
           {supersets(session.sets, session.linked).map((block, b) => (
-            <section key={block[0].exerciseId} className={`overflow-hidden rounded-2xl border bg-surface ${block.length > 1 ? "border-accent/60" : "border-line"}`}>
+            <section key={block[0].exerciseId} className={`rounded-2xl border bg-surface ${block.length > 1 ? "border-accent/60" : "border-line"}`}>
               {block.length > 1 && <p className="px-4 pt-3 text-xs font-medium tracking-wide text-accent uppercase">Superset · no rest between</p>}
               {block.map(({ exerciseId, at }, g) => (
                 <div key={exerciseId} className={g > 0 ? "border-t border-line" : ""}>
