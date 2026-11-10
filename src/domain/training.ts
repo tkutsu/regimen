@@ -23,9 +23,10 @@ export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[]
     const total = totals.get(week) ?? { kg: 0, missingBodyweight: 0 };
     for (const set of session.sets) {
       if (!set.done || !Number.isFinite(set.reps) || (set.reps ?? 0) <= 0) continue;
-      const pct = state.exercises.get(set.exerciseId)?.bodyweightPct ?? 0;
+      const exercise = state.exercises.get(set.exerciseId);
+      const pct = exercise?.bodyweightPct ?? 0;
       const bodyLoad = pct > 0 && bodyweight !== undefined ? (bodyweight + 3) * pct / 100 : 0;
-      total.kg += set.reps! * ((set.kg ?? 0) + bodyLoad);
+      total.kg += set.reps! * ((set.kg ?? 0) * (exercise?.unilateral ? 2 : 1) + bodyLoad);
       if (pct > 0 && bodyweight === undefined) total.missingBodyweight++;
     }
     totals.set(week, total);

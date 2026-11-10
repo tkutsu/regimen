@@ -91,6 +91,13 @@ describe("weekly volume", () => {
     expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1860, 840]);
   });
 
+  it("counts a unilateral exercise's logged kg twice but its bodyweight share once", () => {
+    const state = history();
+    state.exercises.set("dips", { ...state.exercises.get("dips")!, unilateral: true });
+    state.sessions.set("a", session("a", "2026-10-27", [set("dips", 10, 20)]));
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([810, 0]);
+  });
+
   it("flags bodyweight without a prior weigh-in and retains added load; legacy exercises default to 0%", () => {
     const state = history();
     state.sessions.set("a", session("a", "2026-10-25", [set("dips", 10, 20), set("bench", 8, 60), set("unweighted", 12)]));
