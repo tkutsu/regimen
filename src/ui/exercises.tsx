@@ -7,7 +7,7 @@ import { Info, OptionalNumberInput } from "./fields";
 /** A small boxed number; callers may widen it. */
 export const fieldBox = "w-14 rounded-lg border border-line bg-bg px-2 py-1 text-right outline-none focus:border-accent placeholder:text-muted/50";
 
-/** An exercise's optional bodyweight contribution, shared by its workouts and past sessions. */
+/** An exercise's optional bodyweight contribution and unilateral flag, shared by its workouts and past sessions. */
 export function BodyweightField({ exercise, onChange }: { exercise: Exercise; onChange: (exercise: Exercise) => void }) {
   return (
     <div className="flex flex-wrap items-center gap-x-1">
@@ -22,6 +22,16 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
         <span>% bodyweight for volume</span>
       </label>
       <Info label={`${exercise.name} bodyweight percentage`} inline hint="Adds 0-100% of (bodyweight + 3 kg) to the load, using the latest weigh-in by the session date. Updates this exercise everywhere, including past volume. Blank = 0%." />
+      <label className="ml-2 flex items-center gap-1 text-xs text-muted">
+        <input
+          type="checkbox"
+          checked={!!exercise.unilateral}
+          onChange={(e) => onChange({ ...exercise, unilateral: e.target.checked || undefined })}
+          className="accent-accent"
+        />
+        <span>Unilateral</span>
+      </label>
+      <Info label={`${exercise.name} unilateral`} inline hint="One arm or leg at a time, with kg logged per side. Volume counts the logged kg twice; bodyweight is not doubled. Updates past volume too." />
     </div>
   );
 }

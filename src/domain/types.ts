@@ -128,6 +128,8 @@ export type Exercise = {
   measure: "reps";
   /** Share of (the session day's bodyweight + 3 kg) added to load for volume; omitted = 0%. */
   bodyweightPct?: number;
+  /** One side at a time with the logged kg per side, so volume counts that kg twice. */
+  unilateral?: boolean;
 };
 
 /** What one set records: reps and added kg; bodyweight's contribution is set on the exercise. */
