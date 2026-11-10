@@ -126,7 +126,7 @@ export type Exercise = {
   id: string;
   name: string;
   measure: "reps";
-  /** Share of (the session day's bodyweight + 1 kg) added to load for volume; omitted = 0%. */
+  /** Share of (the session day's bodyweight + 3 kg) added to load for volume; omitted = 0%. */
   bodyweightPct?: number;
 };
 

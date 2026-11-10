@@ -1,142 +1,191 @@
-# regimen
+# Regimen
 
-An offline calorie and weigh-in tracker for Linux and Android. There is no
-server and no account: each device writes its own log into a folder that
-Syncthing keeps in sync, and every device reads all the logs.
+Track your food, weight and workouts on Linux and Android. Regimen works offline,
+keeps your data in a folder you control, and needs no account or server.
 
-- Today: log what you eat and see what's left of the day's calories and nutrients.
-  Hold a planned food and drag it to reorder the list.
-- Foods: your own foods with groups, variants and containers, plus bundled
-  reference foods you can search offline.
-- Recipes: weigh the cooked pot to get values per 100 g, and start a new batch
-  when you cook it again.
-- Weight: a weigh-in chart and an estimate of maintenance calories for each
-  cut or bulk phase. Drag across the chart to read maintenance over any stretch,
-  with its best fit line.
+- Plan meals, tick off what you've eaten, and see your remaining calories and nutrients.
+- Search bundled foods offline, including Greek search terms, or add your own.
+- Save recipes and weigh each cooked batch to calculate nutrition per portion.
+- Follow your weight trend and estimate maintenance calories from your logs.
+- Save workouts and record sets, reps and weights.
 
-Built with Tauri 2, React and Tailwind.
+## A look inside
 
-## Run and build
+<table>
+  <tr>
+    <th>Plan your day</th>
+    <th>Follow your progress</th>
+    <th>Keep your favourites</th>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/today.png" alt="Today in light mode, showing remaining calories, nutrient bars and planned meals" width="280"></td>
+    <td><img src="docs/screenshots/weight.png" alt="Weight in dark mode, showing weigh-ins, a trend line and estimated maintenance calories" width="280"></td>
+    <td><img src="docs/screenshots/foods.png" alt="Foods in light mode, showing saved recipes and foods grouped by type" width="280"></td>
+  </tr>
+</table>
 
-```
-pnpm install
-pnpm tauri dev
-pnpm test
-```
+Screenshots use sample data in a browser preview. The app supports light and dark
+themes with an adjustable accent colour.
 
-To install the desktop app for the current user (binary in `~/.local/bin`,
-plus a launcher entry):
+## Install on Android
 
-```
+You'll need Android 11 or newer and a Regimen APK (the Android installation file).
+If you're building it yourself, use the [build instructions below](#build-from-source).
+
+### Install an APK on your phone
+
+1. Copy the APK to your phone, then open it in your file manager.
+2. If Android asks, open Settings and enable "Allow from this source" for that
+   file manager. Return to the APK and tap Install.
+3. Open Regimen and follow [the first-run setup](#first-run-and-sync).
+
+This method uses the "Install unknown apps" permission. Developer options and
+USB debugging are needed for the USB method below. See
+[Google's APK installation instructions](https://support.google.com/pixelphone/answer/7391672#zippy=%2Cget-apps-from-other-sources)
+if you can't find the permission. If Android specifically blocks an unverified
+developer, follow [Google's additional setup steps](https://support.google.com/android/answer/17588095).
+
+### Install from a computer over USB
+
+1. On your phone, open Settings, then About phone. Find "Build number" (on Samsung,
+   it's under "Software information"). Tap it seven times and enter your phone's
+   PIN if asked. Android will confirm that Developer options are enabled.
+2. Return to Settings and search for "Developer options". Open it and enable
+   "USB debugging". Menu names vary by phone; see
+   [Android's Developer options guide](https://developer.android.com/studio/debug/dev-options).
+3. Connect the unlocked phone to your computer with a USB cable that supports
+   data. Accept "Allow USB debugging?" on the phone to authorise your computer.
+4. Install [Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
+   on your computer, or your Linux distribution's `adb` package. With `adb` on
+   your PATH, check the connection:
+
+   ```sh
+   adb devices
+   ```
+
+   Your phone should appear with `device` beside it. If it says `unauthorized`,
+   unlock the phone and accept the debugging prompt. If the list is empty, try
+   another data cable or USB port. For Linux permission errors or Windows USB
+   drivers, follow [Android's device setup guide](https://developer.android.com/studio/run/device).
+
+5. In the directory containing your APK, install it with the following command.
+   Replace `regimen.apk` with your file's name:
+
+   ```sh
+   adb install -r regimen.apk
+   ```
+
+   Wait for `Success`, then open Regimen on the phone. If more than one device is
+   connected, use `adb -s SERIAL install -r regimen.apk`, replacing `SERIAL` with
+   the identifier shown by `adb devices`.
+
+For updates, `-r` keeps the app's data. The APK must use the same signing key as
+the installed version. If Android reports a signature mismatch, use a build signed
+with the original key. Back up your data before considering an uninstall.
+See the [ADB install reference](https://developer.android.com/tools/adb#move).
+
+## First run and sync
+
+1. Choose a folder for your data. On Android, use the folder picker and grant
+   access. On Linux, enter the folder's full path.
+2. Give each device a different name, such as `phone` and `laptop`. Use letters,
+   digits, hyphens or underscores, then select Start.
+3. Set your maintenance calories and nutrient targets in Settings. On Today,
+   choose Cut, Maintain or Bulk, add your food, and tick it when eaten. You can
+   also enter your weight and steps there.
+
+To share data between devices, set up Syncthing separately on both, share the
+data folder, and select that folder in Regimen on each device. Folder paths can
+differ between devices. Regimen saves locally; Syncthing transfers changes when
+the devices can connect. You can keep logging while offline.
+
+For one device, a local folder is enough. Back it up to keep a separate copy of
+your history. Folder and device settings are available in the System tab.
+
+## Install on Linux
+
+Linux installation currently builds from source. Install the prerequisites and
+dependencies described below, then run this from the project directory:
+
+```sh
 scripts/install-linux.sh
 ```
 
-For Android, `pnpm tauri android build --apk` with `ANDROID_HOME` and
-`NDK_HOME` set. On first run, pick the synced folder and a name for the device.
+Open Regimen from your application launcher. The script installs the app in
+`~/.local/bin` and adds a launcher entry for your user. Run it again to update.
 
-## Reference foods
+## Build from source
 
-`public/reference.json` bundles foods searchable offline, normalized to kcal,
-protein, fiber, saturated fat, unsaturated fat, salt and sugar per 100 g:
+Built with Tauri 2, React, TypeScript and Tailwind. Start with Node.js 22.12 or
+newer, pnpm, Rust, and the
+[Tauri prerequisites for your platform](https://v2.tauri.app/start/prerequisites/).
+Clone this repository, open its directory, then install the project dependencies:
 
-- USDA FoodData Central SR Legacy (public domain)
-- ANSES-CIQUAL 2020 (CC BY 4.0)
-- Open Food Facts products sold in Greece (ODbL)
-
-The database also stores reported vitamins and minerals for future use. These
-columns follow sugar in each food row; the top-level `nutrients` array gives the
-key and unit of every numeric column, in order. Micronutrients use `mg` or `ug`
-(micrograms) per 100 g. Open Food Facts amounts are converted from grams, as
-specified in its [nutrition schema](https://openfoodfacts.github.io/documentation/docs/Product-Opener/schemas/schemas/product_nutrition/).
-The current UI continues to read only the original seven nutrients.
-
-Food and recipe names stay separate from comma-separated search keywords. Keywords
-can include Greek names, alternate spellings and other terms; the food picker and
-Foods tab use the same fuzzy matching for both fields. Accents and final sigma
-do not affect Greek matching. Keywords are saved and synced with the food or recipe.
-
-The reference catalogue includes Greek keywords from
-`scripts/food_keywords.el.json`, attached by exact source name during a rebuild.
-These are machine translations supplemented with reviewed common food terms.
-For brand-only names, source-reported food categories can supply Greek keywords.
-Uncommon names may need correction; keywords are editable after adding a food.
-Translations are bundled, so searching needs no network connection.
-Reviewed spelling and nutrient corrections, Slavic-language product exclusions and duplicate
-merges are recorded in `scripts/food_cleanup.json` and reapplied on rebuild.
-Duplicates require the same food identity and matching reported nutrients,
-allowing small rounding differences across macros and micronutrients. Missing
-values remain distinct from zero. Explicitly reviewed package duplicates can
-keep a canonical record with additional micronutrients, provided no known value
-is lost or conflicts; sodium allows 1 mg rounding. Label corrections record
-their source and expected previous value so changed source data stops the rebuild
-for inspection. Unsupported amounts and label bounds remain unknown.
-Reviewed identity merges can also consolidate the same food across sources when
-their reported nutrients differ. Each merge records the retained ID, a reason,
-alternate search names and hashes of the normalized rows, including every
-nutrient. Packaged-food reviews also guard the source name, brand, quantity and
-ingredients. A changed record stops the rebuild for review. The retained row
-keeps its own nutrient profile; values are never averaged or filled from a
-different source. Cultivar, edible
-portion, preparation, fat percentage and known formulation differences remain
-separate.
-Staple types such as dry pasta, milk, olive oil and rice share one generic row,
-and so does one product under several barcodes. Every macro of a merged food
-must be within 10% of the retained row, or within label rounding, and a member
-that drifts past that stops the rebuild. The retained row is a real product near
-the middle of its type, so values are never averaged, and the brands stay
-searchable. Foods further apart stay separate, such as whole-wheat pasta and
-high-protein pasta. Brand-specific biscuits, snacks and ready meals are not
-merged by type. US meat cuts merge the same way within one animal and cut, so
-trim level, grade and cooking method can share a row, but raw and cooked never
-do, and offal stays apart by organ. Micronutrients aren't compared when merging,
-so a generic row shows its retained row's amounts. Search ranks generics above
-matches of the same quality.
-
-Foods not eaten here are cut after merging: baby food, fast food, US restaurant
-foods, Alaska Native foods and most of USDA's packaged groups (baked goods,
-sweets, snacks, cereals, soups and sauces, beverages, meals, deli meats).
-`keepFoods` holds the plain staples from those groups, such as bread, coffee,
-wine and baking soda, and rows that saved foods cite. A cooked or canned USDA row
-with salt goes when an unsalted twin exists, while salted nuts and spreads stay.
-Search keywords omit repeated English words
-and translated brand labels.
-
-Distinct vitamin forms stay separate: vitamin A as reported, vitamin A RAE,
-retinol and beta-carotene; vitamin E as reported and alpha-tocopherol; vitamin K
-as reported, K1 and K2; total folate, folic acid, food folate and folate DFE.
-These columns are alternatives or components, not values to add together.
-No conversions between vitamin forms are inferred.
-
-A value the source lacks stays unknown unless derived as described here. Exact zero carbohydrate can establish
-zero sugar, and exact zero fat can establish zero fatty acids. Fiber stays
-unknown unless supplied by the source. Bounds and traces stay unknown, and
-unsaturated fat uses an explicit value or both mono- and polyunsaturated fat when
-available. Otherwise, known total and saturated fat can provide an estimate:
-total fat minus saturated fat, provided the result is nonnegative. These rows are
-listed in `estimatedUnsatFat` and labelled in the food's note when loaded or saved.
-This is an approximation because total fat also includes non-fatty-acid components
-([FAO](https://www.fao.org/4/y4705e/y4705e22.htm)). Existing reported values are preserved.
-Open Food Facts mono- and polyunsaturated values often hold placeholder zeros or
-the wrong unit, so they're ignored when they leave over a quarter of the fat, and
-at least 2 g, unaccounted for. Its micronutrient amounts above a plausible limit
-for fortified food stay unknown too.
-
-The importer rejects unusable names, impossible nutrient amounts and inconsistent
-nutrition. It also excludes Open Food Facts products with source-reported
-nutrition errors. A source's generic name can replace a missing or barcode-only
-product name. Equivalent rows with the same name and nutrient values are
-collapsed within each source; unreviewed matching names with different values stay separate.
-
-Run the importer regression checks with:
-
-```
-python -B -I -m unittest discover -s scripts -p 'test_build_reference.py'
+```sh
+pnpm install
 ```
 
-To rebuild, download the three archives listed in `scripts/build_reference.py`
-into `.cache/` and run:
+<details>
+<summary>Build an Android APK</summary>
 
+Follow [Tauri's Android setup](https://v2.tauri.app/start/prerequisites/#android)
+to install Android Studio, its JDK, and the Android SDK tools. This project uses
+Android SDK Platform 37. In SDK Manager, also install Platform-Tools, Build-Tools,
+Command-line Tools and NDK (Side by side).
+
+Set `JAVA_HOME` to your JDK directory, `ANDROID_HOME` to the SDK location shown in
+SDK Manager, and `NDK_HOME` to the installed version's directory inside the SDK's
+`ndk` folder. The linked Tauri guide has platform-specific examples.
+
+For a modern ARM64 phone, add the Rust target and build a debug APK:
+
+```sh
+rustup target add aarch64-linux-android
+pnpm tauri android build --debug --apk --target aarch64
 ```
-python -I scripts/build_reference.py .cache/usda/sr.zip .cache/ciqual/xml.zip \
-    .cache/off/products.csv.gz public/reference.json
+
+The APK is written under `src-tauri/gen/android/app/build/outputs/apk/`.
+Use the path printed by the build with `adb install -r`, or copy the APK to your
+phone. This build includes the app and works without a running development server.
+
+Debug APKs are signed automatically for local use. Release builds
+(`pnpm tauri android build --apk --target aarch64`) need a signing key: this
+project reads `storeFile`, `keyAlias` and `password` from
+`~/.local/share/android/regimen-release.properties`. Without it, the release APK
+is unsigned and cannot be installed. See
+[Android signing](https://v2.tauri.app/distribute/sign/android/) for creating a key;
+keep the key and its passwords outside the repository.
+
+</details>
+
+<details>
+<summary>Run locally and check changes</summary>
+
+Run the desktop app with live reload:
+
+```sh
+pnpm tauri dev
 ```
+
+For Android development, connect your phone with USB debugging enabled and run
+`pnpm tauri android dev` after completing the Android toolchain setup above.
+
+Run the app tests and check the frontend build:
+
+```sh
+pnpm test
+pnpm build
+```
+
+</details>
+
+## Food data
+
+The offline food catalogue includes USDA FoodData Central SR Legacy (public
+domain), ANSES-CIQUAL 2020 (CC BY 4.0), and Open Food Facts products sold in Greece
+(ODbL). You can edit a food after adding it to your own list.
+
+For catalogue maintenance, see the source downloads in
+[`scripts/build_reference.py`](scripts/build_reference.py), reviewed corrections in
+[`scripts/food_cleanup.json`](scripts/food_cleanup.json), and Greek search terms in
+[`scripts/food_keywords.el.json`](scripts/food_keywords.el.json).

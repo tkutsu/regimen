@@ -21,7 +21,7 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
         />
         <span>% bodyweight for volume</span>
       </label>
-      <Info label={`${exercise.name} bodyweight percentage`} wide hint="0-100%. Adds this share of (bodyweight + 1 kg for clothes and food) to the set's added kg. Uses the latest weigh-in on or before the session date. Saves immediately for this exercise across all workouts and past sessions. Clear for 0%." />
+      <Info label={`${exercise.name} bodyweight percentage`} inline hint="Adds 0-100% of (bodyweight + 3 kg) to the load, using the latest weigh-in by the session date. Updates this exercise everywhere, including past volume. Blank = 0%." />
     </div>
   );
 }

@@ -81,14 +81,14 @@ describe("weekly volume", () => {
     ]);
   });
 
-  it("uses each session day's latest weigh-in plus 1 kg, and adds external load before multiplying reps", () => {
+  it("uses each session day's latest weigh-in plus 3 kg, and adds external load before multiplying reps", () => {
     const state = history();
     state.sessions.set("a", session("a", "2026-10-27", [set("dips", 10, 20)]));
     state.sessions.set("b", session("b", "2026-11-01", [set("dips", 10)]));
     state.sessions.set("c", session("c", "2026-11-02", [set("dips", 10)]));
-    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1010, 410]);
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1030, 420]);
     state.exercises.set("dips", { ...state.exercises.get("dips")!, bodyweightPct: 100 });
-    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1820, 820]);
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1860, 840]);
   });
 
   it("flags bodyweight without a prior weigh-in and retains added load; legacy exercises default to 0%", () => {
