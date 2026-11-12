@@ -273,8 +273,14 @@ function Share({ food, entry, shown }: { food?: Food; entry: Entry; shown: keyof
   const n = known ? scale(food, entry.amount, entry.factor)[shown] : 0;
   return (
     <span className={`ml-auto shrink-0 text-sm ${entry.done ? "text-accent" : "text-accent/60"}`}>
-      {!known ? "?" : shown === "kcal" || n >= 10 ? Math.round(n) : +n.toFixed(1)}
-      <span className="text-muted">{shown === "kcal" ? "kcal" : "g"}</span>
+      {known ? (
+        <>
+          {shown === "kcal" || n >= 10 ? Math.round(n) : +n.toFixed(1)}
+          <span className="text-muted">{shown === "kcal" ? "kcal" : "g"}</span>
+        </>
+      ) : (
+        "?"
+      )}
     </span>
   );
 }
