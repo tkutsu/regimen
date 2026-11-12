@@ -1,4 +1,4 @@
-# Regimen
+# <img src="docs/icon.svg" alt="" width="40" align="center"> Regimen
 
 Track your food, weight and workouts on Linux and Android. Regimen works offline,
 keeps your data in a folder you control, and needs no account or server.
