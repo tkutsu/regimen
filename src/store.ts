@@ -7,7 +7,7 @@ import { transition } from "./ui/motion";
 /** Where this device keeps the logs and the name of its own log. */
 export type Config = { dir: string; device: string };
 
-/** A device's check-in: where it keeps the folder and when it last opened the app (Unix seconds). */
+/** A device's check-in: where it keeps the folder and when it last checked in (Unix seconds). */
 export type Device = { name: string; platform: "desktop" | "mobile"; dir: string; seen: number };
 
 /** Who syncs this folder, and whether Syncthing shares it here (null when unknown, on Android). */
@@ -23,12 +23,15 @@ type Loaded = Peers & { logs: string[]; fingerprint: string };
 
 /** How often a visible app checks whether another device's log or check-in changed. */
 const POLL_MS = 20_000;
+/** An app left open checks in again this often, so the others don't think it stopped syncing. */
+const CHECK_IN_MS = 3600_000;
 
 /**
  * Loads the merged state from the sync folder and keeps it current. Opening the app (or
- * coming back to it) reads everything and checks this device in. Focusing the window, and
- * every 20 s while it's visible, only compares the folder's fingerprint (names, sizes,
- * change times) and reads it again when something changed.
+ * coming back to it) reads everything and checks this device in, and so does every hour
+ * it stays open. Focusing the window, and every 20 s while it's visible, only compares
+ * the folder's fingerprint (names, sizes, change times) and reads it again when something
+ * changed.
  * `config` is null on first run, before a folder is chosen.
  */
 export function useRegimen() {
@@ -38,6 +41,8 @@ export function useRegimen() {
   const [error, setError] = useState<string>();
   const [saveError, setSaveError] = useState<SaveError>();
   const loaded = useRef<{ dir: string; fingerprint: string }>(undefined);
+  /** When this device last checked in (ms). */
+  const checkedIn = useRef(0);
   /** Counts reloads, so only the latest one started shows what it read. */
   const generation = useRef(0);
   /**
@@ -59,6 +64,7 @@ export function useRegimen() {
       // Written before this read began, so they're in the logs already.
       written.current = written.current.slice(before);
       loaded.current = { dir: config.dir, fingerprint };
+      if (checkIn) checkedIn.current = Date.now();
       setState(fold(parseLogs(logs, written.current)));
       setPeers(peers);
       setError(undefined);
@@ -67,10 +73,12 @@ export function useRegimen() {
     }
   }, []);
 
-  /** Reads the folder again only if something in it changed since it was last read. */
+  /** Checks in when it is due, and otherwise reads the folder again only if something in it changed. */
   const refresh = useCallback(async () => {
     const last = loaded.current;
-    if (!last || document.hidden) return;
+    if (!last) return;
+    if (Date.now() - checkedIn.current > CHECK_IN_MS) return reload();
+    if (document.hidden) return;
     try {
       if ((await invoke<string>("folder_fingerprint", { dir: last.dir })) !== last.fingerprint) await reload(false);
     } catch {
