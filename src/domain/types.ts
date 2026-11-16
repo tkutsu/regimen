@@ -117,8 +117,6 @@ export type Settings = {
   containers: Container[];
   staples: Staple[];
   theme: Theme;
-  /** Hue of the accent colour, 0-360 (oklch). */
-  accentHue: number;
 };
 
 /** Every exercise counts reps; `measure` is still written because older builds read it. */
