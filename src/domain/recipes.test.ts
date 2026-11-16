@@ -56,12 +56,4 @@ describe("saving a recipe", () => {
     const tagged = { ...porridge, keywords: ["βρώμη"] };
     expect(saveRecipe(state, tagged, [], today)).toEqual([{ type: "recipe.upsert", recipe: tagged }]);
   });
-
-  it("freezes the batch a new batch replaces", () => {
-    const batch: Recipe = { ...more, id: "batch2" };
-    const next = apply(state, saveRecipe(state, batch, [], today, porridge));
-    expect(next.recipes.get(porridge.id)).toMatchObject({ archived: true, ingredients: [], values: { kcal: 200 } });
-    expect(intake(next, today).kcal).toBe(200);
-    expect(next.recipes.get(batch.id)).toEqual(batch);
-  });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { allFoods, recipeAsFood, recipeTotals, scale } from "./nutrition";
-import { fromRecipeForm, newBatch, toRecipeForm } from "./recipeForm";
+import { fromRecipeForm, toRecipeForm } from "./recipeForm";
 import { searchFoods } from "./search";
 import { fold, parseLogs, stamp } from "./state";
 import type { Food, Recipe } from "./types";
@@ -110,7 +110,7 @@ describe("recipe form", () => {
     expect(fromRecipeForm({ ...form, ingredients: [{ foodId: "rice", amount: "243/0" }] }, "r", foods)).toBeUndefined();
   });
 
-  it("preserves selected variants through edits, reopening and new batches", () => {
+  it("preserves selected variants through edits and reopening", () => {
     const batch: Recipe = { ...recipe, ingredients: [{ foodId: "rice", amount: 300, variant: "raw", factor: 2.4 }] };
     const changedFoods = new Map(foods);
     changedFoods.set("rice", { ...foods.get("rice")!, variants: [{ name: "raw", factor: 3 }] });
@@ -119,9 +119,6 @@ describe("recipe form", () => {
     expect(saved).toEqual(batch);
     const edited = fromRecipeForm({ ...form, ingredients: [{ ...form.ingredients[0], amount: "250+100" }] }, "r", changedFoods)!;
     expect(edited.ingredients).toEqual([{ foodId: "rice", amount: 350, variant: "raw", factor: 2.4 }]);
-    const next = newBatch(edited, "r2");
-    expect(next.totalG).toBe(0);
-    expect(fromRecipeForm(toRecipeForm(next), "r2", foods)).toEqual(next);
     expect(recipeTotals(saved, changedFoods).total.kcal).toBeCloseTo(2520);
   });
 
@@ -158,7 +155,6 @@ describe("recipe form", () => {
     expect(fromRecipeForm(reopened, "r", foods)).toEqual(saved);
     expect(allFoods(state).get("r")).toMatchObject({ basis: "item", kcal: 137 });
     expect(fromRecipeForm({ ...reopened, items: "5" }, "r", foods)?.items).toBe(5);
-    expect(newBatch(saved, "r2")).toMatchObject({ basis: "item", items: 10, totalG: 0 });
   });
 
   it.each(["", "0", "bad", "5/0"])("requires a positive item yield: %s", (items) => {
@@ -186,16 +182,11 @@ describe("recipe form", () => {
     expect(saved.keywords).toEqual(["ρύζι", "pilaf"]);
     expect(toRecipeForm(saved).keywords).toBe("ρύζι, pilaf");
     expect(searchFoods([recipeAsFood({ ...saved, name: "Sunday pot" }, foods)], "ρυζι").map((food) => food.id)).toEqual(["r"]);
-    expect(newBatch(saved, "r2").keywords).toEqual(saved.keywords);
   });
 
   it("leaves keywords out when there are none", () => {
     const saved = fromRecipeForm({ ...toRecipeForm({ ...recipe, keywords: ["pilaf"] }), keywords: " , " }, "r", foods)!;
     expect(saved).toEqual(recipe);
     expect(saved).not.toHaveProperty("keywords");
-  });
-
-  it("starts a new batch unweighed", () => {
-    expect(newBatch({ ...recipe, archived: true }, "r2")).toEqual({ ...recipe, id: "r2", totalG: 0, archived: undefined });
   });
 });

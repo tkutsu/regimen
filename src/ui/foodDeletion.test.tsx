@@ -76,7 +76,7 @@ describe("deleting a recipe", () => {
 
   it("offers deletion when the recipe is used", () => {
     const html = renderToStaticMarkup(<RecipeEditor recipe={recipe} saved foods={state.foods} recentIds={[]} containers={[]} uses={2}
-      onSave={() => {}} onNewBatch={() => {}} onDelete={() => {}} onToggleFav={() => {}} onClose={() => {}} />);
+      onSave={() => {}} onDelete={() => {}} onToggleFav={() => {}} onClose={() => {}} />);
     expect(html).toContain(">Delete recipe</button>");
   });
 });

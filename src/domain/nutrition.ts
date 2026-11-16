@@ -64,7 +64,7 @@ export function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
   return values;
 }
 
-/** A recipe as a food in its selected basis; old batches stop being favourites. */
+/** A recipe as a food in its selected basis; frozen old versions stop being favourites. */
 export function recipeAsFood(recipe: Recipe, foods: Map<string, Food>): Food {
   const values = recipeValues(recipe, foods);
   const fav = !recipe.archived && recipe.fav !== false;
@@ -109,7 +109,7 @@ export function allFoods(state: State): Map<string, Food> {
 }
 
 /**
- * Foods supplied to pickers, except replaced recipe batches. Archived foods stay in
+ * Foods supplied to pickers, except frozen old recipe versions. Archived foods stay in
  * this map so reference searches exclude them; the picker hides them from its lists.
  */
 export function pickableFoods(state: State): Map<string, Food> {
