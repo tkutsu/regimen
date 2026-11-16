@@ -34,7 +34,8 @@ struct File {
 }
 
 /// A device's check-in, `devices/<name>.json`. Each device rewrites its own whenever
-/// the app opens, so the others see where it keeps the folder and when it last synced.
+/// the app opens and hourly while it stays open, so the others see where it keeps the
+/// folder and when it last synced.
 #[derive(Serialize, Deserialize)]
 struct Device {
     name: String,
