@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import type { Theme } from "../domain/types";
 
-type Look = { theme: Theme; accentHue: number };
+type Look = { theme: Theme };
 
 const KEY = "look";
 
-/** Puts the theme and accent on the page. */
-export function applyLook({ theme, accentHue }: Look) {
+/** Puts the theme on the page. */
+function applyLook({ theme }: Look) {
   const root = document.documentElement;
   if (theme === "system") delete root.dataset.theme;
   else root.dataset.theme = theme;
-  root.style.setProperty("--accent-hue", String(accentHue));
 }
 
 /**
@@ -27,16 +26,16 @@ export function restoreLook() {
 }
 
 export function useLook(look: Look | undefined) {
-  const { theme, accentHue } = look ?? {};
+  const theme = look?.theme;
   useEffect(() => {
-    if (theme === undefined || accentHue === undefined) return;
-    applyLook({ theme, accentHue });
+    if (theme === undefined) return;
+    applyLook({ theme });
     try {
-      localStorage.setItem(KEY, JSON.stringify({ theme, accentHue }));
+      localStorage.setItem(KEY, JSON.stringify({ theme }));
     } catch {
       // the look still applies, it just isn't remembered for the next start
     }
-  }, [theme, accentHue]);
+  }, [theme]);
 }
 
 /** A per-device view choice (a chart range, say) that survives tab switches and restarts. */

@@ -1,9 +1,7 @@
-import { useState } from "react";
 import type { State } from "../domain/state";
 import type { SettingsPatch, Theme } from "../domain/types";
 import type { Commit, Config, Peers } from "../store";
 import { Section } from "./fields";
-import { applyLook } from "./look";
 import { Devices, SyncForm } from "./Sync";
 
 type Props = {
@@ -21,7 +19,7 @@ export function System({ state, commit, config, peers, onSaveConfig }: Props) {
   const set: Set = (patch) => commit({ type: "settings", settings: patch });
   return (
     <div className="flex flex-col gap-6">
-      <Look theme={state.settings.theme} accentHue={state.settings.accentHue} set={set} />
+      <Look theme={state.settings.theme} set={set} />
 
       <Devices config={config} peers={peers} />
 
@@ -35,17 +33,7 @@ export function System({ state, commit, config, peers, onSaveConfig }: Props) {
 
 const THEMES: Theme[] = ["system", "light", "dark"];
 
-/** The hue slider previews while dragging and saves on release, so a drag is one event. */
-function Look({ theme, accentHue, set }: { theme: Theme; accentHue: number; set: Set }) {
-  const [hue, setHue] = useState<number>();
-  const preview = (next: number) => {
-    setHue(next);
-    applyLook({ theme, accentHue: next });
-  };
-  const save = () => {
-    if (hue !== undefined && hue !== accentHue) set({ accentHue: hue });
-    setHue(undefined);
-  };
+function Look({ theme, set }: { theme: Theme; set: Set }) {
   return (
     <Section title="Look">
       <div className="flex items-center gap-3 px-4 py-2.5">
@@ -62,20 +50,6 @@ function Look({ theme, accentHue, set }: { theme: Theme; accentHue: number; set:
           ))}
         </div>
       </div>
-      <label className="flex items-center gap-4 px-4 py-3">
-        <span>Accent</span>
-        <input
-          type="range"
-          min={0}
-          max={359}
-          value={hue ?? accentHue}
-          onChange={(e) => preview(Number(e.target.value))}
-          onPointerUp={save}
-          onKeyUp={save}
-          onBlur={save}
-          className="hue min-w-0 flex-1"
-        />
-      </label>
     </Section>
   );
 }

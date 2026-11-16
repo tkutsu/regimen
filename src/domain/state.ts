@@ -35,7 +35,6 @@ export const defaultSettings: Settings = {
   containers: [],
   staples: [],
   theme: "system",
-  accentHue: 160,
 };
 
 /** Settings as written before limits had ranges. */
