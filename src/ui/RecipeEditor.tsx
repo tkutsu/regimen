@@ -12,8 +12,6 @@ type Props = {
   recipe: Recipe;
   /** The recipe is already saved, not a draft. */
   saved: boolean;
-  /** This draft is the next batch of that recipe. */
-  replaces?: Recipe;
   foods: Map<string, Food>;
   /** Most recently used first. */
   recentIds: string[];
@@ -22,7 +20,6 @@ type Props = {
   uses: number;
   /** `added` are reference foods picked as ingredients, to become yours with the recipe. */
   onSave: (recipe: Recipe, added: Food[]) => void;
-  onNewBatch: () => void;
   onDelete: () => void;
   onToggleFav: (food: Food) => void;
   onClose: () => void;
@@ -33,7 +30,7 @@ type Props = {
  * Without ingredients, the values are written by hand.
  */
 export function RecipeEditor(props: Props) {
-  const { recipe, saved, replaces, recentIds, containers, uses, onSave, onNewBatch, onDelete, onToggleFav, onClose } = props;
+  const { recipe, saved, recentIds, containers, uses, onSave, onDelete, onToggleFav, onClose } = props;
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [picking, setPicking] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -67,7 +64,7 @@ export function RecipeEditor(props: Props) {
         <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel
         </button>
-        <h2 className="font-medium">{replaces ? "New batch" : saved ? "Edit recipe" : "New recipe"}</h2>
+        <h2 className="font-medium">{saved ? "Edit recipe" : "New recipe"}</h2>
         <button disabled={!result} onClick={() => result && save(result)} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
           Save
         </button>
@@ -76,7 +73,7 @@ export function RecipeEditor(props: Props) {
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto flex max-w-md flex-col gap-5 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <input
-            autoFocus={!saved && !replaces}
+            autoFocus={!saved}
             value={form.name}
             onChange={(e) => patch({ name: e.target.value })}
             placeholder="Name"
@@ -240,18 +237,6 @@ export function RecipeEditor(props: Props) {
               className={`${box} w-full border-line text-sm`}
             />
           </section>
-
-          {saved && uses > 0 && (
-            <section className="flex flex-col gap-2">
-              <button onClick={onNewBatch} className="rounded-xl border border-line py-3 text-accent">
-                New batch
-              </button>
-              <p className="px-1 text-xs text-muted">
-                Cooking it again? A new batch starts from these ingredients, and today's servings stay on this one. Saving here changes
-                today and later, never earlier days.
-              </p>
-            </section>
-          )}
 
           {saved && (
             <section className="flex flex-col gap-2">

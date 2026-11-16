@@ -97,7 +97,7 @@ export type Recipe = {
   /** Values in the selected basis, used while the recipe has no ingredients. */
   values?: Values;
   note?: string;
-  /** An old batch: kept for the days that ate it, left out of the picker. */
+  /** A frozen old version: kept for the days that ate it, left out of the picker. */
   archived?: boolean;
   /** Deleted while in use: an archived placeholder holding the recipe's last values. */
   deleted?: true;

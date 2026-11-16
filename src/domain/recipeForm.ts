@@ -60,6 +60,3 @@ export function fromRecipeForm(form: RecipeForm, id: string, foods: Map<string, 
   if (note) recipe.note = note;
   return recipe;
 }
-
-/** The next cook of a recipe: same ingredients to adjust, not weighed yet. */
-export const newBatch = (recipe: Recipe, id: string): Recipe => ({ ...recipe, id, totalG: 0, archived: undefined });

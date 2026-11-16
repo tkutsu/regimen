@@ -14,18 +14,15 @@ const freeze = (recipe: Recipe, foods: Map<string, Food>): Recipe => ({
  * Saves an edited recipe without changing days before today. Once what it counts by changes and it was
  * eaten before today, the saved version stays frozen under its id for those days, and the edit
  * takes a new id that today's and later entries and the staples follow.
- * `added` are reference foods picked as ingredients; `replaces` is the batch a new batch follows.
+ * `added` are reference foods picked as ingredients.
  */
-export function saveRecipe(state: State, edited: Recipe, added: Food[], today: string, replaces?: Recipe): Change[] {
+export function saveRecipe(state: State, edited: Recipe, added: Food[], today: string): Change[] {
   const foods = new Map([...state.foods, ...added.map((food): [string, Food] => [food.id, food])]);
   const saved = state.recipes.get(edited.id);
   // The editor doesn't show the star, so an unstarred recipe stays unstarred.
-  const fav = (saved ?? replaces)?.fav;
+  const fav = saved?.fav;
   const recipe = fav === false ? { ...edited, fav } : edited;
-  const changes: Change[] = [
-    ...added.map((food) => ({ type: "food.upsert" as const, food })),
-    ...(replaces ? [{ type: "recipe.upsert" as const, recipe: freeze(replaces, foods) }] : []),
-  ];
+  const changes: Change[] = added.map((food) => ({ type: "food.upsert", food }));
 
   const eatenBefore = [...state.entries.values()].some((entry) => entry.foodId === edited.id && entry.date < today);
   const counts = (version: Recipe) => JSON.stringify(countsOf(recipeAsFood(version, foods)));

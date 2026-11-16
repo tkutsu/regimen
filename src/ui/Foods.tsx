@@ -3,7 +3,6 @@ import { localDate } from "../domain/day";
 import { deleteFood } from "../domain/foodDeletion";
 import { saveFood } from "../domain/foodSave";
 import { recipeAsFood, toggleFav, unknownNutrients } from "../domain/nutrition";
-import { newBatch } from "../domain/recipeForm";
 import { deleteRecipe, saveRecipe } from "../domain/recipes";
 import { recentFoodIds, searchFoods } from "../domain/search";
 import { newId, type State } from "../domain/state";
@@ -20,7 +19,7 @@ export function Foods({ state, commit }: Props) {
   const [query, setQuery] = useState("");
   const [onlyUnknown, setOnlyUnknown] = useState(false);
   const [editing, setEditing] = useState<Food | "new">();
-  const [cooking, setCooking] = useState<{ recipe: Recipe; replaces?: Recipe }>();
+  const [cooking, setCooking] = useState<Recipe>();
 
   const foods = useMemo(() => [...state.foods.values()].filter((food) => !food.archived), [state.foods]);
   const incomplete = useMemo(() => foods.filter((food) => unknownNutrients(food).length), [foods]);
@@ -52,7 +51,7 @@ export function Foods({ state, commit }: Props) {
         onKeyDown={(e) => {
           if (e.key !== "Enter" || e.nativeEvent.isComposing || !query.trim()) return;
           e.preventDefault();
-          if (recipes[0]) setCooking({ recipe: recipes[0] });
+          if (recipes[0]) setCooking(recipes[0]);
           else setEditing(sections.find(([, list]) => list.length)?.[1][0]);
         }}
         placeholder={`Search ${foods.length} foods`}
@@ -73,7 +72,7 @@ export function Foods({ state, commit }: Props) {
           <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
             {recipes.map((recipe) => (
               <li key={recipe.id}>
-                <FoodRow food={recipeAsFood(recipe, state.foods)} onPick={() => setCooking({ recipe })} onToggleFav={() => star(recipe.id)} />
+                <FoodRow food={recipeAsFood(recipe, state.foods)} onPick={() => setCooking(recipe)} onToggleFav={() => star(recipe.id)} />
               </li>
             ))}
           </ul>
@@ -97,7 +96,7 @@ export function Foods({ state, commit }: Props) {
       {query.trim() && !sections[0][1].length && !recipes.length && <p className="py-6 text-center text-sm text-muted">No foods match “{query.trim()}”</p>}
 
       <div className="page-actions fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto grid max-w-md grid-cols-2 gap-2">
-        <button onClick={() => setCooking({ recipe: emptyRecipe() })} className="rounded-2xl border border-line bg-surface py-3.5 font-medium shadow-lg">
+        <button onClick={() => setCooking(emptyRecipe())} className="rounded-2xl border border-line bg-surface py-3.5 font-medium shadow-lg">
           New recipe
         </button>
         <button onClick={() => setEditing("new")} className="rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg">
@@ -120,21 +119,19 @@ export function Foods({ state, commit }: Props) {
       )}
       {cooking && (
         <RecipeEditor
-          key={cooking.recipe.id}
-          recipe={cooking.recipe}
-          saved={state.recipes.has(cooking.recipe.id)}
-          replaces={cooking.replaces}
+          key={cooking.id}
+          recipe={cooking}
+          saved={state.recipes.has(cooking.id)}
           foods={state.foods}
           recentIds={recent}
           containers={state.settings.containers}
-          uses={uses.get(cooking.recipe.id) ?? 0}
+          uses={uses.get(cooking.id) ?? 0}
           onSave={async (edited, added) => {
-            if (await commit(...saveRecipe(state, edited, added, localDate(), cooking.replaces))) setCooking(undefined);
+            if (await commit(...saveRecipe(state, edited, added, localDate()))) setCooking(undefined);
           }}
           onToggleFav={(food) => star(food.id)}
-          onNewBatch={() => setCooking({ recipe: newBatch(cooking.recipe, newId()), replaces: cooking.recipe })}
           onDelete={async () => {
-            if (await commit(...deleteRecipe(state, cooking.recipe.id))) setCooking(undefined);
+            if (await commit(...deleteRecipe(state, cooking.id))) setCooking(undefined);
           }}
           onClose={() => setCooking(undefined)}
         />
