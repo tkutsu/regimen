@@ -1,10 +1,11 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 /** A search field with an inline clear button that returns focus to the input. */
-export function SearchInput({ value, onChange, placeholder, autoFocus, onKeyDown, className = "" }: {
+export function SearchInput({ value, onChange, placeholder, label = "Search foods", autoFocus, onKeyDown, className = "" }: {
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
+  label?: string;
   autoFocus?: boolean;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
@@ -20,7 +21,7 @@ export function SearchInput({ value, onChange, placeholder, autoFocus, onKeyDown
         onKeyDown={onKeyDown}
         enterKeyHint="go"
         placeholder={placeholder}
-        aria-label="Search foods"
+        aria-label={label}
         className="min-h-11 w-full rounded-xl border border-line bg-surface py-2 pr-11 pl-3 outline-none focus:border-accent"
       />
       {value && (

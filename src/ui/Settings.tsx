@@ -4,17 +4,18 @@ import { allFoods, LABELS, pickableFoods, toggleFav, usedName } from "../domain/
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, SettingsPatch, Staple } from "../domain/types";
-import type { Commit } from "../store";
+import type { Commit, Config, Peers } from "../store";
 import { NumberInput, OptionalNumberInput, Remove, Section, TextInput } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { useReorder } from "./reorder";
+import { System } from "./System";
 
-type Props = { state: State; commit: Commit };
+type Props = { state: State; commit: Commit; config: Config; peers: Peers; onSaveConfig: (config: Config) => Promise<void> };
 
 /** Writes only what changed, so another device's edit to the rest stays. */
 type Set = (patch: SettingsPatch) => Promise<boolean>;
 
-export function Settings({ state, commit }: Props) {
+export function Settings({ state, commit, config, peers, onSaveConfig }: Props) {
   const settings = state.settings;
   const set: Set = (patch) => commit({ type: "settings", settings: patch });
   const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
@@ -44,6 +45,7 @@ export function Settings({ state, commit }: Props) {
       <Limits limits={settings.limits} set={set} />
       <Staples state={state} commit={commit} />
       <Containers containers={settings.containers} set={set} />
+      <System state={state} commit={commit} config={config} peers={peers} onSaveConfig={onSaveConfig} />
     </div>
   );
 }

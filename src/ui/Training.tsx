@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { localDate } from "../domain/day";
 import { newId, type State } from "../domain/state";
 import { finish, newestFirst, startSession } from "../domain/training";
-import type { Exercise, Session, Workout } from "../domain/types";
+import type { Session, Workout } from "../domain/types";
 import type { Commit } from "../store";
 import { Section } from "./fields";
 import { SessionView } from "./SessionView";
@@ -27,7 +27,6 @@ export function Training({ state, commit }: Props) {
   const shown = openId ? state.sessions.get(openId) : undefined;
 
   const put = (session: Session) => commit({ type: "session.upsert", session });
-  const saveExercise = (exercise: Exercise) => commit({ type: "exercise.upsert", exercise });
   const start = async (session: Session) => {
     if (await put(session)) setOpenId(session.id);
   };
@@ -112,7 +111,6 @@ export function Training({ state, commit }: Props) {
           workout={editing.workout}
           saved={editing.saved}
           exercises={state.exercises}
-          onSaveExercise={saveExercise}
           onSave={async (workout) => {
             if (await commit({ type: "workout.upsert", workout })) setEditing(undefined);
           }}
@@ -129,7 +127,6 @@ export function Training({ state, commit }: Props) {
           sessions={sessions}
           exercises={state.exercises}
           onChange={put}
-          onSaveExercise={saveExercise}
           onFinish={async () => {
             const done = finish(shown);
             if (await commit(done ? { type: "session.upsert", session: done } : { type: "session.delete", sessionId: shown.id })) close();
