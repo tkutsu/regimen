@@ -70,7 +70,7 @@ export function Exercises({ state, commit }: Props) {
         </ul>
       )}
       {shown.length === 0 && <p className="px-4 py-6 text-center text-sm text-muted">
-        {source === "mine" && mine.length === 0 ? "Save exercises from the library or create your own. Exercises added during training appear here too." : "No exercises match your search and type filter."}
+        {source === "mine" && mine.length === 0 ? "Save exercises from the library or create your own, then select them in workouts and sessions." : "No exercises match your search and type filter."}
       </p>}
       <div className="page-actions fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto max-w-md">
         <button data-enter onClick={() => setEditing({ id: newId(), name: "", measure: "reps" })}
