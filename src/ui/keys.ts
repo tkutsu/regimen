@@ -4,11 +4,11 @@ import { useEffect } from "react";
  * Keyboard use, the same on every screen: Tab and Shift+Tab switch screens, the arrows
  * move between the controls on the screen by where they are. Up and Down go to the
  * nearest row above or below, staying in the same column; Left and Right move along
- * the row, and leave a text field only from its start or end. Up from the top reaches
- * the screen tabs, where Left and Right switch screens. A select passes the arrows on
- * too, and opens with Space or Enter to change its value. An open dialog keeps the arrows
- * inside it and Tab to itself. Enter with nothing selected presses the screen's
- * [data-enter] control.
+ * the row, and leave a text field only from its start or end; in a note, so do Up and
+ * Down. Up from the top reaches the screen tabs, where Left and Right switch screens. A
+ * select passes the arrows on too, and opens with Space or Enter to change its value. An
+ * open dialog keeps the arrows inside it and Tab to itself. Enter with nothing selected
+ * presses the screen's [data-enter] control.
  */
 
 const FOCUSABLE = "button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href], [tabindex]:not([tabindex='-1'])";
@@ -23,15 +23,21 @@ function scope() {
 /** Arrows that the focused control needs for itself. */
 function ownsArrow(el: Element, key: string) {
   // A select opens with Space or Enter and takes its arrows in the open list.
-  if (el instanceof HTMLTextAreaElement) return true;
-  if (!(el instanceof HTMLInputElement)) return false;
+  const note = el instanceof HTMLTextAreaElement;
+  if (!note && !(el instanceof HTMLInputElement)) return false;
   const sideways = key === "ArrowLeft" || key === "ArrowRight";
-  if (el.type === "range") return sideways;
-  // A text field keeps Left and Right for its caret, until the caret is at that end.
+  if (!note && el.type === "range") return sideways;
+  // A text field keeps the arrows that move its caret, until the caret is at that end. Up on
+  // a note's first line moves the caret to its start, so the next Up leaves; Down likewise.
   const { selectionStart: start, selectionEnd: end } = el;
-  if (!sideways || start === null) return false;
+  if (start === null || (!sideways && !note)) return false;
   if (start !== end) return true;
-  return key === "ArrowLeft" ? start > 0 : start < el.value.length;
+  return key === "ArrowLeft" || key === "ArrowUp" ? start > 0 : start < el.value.length;
+}
+
+/** A control in focus, counting the charts, which are SVG. */
+function control(el: EventTarget | null): el is HTMLElement | SVGElement {
+  return (el instanceof HTMLElement || el instanceof SVGElement) && el !== document.body;
 }
 
 /** Enter landed on nothing the arrows selected: no focus, or a button the mouse left it on. */
@@ -40,7 +46,7 @@ function unselected(el: EventTarget | null) {
 }
 
 /** The control the arrow points at, from `from`'s box. */
-function target(items: HTMLElement[], from: HTMLElement | undefined, key: string) {
+function target(items: HTMLElement[], from: Element | undefined, key: string) {
   const boxes = items.map((el) => ({ el, r: el.getBoundingClientRect() })).filter(({ r }) => r.width > 0 && r.height > 0);
   if (!from) return (key === "ArrowUp" ? boxes.at(-1) : boxes[0])?.el;
   const a = from.getBoundingClientRect();
@@ -66,9 +72,9 @@ function target(items: HTMLElement[], from: HTMLElement | undefined, key: string
 export function useKeys<T extends string>(tabs: readonly T[], tab: T, setTab: (tab: T) => void) {
   useEffect(() => {
     // Where the arrows start from after Enter blurs a field.
-    let last: HTMLElement | undefined;
+    let last: HTMLElement | SVGElement | undefined;
     const onFocus = (e: FocusEvent) => {
-      if (e.target instanceof HTMLElement && e.target !== document.body) last = e.target;
+      if (control(e.target)) last = e.target;
     };
     const onPointer = () => document.documentElement.removeAttribute("data-keys");
 
@@ -104,7 +110,7 @@ export function useKeys<T extends string>(tabs: readonly T[], tab: T, setTab: (t
       if (!ARROWS.includes(e.key) || e.shiftKey) return;
 
       const active = document.activeElement;
-      const focused = active instanceof HTMLElement && active !== document.body ? active : undefined;
+      const focused = control(active) ? active : undefined;
       if (focused && ownsArrow(focused, e.key)) return;
       if (focused?.dataset.tab && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
         e.preventDefault();
