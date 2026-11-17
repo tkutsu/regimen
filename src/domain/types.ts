@@ -124,6 +124,10 @@ export type Exercise = {
   id: string;
   name: string;
   measure: "reps";
+  /** Omitted until the exercise has been classified. */
+  kind?: "compound" | "isolation";
+  /** The bundled library entry this exercise was copied from, retained after renaming. */
+  libraryId?: string;
   /** Share of (the session day's bodyweight + 3 kg) added to load for volume; omitted = 0%. */
   bodyweightPct?: number;
   /** One side at a time with the logged kg per side, so volume counts that kg twice. */

@@ -1,26 +1,26 @@
 import { useCallback } from "react";
 import { useRegimen } from "./store";
 import { Foods } from "./ui/Foods";
+import { Exercises } from "./ui/ExerciseList";
 import { useKeys } from "./ui/keys";
 import { useLook, useRemembered } from "./ui/look";
 import { transition } from "./ui/motion";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
-import { System } from "./ui/System";
 import { Today } from "./ui/Today";
 import { Training } from "./ui/Training";
 import { Weight } from "./ui/Weight";
 
-const SCREENS = { today: Today, training: Training, weight: Weight, foods: Foods, settings: Settings };
-type Tab = keyof typeof SCREENS | "system";
-const TABS: Tab[] = ["today", "weight", "training", "foods", "settings", "system"];
+const SCREENS = { today: Today, training: Training, exercises: Exercises, weight: Weight, foods: Foods };
+type Tab = keyof typeof SCREENS | "settings";
+const TABS: Tab[] = ["today", "weight", "training", "exercises", "foods", "settings"];
 const TAB_ICONS = {
   today: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 10h18m-13 5 3 3 5-5" /></>,
   foods: <path d="M5 3v7m3-7v7M2 3v7c0 3 6 3 6 0M5 12v9M20 3c-4 2-5 7-5 10h5V3Zm0 10v8" />,
   weight: <><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M7 9a5 5 0 0 1 10 0M12 10l2-3" /></>,
   training: <path d="M7 12h10M3 9v6m4-9v12m10-12v12m4-9v6M3 12h4m10 0h4" />,
+  exercises: <><rect x="5" y="4" width="16" height="17" rx="2" /><path d="M9 4V2m8 2V2M9 9h8m-8 4h8m-8 4h5M2 7v11" /></>,
   settings: <><path d="M3 6h8m4 0h6M3 12h2m4 0h12M3 18h12m4 0h2" /><circle cx="13" cy="6" r="2" /><circle cx="7" cy="12" r="2" /><circle cx="17" cy="18" r="2" /></>,
-  system: <><rect x="3" y="3" width="18" height="13" rx="2" /><path d="M12 16v5m-4 0h8" /></>,
 };
 
 export default function App() {
@@ -33,12 +33,12 @@ export default function App() {
   if (config === null) return <Setup onSave={saveConfig} />;
   if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={() => reload()} /> : <p className="p-4 text-bad">{error}</p>;
   if (!config || !state || !peers) return null;
-  const Screen = tab === "system" ? undefined : SCREENS[tab];
+  const Screen = tab === "settings" ? undefined : SCREENS[tab];
   return (
     <div data-app className="mx-auto min-h-dvh max-w-md p-4 pt-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
       {/* Each tab grows into the space beside it, so a tap anywhere on the row lands on one. The
           end tabs take half a share and sit flush, keeping the labels evenly spaced. */}
-      <nav aria-label="Screens" className="sticky top-0 z-[2] -mx-4 mb-4 flex bg-bg px-4 pt-[max(0.5rem,env(safe-area-inset-top))] text-xs min-[360px]:text-sm">
+      <nav aria-label="Screens" className="sticky top-0 z-[2] -mx-4 mb-4 flex gap-1 bg-bg px-4 pt-[max(0.5rem,env(safe-area-inset-top))] text-xs min-[360px]:text-sm">
         {TABS.map((name) => (
           <button
             key={name}
@@ -57,7 +57,7 @@ export default function App() {
         ))}
       </nav>
       <main>
-        {Screen ? <Screen state={state} commit={commit} /> : <System state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} />}
+        {Screen ? <Screen state={state} commit={commit} /> : <Settings state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} />}
       </main>
       {saveError && <SaveFailed message={saveError.message} onRetry={retrySave} onDismiss={dismissSaveError} />}
     </div>

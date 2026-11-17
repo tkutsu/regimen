@@ -100,7 +100,7 @@ differ between devices. Regimen saves locally; Syncthing transfers changes when
 the devices can connect. You can keep logging while offline.
 
 For one device, a local folder is enough. Back it up to keep a separate copy of
-your history. Folder and device settings are available in the System tab.
+your history. Folder and device settings are available in Settings.
 
 ## Install on Linux
 

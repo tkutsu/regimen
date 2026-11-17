@@ -3,8 +3,8 @@ import { newId } from "../domain/state";
 import type { Exercise, Target, Workout } from "../domain/types";
 import { Dialog } from "./Dialog";
 import { dropsOf } from "../domain/training";
-import { AmountFields, BodyweightField, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
-import { NumberInput, OptionalNumberInput, Remove, TextInput } from "./fields";
+import { AmountFields, ExerciseDetails, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
+import { NumberInput, OptionalNumberInput, Remove } from "./fields";
 import { box, Heading } from "./FoodEditor";
 import { transition } from "./motion";
 import { useReorder } from "./reorder";
@@ -14,8 +14,6 @@ type Props = {
   /** The workout is already saved, not a draft. */
   saved: boolean;
   exercises: Map<string, Exercise>;
-  /** Makes or renames an exercise, written straight away. */
-  onSaveExercise: (exercise: Exercise) => void;
   onSave: (workout: Workout) => void;
   onDelete: () => void;
   onClose: () => void;
@@ -35,7 +33,7 @@ function blocks(lines: Line[]): Line[][] {
 const unblock = (blocks: Line[][]): Line[] => blocks.flatMap((block) => block.map((line, j) => (j ? line : { ...line, linked: undefined })));
 
 /** The exercises of a workout in order, each with its sets. Nothing is written until Save. */
-export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSave, onDelete, onClose }: Props) {
+export function WorkoutEditor({ workout, saved, exercises, onSave, onDelete, onClose }: Props) {
   const [name, setName] = useState(workout.name);
   const [lines, setLines] = useState<Line[]>(() => workout.targets.map((target) => ({ ...target, drop: undefined, drops: dropsOf(target) || undefined, key: newId() })));
   const [note, setNote] = useState(workout.note ?? "");
@@ -92,7 +90,6 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
                         className={j > 0 ? "border-t border-line" : ""}
                         onPatch={(changes) => patch(line.key, changes)}
                         onRemove={() => remove(line.key)}
-                        onRename={onSaveExercise}
                       />
                     ))}
                   </li>
@@ -100,7 +97,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSaveExercise, onSav
               })}
             </ul>
             <div className="overflow-hidden rounded-2xl border border-line bg-surface">
-              <ExerciseSearch exercises={exercises} onPick={add} onCreate={onSaveExercise} />
+              <ExerciseSearch exercises={exercises} onPick={add} />
             </div>
           </section>
 
@@ -129,22 +126,17 @@ type LineProps = {
   className: string;
   onPatch: (changes: Partial<Target>) => void;
   onRemove: () => void;
-  onRename: (exercise: Exercise) => void;
 };
 
 /** One exercise of the workout: its sets, and how many drop sets follow the last. */
-function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRemove, onRename }: LineProps) {
+function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRemove }: LineProps) {
   const label = exercise?.name ?? "deleted exercise";
   return (
     <div className={`flex items-start gap-2 py-2 pr-4 pl-2 ${className}`}>
       {grip ? <button {...grip} /> : <span className="w-6 shrink-0" />}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          {exercise ? (
-            <TextInput value={exercise.name} onCommit={(name) => onRename({ ...exercise, name })} aria-label={`Rename ${label}`} className="min-w-0 flex-1" />
-          ) : (
-            <span className="min-w-0 flex-1 truncate text-muted">{label}</span>
-          )}
+          <span className={`min-w-0 flex-1 break-words ${exercise ? "" : "text-muted"}`}>{label}</span>
           {linkable && <LinkToggle linked={!!line.linked} label={label} onToggle={() => onPatch({ linked: line.linked ? undefined : true })} />}
           <Remove label={label} onClick={onRemove} />
         </div>
@@ -165,7 +157,7 @@ function ExerciseLine({ line, exercise, grip, linkable, className, onPatch, onRe
             <span className="text-xs text-muted">drops</span>
           </label>
         </div>
-        {exercise && <div className="mt-2"><BodyweightField exercise={exercise} onChange={onRename} /></div>}
+        {exercise && <ExerciseDetails exercise={exercise} />}
       </div>
     </div>
   );

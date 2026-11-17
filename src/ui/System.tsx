@@ -14,7 +14,7 @@ type Props = {
 
 type Set = (patch: SettingsPatch) => Promise<boolean>;
 
-/** How the app looks and where it syncs, apart from the targets and foods in Settings. */
+/** Appearance, devices and sync controls at the end of Settings. */
 export function System({ state, commit, config, peers, onSaveConfig }: Props) {
   const set: Set = (patch) => commit({ type: "settings", settings: patch });
   return (

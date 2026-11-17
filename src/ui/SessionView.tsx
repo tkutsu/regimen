@@ -2,7 +2,7 @@ import { useState } from "react";
 import { addDrop, addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
 import { Dialog } from "./Dialog";
-import { AmountFields, BodyweightField, ExerciseSearch, LinkToggle } from "./exercises";
+import { AmountFields, ExerciseDetails, ExerciseSearch, LinkToggle } from "./exercises";
 import { Remove, TextInput, Tick } from "./fields";
 import { box } from "./FoodEditor";
 import { transition } from "./motion";
@@ -14,15 +14,13 @@ type Props = {
   exercises: Map<string, Exercise>;
   /** Every edit is written as it's made, like Today. */
   onChange: (session: Session) => void;
-  /** Makes or renames an exercise. */
-  onSaveExercise: (exercise: Exercise) => void;
   onFinish: () => void;
   onDelete: () => void;
   onClose: () => void;
 };
 
 /** The sets of one session, grouped by exercise and superset: tick each as it's done. */
-export function SessionView({ session, sessions, exercises, onChange, onSaveExercise, onFinish, onDelete, onClose }: Props) {
+export function SessionView({ session, sessions, exercises, onChange, onFinish, onDelete, onClose }: Props) {
   const [confirming, setConfirming] = useState(false);
   const [note, setNote] = useState(session.note ?? "");
   const linked = session.linked ?? [];
@@ -77,7 +75,6 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
                     at={at}
                     linked={b > 0 || g > 0 ? g > 0 : undefined}
                     onToggleLink={() => setLinked(g > 0 ? linked.filter((id) => id !== exerciseId) : [...linked, exerciseId])}
-                    onRename={onSaveExercise}
                     onEditSet={editSet}
                     onRemoveSet={(i) => setSets(session.sets.filter((_, j) => j !== i))}
                     onAddSet={() => setSets(addSet(session.sets, exerciseId))}
@@ -89,7 +86,7 @@ export function SessionView({ session, sessions, exercises, onChange, onSaveExer
           ))}
 
           <div className="overflow-hidden rounded-2xl border border-line bg-surface">
-            <ExerciseSearch exercises={exercises} onPick={add} onCreate={onSaveExercise} />
+            <ExerciseSearch exercises={exercises} onPick={add} />
           </div>
 
           <textarea
@@ -118,7 +115,6 @@ type SetsProps = {
   /** In a superset with the exercise above; undefined for the first, which has none above. */
   linked?: boolean;
   onToggleLink: () => void;
-  onRename: (exercise: Exercise) => void;
   onEditSet: (i: number, changes: Partial<SetLog>) => void;
   onRemoveSet: (i: number) => void;
   onAddSet: () => void;
@@ -126,22 +122,18 @@ type SetsProps = {
 };
 
 /** One exercise's sets, with what it was last time. */
-function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, onRename, onEditSet, onRemoveSet, onAddSet, onAddDrop }: SetsProps) {
+function ExerciseSets({ session, sessions, exercise, at, linked, onToggleLink, onEditSet, onRemoveSet, onAddSet, onAddDrop }: SetsProps) {
   const label = exercise?.name ?? "deleted exercise";
   const last = exercise ? lastSets(sessions, exercise.id, session.id) : [];
   return (
     <>
       <div className="px-4 pt-3 pb-1">
         <div className="flex items-center gap-2">
-          {exercise ? (
-            <TextInput value={exercise.name} onCommit={(name) => onRename({ ...exercise, name })} aria-label={`Rename ${label}`} className="min-w-0 flex-1 font-medium" />
-          ) : (
-            <h3 className="min-w-0 flex-1 truncate font-medium text-muted">{label}</h3>
-          )}
+          <h3 className={`min-w-0 flex-1 break-words font-medium ${exercise ? "" : "text-muted"}`}>{label}</h3>
           {linked !== undefined && <LinkToggle linked={linked} label={label} onToggle={onToggleLink} />}
         </div>
         {last.length > 0 && <p className="text-xs text-muted">last time {summarize(last)}</p>}
-        {exercise && <div className="my-2"><BodyweightField exercise={exercise} onChange={onRename} /></div>}
+        {exercise && <ExerciseDetails exercise={exercise} />}
       </div>
       <ul className="flow">
         {at.map((i, n) => {

@@ -1,11 +1,30 @@
 import { useState } from "react";
 import { parseAmount } from "../domain/nutrition";
-import { newId } from "../domain/state";
+import { searchExercises } from "../domain/exerciseLibrary";
 import type { Amount, Exercise } from "../domain/types";
 import { Info, OptionalNumberInput } from "./fields";
 
 /** A small boxed number; callers may widen it. */
 export const fieldBox = "w-14 rounded-lg border border-line bg-bg px-2 py-1 text-right outline-none focus:border-accent placeholder:text-muted/50";
+
+/** An exercise's classification, edited in the exercise library. */
+export function ExerciseKindField({ exercise, onChange }: { exercise: Exercise; onChange: (exercise: Exercise) => void }) {
+  return (
+    <label className="flex items-center gap-2 text-xs text-muted">
+      Type
+      <select
+        value={exercise.kind ?? ""}
+        onChange={(e) => onChange({ ...exercise, kind: (e.target.value || undefined) as Exercise["kind"] })}
+        aria-label={`${exercise.name || "Exercise"} type`}
+        className="min-h-9 rounded-lg border border-line bg-bg px-2 text-fg outline-none focus:border-accent"
+      >
+        <option value="">Unclassified</option>
+        <option value="compound">Compound</option>
+        <option value="isolation">Isolation</option>
+      </select>
+    </label>
+  );
+}
 
 /** An exercise's optional bodyweight contribution and unilateral flag, shared by its workouts and past sessions. */
 export function BodyweightField({ exercise, onChange }: { exercise: Exercise; onChange: (exercise: Exercise) => void }) {
@@ -75,20 +94,24 @@ export function LinkToggle({ linked, label, onToggle }: { linked: boolean; label
   );
 }
 
-/** Finds an exercise by name, or makes a new one. */
-export function ExerciseSearch({ exercises, onPick, onCreate }: { exercises: Map<string, Exercise>; onPick: (id: string) => void; onCreate: (exercise: Exercise) => void }) {
+/** Saved exercise settings, shown without editors while training. */
+export function ExerciseDetails({ exercise }: { exercise: Exercise }) {
+  const details = [
+    exercise.kind ? exercise.kind[0].toUpperCase() + exercise.kind.slice(1) : "Unclassified",
+    exercise.unilateral && "Unilateral",
+    exercise.bodyweightPct && `${exercise.bodyweightPct}% bodyweight for volume`,
+  ].filter(Boolean);
+  return <p className="mt-1 text-xs text-muted">{details.join(" · ")}</p>;
+}
+
+/** Selects saved exercises; their definitions are managed only in Exercises. */
+export function ExerciseSearch({ exercises, onPick }: { exercises: Map<string, Exercise>; onPick: (id: string) => void }) {
   const [query, setQuery] = useState("");
   const name = query.trim();
-  const matches = name ? [...exercises.values()].filter((e) => e.name.toLowerCase().includes(name.toLowerCase())).slice(0, 6) : [];
-  const exact = matches.some((e) => e.name.toLowerCase() === name.toLowerCase());
+  const matches = searchExercises(exercises.values(), name).slice(0, name ? 20 : 6);
   const pick = (id: string) => {
     onPick(id);
     setQuery("");
-  };
-  const create = () => {
-    const exercise: Exercise = { id: newId(), name, measure: "reps" };
-    onCreate(exercise);
-    pick(exercise.id);
   };
 
   return (
@@ -96,20 +119,18 @@ export function ExerciseSearch({ exercises, onPick, onCreate }: { exercises: Map
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="+ Add exercise"
+        placeholder="Search saved exercises"
         aria-label="Add exercise"
         className="w-full bg-transparent px-4 py-2.5 outline-none placeholder:text-accent"
       />
       {matches.map((exercise) => (
         <button key={exercise.id} onClick={() => pick(exercise.id)} className="block w-full border-t border-line px-4 py-2 text-left text-sm">
-          {exercise.name}
+          <span>{exercise.name}</span>
+          {exercise.kind && <span className="ml-2 text-xs text-muted capitalize">{exercise.kind}</span>}
         </button>
       ))}
-      {name && !exact && (
-        <button onClick={create} className="block w-full truncate border-t border-line px-4 py-2 text-left text-sm text-accent">
-          New <span className="font-medium">{name}</span>
-        </button>
-      )}
+      {matches.length === 0 && <p className="px-4 py-2 text-sm text-muted">{name ? "No saved exercises match." : "No saved exercises yet."}</p>}
+      <p className="border-t border-line px-4 py-2 text-xs text-muted">Create and edit exercises in the Exercises tab.</p>
     </div>
   );
 }
