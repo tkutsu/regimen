@@ -1,6 +1,8 @@
 import type { State } from "./state";
 import type { Amount, Session, SetLog, Target, Workout } from "./types";
 import { shiftDate } from "./day";
+import { targets } from "./exerciseLibrary";
+import { muscles } from "./muscles";
 
 /** Monday of the date's calendar week, using calendar arithmetic across DST changes. */
 export function weekStart(date: string): string {
@@ -38,6 +40,45 @@ export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[]
     points.push({ date, ...total, avg: window.reduce((sum, p) => sum + p.kg, 0) / window.length });
   }
   return points;
+}
+
+export type MuscleSets = { muscle: string; week: number; avg?: number };
+
+/**
+ * Done sets per muscle: a primary muscle counts each set, a secondary one its percentage. `week` is this
+ * week so far; `avg` averages up to `weeks` weeks before it, none earlier than the first session's week.
+ * `untagged` counts this week's sets from exercises without muscles.
+ */
+export function muscleSets(state: State, to: string, weeks = 4): { muscles: MuscleSets[]; untagged: number } {
+  const thisWeek = weekStart(to);
+  const sessions = [...state.sessions.values()].filter((session) => session.date <= to);
+  const first = sessions.reduce((min, session) => session.date < min ? session.date : min, thisWeek);
+  let from = shiftDate(thisWeek, -7 * weeks);
+  if (from < weekStart(first)) from = weekStart(first);
+  let past = 0;
+  for (let date = from; date < thisWeek; date = shiftDate(date, 7)) past++;
+
+  const current = new Map<string, number>();
+  const before = new Map<string, number>();
+  let untagged = 0;
+  for (const session of sessions) {
+    if (session.date < from) continue;
+    const totals = session.date >= thisWeek ? current : before;
+    for (const set of session.sets) {
+      if (!set.done || !Number.isFinite(set.reps) || (set.reps ?? 0) <= 0) continue;
+      const exercise = state.exercises.get(set.exerciseId);
+      const { muscles: primary, secondary } = exercise ? targets(exercise) : { muscles: [], secondary: {} };
+      const shares = [...primary.map((muscle) => [muscle, 1] as const), ...Object.entries(secondary).map(([muscle, pct]) => [muscle, pct / 100] as const)];
+      if (!shares.length && totals === current) untagged++;
+      for (const [muscle, share] of shares) totals.set(muscle, (totals.get(muscle) ?? 0) + share);
+    }
+  }
+  return {
+    muscles: muscles
+      .filter((muscle) => current.has(muscle) || before.has(muscle))
+      .map((muscle) => ({ muscle, week: current.get(muscle) ?? 0, avg: past ? (before.get(muscle) ?? 0) / past : undefined })),
+    untagged,
+  };
 }
 
 /** Newest first; sessions on the same day, the one started last first. */

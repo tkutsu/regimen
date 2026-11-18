@@ -7,6 +7,7 @@ import {
   finish,
   formatAmount,
   lastSets,
+  muscleSets,
   newestFirst,
   planExercise,
   startSession,
@@ -58,6 +59,43 @@ describe("startSession", () => {
     const circuit: Workout = { id: "c", name: "Circuit", targets: [linked("bench"), linked("row"), { exerciseId: "dips", sets: 1 }, linked("bench")] };
     expect(startSession(circuit, [], "2026-11-01", "s").linked).toEqual(["row"]);
     expect(startSession(push, [], "2026-11-01", "s")).not.toHaveProperty("linked");
+  });
+});
+
+describe("sets per muscle", () => {
+  const tagged = () => {
+    const state = fold([]);
+    state.exercises.set("bench", { id: "bench", name: "Bench", measure: "reps", muscles: ["Chest"], secondary: { Triceps: 50 } });
+    state.exercises.set("rdl", { id: "rdl", name: "RDL", measure: "reps", libraryId: "romanian-deadlift" });
+    state.exercises.set("plank", { id: "plank", name: "Plank", measure: "reps" });
+    return state;
+  };
+
+  it("counts primary muscles whole and secondary ones by share, against the average of the weeks before", () => {
+    const state = tagged();
+    state.sessions.set("old", session("old", "2026-09-01", [set("bench", 8, 60)]));
+    state.sessions.set("a", session("a", "2026-10-20", [set("bench", 8, 60), set("bench", 8, 60), set("rdl", 8, 80)]));
+    state.sessions.set("b", session("b", "2026-11-03", [set("bench", 8, 60), set("bench", 8, 60, false), set("plank", 1), set("plank", 1)]));
+    // The library copy follows its entry: hamstrings and glutes whole, lower back and adductors by half.
+    expect(muscleSets(state, "2026-11-04", 2)).toEqual({
+      muscles: [
+        { muscle: "Chest", week: 1, avg: 1 },
+        { muscle: "Lower back", week: 0, avg: 0.25 },
+        { muscle: "Triceps", week: 0.5, avg: 0.5 },
+        { muscle: "Glutes", week: 0, avg: 0.5 },
+        { muscle: "Hamstrings", week: 0, avg: 0.5 },
+        { muscle: "Adductors", week: 0, avg: 0.25 },
+      ],
+      untagged: 2,
+    });
+  });
+
+  it("has no average in the first week, and averages only the weeks since the first session", () => {
+    const state = tagged();
+    state.sessions.set("b", session("b", "2026-11-03", [set("bench", 8, 60)]));
+    expect(muscleSets(state, "2026-11-04", 4).muscles[0]).toEqual({ muscle: "Chest", week: 1, avg: undefined });
+    state.sessions.set("a", session("a", "2026-10-27", [set("bench", 8, 60), set("bench", 8, 60)]));
+    expect(muscleSets(state, "2026-11-04", 4).muscles[0]).toEqual({ muscle: "Chest", week: 1, avg: 2 });
   });
 });
 

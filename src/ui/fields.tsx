@@ -241,6 +241,16 @@ export function Star({ fav, name, onToggle, className }: { fav: boolean; name: s
   );
 }
 
+/** An on/off switch; a `<label>` around it makes its whole row the target. */
+export function Switch({ checked, label, onChange }: { checked: boolean; label: string; onChange: (checked: boolean) => void }) {
+  return (
+    <button role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)}
+      className={`relative h-6 w-10 shrink-0 rounded-full transition-colors ${checked ? "bg-accent" : "bg-line"}`}>
+      <span aria-hidden className={`absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-4" : ""}`} />
+    </button>
+  );
+}
+
 export function Remove({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button onClick={onClick} aria-label={`Remove ${label}`} className="-mr-1 w-6 text-center text-lg leading-none text-muted">
