@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { parseAmount } from "../domain/nutrition";
-import { searchExercises } from "../domain/exerciseLibrary";
+import { libraryMuscles, searchExercises } from "../domain/exerciseLibrary";
+import { searchMuscles } from "../domain/muscles";
 import type { Amount, Exercise } from "../domain/types";
-import { Info, OptionalNumberInput } from "./fields";
+import { Info, OptionalNumberInput, SearchInput } from "./fields";
 
 /** A small boxed number; callers may widen it. */
 export const fieldBox = "w-14 rounded-lg border border-line bg-bg px-2 py-1 text-right outline-none focus:border-accent placeholder:text-muted/50";
@@ -55,6 +56,51 @@ export function BodyweightField({ exercise, onChange }: { exercise: Exercise; on
   );
 }
 
+const chip = "min-h-9 rounded-full border px-3 text-sm";
+
+/** Picked muscles stay on top in the order picked; the search narrows the rest, and Enter picks the first match. */
+export function MuscleField({ exercise, onChange }: { exercise: Exercise; onChange: (exercise: Exercise) => void }) {
+  const [query, setQuery] = useState("");
+  const picked = exercise.muscles ?? [];
+  const options = searchMuscles(query).filter((muscle) => !picked.includes(muscle));
+  const set = (muscles: string[]) => onChange({ ...exercise, muscles });
+  return (
+    <fieldset className="flex flex-col gap-2">
+      <legend className="mb-2 text-xs text-muted">Muscles</legend>
+      {picked.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {picked.map((muscle) => (
+            <button key={muscle} onClick={() => set(picked.filter((other) => other !== muscle))} aria-label={`Remove ${muscle}`}
+              className={`${chip} border-accent bg-accent/15`}>{muscle} <span aria-hidden className="text-muted">×</span></button>
+          ))}
+        </div>
+      )}
+      <SearchInput value={query} onChange={setQuery} label="Search muscles" placeholder="Search muscles"
+        onKeyDown={(e) => {
+          if (e.key !== "Enter" || e.nativeEvent.isComposing || !query.trim() || !options[0]) return;
+          set([...picked, options[0]]);
+          setQuery("");
+        }} />
+      <div className="flex flex-wrap gap-1.5">
+        {options.map((muscle) => (
+          <button key={muscle} onClick={() => set([...picked, muscle])} aria-label={`Add ${muscle}`}
+            className={`${chip} border-line text-muted`}>{muscle}</button>
+        ))}
+        {options.length === 0 && <p className="text-xs text-muted">{query.trim() ? "No muscles match." : "All muscles picked."}</p>}
+      </div>
+      <div className="flex items-center gap-1 text-xs text-muted">
+        <label className="flex items-center gap-1">
+          <input type="checkbox" checked={!!exercise.lengthened}
+            onChange={(e) => onChange({ ...exercise, lengthened: e.target.checked || undefined })} className="accent-accent" />
+          <span>Lengthened bias</span>
+        </label>
+        <Info label={`${exercise.name || "Exercise"} lengthened bias`} wide className="relative -my-2.5"
+          hint="Hardest where the muscle is most stretched, e.g. Romanian deadlifts, overhead triceps extensions, incline curls, seated leg curls." />
+      </div>
+    </fieldset>
+  );
+}
+
 /** Reps and kg, each committing on blur. Numbers read like amounts ("+2.5" adds to the weight). */
 export function AmountFields({ amount, onChange, label }: { amount: Amount; onChange: (amount: Amount) => void; label: string }) {
   return (
@@ -98,6 +144,8 @@ export function LinkToggle({ linked, label, onToggle }: { linked: boolean; label
 export function ExerciseDetails({ exercise }: { exercise: Exercise }) {
   const details = [
     exercise.kind ? exercise.kind[0].toUpperCase() + exercise.kind.slice(1) : "Unclassified",
+    libraryMuscles(exercise)?.join(", "),
+    exercise.lengthened && "Lengthened bias",
     exercise.unilateral && "Unilateral",
     exercise.bodyweightPct && `${exercise.bodyweightPct}% bodyweight for volume`,
   ].filter(Boolean);
