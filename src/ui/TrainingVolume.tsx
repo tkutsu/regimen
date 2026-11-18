@@ -67,9 +67,9 @@ function MuscleVolume({ state, today, weeks }: { state: State; today: string; we
 
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
-      <div className="mb-3 flex items-baseline justify-between gap-2">
-        <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
-          <Info label="sets per muscle" wide className="relative -mx-3 flex" hint={`Done sets this week so far. A primary muscle counts each set, a secondary one its share. The mark is the average of the ${weeks} weeks before this one.`}>
+      <div className="relative mb-3 flex items-baseline justify-between gap-2">
+        <h2 className="flex-1 text-xs font-medium tracking-wide text-muted uppercase">
+          <Info label="sets per muscle" wide className="-ml-3 flex" hint={`Done sets this week so far. A primary muscle counts each set, a secondary one its share. The mark is the average of the ${weeks} weeks before this one.`}>
             <span className="font-medium tracking-wide uppercase">Sets per muscle</span>
           </Info>
         </h2>

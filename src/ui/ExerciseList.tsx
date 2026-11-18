@@ -5,7 +5,7 @@ import { usedExercises } from "../domain/training";
 import type { Exercise } from "../domain/types";
 import type { Commit } from "../store";
 import { ExerciseEditor } from "./ExerciseEditor";
-import { Info, SearchInput } from "./fields";
+import { SearchInput } from "./fields";
 import { box } from "./FoodEditor";
 
 type Props = { state: State; commit: Commit };
@@ -43,7 +43,6 @@ export function Exercises({ state, commit }: Props) {
           <option value="compound">Compound</option>
           <option value="isolation">Isolation</option>
         </select>
-        <Info label="Exercise types" hint="Compound exercises move several joints; isolation exercises focus on one. You can change the type on your saved exercises." />
       </label>
       {source === "library" && <p className="px-1 text-xs text-muted">An offline starter library. Open an exercise to save your own copy and set how its load counts toward volume.</p>}
       {shown.length > 0 && (
