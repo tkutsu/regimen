@@ -1,7 +1,7 @@
 # <img src="docs/icon.svg" alt="" width="40" align="top"> Regimen
 
-Track your food, weight and workouts on Linux and Android. Regimen works offline,
-keeps your data in a folder you control, and needs no account or server.
+A food, weight and workout tracker for Linux and Android. It works offline, keeps
+everything in a folder you pick, and doesn't need an account or a server.
 
 - Plan meals, tick off what you've eaten, and see your remaining calories and nutrients.
 - Search bundled foods offline, including Greek search terms, or add your own.
@@ -24,8 +24,7 @@ keeps your data in a folder you control, and needs no account or server.
   </tr>
 </table>
 
-Screenshots use sample data in a browser preview. The app supports light and dark
-themes with an adjustable accent colour.
+There's a light and a dark theme, and you can pick the accent colour.
 
 ## Install on Android
 
@@ -39,8 +38,8 @@ If you're building it yourself, use the [build instructions below](#build-from-s
    file manager. Return to the APK and tap Install.
 3. Open Regimen and follow [the first-run setup](#first-run-and-sync).
 
-This method uses the "Install unknown apps" permission. Developer options and
-USB debugging are needed for the USB method below. See
+This uses Android's "Install unknown apps" permission. You only need Developer
+options and USB debugging for the USB method below. See
 [Google's APK installation instructions](https://support.google.com/pixelphone/answer/7391672#zippy=%2Cget-apps-from-other-sources)
 if you can't find the permission. If Android specifically blocks an unverified
 developer, follow [Google's additional setup steps](https://support.google.com/android/answer/17588095).
@@ -79,10 +78,10 @@ developer, follow [Google's additional setup steps](https://support.google.com/a
    connected, use `adb -s SERIAL install -r regimen.apk`, replacing `SERIAL` with
    the identifier shown by `adb devices`.
 
-For updates, `-r` keeps the app's data. The APK must use the same signing key as
-the installed version. If Android reports a signature mismatch, use a build signed
-with the original key. Back up your data before considering an uninstall.
-See the [ADB install reference](https://developer.android.com/tools/adb#move).
+When updating, `-r` keeps the app's data, as long as the new APK is signed with
+the same key as the installed one. If Android complains about a signature
+mismatch, get a build signed with the original key instead of uninstalling, and
+back up your data first if you do have to uninstall. See the [ADB install reference](https://developer.android.com/tools/adb#move).
 
 ## First run and sync
 
@@ -94,25 +93,27 @@ See the [ADB install reference](https://developer.android.com/tools/adb#move).
    choose Cut, Maintain or Bulk, add your food, and tick it when eaten. You can
    also enter your weight and steps there.
 
-To share data between devices, set up Syncthing separately on both, share the
-data folder, and select that folder in Regimen on each device. Folder paths can
-differ between devices. Regimen saves locally; Syncthing transfers changes when
-the devices can connect. You can keep logging while offline.
+To use it on more than one device, set up Syncthing on each, share the data
+folder between them, and point Regimen at that folder everywhere. The path
+doesn't have to be the same on each device. Regimen only ever saves locally, and
+Syncthing moves the changes across whenever the devices can reach each other, so
+logging offline is fine.
 
-For one device, a local folder is enough. Back it up to keep a separate copy of
-your history. Folder and device settings are available in Settings.
+With one device, a local folder is all you need. Back it up if you want a
+second copy of your history. You can change the folder and device name later
+in Settings.
 
 ## Install on Linux
 
-Linux installation currently builds from source. Install the prerequisites and
-dependencies described below, then run this from the project directory:
+On Linux you build it from source for now. Install the prerequisites and
+dependencies below, then run this from the project directory:
 
 ```sh
 scripts/install-linux.sh
 ```
 
-Open Regimen from your application launcher. The script installs the app in
-`~/.local/bin` and adds a launcher entry for your user. Run it again to update.
+The script puts the app in `~/.local/bin` and adds it to your app launcher.
+Run it again to update.
 
 ## Build from source
 
@@ -146,7 +147,7 @@ pnpm tauri android build --debug --apk --target aarch64
 
 The APK is written under `src-tauri/gen/android/app/build/outputs/apk/`.
 Use the path printed by the build with `adb install -r`, or copy the APK to your
-phone. This build includes the app and works without a running development server.
+phone. It's a full build and doesn't need the development server running.
 
 Debug APKs are signed automatically for local use. Release builds
 (`pnpm tauri android build --apk --target aarch64`) need a signing key: this
@@ -181,11 +182,11 @@ pnpm build
 
 ## Food data
 
-The offline food catalogue includes USDA FoodData Central SR Legacy (public
+The offline food catalogue comes from USDA FoodData Central SR Legacy (public
 domain), ANSES-CIQUAL 2020 (CC BY 4.0), and Open Food Facts products sold in Greece
-(ODbL). You can edit a food after adding it to your own list.
+(ODbL). Once a food is in your own list you can edit it.
 
-For catalogue maintenance, see the source downloads in
+If you're working on the catalogue itself, the source downloads are in
 [`scripts/build_reference.py`](scripts/build_reference.py), reviewed corrections in
 [`scripts/food_cleanup.json`](scripts/food_cleanup.json), and Greek search terms in
 [`scripts/food_keywords.el.json`](scripts/food_keywords.el.json).
