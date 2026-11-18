@@ -71,7 +71,7 @@ describe("sets per muscle", () => {
     return state;
   };
 
-  it("counts primary muscles whole and secondary ones by share, against the average of the weeks before", () => {
+  it("counts primary muscles whole and secondary ones by share, most this week first, then by the average of the weeks before", () => {
     const state = tagged();
     state.sessions.set("old", session("old", "2026-09-01", [set("bench", 8, 60)]));
     state.sessions.set("a", session("a", "2026-10-20", [set("bench", 8, 60), set("bench", 8, 60), set("rdl", 8, 80)]));
@@ -80,10 +80,10 @@ describe("sets per muscle", () => {
     expect(muscleSets(state, "2026-11-04", 2)).toEqual({
       muscles: [
         { muscle: "Chest", week: 1, avg: 1 },
-        { muscle: "Lower back", week: 0, avg: 0.25 },
         { muscle: "Triceps", week: 0.5, avg: 0.5 },
         { muscle: "Glutes", week: 0, avg: 0.5 },
         { muscle: "Hamstrings", week: 0, avg: 0.5 },
+        { muscle: "Lower back", week: 0, avg: 0.25 },
         { muscle: "Adductors", week: 0, avg: 0.25 },
       ],
       untagged: 2,
@@ -99,7 +99,7 @@ describe("sets per muscle", () => {
   });
 });
 
-describe("weekly volume", () => {
+describe("daily volume", () => {
   const history = () => {
     const state = fold([]);
     state.exercises.set("dips", { id: "dips", name: "Dips", measure: "reps", bodyweightPct: 50 });
@@ -107,16 +107,15 @@ describe("weekly volume", () => {
     return state;
   };
 
-  it("sums actual reps and loads across sessions, counting done sets and drops in Monday-Sunday weeks", () => {
+  it("sums actual reps and loads per day, counting done sets and drops, up to the given day", () => {
     const state = history();
     state.sessions.set("a", session("a", "2026-10-26", [set("bench", 8, 60), set("bench", 7, 60), { ...set("bench", 10, 40), drop: true }, set("bench", 20, 60, false)]));
     state.sessions.set("b", session("b", "2026-11-01", [set("bench", 5, 100)]));
     state.sessions.set("c", { ...session("c", "2026-11-02", [set("bench", 6, 100)]), finished: undefined });
     state.sessions.set("future", session("future", "2026-11-04", [set("bench", 10, 1000)]));
-    expect(volumeSeries(state, "2026-11-02", 2)).toEqual([
-      { date: "2026-10-26", kg: 1800, avg: 1800, missingBodyweight: 0 },
-      { date: "2026-11-02", kg: 600, avg: 1200, missingBodyweight: 0 },
-    ]);
+    const series = volumeSeries(state, "2026-11-02", 2);
+    expect(series.map((p) => p.date)).toEqual(["2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-10-31", "2026-11-01", "2026-11-02"]);
+    expect(series.map((p) => p.kg)).toEqual([1300, 0, 0, 0, 0, 0, 500, 600]);
   });
 
   it("uses each session day's latest weigh-in plus 3 kg, and adds external load before multiplying reps", () => {
@@ -124,30 +123,36 @@ describe("weekly volume", () => {
     state.sessions.set("a", session("a", "2026-10-27", [set("dips", 10, 20)]));
     state.sessions.set("b", session("b", "2026-11-01", [set("dips", 10)]));
     state.sessions.set("c", session("c", "2026-11-02", [set("dips", 10)]));
-    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1030, 420]);
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([610, 0, 0, 0, 0, 420, 420]);
     state.exercises.set("dips", { ...state.exercises.get("dips")!, bodyweightPct: 100 });
-    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1860, 840]);
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([1020, 0, 0, 0, 0, 840, 840]);
   });
 
   it("counts a unilateral exercise's logged kg twice but its bodyweight share once", () => {
     const state = history();
     state.exercises.set("dips", { ...state.exercises.get("dips")!, unilateral: true });
     state.sessions.set("a", session("a", "2026-10-27", [set("dips", 10, 20)]));
-    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([810, 0]);
+    expect(volumeSeries(state, "2026-11-02").map((p) => p.kg)).toEqual([810, 0, 0, 0, 0, 0, 0]);
   });
 
   it("flags bodyweight without a prior weigh-in and retains added load; legacy exercises default to 0%", () => {
     const state = history();
     state.sessions.set("a", session("a", "2026-10-25", [set("dips", 10, 20), set("bench", 8, 60), set("unweighted", 12)]));
-    expect(volumeSeries(state, "2026-10-25")).toEqual([{ date: "2026-10-19", kg: 680, avg: 680, missingBodyweight: 1 }]);
+    expect(volumeSeries(state, "2026-10-25")).toEqual([{ date: "2026-10-25", kg: 680, avg: 680, missingBodyweight: 1 }]);
   });
 
-  it("includes zero weeks and averages over calendar weeks before range filtering", () => {
+  it("includes rest days and averages over the last weeks of days before range filtering", () => {
     const state = history();
     state.sessions.set("a", session("a", "2026-10-12", [set("bench", 10, 100)]));
     state.sessions.set("b", session("b", "2026-10-26", [set("bench", 10, 200)]));
-    expect(volumeSeries(state, "2026-11-02", 2).map((p) => [p.kg, p.avg])).toEqual([[1000, 1000], [0, 500], [2000, 1000], [0, 1000]]);
-    expect(volumeSeries(state, "2026-11-02", 1).map((p) => p.avg)).toEqual([1000, 0, 2000, 0]);
+    const series = volumeSeries(state, "2026-11-02", 2);
+    expect(series).toHaveLength(22);
+    expect(series.filter((p) => p.kg).map((p) => [p.date, p.kg])).toEqual([["2026-10-12", 1000], ["2026-10-26", 2000]]);
+    expect(series.map((p) => p.avg).slice(0, 3)).toEqual([1000, 500, 1000 / 3]);
+    // 14 days back from 10-25 still holds the first session; from 10-26 it has dropped out.
+    expect(series[13].avg).toBe(1000 / 14);
+    expect(series[14].avg).toBe(2000 / 14);
+    expect(volumeSeries(state, "2026-11-02", 1)[7].avg).toBe(0);
   });
 
   it("has no series for planned sets or completed sets without reps", () => {
