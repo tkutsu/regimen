@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { exerciseLibrary, libraryMuscles, savedLibraryExercise, searchExercises } from "./exerciseLibrary";
+import { exerciseLibrary, savedLibraryExercise, searchExercises, targets } from "./exerciseLibrary";
 import { muscles, searchMuscles } from "./muscles";
 import { applyEvents, fold, parseLogs, stamp } from "./state";
 import type { Exercise } from "./types";
@@ -13,19 +13,31 @@ describe("muscles", () => {
     expect(searchMuscles("ad")).toEqual(["Adductors"]);
   });
 
-  it("names only known muscles in the library, and suggests them for saved copies until picked", () => {
-    expect(exerciseLibrary.every((exercise) => exercise.muscles.length && exercise.muscles.every((muscle) => muscles.includes(muscle)))).toBe(true);
-    expect(bench.muscles).toEqual(["Chest", "Triceps", "Front delts"]);
-    const copy: Exercise = { id: "mine", name: "My bench", measure: "reps", libraryId: bench.id };
-    expect(libraryMuscles(copy)).toEqual(bench.muscles);
-    expect(libraryMuscles({ ...copy, muscles: [] })).toEqual([]);
-    expect(libraryMuscles({ ...copy, libraryId: undefined })).toBeUndefined();
+  it("gives every library entry known primary muscles and secondary ones that don't repeat them", () => {
+    for (const { muscles: primary, secondary } of exerciseLibrary) {
+      expect(primary.length).toBeGreaterThan(0);
+      expect([...primary, ...Object.keys(secondary)].every((muscle) => muscles.includes(muscle))).toBe(true);
+      expect(Object.keys(secondary).some((muscle) => primary.includes(muscle))).toBe(false);
+      expect(Object.values(secondary).every((pct) => pct > 0 && pct <= 100)).toBe(true);
+    }
+    expect(bench).toMatchObject({ muscles: ["Chest"], secondary: { Triceps: 50, "Front delts": 50 }, lengthened: false });
+    expect(exerciseLibrary.find((exercise) => exercise.id === "deadlift")!.secondary).toEqual({ Quads: 50, Traps: 50, Forearms: 25 });
+    expect(exerciseLibrary.filter((exercise) => exercise.lengthened).map((exercise) => exercise.id)).toContain("romanian-deadlift");
   });
 
-  it("lets saved exercises be searched by muscle and lengthened bias", () => {
-    const curl: Exercise = { id: "curl", name: "Incline curl", measure: "reps", muscles: ["Biceps"], lengthened: true };
+  it("lets a library copy follow its entry until its own muscles are saved", () => {
+    const copy: Exercise = { id: "mine", name: "My bench", measure: "reps", libraryId: bench.id };
+    expect(targets(copy)).toEqual({ muscles: bench.muscles, secondary: bench.secondary, lengthened: false });
+    expect(targets({ ...copy, muscles: [], lengthened: true })).toEqual({ muscles: [], secondary: {}, lengthened: true });
+    expect(targets({ ...copy, libraryId: undefined })).toEqual({ muscles: [], secondary: {}, lengthened: false });
+  });
+
+  it("lets saved exercises be searched by primary or secondary muscle and lengthened bias", () => {
+    const curl: Exercise = { id: "curl", name: "Incline curl", measure: "reps", muscles: ["Biceps"], secondary: { Forearms: 25 }, lengthened: true };
     expect(searchExercises([curl], "biceps lengthened")).toEqual([curl]);
+    expect(searchExercises([curl], "forearms")).toEqual([curl]);
     expect(searchExercises([{ ...curl, lengthened: undefined }], "stretch")).toEqual([]);
+    expect(searchExercises([{ id: "rdl", name: "Mine", measure: "reps", libraryId: "romanian-deadlift" } as Exercise], "hamstrings stretch")).toHaveLength(1);
   });
 });
 

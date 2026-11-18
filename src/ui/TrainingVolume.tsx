@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
-import { volumeSeries } from "../domain/training";
+import { muscleSets, volumeSeries } from "../domain/training";
 import { daysBetween, phaseRuns } from "../domain/weight";
 import { Info } from "./fields";
 import { useRemembered } from "./look";
@@ -26,27 +26,74 @@ export function TrainingVolume({ state }: { state: State }) {
   const latest = series.at(-1);
 
   return (
+    <>
+      <section className="rounded-2xl border border-line bg-surface p-4">
+        <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
+          <Info label="weekly volume" wide className="relative -mx-3 flex" hint="Reps × kg of every done set, Monday to Sunday. Bodyweight exercises add their share of your weight. Averages count empty weeks and this week so far.">
+            <span className="font-medium tracking-wide uppercase">Weekly volume</span>
+          </Info>
+        </h2>
+        {latest ? (
+          <>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-2">
+              <span className="text-3xl font-semibold">{format(latest.kg)}</span>
+              <span className="text-sm text-muted">this week so far</span>
+            </div>
+            <p className="mt-1 text-sm text-muted">{weeks}-week average: {format(latest.avg)}</p>
+            <div className="mt-4 flex gap-2 text-sm">
+              <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
+              <Segmented options={AVERAGES} value={weeks} onChange={setWeeks} label={(n) => `${n}w`} className="flex-[2]" />
+            </div>
+            <TrendChart points={shown} bands={bands} averageLabel={`${weeks}-week average`} valueLabel="weekly volume" format={format} volume to={today} />
+          </>
+        ) : (
+          <p className="py-4 text-sm text-muted">Mark sets done to chart weekly volume. Add a bodyweight percentage to exercises that need it.</p>
+        )}
+      </section>
+      <MuscleVolume state={state} today={today} weeks={weeks} />
+    </>
+  );
+}
+
+const sets = (n: number) => n.toFixed(1).replace(/\.0$/, "");
+
+/** This week's sets per muscle, head to toe, each with a mark at its average of the weeks before. */
+function MuscleVolume({ state, today, weeks }: { state: State; today: string; weeks: number }) {
+  const { muscles, untagged } = useMemo(() => muscleSets(state, today, weeks), [state, today, weeks]);
+  if (!muscles.length && !untagged) return null;
+  const top = Math.max(1, ...muscles.map(({ week, avg }) => Math.max(week, avg ?? 0)));
+  const averaged = muscles.some(({ avg }) => avg !== undefined);
+  const width = (n: number) => `${(n / top) * 100}%`;
+
+  return (
     <section className="rounded-2xl border border-line bg-surface p-4">
-      <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
-        <Info label="weekly volume" wide className="relative -mx-3 flex" hint="Reps × kg of every done set, Monday to Sunday. Bodyweight exercises add their share of your weight. Averages count empty weeks and this week so far.">
-          <span className="font-medium tracking-wide uppercase">Weekly volume</span>
-        </Info>
-      </h2>
-      {latest ? (
-        <>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-2">
-            <span className="text-3xl font-semibold">{format(latest.kg)}</span>
-            <span className="text-sm text-muted">this week so far</span>
-          </div>
-          <p className="mt-1 text-sm text-muted">{weeks}-week average: {format(latest.avg)}</p>
-          <div className="mt-4 flex gap-2 text-sm">
-            <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
-            <Segmented options={AVERAGES} value={weeks} onChange={setWeeks} label={(n) => `${n}w`} className="flex-[2]" />
-          </div>
-          <TrendChart points={shown} bands={bands} averageLabel={`${weeks}-week average`} valueLabel="weekly volume" format={format} volume to={today} />
-        </>
-      ) : (
-        <p className="py-4 text-sm text-muted">Mark sets done to chart weekly volume. Add a bodyweight percentage to exercises that need it.</p>
+      <div className="mb-3 flex items-baseline justify-between gap-2">
+        <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
+          <Info label="sets per muscle" wide className="relative -mx-3 flex" hint={`Done sets this week so far. A primary muscle counts each set, a secondary one its share. The mark is the average of the ${weeks} weeks before this one.`}>
+            <span className="font-medium tracking-wide uppercase">Sets per muscle</span>
+          </Info>
+        </h2>
+        {muscles.length > 0 && <span className="text-xs text-muted">this week{averaged && ` / ${weeks}w avg`}</span>}
+      </div>
+      <ul className="flex flex-col gap-2.5">
+        {muscles.map(({ muscle, week, avg }) => (
+          <li key={muscle} className="grid grid-cols-[6.5rem_1fr_4.5rem] items-center gap-3 text-sm">
+            <span className="truncate">{muscle}</span>
+            <span aria-hidden className="relative h-2 rounded-full bg-line/50">
+              <span className="absolute inset-y-0 left-0 rounded-full bg-accent" style={{ width: width(week) }} />
+              {avg !== undefined && <span className="absolute -inset-y-1 w-0.5 -translate-x-1/2 rounded-full bg-fg/70" style={{ left: width(avg) }} />}
+            </span>
+            <span className="text-right tabular-nums">
+              {sets(week)}
+              {avg !== undefined && <span className="text-muted"> / {sets(avg)}</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {untagged > 0 && (
+        <p className="mt-3 text-xs text-muted">
+          {untagged} {untagged === 1 ? "set" : "sets"} this week {untagged === 1 ? "is" : "are"} from exercises without muscles. Pick their muscles in Exercises.
+        </p>
       )}
     </section>
   );
