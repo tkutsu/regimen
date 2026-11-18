@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import { exerciseLibrary, savedLibraryExercise, searchExercises, type LibraryExercise } from "../domain/exerciseLibrary";
+import { exerciseLibrary, libraryMuscles, savedLibraryExercise, searchExercises, type LibraryExercise } from "../domain/exerciseLibrary";
 import { newId, type State } from "../domain/state";
 import { usedExercises } from "../domain/training";
 import type { Exercise } from "../domain/types";
 import type { Commit } from "../store";
 import { Dialog } from "./Dialog";
-import { BodyweightField, ExerciseKindField } from "./exercises";
+import { BodyweightField, ExerciseKindField, MuscleField } from "./exercises";
 import { blurOnEnter, Info, SearchInput } from "./fields";
 import { box } from "./FoodEditor";
 
@@ -36,7 +36,7 @@ export function Exercises({ state, commit }: Props) {
         ))}
       </div>
       <SearchInput value={query} onChange={setQuery} label="Search exercises"
-        placeholder={source === "mine" ? "Search my exercises" : "Search name, muscle or equipment"} />
+        placeholder={source === "mine" ? "Search name or muscle" : "Search name, muscle or equipment"} />
       <label className="flex items-center gap-2 text-sm text-muted">
         Type
         <select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)} aria-label="Filter exercise type" className={`${box} min-h-11 border-line text-fg`}>
@@ -50,17 +50,18 @@ export function Exercises({ state, commit }: Props) {
       {shown.length > 0 && (
         <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
           {shown.map((exercise) => {
-            const reference = "muscles" in exercise ? exercise : undefined;
+            const reference = "equipment" in exercise ? exercise : undefined;
             const saved = reference && savedLibraryExercise(mine, reference);
             return (
               <li key={exercise.id}>
-                <button onClick={() => "muscles" in exercise ? openLibrary(exercise) : setEditing(exercise)}
+                <button onClick={() => "equipment" in exercise ? openLibrary(exercise) : setEditing(exercise)}
                   aria-label={`${reference ? saved ? "Edit" : "Add" : "Edit"} ${exercise.name}`}
                   className="flex w-full items-center gap-3 px-4 py-3 text-left">
                   <span className="min-w-0 flex-1">
                     <span className="block break-words">{exercise.name}</span>
                     <span className="block text-xs text-muted capitalize">{exercise.kind ?? "Unclassified"}</span>
-                    {reference && <span className="block text-xs text-muted">{reference.muscles} · {reference.equipment}</span>}
+                    {"equipment" in exercise ? <span className="block text-xs text-muted">{exercise.muscles.join(", ")} · {exercise.equipment}</span>
+                      : <Muscles exercise={exercise} />}
                   </span>
                   {reference && <span className={`shrink-0 text-xs ${saved ? "text-muted" : "text-accent"}`}>{saved ? "In Mine" : "+ Add"}</span>}
                 </button>
@@ -87,12 +88,18 @@ export function Exercises({ state, commit }: Props) {
   );
 }
 
+/** A saved exercise's muscles, or its library suggestion until picked. */
+function Muscles({ exercise }: { exercise: Exercise }) {
+  const details = [libraryMuscles(exercise)?.join(", "), exercise.lengthened && "Lengthened bias"].filter(Boolean);
+  return details.length > 0 && <span className="block text-xs text-muted">{details.join(" · ")}</span>;
+}
+
 /** Draft edits stay in the dialog until saved; referenced exercises cannot be deleted. */
 function ExerciseEditor({ exercise, saved, used, onSave, onDelete, onClose }: {
   exercise: Exercise; saved: boolean; used: boolean;
   onSave: (exercise: Exercise) => Promise<void>; onDelete: () => Promise<void>; onClose: () => void;
 }) {
-  const [draft, setDraft] = useState(exercise);
+  const [draft, setDraft] = useState<Exercise>(() => ({ ...exercise, muscles: libraryMuscles(exercise) }));
   const [confirming, setConfirming] = useState(false);
   const [saving, setSaving] = useState(false);
   const save = async () => {
@@ -112,6 +119,7 @@ function ExerciseEditor({ exercise, saved, used, onSave, onDelete, onClose }: {
           <input autoFocus={!draft.name} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })}
             onKeyDown={blurOnEnter} aria-label="Exercise name" placeholder="Name" className={`${box} w-full border-line text-lg`} />
           <ExerciseKindField exercise={draft} onChange={setDraft} />
+          <MuscleField exercise={draft} onChange={setDraft} />
           <BodyweightField exercise={draft} onChange={setDraft} />
           {saved && <p className="text-xs text-muted">Changes apply to this exercise in all workouts and past sessions.</p>}
           {saved && (used ? <p className="text-sm text-muted">Used in a workout or session. Keep this exercise so your training history stays intact.</p> :

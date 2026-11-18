@@ -132,6 +132,10 @@ export type Exercise = {
   bodyweightPct?: number;
   /** One side at a time with the logged kg per side, so volume counts that kg twice. */
   unilateral?: boolean;
+  /** Names from `muscles`, main movers first; omitted until picked, which lets a library copy suggest its own. */
+  muscles?: string[];
+  /** Hardest where the muscle is stretched (lengthened bias), e.g. RDLs or overhead extensions. */
+  lengthened?: boolean;
 };
 
 /** What one set records: reps and added kg; bodyweight's contribution is set on the exercise. */

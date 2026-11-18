@@ -1,7 +1,33 @@
 import { describe, expect, it } from "vitest";
-import { exerciseLibrary, savedLibraryExercise, searchExercises } from "./exerciseLibrary";
+import { exerciseLibrary, libraryMuscles, savedLibraryExercise, searchExercises } from "./exerciseLibrary";
+import { muscles, searchMuscles } from "./muscles";
 import { applyEvents, fold, parseLogs, stamp } from "./state";
 import type { Exercise } from "./types";
+
+describe("muscles", () => {
+  it("finds muscles by the start of their names or aliases", () => {
+    expect(searchMuscles("")).toEqual(muscles);
+    expect(searchMuscles("back")).toEqual(["Traps", "Upper back", "Lats", "Lower back"]);
+    expect(searchMuscles("SHOULD")).toEqual(["Front delts", "Side delts", "Rear delts"]);
+    expect(searchMuscles("rear delt")).toEqual(["Rear delts"]);
+    expect(searchMuscles("ad")).toEqual(["Adductors"]);
+  });
+
+  it("names only known muscles in the library, and suggests them for saved copies until picked", () => {
+    expect(exerciseLibrary.every((exercise) => exercise.muscles.length && exercise.muscles.every((muscle) => muscles.includes(muscle)))).toBe(true);
+    expect(bench.muscles).toEqual(["Chest", "Triceps", "Front delts"]);
+    const copy: Exercise = { id: "mine", name: "My bench", measure: "reps", libraryId: bench.id };
+    expect(libraryMuscles(copy)).toEqual(bench.muscles);
+    expect(libraryMuscles({ ...copy, muscles: [] })).toEqual([]);
+    expect(libraryMuscles({ ...copy, libraryId: undefined })).toBeUndefined();
+  });
+
+  it("lets saved exercises be searched by muscle and lengthened bias", () => {
+    const curl: Exercise = { id: "curl", name: "Incline curl", measure: "reps", muscles: ["Biceps"], lengthened: true };
+    expect(searchExercises([curl], "biceps lengthened")).toEqual([curl]);
+    expect(searchExercises([{ ...curl, lengthened: undefined }], "stretch")).toEqual([]);
+  });
+});
 
 const bench = exerciseLibrary.find((exercise) => exercise.id === "barbell-bench-press")!;
 
@@ -35,7 +61,7 @@ describe("exercise library", () => {
 
   it("round-trips classification and library identity through sync without changing legacy exercises", () => {
     const legacy: Exercise = { id: "old", name: "Old exercise", measure: "reps" };
-    const copy: Exercise = { id: "mine", name: bench.name, measure: "reps", kind: bench.kind, libraryId: bench.id, bodyweightPct: 20, unilateral: true };
+    const copy: Exercise = { id: "mine", name: bench.name, measure: "reps", kind: bench.kind, libraryId: bench.id, bodyweightPct: 20, unilateral: true, muscles: ["Chest"], lengthened: true };
     const events = [legacy, copy].map((exercise) => stamp({ type: "exercise.upsert", exercise }, "desktop"));
     const state = fold(parseLogs([events.map((event) => JSON.stringify(event)).join("\n")]));
     expect(state.exercises.get(legacy.id)).toEqual(legacy);
