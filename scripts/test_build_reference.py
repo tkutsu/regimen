@@ -13,6 +13,70 @@ import build_reference as build
 
 
 class ReferenceImportTests(unittest.TestCase):
+    def test_titles_keep_identity_and_put_fat_before_preparation(self):
+        name = 'Beef, ground, raw, 90% lean meat / 10% fat'
+        self.assertEqual(build.normalize_title(name, 'usda'),
+                         'Beef, ground, 90% lean meat / 10% fat, raw')
+        self.assertEqual(build.normalize_title('Turkey, liver, cooked, simmered', 'usda'),
+                         'Turkey, liver, cooked, simmered')
+        self.assertEqual(build.normalize_title('Yogurt, fat-free, strawberry', 'ciqual'),
+                         'Yogurt, strawberry, fat free')
+        name = 'Fish, cod, raw (may contain additives to retain moisture), Atlantic'
+        self.assertEqual(build.normalize_title(name, 'usda'),
+                         'Fish, cod, Atlantic, raw (may contain additives to retain moisture)')
+        name = 'Lamb, composite (loin, leg), cooked, lean only'
+        self.assertEqual(build.normalize_title(name, 'usda'),
+                         'Lamb, composite (loin, leg), lean only, cooked')
+
+    def test_title_case_preserves_brands_scientific_names_and_percentage_meanings(self):
+        self.assertEqual(build.normalize_title('RICE CAKES MILK CHOCOLATE (Sondey)', 'off', 'Sondey'),
+                         'Rice cakes milk chocolate (Sondey)')
+        self.assertEqual(build.normalize_title('Coca-Cola Original Taste', 'off', 'Coca-Cola'),
+                         'Coca-Cola original taste')
+        self.assertEqual(build.normalize_title('1,5% Cow Milk (ΓΑΛΠΟ)', 'off', 'ΓΑΛΠΟ'),
+                         'Cow milk, 1.5% fat (ΓΑΛΠΟ)')
+        self.assertEqual(build.normalize_title('2% Lactose Free Yogurt (FAGE)', 'off', 'FAGE'),
+                         'Yogurt, 2% fat, lactose free (FAGE)')
+        self.assertEqual(build.normalize_title('70% Dark Chocolate (Lindt)', 'off', 'Lindt'),
+                         '70% Dark chocolate (Lindt)')
+        self.assertEqual(build.normalize_title('Tangle (Laminaria digitata), dried', 'ciqual'),
+                         'Tangle (Laminaria digitata), dried')
+        self.assertEqual(build.normalize_title('ΦΙΣΤΙΚΟΒΟΥΤΥΡΟ ΧΩΡΙΣ ΖΑΧΑΡΗ (Brand)', 'off', 'Brand'),
+                         'Φιστικοβούτυρο χωρίς ζάχαρη (Brand)')
+        name = 'Milk, lowfat, with added vitamin A and vitamin D'
+        self.assertEqual(build.normalize_title(name, 'usda'),
+                         'Milk, with added vitamin A and vitamin D, low fat')
+
+    def test_reviewed_keywords_keep_species_identifiers_and_guard_the_food_name(self):
+        rows = [['usda', '1', 'Fish, drum, freshwater, raw', 'fish', 119]]
+        reviewed = {'usda-1': {'name': rows[0][2], 'keywords': [
+            'ψάρι freshwater drum', 'Aplodinotus grunniens', 'ωμό']}}
+        self.assertEqual(build.reference_keywords(rows, {}, {}, reviewed),
+                         {'usda-1': reviewed['usda-1']['keywords']})
+        changed = [['usda', '1', 'Fish, different species', 'fish', 119]]
+        with self.assertRaisesRegex(ValueError, 'translation no longer matches'):
+            build.reference_keywords(changed, {}, {}, reviewed)
+
+    def test_rebuild_looks_up_translations_before_normalizing_the_display_title(self):
+        row = ['off', '1', 'YOGURT', *self.normalize()[3:]]
+        aliases = {'foods': {'YOGURT': ['γιαούρτι']}}
+        original_read = Path.read_text
+
+        def read(path, *args, **kwargs):
+            return json.dumps(aliases) if path.name == 'food_keywords.el.json' else original_read(path, *args, **kwargs)
+
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'reference.json'
+            with patch.object(build, 'usda', return_value=[]), \
+                 patch.object(build, 'ciqual', return_value=[]), \
+                 patch.object(build, 'off', return_value=[row]), \
+                 patch.object(Path, 'read_text', read):
+                build.main(None, None, None, path)
+            data = json.loads(path.read_text())
+            self.assertEqual(data['foods'][0][2], 'Yogurt')
+            self.assertEqual(data['keywords']['off-1'], ['γιαούρτι'])
+            self.assertEqual(data['foods'][0][4:], row[4:])
+
     def test_keywords_remove_repeated_english_and_brand_translations(self):
         self.assertEqual(build.clean_keywords('Mini pick crackers (Papadopoulou)',
                                              ['Mini pick crackers (Παπαδοπούλου)', 'κράκερ',
@@ -73,6 +137,16 @@ class ReferenceImportTests(unittest.TestCase):
             build.curate([self.normalize(fiber=3)], rules)
         rules['nutrients']['usda-1']['fiber']['to'] = None
         self.assertIsNone(build.curate([row], rules)[0][6])
+
+    def test_sourced_sugar_additions_stop_when_the_rest_of_the_profile_changes(self):
+        row = self.normalize(sugar=None)
+        change = {'from': None, 'to': 4, 'expectedRow': build.row_fingerprint(row)}
+        rules = {'nutrients': {'usda-1': {'sugar': change}}}
+        result = build.curate([row], rules)
+        self.assertEqual(result[0][10], 4)
+        self.assertEqual(build.curate(result, rules), result)
+        with self.assertRaisesRegex(ValueError, 'nutrient profile no longer matches'):
+            build.curate([self.normalize(sugar=None, prot=6)], rules)
 
     def test_reviewed_merges_keep_known_micronutrients_and_reject_lost_values(self):
         sparse = self.normalize()
@@ -215,7 +289,7 @@ class ReferenceImportTests(unittest.TestCase):
                  patch.object(build, 'off', return_value=[row, copy, canonical]):
                 build.main(None, None, None, path)
             data = json.loads(path.read_text())
-            self.assertEqual(data['foods'], [canonical])
+            self.assertEqual(data['foods'], [[*canonical[:2], 'Philadelphia original', *canonical[3:]]])
             self.assertNotIn('namesToReview', data)
 
     def test_keywords_follow_exact_names_without_modifying_rows(self):

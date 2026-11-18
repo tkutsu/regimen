@@ -190,3 +190,6 @@ If you're working on the catalogue itself, the source downloads are in
 [`scripts/build_reference.py`](scripts/build_reference.py), reviewed corrections in
 [`scripts/food_cleanup.json`](scripts/food_cleanup.json), and Greek search terms in
 [`scripts/food_keywords.el.json`](scripts/food_keywords.el.json).
+
+The [catalogue review](docs/food-review/README.md) includes name corrections,
+confirmed sugar additions, and a CSV of missing sugar values with tentative estimates.

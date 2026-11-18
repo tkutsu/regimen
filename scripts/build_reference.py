@@ -206,7 +206,7 @@ def ciqual(path, estimates=None):
         yield normalize("ciqual", code, name, groups.get(group, ""), v, estimates)
 
 
-def off(path, estimates=None, identities=None):
+def off(path, estimates=None, identities=None, display_brands=None):
     """Products tagged as sold in Greece. The export is tab-separated and unquoted."""
     columns = {"energy-kcal_100g": "kcal", "proteins_100g": "prot", "fiber_100g": "fiber", "saturated-fat_100g": "sat",
                "monounsaturated-fat_100g": "mufa", "polyunsaturated-fat_100g": "pufa", "unsaturated-fat_100g": "unsat",
@@ -260,6 +260,8 @@ def off(path, estimates=None, identities=None):
                 continue
             label = f"{name} ({brand})" if brand and brand.lower() not in name.lower() else name
             products[row[at["code"]]] = normalize("off", row[at["code"]], label, "packaged (Greece)", v, estimates)
+            if display_brands is not None:
+                display_brands[f"off-{row[at['code']]}"] = brand
             if identities is not None:
                 identities[f"off-{row[at['code']]}"] = row_fingerprint([
                     row[at[field]] if field in at else "" for field in
@@ -356,6 +358,9 @@ def curate(foods, corrections, product_identities=None):
             column = 4 + list({**MACRO_UNITS, **MICRO_UNITS}).index(nutrient)
             if row[column] not in (change["from"], change["to"]):
                 raise ValueError(f"Reviewed nutrient no longer matches: {key} {nutrient}")
+            if row[column] == change["from"] and change.get("expectedRow") \
+                    and row_fingerprint(row) != change["expectedRow"]:
+                raise ValueError(f"Reviewed nutrient profile no longer matches: {key} {nutrient}")
             row[column] = change["to"]
         rows[key] = row
     for removed, canonical in corrections.get("duplicates", {}).items():
@@ -420,20 +425,115 @@ def drop_unused(rows, corrections):
     return {key: row for key, row in rows.items() if not unused(key, row)}
 
 
+def normalize_title(name, source, brand=""):
+    """Use sentence case and order whole qualifiers, preserving brands and food identity."""
+    name = clean_name(name)
+    # Protect actual brand spellings, parenthesized product brands, proper names and acronyms.
+    protected = {}
+
+    def protect(match):
+        token = f"\ue000{len(protected)}\ue001"
+        protected[token] = match.group()
+        return token
+
+    if source == "off":
+        name = re.sub(r"\([^()]*\)$", protect, name)
+    if brand:
+        name = re.sub(re.escape(brand), protect, name, flags=re.I)
+    name = re.sub(r"\([A-Z][a-z]+ [a-z]+(?: [a-z]+)?\)", protect, name)
+    name = re.sub(r"\b(?:New Zealand|Grana Padano|Brie de Meaux|Brie de Melun|"
+                  r"Atlantic|Pacific|Alaska|Greenland|Mediterranean|Greek|French|Italian|"
+                  r"English|American|Canadian|Australian|Chinese|Japanese|Indian|Thai|"
+                  r"Dijon|Camembert|Roquefort|Comté|Emmental|Gouda|Edam|Savoy|"
+                  r"Μυτιλήνης|Καλαμών|Θεσσαλονίκης|Κρήτης|Αιγίνης|Ελλάδας|Ελλάδος|"
+                  r"Ιμαλαΐων|Δράμας|Καστοριάς|Σερρών|Νάξου|"
+                  r"USDA|USA|UHT|PDO|DOP|BBQ|ISO|BCAA|DHA|EPA|B12|B6|XL|XXL|"
+                  r"Aplodinotus grunniens)\b", protect, name, flags=re.I)
+    accents = dict(pair.split(":") for pair in (
+        "γαλα:γάλα γιαουρτι:γιαούρτι τυρι:τυρί ψωμι:ψωμί ρυζι:ρύζι καφε:καφέ καφες:καφές "
+        "βρωμη:βρώμη βρωμης:βρώμης μελι:μέλι μελιου:μελιού ζαχαρη:ζάχαρη ζαχαρης:ζάχαρης "
+        "σοκολατα:σοκολάτα σοκολατας:σοκολάτας φυστικοβουτυρο:φυστικοβούτυρο φιστικοβουτυρο:φιστικοβούτυρο "
+        "βουτυρο:βούτυρο καρυδοψιχα:καρυδόψιχα αλατι:αλάτι τονος:τόνος χυμος:χυμός "
+        "καλαμποκι:καλαμπόκι κοτοπουλο:κοτόπουλο κατσικισιο:κατσικίσιο αγελαδινο:αγελαδινό "
+        "στραγγιστο:στραγγιστό στραγγιστό:στραγγιστό ελαφρυ:ελαφρύ γευση:γεύση γαλακτος:γάλακτος "
+        "σαλτσα:σάλτσα ντοματα:ντομάτα ντοματας:ντομάτας λαδερα:λαδερά πιτα:πίτα πιτες:πίτες "
+        "ολικης:ολικής αλεσης:άλεσης αλεσεως:αλέσεως χωρις:χωρίς λιπαρα:λιπαρά "
+        "επιδoρπιο:επιδόρπιο επιδορπιο:επιδόρπιο γλυκο:γλυκό γλυκια:γλυκιά κρεμα:κρέμα "
+        "κρεμας:κρέμας μπαρα:μπάρα μπαρες:μπάρες μπανανa:μπανάνα μπανανα:μπανάνα "
+        "φραουλα:φράουλα φραουλας:φράουλας αμυγδαλα:αμύγδαλα φουντουκι:φουντούκι "
+        "καρυδα:καρύδα καρυδας:καρύδας πρωτεινη:πρωτεΐνη πρωτεινης:πρωτεΐνης "
+        "ψημενο:ψημένο ψημενα:ψημένα αλατισμενα:αλατισμένα αναλατα:ανάλατα κανελα:κανέλα"
+    ).split())
+    name = re.sub(r"\b[^\W\d_]+(?:[-'][^\W\d_]+)*\b", lambda m: (
+        m.group() if m.group() in {"A", "B", "C", "D", "E", "K"}
+        or (source != "off" and m.group().isupper() and len(m.group()) > 1)
+        or (any(c.islower() for c in m.group()[1:]) and any(c.isupper() for c in m.group()[1:]))
+        else accents.get(m.group().lower(), m.group().lower())), name)
+    for token, value in protected.items():
+        name = name.replace(token, value)
+    name = re.sub(r"(?<=\d),(?=\d+\s*%)", ".", name)
+    name = re.sub(r"\s+%", "%", name)
+    # Percentages in dairy titles describe fat; percentages in chocolate, fruit, etc. do not.
+    if source == "off":
+        name = re.sub(r"^(\d+(?:\.\d+)?%) lactose free (yogurt|yoghurt|milk)\b",
+                      r"\2, \1 fat, lactose free", name, flags=re.I)
+        name = re.sub(r"^(\d+(?:\.\d+)?%) (?:fat )?((?:Greek |cow |strained )?(?:milk|yogurt|yoghurt))\b",
+                      r"\2, \1 fat", name, flags=re.I)
+    parts, start, depth = [], 0, 0
+    for i, char in enumerate(name):
+        depth += (char == "(") - (char == ")")
+        if char == "," and depth == 0 and not (i > 0 and i + 1 < len(name)
+                                               and name[i - 1].isdigit() and name[i + 1].isdigit()):
+            parts.append(name[start:i].strip())
+            start = i + 1
+    parts.append(name[start:].strip())
+    fat_names = {"lowfat": "low fat", "low-fat": "low fat", "fat-free": "fat free",
+                 "nonfat": "fat free", "nonfat or fat free": "fat free", "2%fat": "2% fat"}
+    parts = [fat_names.get(part, part) for part in parts]
+
+    def rank(part):
+        if re.fullmatch(r"(?:(?:around|approximately) )?\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?% (?:milk)?fat|"
+                        r"\d+% lean(?: meat)? / \d+% fat|"
+                        r"(?:low|reduced|full|without) fat|fat free|(?:separable )?lean (?:only|and fat)", part):
+            return 1
+        if re.fullmatch(r"(?:(?:fast|slow|dry|oil) )?(?:raw|uncooked|unprepared|cooked|cooked-roasted|boiled|roasted|baked|"
+                        r"grilled|fried|steamed|braised|stewed|sauteed|sautéed|pan-fried|pan fried|"
+                        r"stir-fried|simmered|poached|pan-broiled|broiled|dry heat|moist heat|roasted/baked|grilled/pan-fried|"
+                        r"boiled/cooked in water)(?: \([^()]*\))?", part):
+            return 2
+        if re.fullmatch(r"(?:with(?:out)? salt(?: added)?|no salt added|unsalted|salted|drained|"
+                        r"drained solids|solids and liquids|solids and liquid)", part):
+            return 3
+        return 0
+
+    # Packaged names often contain comma-separated marketing text; retain their original order.
+    if source != "off" and len(parts) > 1:
+        parts = [parts[0], *sorted(parts[1:], key=rank)]
+    name = ", ".join(parts)
+    # Uppercase the first letter only, even when a title starts with a percentage or numeral.
+    return re.sub(r"[^\W\d_]", lambda m: m.group().upper(), name, count=1)
+
+
 def main(usda_zip, ciqual_zip, off_csv, out):
     estimates = set()
     product_identities = {}
+    display_brands = {}
     corrections = json.loads(Path(__file__).with_name("food_cleanup.json").read_text())
     # Collapse exact source-export copies first, so a reviewed removal cannot uncover one.
     source_rows = {}
     for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates),
-                 *off(off_csv, estimates, product_identities)):
+                 *off(off_csv, estimates, product_identities, display_brands)):
         if food:
             source_rows.setdefault((food[0], clean_name(food[2]).casefold(), *food[3:]), food)
     foods = curate(source_rows.values(), corrections, product_identities)
     kept_ids = {f"{food[0]}-{food[1]}" for food in foods}
     aliases = json.loads(Path(__file__).with_name("food_keywords.el.json").read_text())
     translations = aliases["foods"]
+    # Translate before display normalization: reviewed translations use source titles.
+    keywords = reference_keywords(foods, translations, merged_names(corrections), aliases.get("reviewedFoods"))
+    for row in foods:
+        key = f"{row[0]}-{row[1]}"
+        row[2] = normalize_title(row[2], row[0], display_brands.get(key, ""))
     data = {
         "sources": {
             "usda": "USDA FoodData Central, SR Legacy 2018-04 (public domain)",
@@ -444,7 +544,7 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         "estimatedUnsatFat": sorted(estimates & kept_ids),
         "generics": sorted(generic["canonical"] for generic in corrections.get("generics", [])
                            if generic.get("name") and generic["canonical"] in kept_ids),
-        "keywords": reference_keywords(foods, translations, merged_names(corrections)),
+        "keywords": keywords,
         "foods": foods,
     }
     with open(out, "w") as f:
@@ -463,7 +563,7 @@ def merged_names(corrections):
     return aliases
 
 
-def reference_keywords(foods, translations, aliases=None):
+def reference_keywords(foods, translations, aliases=None, reviewed=None):
     """Keep translated keywords and reviewed alternate names on the retained food ID."""
     aliases = aliases or {}
     result = {}
@@ -473,6 +573,12 @@ def reference_keywords(foods, translations, aliases=None):
         if key in aliases:
             # Reviewed source names retain real brand aliases, unlike machine translations.
             keywords = clean_keywords(row[2], [*keywords, *aliases[key]])
+        if key in (reviewed or {}):
+            correction = reviewed[key]
+            if row[2] != correction["name"]:
+                raise ValueError(f"Reviewed translation no longer matches: {key}")
+            # Reviewed phrases can include the English species name where Greek has none.
+            keywords = list(dict.fromkeys(clean_name(term) for term in correction["keywords"] if clean_name(term)))
         if keywords:
             result[key] = keywords
     return result
