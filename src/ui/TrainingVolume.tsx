@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { localDate, shiftDate } from "../domain/day";
+import { localDate } from "../domain/day";
 import type { State } from "../domain/state";
 import { muscleSets, volumeSeries } from "../domain/training";
 import { daysBetween, phaseRuns } from "../domain/weight";
@@ -12,13 +12,13 @@ const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
 const AVERAGES = [2, 4, 8];
 const format = (kg: number) => `${Math.round(kg).toLocaleString()} kg`;
 
-/** Weekly completed-set volume and its rolling average, with the same phases as Weight. */
+/** Daily completed-set volume and its rolling average, with the same phases as Weight. */
 export function TrainingVolume({ state }: { state: State }) {
   const today = localDate();
   const [range, setRange] = useRemembered<keyof typeof RANGES>("training.range", "3M", RANGE_NAMES);
   const [weeks, setWeeks] = useRemembered("training.average", 4, AVERAGES);
   const series = useMemo(() => volumeSeries(state, today, weeks), [state, today, weeks]);
-  const shown = series.filter((p) => daysBetween(shiftDate(p.date, 6), today) < RANGES[range]).map((p) => ({
+  const shown = series.filter((p) => daysBetween(p.date, today) < RANGES[range]).map((p) => ({
     ...p,
     note: p.missingBodyweight ? `${p.missingBodyweight} ${p.missingBodyweight === 1 ? "set has" : "sets have"} no earlier weigh-in. Volume includes added kg only for those sets.` : undefined,
   }));
@@ -29,25 +29,25 @@ export function TrainingVolume({ state }: { state: State }) {
     <>
       <section className="rounded-2xl border border-line bg-surface p-4">
         <h2 className="text-xs font-medium tracking-wide text-muted uppercase">
-          <Info label="weekly volume" wide className="relative -mx-3 flex" hint="Reps × kg of every done set, Monday to Sunday. Bodyweight exercises add their share of your weight. Averages count empty weeks and this week so far.">
-            <span className="font-medium tracking-wide uppercase">Weekly volume</span>
+          <Info label="daily volume" wide className="relative -mx-3 flex" hint="Reps × kg of every done set, per day. Bodyweight exercises add their share of your weight. Averages count rest days and today so far.">
+            <span className="font-medium tracking-wide uppercase">Daily volume</span>
           </Info>
         </h2>
         {latest ? (
           <>
             <div className="flex flex-wrap items-baseline justify-between gap-x-2">
               <span className="text-3xl font-semibold">{format(latest.kg)}</span>
-              <span className="text-sm text-muted">this week so far</span>
+              <span className="text-sm text-muted">today</span>
             </div>
             <p className="mt-1 text-sm text-muted">{weeks}-week average: {format(latest.avg)}</p>
             <div className="mt-4 flex gap-2 text-sm">
               <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
               <Segmented options={AVERAGES} value={weeks} onChange={setWeeks} label={(n) => `${n}w`} className="flex-[2]" />
             </div>
-            <TrendChart points={shown} bands={bands} averageLabel={`${weeks}-week average`} valueLabel="weekly volume" format={format} volume to={today} />
+            <TrendChart points={shown} bands={bands} averageLabel={`${weeks}-week average`} valueLabel="daily volume" format={format} volume to={today} />
           </>
         ) : (
-          <p className="py-4 text-sm text-muted">Mark sets done to chart weekly volume. Add a bodyweight percentage to exercises that need it.</p>
+          <p className="py-4 text-sm text-muted">Mark sets done to chart daily volume. Add a bodyweight percentage to exercises that need it.</p>
         )}
       </section>
       <MuscleVolume state={state} today={today} weeks={weeks} />
@@ -57,7 +57,7 @@ export function TrainingVolume({ state }: { state: State }) {
 
 const sets = (n: number) => n.toFixed(1).replace(/\.0$/, "");
 
-/** This week's sets per muscle, head to toe, each with a mark at its average of the weeks before. */
+/** This week's sets per muscle, most first, each with a mark at its average of the weeks before. */
 function MuscleVolume({ state, today, weeks }: { state: State; today: string; weeks: number }) {
   const { muscles, untagged } = useMemo(() => muscleSets(state, today, weeks), [state, today, weeks]);
   if (!muscles.length && !untagged) return null;

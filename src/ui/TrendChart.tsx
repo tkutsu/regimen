@@ -117,7 +117,7 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
     <div ref={ref} className="mt-3">
       <p className="mb-1 flex flex-wrap justify-between gap-x-2 text-sm">
         <span className="text-muted">
-          {volume ? `Week of ${short(read.date)}` : short(read.date, true)}
+          {short(read.date, true)}
           {readPhase && ` · ${readPhase}`}
         </span>
         <span>
