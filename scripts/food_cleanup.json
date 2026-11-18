@@ -1001,6 +1001,33 @@
         "to": 0.0,
         "reason": "This food has no fibre; the label just doesn't list it, or lists it by mistake."
       }
+    },
+    "off-5204217902170": {
+      "sugar": {
+        "from": null,
+        "to": 3.4,
+        "source": "https://biozita.gr/proion/amylo-tapiokas-vio-350gr/",
+        "reason": "Exact barcode; matches 358 kcal, 88.7 g carbohydrate, 0.2 g protein and 0.9 g fibre. Also independently reported as 3.4 g by Biologiko Xorio and Planet Health.",
+        "expectedRow": "144089dd97db87c6921ae3ad23a15460ebeddd9a8c80279a0218b37864711097"
+      }
+    },
+    "off-5201049186761": {
+      "sugar": {
+        "from": null,
+        "to": 7.8,
+        "source": "https://www.wildsouls.gr/en/product/fistikovoytyro-aiginis/",
+        "reason": "Manufacturer plain 100% pistachio butter; matches 589 kcal, 46 g fat, 17.3 g carbohydrate and 21.4 g protein. Not the truffle product.",
+        "expectedRow": "8704c1fa04daf1a40188cf0a7a6e2cff0023df21151d29d78b38994409a79e6a"
+      }
+    },
+    "off-5201399020210": {
+      "sugar": {
+        "from": null,
+        "to": 0.0,
+        "source": "https://www.mymarket.gr/3alfa-ryzi-agrio-parboiled-500gr",
+        "reason": "Wild/parboiled mix, dry. Matches 345 kcal, 8.4 g protein, 75.3 g carbohydrate, 0.6 g fat, 0.2 g saturated fat and 2.5 g fibre. Label explicitly declares 0.0 g sugar.",
+        "expectedRow": "467cd4e557be329ad122245fda701883602e758e38edecb2e2acdc4ea692e92f"
+      }
     }
   },
   "compatibleDuplicates": {
