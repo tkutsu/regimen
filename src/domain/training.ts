@@ -11,7 +11,10 @@ export function weekStart(date: string): string {
 
 export type VolumePoint = { date: string; kg: number; avg: number; missingBodyweight: number };
 
-/** Done sets as reps times load, summed Monday-Sunday, including zero weeks and the current partial week. */
+/**
+ * Done sets as reps times load, summed per day from the first session to `to`, rest days included.
+ * `avg` is the mean of the last `weeks` weeks of days, so rest days pull it down.
+ */
 export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[] {
   const sessions = [...state.sessions.values()].filter((s) => s.date <= to && s.sets.some((set) => set.done && (set.reps ?? 0) > 0)).sort((a, b) => a.date.localeCompare(b.date));
   if (!sessions.length) return [];
@@ -21,8 +24,7 @@ export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[]
   for (const session of sessions) {
     while (weighIn + 1 < weights.length && weights[weighIn + 1][0] <= session.date) weighIn++;
     const bodyweight = weights[weighIn]?.[1];
-    const week = weekStart(session.date);
-    const total = totals.get(week) ?? { kg: 0, missingBodyweight: 0 };
+    const total = totals.get(session.date) ?? { kg: 0, missingBodyweight: 0 };
     for (const set of session.sets) {
       if (!set.done || !Number.isFinite(set.reps) || (set.reps ?? 0) <= 0) continue;
       const exercise = state.exercises.get(set.exerciseId);
@@ -31,12 +33,12 @@ export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[]
       total.kg += set.reps! * ((set.kg ?? 0) * (exercise?.unilateral ? 2 : 1) + bodyLoad);
       if (pct > 0 && bodyweight === undefined) total.missingBodyweight++;
     }
-    totals.set(week, total);
+    totals.set(session.date, total);
   }
   const points: VolumePoint[] = [];
-  for (let date = weekStart(sessions[0].date); date <= weekStart(to); date = shiftDate(date, 7)) {
+  for (let date = sessions[0].date; date <= to; date = shiftDate(date, 1)) {
     const total = totals.get(date) ?? { kg: 0, missingBodyweight: 0 };
-    const window = [...points.slice(Math.max(0, points.length - weeks + 1)), total];
+    const window = [...points.slice(Math.max(0, points.length - weeks * 7 + 1)), total];
     points.push({ date, ...total, avg: window.reduce((sum, p) => sum + p.kg, 0) / window.length });
   }
   return points;
@@ -47,7 +49,8 @@ export type MuscleSets = { muscle: string; week: number; avg?: number };
 /**
  * Done sets per muscle: a primary muscle counts each set, a secondary one its percentage. `week` is this
  * week so far; `avg` averages up to `weeks` weeks before it, none earlier than the first session's week.
- * `untagged` counts this week's sets from exercises without muscles.
+ * `untagged` counts this week's sets from exercises without muscles. Most sets this week first, ties
+ * broken by the higher average, then head to toe.
  */
 export function muscleSets(state: State, to: string, weeks = 4): { muscles: MuscleSets[]; untagged: number } {
   const thisWeek = weekStart(to);
@@ -76,7 +79,8 @@ export function muscleSets(state: State, to: string, weeks = 4): { muscles: Musc
   return {
     muscles: muscles
       .filter((muscle) => current.has(muscle) || before.has(muscle))
-      .map((muscle) => ({ muscle, week: current.get(muscle) ?? 0, avg: past ? (before.get(muscle) ?? 0) / past : undefined })),
+      .map((muscle) => ({ muscle, week: current.get(muscle) ?? 0, avg: past ? (before.get(muscle) ?? 0) / past : undefined }))
+      .sort((a, b) => b.week - a.week || (b.avg ?? 0) - (a.avg ?? 0)),
     untagged,
   };
 }
