@@ -18,6 +18,7 @@ import gzip
 import hashlib
 import html
 import io
+import itertools
 import json
 import math
 import re
@@ -206,7 +207,7 @@ def ciqual(path, estimates=None):
         yield normalize("ciqual", code, name, groups.get(group, ""), v, estimates)
 
 
-def off(path, estimates=None, identities=None, display_brands=None):
+def off(path, estimates=None, identities=None, display_brands=None, nutrition_identities=None):
     """Products tagged as sold in Greece. The export is tab-separated and unquoted."""
     columns = {"energy-kcal_100g": "kcal", "proteins_100g": "prot", "fiber_100g": "fiber", "saturated-fat_100g": "sat",
                "monounsaturated-fat_100g": "mufa", "polyunsaturated-fat_100g": "pufa", "unsaturated-fat_100g": "unsat",
@@ -266,6 +267,9 @@ def off(path, estimates=None, identities=None, display_brands=None):
                 identities[f"off-{row[at['code']]}"] = row_fingerprint([
                     row[at[field]] if field in at else "" for field in
                     ["product_name", "generic_name", "brands", "quantity", "ingredients_text"]])
+            if nutrition_identities is not None:
+                nutrition_identities[f"off-{row[at['code']]}"] = row_fingerprint([
+                    [field, row[at[field]]] for field in sorted(at) if field.endswith("_100g")])
     return products.values()
 
 
@@ -343,15 +347,49 @@ def row_fingerprint(row):
     return hashlib.sha256(json.dumps(row, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
 
 
-def curate(foods, corrections, product_identities=None):
+def merge_profiles(rows, merges, product_identities, nutrition_identities):
+    """Keep reviewed whole profiles only when every pair satisfies the nutrient limit."""
+    for merge in merges:
+        canonical, expected = merge["canonical"], merge["expectedRows"]
+        if not any(key != canonical and key in rows for key in expected):
+            continue
+        if canonical not in expected or any(
+                key not in rows or row_fingerprint(rows[key]) != fingerprint
+                for key, fingerprint in expected.items()):
+            raise ValueError(f"Reviewed profile no longer matches: {canonical}")
+        for identities, field in [(product_identities, "expectedProducts"),
+                                  (nutrition_identities, "expectedNutrition")]:
+            if any((identities or {}).get(key) != fingerprint
+                   for key, fingerprint in merge.get(field, {}).items()):
+                raise ValueError(f"Reviewed source profile no longer matches: {canonical} {field}")
+        for left, right in itertools.combinations(expected, 2):
+            a, b = rows[left][4:], rows[right][4:]
+            if len(a) != len(b) or any(
+                    x != y if x is None or y is None else
+                    abs(x - y) > min(x, y) * merge["maxRelativeDifference"] + 1e-9
+                    for x, y in zip(a, b)):
+                raise ValueError(f"Reviewed profile exceeds nutrient limit: {left} -> {right}")
+        for key in expected:
+            if key != canonical:
+                del rows[key]
+
+
+def curate(foods, corrections, product_identities=None, nutrition_identities=None):
     """Apply reviewed product exclusions, names and equivalent-food merges on rebuild."""
     excluded = set(corrections.get("excludeNames", []))
     names = corrections.get("names", {})
-    rows = {}
+    rows, excluded_after_merges = {}, set()
     for food in foods:
         if food[0] == "off" and (re.search(r"[\u0400-\u052f]", food[2]) or food[2] in excluded):
             continue
         key = f"{food[0]}-{food[1]}"
+        exclusion = corrections.get("excludeFoods", {}).get(key)
+        if exclusion:
+            if food[2] != exclusion["expectedName"]:
+                raise ValueError(f"Reviewed exclusion no longer matches: {key}")
+            if not exclusion.get("afterMerges"):
+                continue
+            excluded_after_merges.add(key)
         row = food[:]
         row[2] = names.get(key, row[2])
         for nutrient, change in corrections.get("nutrients", {}).get(key, {}).items():
@@ -403,7 +441,8 @@ def curate(foods, corrections, product_identities=None):
             del rows[key]
         if kept is not None and generic.get("name"):
             kept[2] = generic["name"]
-    return list(drop_unused(rows, corrections).values())
+    merge_profiles(rows, corrections.get("profileDuplicates", []), product_identities, nutrition_identities)
+    return [row for key, row in drop_unused(rows, corrections).items() if key not in excluded_after_merges]
 
 
 def drop_unused(rows, corrections):
@@ -414,6 +453,7 @@ def drop_unused(rows, corrections):
     groups = corrections.get("dropGroups", {})
     kept = {*corrections.get("keepFoods", []),
             *(merge["canonical"] for merge in corrections.get("identityDuplicates", [])),
+            *(merge["canonical"] for merge in corrections.get("profileDuplicates", [])),
             *(generic["canonical"] for generic in corrections.get("generics", []))}
     names = {row[2].casefold() for row in rows.values()}
 
@@ -517,22 +557,27 @@ def normalize_title(name, source, brand=""):
 def main(usda_zip, ciqual_zip, off_csv, out):
     estimates = set()
     product_identities = {}
+    nutrition_identities = {}
     display_brands = {}
     corrections = json.loads(Path(__file__).with_name("food_cleanup.json").read_text())
     # Collapse exact source-export copies first, so a reviewed removal cannot uncover one.
     source_rows = {}
     for food in (*usda(usda_zip, estimates), *ciqual(ciqual_zip, estimates),
-                 *off(off_csv, estimates, product_identities, display_brands)):
+                 *off(off_csv, estimates, product_identities, display_brands, nutrition_identities)):
         if food:
             source_rows.setdefault((food[0], clean_name(food[2]).casefold(), *food[3:]), food)
-    foods = curate(source_rows.values(), corrections, product_identities)
+    foods = curate(source_rows.values(), corrections, product_identities, nutrition_identities)
     kept_ids = {f"{food[0]}-{food[1]}" for food in foods}
     aliases = json.loads(Path(__file__).with_name("food_keywords.el.json").read_text())
     translations = aliases["foods"]
     # Translate before display normalization: reviewed translations use source titles.
     keywords = reference_keywords(foods, translations, merged_names(corrections), aliases.get("reviewedFoods"))
+    profiles = {merge["canonical"]: merge for merge in corrections.get("profileDuplicates", [])}
     for row in foods:
         key = f"{row[0]}-{row[1]}"
+        if key in profiles:
+            row[2] = profiles[key]["name"]
+            keywords[key] = clean_keywords(row[2], [*keywords.get(key, []), *profiles[key]["aliases"]])
         row[2] = normalize_title(row[2], row[0], display_brands.get(key, ""))
     data = {
         "sources": {
@@ -542,8 +587,9 @@ def main(usda_zip, ciqual_zip, off_csv, out):
         },
         "nutrients": [{"key": key, "unit": unit} for key, unit in {**MACRO_UNITS, **MICRO_UNITS}.items()],
         "estimatedUnsatFat": sorted(estimates & kept_ids),
-        "generics": sorted(generic["canonical"] for generic in corrections.get("generics", [])
-                           if generic.get("name") and generic["canonical"] in kept_ids),
+        "generics": sorted({generic["canonical"] for generic in
+                            [*corrections.get("generics", []), *profiles.values()]
+                            if generic.get("name") and generic["canonical"] in kept_ids}),
         "keywords": keywords,
         "foods": foods,
     }

@@ -27,6 +27,2043 @@
     "version (marata)",
     "Špagety (Nature's Promise)"
   ],
+  "excludeFoods": {
+    "off-5202353005373": {
+      "expectedName": "Biskotti nutricia",
+      "reason": "Infant biscuits",
+      "evidence": "https://www.nutricia.com/el-gr/product/biskotti-180g",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/520/235/300/5373/front_fr.10.400.jpg"
+    },
+    "off-5202353001009": {
+      "expectedName": "Nutricia biskotti",
+      "reason": "Infant biscuits",
+      "evidence": "https://www.nutricia.com/el-gr/product/biskotti-180g",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/520/235/300/1009/front_fr.3.400.jpg"
+    },
+    "off-7613034570512": {
+      "expectedName": "Frutas fruta con vitamina sin gluten desde meses bolsita (Nestlé)",
+      "reason": "Infant fruit puree",
+      "evidence": "OFF category: en:baby-foods",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/761/303/457/0512/front_fr.21.400.jpg"
+    },
+    "off-4062300168152": {
+      "expectedName": "Puree of Apple, peach, blueberry & raspberry (Hipp)",
+      "reason": "Infant fruit puree",
+      "evidence": "HiPP fruit puree; source package image",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/406/230/016/8152/front_fr.3.400.jpg"
+    },
+    "off-5060452490519": {
+      "expectedName": "Fruit and veg smoothie purple (Piccolo)",
+      "reason": "Infant fruit and vegetable puree",
+      "evidence": "OFF category: en:baby-foods",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/506/045/249/0519/front_fr.8.400.jpg"
+    },
+    "off-4062300362239": {
+      "expectedName": "Muesli freund butterkeks in apfel-vanillr (hipp)",
+      "reason": "Toddler fruit/cereal bar",
+      "evidence": "OFF category: en:snacks-and-desserts-for-babies",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/406/230/036/2239/front_fr.43.400.jpg"
+    },
+    "off-4062300362215": {
+      "expectedName": "Früchte Riegel Joghurt-Kirsch in Banane (HiPP)",
+      "reason": "Toddler fruit/cereal bar",
+      "evidence": "OFF category: en:baby-foods",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/406/230/036/2215/front_de.10.400.jpg"
+    },
+    "off-4062300344877": {
+      "expectedName": "Bio Getreidebrei 5-Korn (HiPP)",
+      "reason": "Infant cereal",
+      "evidence": "OFF category: en:baby-foods",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/406/230/034/4877/front_en.25.400.jpg"
+    },
+    "off-4062300431898": {
+      "expectedName": "Babykoekjes biscuit (Hipp)",
+      "reason": "Infant biscuits",
+      "evidence": "OFF generic name explicitly identifies biscuits for babies",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/406/230/043/1898/front_nl.29.400.jpg"
+    },
+    "off-7613036363631": {
+      "expectedName": "NAN Optipro 1 800gr",
+      "reason": "Infant formula",
+      "evidence": "https://www.nestlebaby.gr/nan/optipro",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/761/303/636/3631/front_fr.3.400.jpg"
+    },
+    "off-3518072032050": {
+      "expectedName": "Βιολογικό γάλα σε σκόνη 2ης βρεφικής ηλικίας (Novalac)",
+      "reason": "Follow-on infant formula",
+      "evidence": "OFF name and category: en:baby-milks",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/351/807/203/2050/front_fr.3.400.jpg"
+    },
+    "off-4751017941812": {
+      "expectedName": "mango, passion fruit oat porridge (Rudolfs organic)",
+      "reason": "Infant porridge",
+      "evidence": "OFF category: en:main-meals-for-babies",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/475/101/794/1812/front_fr.3.400.jpg"
+    },
+    "off-3041091410955": {
+      "expectedName": "Rice Flour (Nutricia)",
+      "reason": "Infant rice cereal with milk",
+      "evidence": "https://www.smile-pharmacy.gr/en/vendors/nutricia/nutricia-infant-cream-vanilla-rice-250gr.htm",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/304/109/141/0955/front_en.3.400.jpg"
+    },
+    "off-4062300446052": {
+      "expectedName": "Hipp Früchte Freund Apfel/Banane",
+      "reason": "Toddler fruit/cereal bar",
+      "evidence": "HiPP Fruechte Freund fruit bar; source package image",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/406/230/044/6052/front_el.3.400.jpg"
+    },
+    "off-5201002000233": {
+      "expectedName": "Farin Lacte (Γιώτης)",
+      "reason": "Infant milk/cereal cream",
+      "evidence": "OFF category: el:baby cream",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/520/100/200/0233/front_el.20.400.jpg"
+    },
+    "off-9062300134398": {
+      "expectedName": "Rice With Carrots And Organic Turkey (HiPP)",
+      "reason": "Infant rice/turkey meal",
+      "evidence": "HiPP jarred baby meal; source package image",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/906/230/013/4398/front_el.3.400.jpg"
+    },
+    "off-8445290215048": {
+      "expectedName": "Grain and Grow (Nestlé)",
+      "reason": "Infant cereal snack",
+      "evidence": "OFF brand: Gerber organic for baby",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/844/529/021/5048/front_el.6.400.jpg"
+    },
+    "off-9062300131953": {
+      "expectedName": "Bio Κρεμα Δημητριακων Με Κολοκύθα & Καρότο (HiPP)",
+      "reason": "Infant cereal",
+      "evidence": "https://www.hippgreece.gr/trofes-apogalaktismoy/proionta/biologikes-kremes-dimitriakon/biologikes-kremes-dimitriakon-gia-anameixi/krema-kolokytha-kai-karoto-al2897-02/",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/906/230/013/1953/front_el.3.400.jpg"
+    },
+    "off-8716200722186": {
+      "expectedName": "Farine Lactee (Nounou)",
+      "reason": "Infant milk/cereal cream",
+      "evidence": "https://www.nounou.gr/products/brefonipiaki-diatrofi/nounou-farin-lakte",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/871/620/072/2186/front_en.3.400.jpg"
+    },
+    "off-8445290191489": {
+      "expectedName": "Βρεφικά δημητριακά με γεύση μπισκότο",
+      "reason": "Infant cereal",
+      "evidence": "OFF name and category explicitly identify infant cereal",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/844/529/019/1489/front_el.6.400.jpg"
+    },
+    "off-8716200781763": {
+      "expectedName": "Frisomel (Friesland Campina)",
+      "reason": "Follow-on infant formula",
+      "evidence": "OFF category: el:Δεύτερης βρεφικής ηλικίας",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/871/620/078/1763/front_el.3.400.jpg"
+    },
+    "off-5202888105449": {
+      "expectedName": "Frezylac organic cereals (Frezyderm)",
+      "reason": "Infant cereal",
+      "evidence": "OFF category: el:Βρεφική τροφή",
+      "sourceImage": "https://images.openfoodfacts.org/images/products/520/288/810/5449/front_el.3.400.jpg"
+    },
+    "usda-171279": {
+      "expectedName": "Milk, human, mature, fluid",
+      "reason": "Human breast milk, outside the adult food catalogue",
+      "evidence": "USDA SR Legacy source identity: Milk, human, mature, fluid"
+    },
+    "usda-167745": {
+      "expectedName": "Turtle, green, raw",
+      "reason": "Green turtle",
+      "evidence": "USDA SR Legacy source identity: Turtle, green, raw"
+    },
+    "usda-168272": {
+      "expectedName": "Pork, fresh, variety meats and by-products, mechanically separated, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Pork, fresh, variety meats and by-products, mechanically separated, raw"
+    },
+    "usda-168630": {
+      "expectedName": "Beef, variety meats and by-products, mechanically separated beef, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Beef, variety meats and by-products, mechanically separated beef, raw"
+    },
+    "usda-170893": {
+      "expectedName": "Egg, whole, raw, frozen, salted, pasteurized",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, whole, raw, frozen, salted, pasteurized"
+    },
+    "usda-170895": {
+      "expectedName": "Egg, white, dried, stabilized, glucose reduced",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, white, dried, stabilized, glucose reduced"
+    },
+    "usda-171042": {
+      "expectedName": "Oil, industrial, canola, high oleic",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, canola, high oleic"
+    },
+    "usda-171104": {
+      "expectedName": "Poultry, mechanically deboned, from backs and necks with skin, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Poultry, mechanically deboned, from backs and necks with skin, raw"
+    },
+    "usda-171105": {
+      "expectedName": "Poultry, mechanically deboned, from backs and necks without skin, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Poultry, mechanically deboned, from backs and necks without skin, raw"
+    },
+    "usda-171106": {
+      "expectedName": "Poultry, mechanically deboned, from mature hens, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Poultry, mechanically deboned, from mature hens, raw"
+    },
+    "usda-171438": {
+      "expectedName": "Oil, industrial, soy, low linolenic",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy, low linolenic"
+    },
+    "usda-171439": {
+      "expectedName": "Oil, industrial, soy, ultra low linolenic",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy, ultra low linolenic"
+    },
+    "usda-171440": {
+      "expectedName": "Oil, industrial, soy, fully hydrogenated",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy, fully hydrogenated"
+    },
+    "usda-171441": {
+      "expectedName": "Oil, industrial, cottonseed, fully hydrogenated",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, cottonseed, fully hydrogenated"
+    },
+    "usda-171504": {
+      "expectedName": "Turkey, mechanically deboned, from turkey frames, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Turkey, mechanically deboned, from turkey frames, raw"
+    },
+    "usda-172357": {
+      "expectedName": "Oil, industrial, mid-oleic, sunflower",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, mid-oleic, sunflower"
+    },
+    "usda-172358": {
+      "expectedName": "Oil, industrial, canola with antifoaming agent, principal uses salads, woks and light frying",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, canola with antifoaming agent, principal uses salads, woks and light frying"
+    },
+    "usda-172359": {
+      "expectedName": "Oil, industrial, canola for salads, woks and light frying",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, canola for salads, woks and light frying"
+    },
+    "usda-172360": {
+      "expectedName": "Oil, industrial, canola (partially hydrogenated) oil for deep fat frying",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, canola (partially hydrogenated) oil for deep fat frying"
+    },
+    "usda-172361": {
+      "expectedName": "Oil, industrial, soy (partially hydrogenated), multiuse for non-dairy butter flavor",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy (partially hydrogenated), multiuse for non-dairy butter flavor"
+    },
+    "usda-172362": {
+      "expectedName": "Oil, industrial, soy ( partially hydrogenated), all purpose",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy ( partially hydrogenated), all purpose"
+    },
+    "usda-172363": {
+      "expectedName": "Oil, industrial, soy (partially hydrogenated ) and soy (winterized), pourable clear fry",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy (partially hydrogenated ) and soy (winterized), pourable clear fry"
+    },
+    "usda-172364": {
+      "expectedName": "Oil, industrial, soy (partially hydrogenated) and cottonseed, principal use as a tortilla shortening",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy (partially hydrogenated) and cottonseed, principal use as a tortilla shortening"
+    },
+    "usda-172365": {
+      "expectedName": "Oil, industrial, coconut, confection fat, typical basis for ice cream coatings",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, coconut, confection fat, typical basis for ice cream coatings"
+    },
+    "usda-172366": {
+      "expectedName": "Oil, industrial, palm kernel (hydrogenated) , used for whipped toppings, non-dairy",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, palm kernel (hydrogenated) , used for whipped toppings, non-dairy"
+    },
+    "usda-172367": {
+      "expectedName": "Oil, industrial, coconut (hydrogenated), used for whipped toppings and coffee whiteners",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, coconut (hydrogenated), used for whipped toppings and coffee whiteners"
+    },
+    "usda-172368": {
+      "expectedName": "Oil, industrial, palm and palm kernel, filling fat (non-hydrogenated)",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, palm and palm kernel, filling fat (non-hydrogenated)"
+    },
+    "usda-172369": {
+      "expectedName": "Margarine, industrial, soy and partially hydrogenated soy oil, use for baking, sauces and candy",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Margarine, industrial, soy and partially hydrogenated soy oil, use for baking, sauces and candy"
+    },
+    "usda-172518": {
+      "expectedName": "Game meat, muskrat, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, muskrat, raw"
+    },
+    "usda-172519": {
+      "expectedName": "Game meat, muskrat, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, muskrat, cooked, roasted"
+    },
+    "usda-172520": {
+      "expectedName": "Game meat, opossum, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, opossum, cooked, roasted"
+    },
+    "usda-172523": {
+      "expectedName": "Game meat, squirrel, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, squirrel, raw"
+    },
+    "usda-172524": {
+      "expectedName": "Game meat, squirrel, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, squirrel, cooked, roasted"
+    },
+    "usda-172537": {
+      "expectedName": "Lamb, variety meats and by-products, mechanically separated, raw",
+      "reason": "Mechanically recovered meat ingredient",
+      "evidence": "USDA SR Legacy source identity: Lamb, variety meats and by-products, mechanically separated, raw"
+    },
+    "usda-172832": {
+      "expectedName": "Emu, ground, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, ground, raw"
+    },
+    "usda-172833": {
+      "expectedName": "Emu, ground, cooked, pan-broiled",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, ground, cooked, pan-broiled"
+    },
+    "usda-172834": {
+      "expectedName": "Emu, full rump, cooked, broiled",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, full rump, cooked, broiled"
+    },
+    "usda-172835": {
+      "expectedName": "Emu, inside drum, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, inside drum, raw"
+    },
+    "usda-172836": {
+      "expectedName": "Emu, inside drums, cooked, broiled",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, inside drums, cooked, broiled"
+    },
+    "usda-172837": {
+      "expectedName": "Emu, outside drum, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, outside drum, raw"
+    },
+    "usda-172838": {
+      "expectedName": "Emu, oyster, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, oyster, raw"
+    },
+    "usda-173422": {
+      "expectedName": "Egg, yolk, raw, frozen, sugared, pasteurized",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, yolk, raw, frozen, sugared, pasteurized"
+    },
+    "usda-173425": {
+      "expectedName": "Egg, whole, dried, stabilized, glucose reduced",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, whole, dried, stabilized, glucose reduced"
+    },
+    "usda-173426": {
+      "expectedName": "Egg, white, dried, flakes, stabilized, glucose reduced",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, white, dried, flakes, stabilized, glucose reduced"
+    },
+    "usda-173427": {
+      "expectedName": "Egg, white, dried, powder, stabilized, glucose reduced",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, white, dried, powder, stabilized, glucose reduced"
+    },
+    "usda-173436": {
+      "expectedName": "Egg, yolk, raw, frozen, salted, pasteurized",
+      "reason": "Industrial egg preparation",
+      "evidence": "USDA SR Legacy source identity: Egg, yolk, raw, frozen, salted, pasteurized"
+    },
+    "usda-173566": {
+      "expectedName": "Shortening industrial, lard and vegetable oil",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Shortening industrial, lard and vegetable oil"
+    },
+    "usda-173569": {
+      "expectedName": "Shortening industrial, soybean (hydrogenated) and cottonseed",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Shortening industrial, soybean (hydrogenated) and cottonseed"
+    },
+    "usda-173595": {
+      "expectedName": "Oil, industrial, coconut, principal uses candy coatings, oil sprays, roasting nuts",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, coconut, principal uses candy coatings, oil sprays, roasting nuts"
+    },
+    "usda-173596": {
+      "expectedName": "Oil, industrial, soy (partially hydrogenated), principal uses popcorn and flavoring vegetables",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy (partially hydrogenated), principal uses popcorn and flavoring vegetables"
+    },
+    "usda-173597": {
+      "expectedName": "Shortening, industrial, soy (partially hydrogenated), pourable liquid fry shortening",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Shortening, industrial, soy (partially hydrogenated), pourable liquid fry shortening"
+    },
+    "usda-173598": {
+      "expectedName": "Oil, industrial, soy, refined, for woks and light frying",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy, refined, for woks and light frying"
+    },
+    "usda-173599": {
+      "expectedName": "Margarine-like shortening, industrial, soy (partially hydrogenated), cottonseed, and soy, principal use flaky pastries",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Margarine-like shortening, industrial, soy (partially hydrogenated), cottonseed, and soy, principal use flaky pastries"
+    },
+    "usda-173600": {
+      "expectedName": "Oil, industrial, palm kernel, confection fat, uses similar to high quality cocoa butter",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, palm kernel, confection fat, uses similar to high quality cocoa butter"
+    },
+    "usda-173601": {
+      "expectedName": "Oil, industrial, palm kernel (hydrogenated), confection fat, uses similar to 95 degree hard butter",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, palm kernel (hydrogenated), confection fat, uses similar to 95 degree hard butter"
+    },
+    "usda-173602": {
+      "expectedName": "Oil, industrial, palm kernel (hydrogenated), confection fat, intermediate grade product",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, palm kernel (hydrogenated), confection fat, intermediate grade product"
+    },
+    "usda-173603": {
+      "expectedName": "Oil, industrial, palm kernel (hydrogenated), filling fat",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, palm kernel (hydrogenated), filling fat"
+    },
+    "usda-173604": {
+      "expectedName": "Oil, industrial, soy (partially hydrogenated ), palm, principal uses icings and fillings",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Oil, industrial, soy (partially hydrogenated ), palm, principal uses icings and fillings"
+    },
+    "usda-173605": {
+      "expectedName": "Margarine, industrial, non-dairy, cottonseed, soy oil (partially hydrogenated ), for flaky pastries",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Margarine, industrial, non-dairy, cottonseed, soy oil (partially hydrogenated ), for flaky pastries"
+    },
+    "usda-173606": {
+      "expectedName": "Shortening, industrial, soy (partially hydrogenated ) and corn for frying",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Shortening, industrial, soy (partially hydrogenated ) and corn for frying"
+    },
+    "usda-173607": {
+      "expectedName": "Shortening, industrial, soy (partially hydrogenated ) for baking and confections",
+      "reason": "Industrial fat/oil formulation",
+      "evidence": "USDA SR Legacy source identity: Shortening, industrial, soy (partially hydrogenated ) for baking and confections"
+    },
+    "usda-173844": {
+      "expectedName": "Game meat, antelope, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, antelope, cooked, roasted"
+    },
+    "usda-173845": {
+      "expectedName": "Game meat, bear, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, bear, raw"
+    },
+    "usda-173846": {
+      "expectedName": "Game meat, bear, cooked, simmered",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, bear, cooked, simmered"
+    },
+    "usda-173848": {
+      "expectedName": "Game meat, beefalo, composite of cuts, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, beefalo, composite of cuts, cooked, roasted"
+    },
+    "usda-173853": {
+      "expectedName": "Game meat, caribou, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, caribou, raw"
+    },
+    "usda-173854": {
+      "expectedName": "Game meat, caribou, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, caribou, cooked, roasted"
+    },
+    "usda-174344": {
+      "expectedName": "Game meat, moose, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, moose, raw"
+    },
+    "usda-174345": {
+      "expectedName": "Game meat, moose, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, moose, cooked, roasted"
+    },
+    "usda-174349": {
+      "expectedName": "Game meat, raccoon, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, raccoon, cooked, roasted"
+    },
+    "usda-174476": {
+      "expectedName": "Emu, fan fillet, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, fan fillet, raw"
+    },
+    "usda-174477": {
+      "expectedName": "Emu, fan fillet, cooked, broiled",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, fan fillet, cooked, broiled"
+    },
+    "usda-174478": {
+      "expectedName": "Emu, flat fillet, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, flat fillet, raw"
+    },
+    "usda-174479": {
+      "expectedName": "Emu, full rump, raw",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, full rump, raw"
+    },
+    "usda-174480": {
+      "expectedName": "Emu, top loin, cooked, broiled",
+      "reason": "Emu cuts",
+      "evidence": "USDA SR Legacy source identity: Emu, top loin, cooked, broiled"
+    },
+    "usda-175292": {
+      "expectedName": "Game meat, antelope, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, antelope, raw"
+    },
+    "usda-175294": {
+      "expectedName": "Game meat, beaver, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, beaver, raw"
+    },
+    "usda-175295": {
+      "expectedName": "Game meat, beaver, cooked, roasted",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, beaver, cooked, roasted"
+    },
+    "usda-175296": {
+      "expectedName": "Game meat, beefalo, composite of cuts, raw",
+      "reason": "Regional game meat",
+      "evidence": "USDA SR Legacy source identity: Game meat, beefalo, composite of cuts, raw"
+    },
+    "off-0033984013162": {
+      "expectedName": "La Glucosamine Chondroïtine MSM Acide Hyaluroni",
+      "reason": "Glucosamine tablet supplement",
+      "evidence": "https://www.biologikoxorio.gr/en/meta-flex-glucosamine-hyaluronic-acid-chondroitin-msm-60-tabs"
+    },
+    "usda-167795": {
+      "expectedName": "Fruit juice smoothie, NAKED JUICE, MIGHTY MANGO",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, NAKED JUICE, MIGHTY MANGO"
+    },
+    "usda-167796": {
+      "expectedName": "Fruit juice smoothie, NAKED JUICE, GREEN MACHINE",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, NAKED JUICE, GREEN MACHINE"
+    },
+    "usda-167797": {
+      "expectedName": "Fruit juice smoothie, BOLTHOUSE FARMS, BERRY BOOST",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, BOLTHOUSE FARMS, BERRY BOOST"
+    },
+    "usda-167798": {
+      "expectedName": "Fruit juice smoothie, BOLTHOUSE FARMS, GREEN GOODNESS",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, BOLTHOUSE FARMS, GREEN GOODNESS"
+    },
+    "usda-167799": {
+      "expectedName": "Fruit juice smoothie, BOLTHOUSE FARMS, strawberry banana",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, BOLTHOUSE FARMS, strawberry banana"
+    },
+    "usda-167803": {
+      "expectedName": "Cranberry sauce, whole, canned, OCEAN SPRAY",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Cranberry sauce, whole, canned, OCEAN SPRAY"
+    },
+    "usda-167804": {
+      "expectedName": "Cranberry sauce, jellied, canned, OCEAN SPRAY",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Cranberry sauce, jellied, canned, OCEAN SPRAY"
+    },
+    "usda-167805": {
+      "expectedName": "Ruby Red grapefruit juice blend (grapefruit, grape, apple), OCEAN SPRAY, bottled, with added vitamin C",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Ruby Red grapefruit juice blend (grapefruit, grape, apple), OCEAN SPRAY, bottled, with added vitamin C"
+    },
+    "usda-167813": {
+      "expectedName": "Pork, fresh, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, fresh, separable fat, raw"
+    },
+    "usda-167877": {
+      "expectedName": "Pork, cured, separable fat (from ham and arm picnic), unheated",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, cured, separable fat (from ham and arm picnic), unheated"
+    },
+    "usda-167878": {
+      "expectedName": "Pork, cured, separable fat (from ham and arm picnic), roasted",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, cured, separable fat (from ham and arm picnic), roasted"
+    },
+    "usda-167909": {
+      "expectedName": "HORMEL, Cure 81 Ham",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL, Cure 81 Ham"
+    },
+    "usda-167910": {
+      "expectedName": "HORMEL ALWAYS TENDER, Pork Tenderloin, Teriyaki-Flavored",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL ALWAYS TENDER, Pork Tenderloin, Teriyaki-Flavored"
+    },
+    "usda-167911": {
+      "expectedName": "HORMEL Canadian Style Bacon",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL Canadian Style Bacon"
+    },
+    "usda-168189": {
+      "expectedName": "Grapefruit juice, white, bottled, unsweetened, OCEAN SPRAY",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Grapefruit juice, white, bottled, unsweetened, OCEAN SPRAY"
+    },
+    "usda-168206": {
+      "expectedName": "Fruit juice smoothie, NAKED JUICE, BLUE MACHINE",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, NAKED JUICE, BLUE MACHINE"
+    },
+    "usda-168208": {
+      "expectedName": "Fruit juice smoothie, ODWALLA, ORIGINAL SUPERFOOD",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, ODWALLA, ORIGINAL SUPERFOOD"
+    },
+    "usda-168213": {
+      "expectedName": "Fruit juice smoothie, ODWALLA, strawberry banana",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, ODWALLA, strawberry banana"
+    },
+    "usda-168214": {
+      "expectedName": "Fruit juice smoothie, NAKED JUICE, strawberry banana",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Fruit juice smoothie, NAKED JUICE, strawberry banana"
+    },
+    "usda-168218": {
+      "expectedName": "Pork, fresh, composite of separable fat, with added solution, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, fresh, composite of separable fat, with added solution, cooked"
+    },
+    "usda-168221": {
+      "expectedName": "Pork, fresh, separable fat, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, fresh, separable fat, cooked"
+    },
+    "usda-168317": {
+      "expectedName": "HORMEL ALWAYS TENDER, Pork Tenderloin, Peppercorn-Flavored",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL ALWAYS TENDER, Pork Tenderloin, Peppercorn-Flavored"
+    },
+    "usda-168318": {
+      "expectedName": "HORMEL ALWAYS TENDER, Pork Loin Filets, Lemon Garlic-Flavored",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL ALWAYS TENDER, Pork Loin Filets, Lemon Garlic-Flavored"
+    },
+    "usda-168319": {
+      "expectedName": "HORMEL ALWAYS TENDER, Center Cut Chops, Fresh Pork",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL ALWAYS TENDER, Center Cut Chops, Fresh Pork"
+    },
+    "usda-168320": {
+      "expectedName": "HORMEL ALWAYS TENDER, Boneless Pork Loin, Fresh Pork",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HORMEL ALWAYS TENDER, Boneless Pork Loin, Fresh Pork"
+    },
+    "usda-168605": {
+      "expectedName": "Beef, retail cuts, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Beef, retail cuts, separable fat, raw"
+    },
+    "usda-168606": {
+      "expectedName": "Beef, retail cuts, separable fat, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Beef, retail cuts, separable fat, cooked"
+    },
+    "usda-169155": {
+      "expectedName": "Pork, cured, ham, separable fat, boneless, heated",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, cured, ham, separable fat, boneless, heated"
+    },
+    "usda-169156": {
+      "expectedName": "Pork, cured, ham, separable fat, boneless, unheated",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, cured, ham, separable fat, boneless, unheated"
+    },
+    "usda-169179": {
+      "expectedName": "Pork, fresh, composite of separable fat, with added solution, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pork, fresh, composite of separable fat, with added solution, raw"
+    },
+    "usda-169767": {
+      "expectedName": "Vegetable juice, BOLTHOUSE FARMS, DAILY GREENS",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vegetable juice, BOLTHOUSE FARMS, DAILY GREENS"
+    },
+    "usda-170181": {
+      "expectedName": "Nuts, mixed nuts, dry roasted, with peanuts, salt added, CHOSEN ROASTER",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Nuts, mixed nuts, dry roasted, with peanuts, salt added, CHOSEN ROASTER"
+    },
+    "usda-170586": {
+      "expectedName": "Nuts, mixed nuts, dry roasted, with peanuts, salt added, PLANTERS pistachio blend",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Nuts, mixed nuts, dry roasted, with peanuts, salt added, PLANTERS pistachio blend"
+    },
+    "usda-170864": {
+      "expectedName": "Yogurt, Greek, 2% fat, apricot, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2% fat, apricot, CHOBANI"
+    },
+    "usda-170891": {
+      "expectedName": "Yogurt, Greek, 2% fat,mixed berry blend, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2% fat,mixed berry blend, CHOBANI"
+    },
+    "usda-170904": {
+      "expectedName": "Kefir, lowfat, plain, LIFEWAY",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Kefir, lowfat, plain, LIFEWAY"
+    },
+    "usda-170909": {
+      "expectedName": "Yogurt, Greek, 2% fat, pineapple, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2% fat, pineapple, CHOBANI"
+    },
+    "usda-170912": {
+      "expectedName": "Yogurt, Greek, 2% fat, strawberry banana, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2% fat, strawberry banana, CHOBANI"
+    },
+    "usda-170913": {
+      "expectedName": "Yogurt, Greek, nonfat, Fruit on Bottom, Pomegranate, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, Fruit on Bottom, Pomegranate, CHOBANI"
+    },
+    "usda-170914": {
+      "expectedName": "Yogurt, Greek, Blueberry, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, Blueberry, CHOBANI"
+    },
+    "usda-170915": {
+      "expectedName": "Yogurt, Greek, nonfat, Fruit on Bottom, Strawberry, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, Fruit on Bottom, Strawberry, CHOBANI"
+    },
+    "usda-170916": {
+      "expectedName": "Yogurt, Greek, nonfat, Fruit on Bottom, Blackberry, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, Fruit on Bottom, Blackberry, CHOBANI"
+    },
+    "usda-171002": {
+      "expectedName": "Salad dressing, KRAFT Mayo Light Mayonnaise",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Salad dressing, KRAFT Mayo Light Mayonnaise"
+    },
+    "usda-171003": {
+      "expectedName": "Salad dressing, KRAFT Mayo Fat Free Mayonnaise Dressing",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Salad dressing, KRAFT Mayo Fat Free Mayonnaise Dressing"
+    },
+    "usda-171004": {
+      "expectedName": "Salad dressing, KRAFT MIRACLE WHIP FREE Nonfat Dressing",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Salad dressing, KRAFT MIRACLE WHIP FREE Nonfat Dressing"
+    },
+    "usda-171035": {
+      "expectedName": "Margarine-like spread, BENECOL Light Spread",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Margarine-like spread, BENECOL Light Spread"
+    },
+    "usda-171037": {
+      "expectedName": "Salad Dressing, mayonnaise, light, SMART BALANCE, Omega Plus light",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Salad Dressing, mayonnaise, light, SMART BALANCE, Omega Plus light"
+    },
+    "usda-171260": {
+      "expectedName": "Yogurt, Greek, 2%fat, coconut blend, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2%fat, coconut blend, CHOBANI"
+    },
+    "usda-171296": {
+      "expectedName": "Yogurt, Greek, nonfat, vanilla, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, vanilla, CHOBANI"
+    },
+    "usda-171297": {
+      "expectedName": "Yogurt, Greek, strawberry, DANNON OIKOS",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, strawberry, DANNON OIKOS"
+    },
+    "usda-171298": {
+      "expectedName": "Yogurt, Greek, nonfat, vanilla, DANNON OIKOS",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, vanilla, DANNON OIKOS"
+    },
+    "usda-171299": {
+      "expectedName": "Yogurt, Greek, nonfat, strawberry, DANNON OIKOS",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, strawberry, DANNON OIKOS"
+    },
+    "usda-171301": {
+      "expectedName": "Kefir, lowfat, strawberry, LIFEWAY",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Kefir, lowfat, strawberry, LIFEWAY"
+    },
+    "usda-171309": {
+      "expectedName": "Yogurt, Greek, whole, plain, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, whole, plain, CHOBANI"
+    },
+    "usda-171310": {
+      "expectedName": "Yogurt, Greek, nonfat, lemon blend, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, lemon blend, CHOBANI"
+    },
+    "usda-171311": {
+      "expectedName": "Yogurt, Greek, nonfat, peach, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, peach, CHOBANI"
+    },
+    "usda-171312": {
+      "expectedName": "Yogurt, Greek, nonfat, plain, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, plain, CHOBANI"
+    },
+    "usda-171313": {
+      "expectedName": "Yogurt, Greek, nonfat, raspberry, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, nonfat, raspberry, CHOBANI"
+    },
+    "usda-171428": {
+      "expectedName": "Oil, babassu",
+      "reason": "Specialty fat or oil",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Oil, babassu"
+    },
+    "usda-171430": {
+      "expectedName": "Oil, PAM cooking spray, original",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Oil, PAM cooking spray, original"
+    },
+    "usda-171432": {
+      "expectedName": "Margarine, 80% fat, tub, CANOLA HARVEST Soft Spread (canola, palm and palm kernel oils)",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Margarine, 80% fat, tub, CANOLA HARVEST Soft Spread (canola, palm and palm kernel oils)"
+    },
+    "usda-171433": {
+      "expectedName": "Oil, cooking and salad, ENOVA, 80% diglycerides",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Oil, cooking and salad, ENOVA, 80% diglycerides"
+    },
+    "usda-171468": {
+      "expectedName": "Chicken, broilers or fryers, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Chicken, broilers or fryers, separable fat, raw"
+    },
+    "usda-172026": {
+      "expectedName": "Pasta, gluten-free, brown rice flour, cooked, TINKYADA",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pasta, gluten-free, brown rice flour, cooked, TINKYADA"
+    },
+    "usda-172199": {
+      "expectedName": "Yogurt, Greek, 2% fat, mango, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2% fat, mango, CHOBANI"
+    },
+    "usda-172209": {
+      "expectedName": "KRAFT CHEEZ WHIZ Pasteurized Process Cheese Sauce",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT CHEEZ WHIZ Pasteurized Process Cheese Sauce"
+    },
+    "usda-172210": {
+      "expectedName": "KRAFT BREAKSTONE'S Reduced Fat Sour Cream",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT BREAKSTONE'S Reduced Fat Sour Cream"
+    },
+    "usda-172211": {
+      "expectedName": "KRAFT BREAKSTONE'S FREE Fat Free Sour Cream",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT BREAKSTONE'S FREE Fat Free Sour Cream"
+    },
+    "usda-172335": {
+      "expectedName": "Oil, nutmeg butter",
+      "reason": "Specialty fat or oil",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Oil, nutmeg butter"
+    },
+    "usda-172371": {
+      "expectedName": "Margarine-like spread, SMART BALANCE Regular Buttery Spread with flax oil",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Margarine-like spread, SMART BALANCE Regular Buttery Spread with flax oil"
+    },
+    "usda-172372": {
+      "expectedName": "Margarine-like spread, SMART BALANCE Light Buttery Spread",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Margarine-like spread, SMART BALANCE Light Buttery Spread"
+    },
+    "usda-172461": {
+      "expectedName": "MORI-NU, Tofu, silken, firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: MORI-NU, Tofu, silken, firm"
+    },
+    "usda-172462": {
+      "expectedName": "MORI-NU, Tofu, silken, extra firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: MORI-NU, Tofu, silken, extra firm"
+    },
+    "usda-172463": {
+      "expectedName": "MORI-NU, Tofu, silken, lite firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: MORI-NU, Tofu, silken, lite firm"
+    },
+    "usda-172464": {
+      "expectedName": "MORI-NU, Tofu, silken, lite extra firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: MORI-NU, Tofu, silken, lite extra firm"
+    },
+    "usda-172468": {
+      "expectedName": "Vitasoy USA, Nasoya Lite Firm Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Nasoya Lite Firm Tofu"
+    },
+    "usda-172511": {
+      "expectedName": "Lamb, New Zealand, imported, frozen, composite of trimmed retail cuts, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Lamb, New Zealand, imported, frozen, composite of trimmed retail cuts, separable fat, raw"
+    },
+    "usda-172512": {
+      "expectedName": "Lamb, New Zealand, imported, frozen, composite of trimmed retail cuts, separable fat, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Lamb, New Zealand, imported, frozen, composite of trimmed retail cuts, separable fat, cooked"
+    },
+    "usda-172567": {
+      "expectedName": "Veal, breast, separable fat, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Veal, breast, separable fat, cooked"
+    },
+    "usda-172572": {
+      "expectedName": "Lamb, Australian, imported, fresh, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Lamb, Australian, imported, fresh, separable fat, raw"
+    },
+    "usda-172573": {
+      "expectedName": "Lamb, Australian, imported, fresh, separable fat, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Lamb, Australian, imported, fresh, separable fat, cooked"
+    },
+    "usda-173264": {
+      "expectedName": "Pasta, gluten-free, rice flour and rice bran extract, cooked, DE BOLES",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Pasta, gluten-free, rice flour and rice bran extract, cooked, DE BOLES"
+    },
+    "usda-173434": {
+      "expectedName": "Yogurt, Greek, 2% fat, key lime blend, CHOBANI",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Yogurt, Greek, 2% fat, key lime blend, CHOBANI"
+    },
+    "usda-173446": {
+      "expectedName": "KRAFT CHEEZ WHIZ LIGHT Pasteurized Process Cheese Product",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT CHEEZ WHIZ LIGHT Pasteurized Process Cheese Product"
+    },
+    "usda-173447": {
+      "expectedName": "KRAFT FREE Singles American Nonfat Pasteurized Process Cheese Product",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT FREE Singles American Nonfat Pasteurized Process Cheese Product"
+    },
+    "usda-173448": {
+      "expectedName": "KRAFT VELVEETA Pasteurized Process Cheese Spread",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT VELVEETA Pasteurized Process Cheese Spread"
+    },
+    "usda-173449": {
+      "expectedName": "KRAFT VELVEETA LIGHT Reduced Fat Pasteurized Process Cheese Product",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: KRAFT VELVEETA LIGHT Reduced Fat Pasteurized Process Cheese Product"
+    },
+    "usda-173563": {
+      "expectedName": "Oil, cupu assu",
+      "reason": "Specialty fat or oil",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Oil, cupu assu"
+    },
+    "usda-173570": {
+      "expectedName": "Oil, ucuhuba butter",
+      "reason": "Specialty fat or oil",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Oil, ucuhuba butter"
+    },
+    "usda-173610": {
+      "expectedName": "Margarine-like spread, SMART BALANCE Omega Plus Spread (with plant sterols & fish oil)",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Margarine-like spread, SMART BALANCE Omega Plus Spread (with plant sterols & fish oil)"
+    },
+    "usda-173762": {
+      "expectedName": "Vitasoy USA, Organic Nasoya Extra Firm Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Organic Nasoya Extra Firm Tofu"
+    },
+    "usda-173763": {
+      "expectedName": "Vitasoy USA, Organic Nasoya Firm Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Organic Nasoya Firm Tofu"
+    },
+    "usda-173764": {
+      "expectedName": "Vitasoy USA, Organic Nasoya Silken Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Organic Nasoya Silken Tofu"
+    },
+    "usda-173770": {
+      "expectedName": "SILK Chocolate, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Chocolate, soymilk"
+    },
+    "usda-173771": {
+      "expectedName": "SILK Light Plain, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Light Plain, soymilk"
+    },
+    "usda-173772": {
+      "expectedName": "SILK Light Vanilla, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Light Vanilla, soymilk"
+    },
+    "usda-173773": {
+      "expectedName": "SILK Light Chocolate, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Light Chocolate, soymilk"
+    },
+    "usda-173774": {
+      "expectedName": "SILK Very Vanilla, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Very Vanilla, soymilk"
+    },
+    "usda-173775": {
+      "expectedName": "SILK Nog, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Nog, soymilk"
+    },
+    "usda-173776": {
+      "expectedName": "SILK Chai, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Chai, soymilk"
+    },
+    "usda-173777": {
+      "expectedName": "SILK Mocha, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Mocha, soymilk"
+    },
+    "usda-173778": {
+      "expectedName": "SILK Raspberry soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Raspberry soy yogurt"
+    },
+    "usda-173779": {
+      "expectedName": "SILK Peach soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Peach soy yogurt"
+    },
+    "usda-173780": {
+      "expectedName": "SILK Black Cherry soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Black Cherry soy yogurt"
+    },
+    "usda-173781": {
+      "expectedName": "SILK Blueberry soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Blueberry soy yogurt"
+    },
+    "usda-173782": {
+      "expectedName": "SILK Hazelnut Creamer",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Hazelnut Creamer"
+    },
+    "usda-173783": {
+      "expectedName": "Vitasoy USA Organic Nasoya, Soft Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Organic Nasoya, Soft Tofu"
+    },
+    "usda-173784": {
+      "expectedName": "Vitasoy USA Nasoya, Lite Silken Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Nasoya, Lite Silken Tofu"
+    },
+    "usda-173785": {
+      "expectedName": "Vitasoy USA Organic Nasoya, Tofu Plus Extra Firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Organic Nasoya, Tofu Plus Extra Firm"
+    },
+    "usda-173786": {
+      "expectedName": "Vitasoy USA Azumaya, Silken Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Azumaya, Silken Tofu"
+    },
+    "usda-173787": {
+      "expectedName": "HOUSE FOODS Premium Soft Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HOUSE FOODS Premium Soft Tofu"
+    },
+    "usda-173788": {
+      "expectedName": "HOUSE FOODS Premium Firm Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: HOUSE FOODS Premium Firm Tofu"
+    },
+    "usda-173849": {
+      "expectedName": "Veal, Australian, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Veal, Australian, separable fat, raw"
+    },
+    "usda-174292": {
+      "expectedName": "MORI-NU, Tofu, silken, soft",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: MORI-NU, Tofu, silken, soft"
+    },
+    "usda-174297": {
+      "expectedName": "Vitasoy USA, Organic Nasoya Super Firm Cubed Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Organic Nasoya Super Firm Cubed Tofu"
+    },
+    "usda-174309": {
+      "expectedName": "Lamb, composite of trimmed retail cuts, separable fat, trimmed to 1/4\" fat, choice, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Lamb, composite of trimmed retail cuts, separable fat, trimmed to 1/4\" fat, choice, raw"
+    },
+    "usda-174310": {
+      "expectedName": "Lamb, composite of trimmed retail cuts, separable fat, trimmed to 1/4\" fat, choice, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Lamb, composite of trimmed retail cuts, separable fat, trimmed to 1/4\" fat, choice, cooked"
+    },
+    "usda-175212": {
+      "expectedName": "Vitasoy USA, Vitasoy Organic Creamy Original Soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Vitasoy Organic Creamy Original Soymilk"
+    },
+    "usda-175213": {
+      "expectedName": "Vitasoy USA, Vitasoy Organic Classic Original Soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Vitasoy Organic Classic Original Soymilk"
+    },
+    "usda-175214": {
+      "expectedName": "Vitasoy USA, Vitasoy Light Vanilla Soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA, Vitasoy Light Vanilla Soymilk"
+    },
+    "usda-175218": {
+      "expectedName": "SILK Plain, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Plain, soymilk"
+    },
+    "usda-175219": {
+      "expectedName": "SILK Vanilla, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Vanilla, soymilk"
+    },
+    "usda-175220": {
+      "expectedName": "SILK Plus Omega-3 DHA, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Plus Omega-3 DHA, soymilk"
+    },
+    "usda-175221": {
+      "expectedName": "SILK Plus for Bone Health, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Plus for Bone Health, soymilk"
+    },
+    "usda-175222": {
+      "expectedName": "SILK Plus Fiber, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Plus Fiber, soymilk"
+    },
+    "usda-175223": {
+      "expectedName": "SILK Unsweetened, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Unsweetened, soymilk"
+    },
+    "usda-175224": {
+      "expectedName": "SILK Coffee, soymilk",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Coffee, soymilk"
+    },
+    "usda-175225": {
+      "expectedName": "SILK Vanilla soy yogurt (family size)",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Vanilla soy yogurt (family size)"
+    },
+    "usda-175226": {
+      "expectedName": "SILK Vanilla soy yogurt (single serving size)",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Vanilla soy yogurt (single serving size)"
+    },
+    "usda-175227": {
+      "expectedName": "SILK Plain soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Plain soy yogurt"
+    },
+    "usda-175228": {
+      "expectedName": "SILK Strawberry soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Strawberry soy yogurt"
+    },
+    "usda-175229": {
+      "expectedName": "SILK Key Lime soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Key Lime soy yogurt"
+    },
+    "usda-175230": {
+      "expectedName": "SILK Banana-Strawberry soy yogurt",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Banana-Strawberry soy yogurt"
+    },
+    "usda-175231": {
+      "expectedName": "SILK Original Creamer",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK Original Creamer"
+    },
+    "usda-175232": {
+      "expectedName": "SILK French Vanilla Creamer",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: SILK French Vanilla Creamer"
+    },
+    "usda-175233": {
+      "expectedName": "Vitasoy USA Organic Nasoya, Tofu Plus Firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Organic Nasoya, Tofu Plus Firm"
+    },
+    "usda-175234": {
+      "expectedName": "Vitasoy USA Organic Nasoya Sprouted, Tofu Plus Super Firm",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Organic Nasoya Sprouted, Tofu Plus Super Firm"
+    },
+    "usda-175235": {
+      "expectedName": "Vitasoy USA Azumaya, Extra Firm Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Azumaya, Extra Firm Tofu"
+    },
+    "usda-175236": {
+      "expectedName": "Vitasoy USA Azumaya, Firm Tofu",
+      "reason": "Legacy USDA branded product",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Vitasoy USA Azumaya, Firm Tofu"
+    },
+    "usda-175266": {
+      "expectedName": "Veal, composite of trimmed retail cuts, separable fat, raw",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Veal, composite of trimmed retail cuts, separable fat, raw"
+    },
+    "usda-175267": {
+      "expectedName": "Veal, composite of trimmed retail cuts, separable fat, cooked",
+      "reason": "Separated animal fat sample",
+      "evidence": "User-approved exclusion on 2026-11-19; USDA source identity: Veal, composite of trimmed retail cuts, separable fat, cooked"
+    },
+    "ciqual-76000": {
+      "expectedName": "Mineral still water (Abatilles), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Abatilles), bottled, lightly mineralized"
+    },
+    "ciqual-76001": {
+      "expectedName": "Mineral still water (Aix-les-Bains), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Aix-les-Bains), bottled, lightly mineralized"
+    },
+    "ciqual-76002": {
+      "expectedName": "Mineral sparkling water (Aziac), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Aziac), bottled, lightly mineralized"
+    },
+    "ciqual-76004": {
+      "expectedName": "Mineral still water (Amanda), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Amanda), bottled, strongly mineralized"
+    },
+    "ciqual-76006": {
+      "expectedName": "Mineral sparkling water (Arcens), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Arcens), bottled, averagely mineralized"
+    },
+    "ciqual-76007": {
+      "expectedName": "Mineral sparkling water (Ardesy), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Ardesy), bottled, strongly mineralized"
+    },
+    "ciqual-76010": {
+      "expectedName": "Mineral still water (Celtic), bottled, very lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Celtic), bottled, very lightly mineralized"
+    },
+    "ciqual-76011": {
+      "expectedName": "Mineral still water (Chambon), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Chambon), bottled, lightly mineralized"
+    },
+    "ciqual-76012": {
+      "expectedName": "Mineral still water (Chantemerle), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Chantemerle), bottled, lightly mineralized"
+    },
+    "ciqual-76013": {
+      "expectedName": "Mineral sparkling water (Chateauneuf), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Chateauneuf), bottled, strongly mineralized"
+    },
+    "ciqual-76014": {
+      "expectedName": "Mineral sparkling water (Chateldon), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Chateldon), bottled, strongly mineralized"
+    },
+    "ciqual-76015": {
+      "expectedName": "Mineral still water (Clos de l'Abbaye), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Clos de l'Abbaye), bottled, averagely mineralized"
+    },
+    "ciqual-76016": {
+      "expectedName": "Mineral still water (Contrex), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Contrex), bottled, strongly mineralized"
+    },
+    "ciqual-76017": {
+      "expectedName": "Mineral still water (Dax), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Dax), bottled, averagely mineralized"
+    },
+    "ciqual-76018": {
+      "expectedName": "Mineral sparkling water (Didier), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Didier), bottled, strongly mineralized"
+    },
+    "ciqual-76019": {
+      "expectedName": "Mineral still water (Didier), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Didier), bottled, strongly mineralized"
+    },
+    "ciqual-76020": {
+      "expectedName": "Mineral still water (Evian), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Evian), bottled, lightly mineralized"
+    },
+    "ciqual-76022": {
+      "expectedName": "Mineral still water (Hépar), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Hépar), bottled, strongly mineralized"
+    },
+    "ciqual-76023": {
+      "expectedName": "Mineral sparkling water (Hydroxydase), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Hydroxydase), bottled, strongly mineralized"
+    },
+    "ciqual-76024": {
+      "expectedName": "Mineral sparkling water (Vernière), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Vernière), bottled, averagely mineralized"
+    },
+    "ciqual-76025": {
+      "expectedName": "Mineral still water (Luchon), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Luchon), bottled, lightly mineralized"
+    },
+    "ciqual-76028": {
+      "expectedName": "Spring water (Ogeu), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Spring water (Ogeu), bottled, lightly mineralized"
+    },
+    "ciqual-76029": {
+      "expectedName": "Mineral still water (Orée du bois), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Orée du bois), bottled, averagely mineralized"
+    },
+    "ciqual-76030": {
+      "expectedName": "Mineral sparkling water (Orezza), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Orezza), bottled, averagely mineralized"
+    },
+    "ciqual-76031": {
+      "expectedName": "Mineral sparkling water (Parot), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Parot), bottled, averagely mineralized"
+    },
+    "ciqual-76032": {
+      "expectedName": "Mineral still water (Plancoet), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Plancoet), bottled, lightly mineralized"
+    },
+    "ciqual-76033": {
+      "expectedName": "Mineral still water (Propiac), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Propiac), bottled, strongly mineralized"
+    },
+    "ciqual-76034": {
+      "expectedName": "Mineral sparkling water (Puits St Georges), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Puits St Georges), bottled, averagely mineralized"
+    },
+    "ciqual-76035": {
+      "expectedName": "Mineral sparkling water (Quézac), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Quézac), bottled, averagely mineralized"
+    },
+    "ciqual-76036": {
+      "expectedName": "Mineral sparkling water (Reine des basaltes), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Reine des basaltes), bottled, averagely mineralized"
+    },
+    "ciqual-76037": {
+      "expectedName": "Mineral sparkling water (Rozana), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Rozana), bottled, strongly mineralized"
+    },
+    "ciqual-76038": {
+      "expectedName": "Mineral still water (Sail-les-Bains), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Sail-les-Bains), bottled, lightly mineralized"
+    },
+    "ciqual-76039": {
+      "expectedName": "Mineral sparkling water (Salvetat), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Salvetat), bottled, averagely mineralized"
+    },
+    "ciqual-76043": {
+      "expectedName": "Mineral still water (St-Amand), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (St-Amand), bottled, averagely mineralized"
+    },
+    "ciqual-76044": {
+      "expectedName": "Mineral still water (St-Antonin), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (St-Antonin), bottled, strongly mineralized"
+    },
+    "ciqual-76046": {
+      "expectedName": "Mineral sparkling water (St-Diéry), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (St-Diéry), bottled, strongly mineralized"
+    },
+    "ciqual-76047": {
+      "expectedName": "Mineral sparkling water (Ste-Marguerite), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Ste-Marguerite), bottled, averagely mineralized"
+    },
+    "ciqual-76049": {
+      "expectedName": "Mineral sparkling water (St-Yorre), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (St-Yorre), bottled, strongly mineralized"
+    },
+    "ciqual-76050": {
+      "expectedName": "Mineral still water (Thonon), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Thonon), bottled, lightly mineralized"
+    },
+    "ciqual-76053": {
+      "expectedName": "Mineral sparkling water (Ventadour), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Ventadour), bottled, lightly mineralized"
+    },
+    "ciqual-76054": {
+      "expectedName": "Mineral sparkling water (Vernet), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Vernet), bottled, lightly mineralized"
+    },
+    "ciqual-76055": {
+      "expectedName": "Mineral sparkling water (Vichy Célestins), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Vichy Célestins), bottled, strongly mineralized"
+    },
+    "ciqual-76056": {
+      "expectedName": "Mineral still water (Vittel), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Vittel), bottled, averagely mineralized"
+    },
+    "ciqual-76057": {
+      "expectedName": "Mineral still water (Volvic), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Volvic), bottled, lightly mineralized"
+    },
+    "ciqual-76058": {
+      "expectedName": "Mineral sparkling water (Volvic active), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Volvic active), bottled, lightly mineralized"
+    },
+    "ciqual-76059": {
+      "expectedName": "Mineral still water (Wattwiller), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Wattwiller), bottled, lightly mineralized"
+    },
+    "ciqual-76060": {
+      "expectedName": "Mineral sparkling water (Perrier), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Perrier), bottled, lightly mineralized"
+    },
+    "ciqual-76061": {
+      "expectedName": "Mineral sparkling water (Badoit), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Badoit), bottled, averagely mineralized"
+    },
+    "ciqual-76062": {
+      "expectedName": "Mineral still water (Avra), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Avra), bottled, lightly mineralized"
+    },
+    "ciqual-76063": {
+      "expectedName": "Mineral still water (Beckerich), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Beckerich), bottled, lightly mineralized"
+    },
+    "ciqual-76065": {
+      "expectedName": "Mineral still water (Chaudfontaine), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Chaudfontaine), bottled, lightly mineralized"
+    },
+    "ciqual-76066": {
+      "expectedName": "Mineral still water (Christinen Brunnen), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Christinen Brunnen), bottled, averagely mineralized"
+    },
+    "ciqual-76067": {
+      "expectedName": "Mineral still water (Courmayer), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Courmayer), bottled, strongly mineralized"
+    },
+    "ciqual-76069": {
+      "expectedName": "Mineral still water (Levissima), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Levissima), bottled, lightly mineralized"
+    },
+    "ciqual-76070": {
+      "expectedName": "Mineral still water (Luso), bottled, very lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Luso), bottled, very lightly mineralized"
+    },
+    "ciqual-76071": {
+      "expectedName": "Mineral still water (Néro), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Néro), bottled, lightly mineralized"
+    },
+    "ciqual-76072": {
+      "expectedName": "Mineral still water (Penacova), bottled, very lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Penacova), bottled, very lightly mineralized"
+    },
+    "ciqual-76074": {
+      "expectedName": "Mineral water (San Bernardo), bottled, very lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral water (San Bernardo), bottled, very lightly mineralized"
+    },
+    "ciqual-76075": {
+      "expectedName": "Mineral sparkling water (San Pellegrino), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (San Pellegrino), bottled, averagely mineralized"
+    },
+    "ciqual-76076": {
+      "expectedName": "Mineral still water (Spa-Reine), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Spa-Reine), bottled, averagely mineralized"
+    },
+    "ciqual-76078": {
+      "expectedName": "Mineral still water (Valvert), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Valvert), bottled, lightly mineralized"
+    },
+    "ciqual-76079": {
+      "expectedName": "Mineral still water (Appollinaris), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Appollinaris), bottled, strongly mineralized"
+    },
+    "ciqual-76080": {
+      "expectedName": "Spring still water (Cristaline), bottled",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Spring still water (Cristaline), bottled"
+    },
+    "ciqual-76081": {
+      "expectedName": "Mineral still water (Biovive), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Biovive), bottled, lightly mineralized"
+    },
+    "ciqual-76082": {
+      "expectedName": "Mineral still water (La Cairolle), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (La Cairolle), bottled, strongly mineralized"
+    },
+    "ciqual-76083": {
+      "expectedName": "Mineral sparkling water (Cilaos), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Cilaos), bottled, strongly mineralized"
+    },
+    "ciqual-76085": {
+      "expectedName": "Mineral still water (La Française), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (La Française), bottled, strongly mineralized"
+    },
+    "ciqual-76086": {
+      "expectedName": "Mineral still water (Montcalm), bottled, very lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Montcalm), bottled, very lightly mineralized"
+    },
+    "ciqual-76087": {
+      "expectedName": "Mineral still water (Montclar), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Montclar), bottled, lightly mineralized"
+    },
+    "ciqual-76088": {
+      "expectedName": "Mineral sparkling water (Nessel), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Nessel), bottled, averagely mineralized"
+    },
+    "ciqual-76089": {
+      "expectedName": "Mineral sparkling water (Ogeu), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Ogeu), bottled, lightly mineralized"
+    },
+    "ciqual-76090": {
+      "expectedName": "Mineral still water (Ogeu), bottled, lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Ogeu), bottled, lightly mineralized"
+    },
+    "ciqual-76091": {
+      "expectedName": "Mineral still water (Prince Noir), bottled, strongly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Prince Noir), bottled, strongly mineralized"
+    },
+    "ciqual-76092": {
+      "expectedName": "Mineral sparkling water (St-Alban), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (St-Alban), bottled, averagely mineralized"
+    },
+    "ciqual-76093": {
+      "expectedName": "Mineral sparkling water (St-Géron), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (St-Géron), bottled, averagely mineralized"
+    },
+    "ciqual-76094": {
+      "expectedName": "Mineral sparkling water (St-Michel-de-Mourcairol), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (St-Michel-de-Mourcairol), bottled, averagely mineralized"
+    },
+    "ciqual-76095": {
+      "expectedName": "Mineral still water (Treignac), bottled, very lightly mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Treignac), bottled, very lightly mineralized"
+    },
+    "ciqual-76096": {
+      "expectedName": "Mineral sparkling water (Vals), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral sparkling water (Vals), bottled, averagely mineralized"
+    },
+    "ciqual-76097": {
+      "expectedName": "Mineral still water (Vauban), bottled, averagely mineralized",
+      "reason": "Named CIQUAL mineral or spring water",
+      "evidence": "User-approved exclusion on 2026-11-19; CIQUAL source identity: Mineral still water (Vauban), bottled, averagely mineralized"
+    },
+    "usda-167801": {
+      "expectedName": "Lemon juice from concentrate, bottled, CONCORD",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Lemon juice from concentrate, bottled, CONCORD"
+    },
+    "usda-167802": {
+      "expectedName": "Lemon juice from concentrate, bottled, REAL LEMON",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Lemon juice from concentrate, bottled, REAL LEMON"
+    },
+    "usda-168876": {
+      "expectedName": "Rice, brown, parboiled, dry, UNCLE BEN'S",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Rice, brown, parboiled, dry, UNCLE BEN'S"
+    },
+    "usda-168938": {
+      "expectedName": "Wheat flour, white (industrial), 10% protein, unbleached, enriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 10% protein, unbleached, enriched"
+    },
+    "usda-168940": {
+      "expectedName": "Wheat flour, white (industrial), 11.5% protein, bleached, unenriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 11.5% protein, bleached, unenriched",
+      "afterMerges": true
+    },
+    "usda-168941": {
+      "expectedName": "Wheat flour, white (industrial), 11.5% protein, unbleached, enriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 11.5% protein, unbleached, enriched"
+    },
+    "usda-169411": {
+      "expectedName": "Nuts, formulated, wheat-based, all flavors except macadamia, without salt",
+      "reason": "Industrial cottonseed or imitation nut ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Nuts, formulated, wheat-based, all flavors except macadamia, without salt"
+    },
+    "usda-170146": {
+      "expectedName": "Seeds, cottonseed flour, low fat (glandless)",
+      "reason": "Industrial cottonseed or imitation nut ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Seeds, cottonseed flour, low fat (glandless)"
+    },
+    "usda-170147": {
+      "expectedName": "Seeds, cottonseed meal, partially defatted (glandless)",
+      "reason": "Industrial cottonseed or imitation nut ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Seeds, cottonseed meal, partially defatted (glandless)"
+    },
+    "usda-170180": {
+      "expectedName": "Nuts, formulated, wheat-based, unflavored, with salt added",
+      "reason": "Industrial cottonseed or imitation nut ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Nuts, formulated, wheat-based, unflavored, with salt added"
+    },
+    "usda-170555": {
+      "expectedName": "Seeds, cottonseed flour, partially defatted (glandless)",
+      "reason": "Industrial cottonseed or imitation nut ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Seeds, cottonseed flour, partially defatted (glandless)"
+    },
+    "usda-170596": {
+      "expectedName": "Seeds, cottonseed kernels, roasted (glandless)",
+      "reason": "Industrial cottonseed or imitation nut ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Seeds, cottonseed kernels, roasted (glandless)"
+    },
+    "usda-171011": {
+      "expectedName": "Shortening, household, soybean (partially hydrogenated)-cottonseed (partially hydrogenated)",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening, household, soybean (partially hydrogenated)-cottonseed (partially hydrogenated)"
+    },
+    "usda-171012": {
+      "expectedName": "Oil, soybean, salad or cooking, (partially hydrogenated)",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, soybean, salad or cooking, (partially hydrogenated)"
+    },
+    "usda-171018": {
+      "expectedName": "Margarine, regular, hard, soybean (hydrogenated)",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Margarine, regular, hard, soybean (hydrogenated)"
+    },
+    "usda-171033": {
+      "expectedName": "Oil, vegetable, Natreon canola, high stability, non trans, high oleic (70%)",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, vegetable, Natreon canola, high stability, non trans, high oleic (70%)"
+    },
+    "usda-171424": {
+      "expectedName": "Oil, tomatoseed",
+      "reason": "Specialty fat or oil",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, tomatoseed"
+    },
+    "usda-171425": {
+      "expectedName": "Oil, teaseed",
+      "reason": "Specialty fat or oil",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, teaseed"
+    },
+    "usda-171429": {
+      "expectedName": "Oil, sheanut",
+      "reason": "Specialty fat or oil",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, sheanut"
+    },
+    "usda-172017": {
+      "expectedName": "Wheat flour, white (industrial), 9% protein, bleached, unenriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 9% protein, bleached, unenriched",
+      "afterMerges": true
+    },
+    "usda-172019": {
+      "expectedName": "Wheat flour, white (industrial), 10% protein, bleached, unenriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 10% protein, bleached, unenriched",
+      "afterMerges": true
+    },
+    "usda-172020": {
+      "expectedName": "Wheat flour, white (industrial), 13% protein, bleached, unenriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 13% protein, bleached, unenriched",
+      "afterMerges": true
+    },
+    "usda-172022": {
+      "expectedName": "Wheat flour, white (industrial), 15% protein, bleached, unenriched",
+      "reason": "Industrial flour specification",
+      "evidence": "User approved on 2026-11-19; source identity: Wheat flour, white (industrial), 15% protein, bleached, unenriched",
+      "afterMerges": true
+    },
+    "usda-172027": {
+      "expectedName": "Pasta, gluten-free, corn flour and quinoa flour, cooked, ANCIENT HARVEST",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Pasta, gluten-free, corn flour and quinoa flour, cooked, ANCIENT HARVEST"
+    },
+    "usda-172213": {
+      "expectedName": "Reddi Wip Fat Free Whipped Topping",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Reddi Wip Fat Free Whipped Topping"
+    },
+    "usda-172328": {
+      "expectedName": "Oil, sunflower, linoleic, (partially hydrogenated)",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, sunflower, linoleic, (partially hydrogenated)"
+    },
+    "usda-172329": {
+      "expectedName": "Shortening bread, soybean (hydrogenated) and cottonseed",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening bread, soybean (hydrogenated) and cottonseed"
+    },
+    "usda-172330": {
+      "expectedName": "Shortening cake mix, soybean (hydrogenated) and cottonseed (hydrogenated)",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening cake mix, soybean (hydrogenated) and cottonseed (hydrogenated)"
+    },
+    "usda-172331": {
+      "expectedName": "Shortening frying (heavy duty), palm (hydrogenated)",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening frying (heavy duty), palm (hydrogenated)"
+    },
+    "usda-172332": {
+      "expectedName": "Shortening household soybean (hydrogenated) and palm",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening household soybean (hydrogenated) and palm"
+    },
+    "usda-172333": {
+      "expectedName": "Shortening frying (heavy duty), soybean (hydrogenated), linoleic (less than 1%)",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening frying (heavy duty), soybean (hydrogenated), linoleic (less than 1%)"
+    },
+    "usda-172334": {
+      "expectedName": "Shortening, confectionery, fractionated palm",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening, confectionery, fractionated palm"
+    },
+    "usda-172342": {
+      "expectedName": "Fish oil, menhaden, fully hydrogenated",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Fish oil, menhaden, fully hydrogenated"
+    },
+    "usda-172599": {
+      "expectedName": "Game meat, bison, ribeye, separable lean only, 1\" steak, cooked, broiled",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, bison, ribeye, separable lean only, 1\" steak, cooked, broiled",
+      "afterMerges": true
+    },
+    "usda-172601": {
+      "expectedName": "Game meat, bison, top round, separable lean only, 1\" steak, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, bison, top round, separable lean only, 1\" steak, raw",
+      "afterMerges": true
+    },
+    "usda-172831": {
+      "expectedName": "Ruffed Grouse, breast meat, skinless, raw",
+      "reason": "North American game bird",
+      "evidence": "User approved on 2026-11-19; source identity: Ruffed Grouse, breast meat, skinless, raw"
+    },
+    "usda-173086": {
+      "expectedName": "Beef, New Zealand, imported, manufacturing beef, raw",
+      "reason": "Manufacturing beef ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Beef, New Zealand, imported, manufacturing beef, raw"
+    },
+    "usda-173263": {
+      "expectedName": "Rice, brown, parboiled, cooked, UNCLE BENS",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Rice, brown, parboiled, cooked, UNCLE BENS"
+    },
+    "usda-173565": {
+      "expectedName": "Oil, soybean, salad or cooking, (partially hydrogenated) and cottonseed",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, soybean, salad or cooking, (partially hydrogenated) and cottonseed"
+    },
+    "usda-173567": {
+      "expectedName": "Shortening frying (heavy duty), beef tallow and cottonseed",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening frying (heavy duty), beef tallow and cottonseed"
+    },
+    "usda-173568": {
+      "expectedName": "Shortening confectionery, coconut (hydrogenated) and or palm kernel (hydrogenated)",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening confectionery, coconut (hydrogenated) and or palm kernel (hydrogenated)"
+    },
+    "usda-173574": {
+      "expectedName": "Shortening, special purpose for cakes and frostings, soybean (hydrogenated)",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening, special purpose for cakes and frostings, soybean (hydrogenated)"
+    },
+    "usda-173575": {
+      "expectedName": "Shortening, special purpose for baking, soybean (hydrogenated) palm and cottonseed",
+      "reason": "Factory baking/frying fat",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening, special purpose for baking, soybean (hydrogenated) palm and cottonseed"
+    },
+    "usda-173576": {
+      "expectedName": "Oil, oat",
+      "reason": "Specialty fat or oil",
+      "evidence": "User approved on 2026-11-19; source identity: Oil, oat"
+    },
+    "usda-173579": {
+      "expectedName": "Shortening, multipurpose, soybean (hydrogenated) and palm (hydrogenated)",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Shortening, multipurpose, soybean (hydrogenated) and palm (hydrogenated)"
+    },
+    "usda-173587": {
+      "expectedName": "Margarine, 80% fat, stick, includes regular and hydrogenated corn and soybean oils",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Margarine, 80% fat, stick, includes regular and hydrogenated corn and soybean oils"
+    },
+    "usda-173588": {
+      "expectedName": "Margarine, margarine-type vegetable oil spread, 70% fat, soybean and partially hydrogenated soybean, stick",
+      "reason": "Specific hydrogenated fat formulation",
+      "evidence": "User approved on 2026-11-19; source identity: Margarine, margarine-type vegetable oil spread, 70% fat, soybean and partially hydrogenated soybean, stick"
+    },
+    "usda-173608": {
+      "expectedName": "Margarine-like spread, SMART BEAT Super Light without saturated fat",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Margarine-like spread, SMART BEAT Super Light without saturated fat"
+    },
+    "usda-173609": {
+      "expectedName": "Margarine-like spread, SMART BEAT Smart Squeeze",
+      "reason": "Additional legacy branded composition profile",
+      "evidence": "User approved on 2026-11-19; source identity: Margarine-like spread, SMART BEAT Smart Squeeze"
+    },
+    "usda-173634": {
+      "expectedName": "Canada Goose, breast meat only, skinless, raw",
+      "reason": "North American game bird",
+      "evidence": "User approved on 2026-11-19; source identity: Canada Goose, breast meat only, skinless, raw"
+    },
+    "usda-173852": {
+      "expectedName": "Game meat, bison, separable lean only, cooked, roasted",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, bison, separable lean only, cooked, roasted"
+    },
+    "usda-174421": {
+      "expectedName": "Game meat , bison, ground, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat , bison, ground, raw"
+    },
+    "usda-174422": {
+      "expectedName": "Game meat, bison, ground, cooked, pan-broiled",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, bison, ground, cooked, pan-broiled"
+    },
+    "usda-174424": {
+      "expectedName": "Game meat, bison, chuck, shoulder clod, separable lean only, cooked, braised",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, bison, chuck, shoulder clod, separable lean only, cooked, braised"
+    },
+    "usda-174425": {
+      "expectedName": "Game meat, elk, ground, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, elk, ground, raw"
+    },
+    "usda-174426": {
+      "expectedName": "Game meat, elk, ground, cooked, pan-broiled",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, elk, ground, cooked, pan-broiled"
+    },
+    "usda-174428": {
+      "expectedName": "Game meat, elk, round, separable lean only, cooked, broiled",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, elk, round, separable lean only, cooked, broiled",
+      "afterMerges": true
+    },
+    "usda-174730": {
+      "expectedName": "Beef, New Zealand, imported, manufacturing beef, cooked, boiled",
+      "reason": "Manufacturing beef ingredient",
+      "evidence": "User approved on 2026-11-19; source identity: Beef, New Zealand, imported, manufacturing beef, cooked, boiled"
+    },
+    "usda-175086": {
+      "expectedName": "Game meat, horse, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, horse, raw"
+    },
+    "usda-175087": {
+      "expectedName": "Game meat, horse, cooked, roasted",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, horse, cooked, roasted"
+    },
+    "usda-175301": {
+      "expectedName": "Game meat, elk, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Game meat, elk, raw"
+    },
+    "ciqual-6900": {
+      "expectedName": "Horse, meat, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, meat, raw"
+    },
+    "ciqual-6901": {
+      "expectedName": "Horse, steak, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, steak, raw"
+    },
+    "ciqual-6902": {
+      "expectedName": "Horse, meat, roasted/baked",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, meat, roasted/baked"
+    },
+    "ciqual-6903": {
+      "expectedName": "Horse, topside, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, topside, raw"
+    },
+    "ciqual-6904": {
+      "expectedName": "Horse, sirloin steak, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, sirloin steak, raw"
+    },
+    "ciqual-6905": {
+      "expectedName": "Horse, rib steak, raw",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, rib steak, raw"
+    },
+    "ciqual-6906": {
+      "expectedName": "Horse, topside, grilled/pan-fried",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, topside, grilled/pan-fried"
+    },
+    "ciqual-6907": {
+      "expectedName": "Horse, sirloin steak, grilled/pan-fried",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, sirloin steak, grilled/pan-fried"
+    },
+    "ciqual-6908": {
+      "expectedName": "Horse, rib steak, grilled/pan-fried",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, rib steak, grilled/pan-fried"
+    },
+    "ciqual-6909": {
+      "expectedName": "Horse, sirloin steak, roasted/baked",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, sirloin steak, roasted/baked"
+    },
+    "ciqual-6910": {
+      "expectedName": "Horse, topside, roasted/baked",
+      "reason": "Regional bison, elk or horse meat",
+      "evidence": "User approved on 2026-11-19; source identity: Horse, topside, roasted/baked"
+    },
+    "ciqual-76027": {
+      "expectedName": "Eau minérale Mont-Roucous, embouteillée, très faiblement minéralisée (Lacaune, 81)",
+      "reason": "Additional named mineral water",
+      "evidence": "User approved on 2026-11-19; source identity: Eau minérale Mont-Roucous, embouteillée, très faiblement minéralisée (Lacaune, 81)"
+    },
+    "ciqual-76100": {
+      "expectedName": "Water, mineral, carbonated ou non-carbonated, CAROLA",
+      "reason": "Additional named mineral water",
+      "evidence": "User approved on 2026-11-19; source identity: Water, mineral, carbonated ou non-carbonated, CAROLA"
+    },
+    "ciqual-76101": {
+      "expectedName": "Water, mineral, non-carbonated, MONT-BLANC",
+      "reason": "Additional named mineral water",
+      "evidence": "User approved on 2026-11-19; source identity: Water, mineral, non-carbonated, MONT-BLANC"
+    },
+    "ciqual-76102": {
+      "expectedName": "Water, mineral, non-carbonated, EDEN",
+      "reason": "Additional named mineral water",
+      "evidence": "User approved on 2026-11-19; source identity: Water, mineral, non-carbonated, EDEN"
+    },
+    "off-5201037503778": {
+      "expectedName": "Advance (Delta)",
+      "reason": "Delta Advance toddler nutrition",
+      "evidence": "https://www.delta.gr/brefiki-paidiki-diatrofi/advance-xoris-laktozi/"
+    },
+    "off-5201037713108": {
+      "expectedName": "DELTA advance",
+      "reason": "Delta Advance toddler nutrition",
+      "evidence": "https://www.delta.gr/wp-content/uploads/2024/12/DELTA-ESG-2023_GR.pdf"
+    },
+    "off-5201037713115": {
+      "expectedName": "advance bio γιαούρτι (ΔΕΛΤΑ)",
+      "reason": "Delta Advance toddler nutrition",
+      "evidence": "https://www.delta.gr/wp-content/uploads/2024/12/DELTA-ESG-2023_GR.pdf"
+    }
+  },
   "names": {
     "off-5202234140988": "Strawberry yogurt (Κρι Κρι)",
     "off-5201004020321": "PICK Crackers",
@@ -13986,5 +16023,583 @@
     "usda-175097",
     "usda-175098",
     "usda-175112"
+  ],
+  "profileDuplicates": [
+    {
+      "canonical": "off-5202178000713",
+      "name": "Milk, semi-skimmed, 1.5% fat (Olympos Zois)",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202178000713": "a3a081444a6f28c5a7fd55a3f05ca4a2a0b489a365c7213c006b3e36e8005b44",
+        "off-5202178080067": "0c1276911b4f585f6338a71a30014a4d04a3d8ac09ba372ad49ecb8bfddc5e19"
+      },
+      "expectedProducts": {
+        "off-5202178000713": "3054a1eb34ad91dc4bd5f95c39f0fc3815f488c82168aec6a46ea5c07b82d77c",
+        "off-5202178080067": "b37d480259cc51cc3b82b539891dfe3735a776b03bc344a79e1b0e70b6a3dd72"
+      },
+      "expectedNutrition": {
+        "off-5202178000713": "3a4a2f34fc56fde8267d08e32ba7e20a7d495b14eedec6b838608673b472804f",
+        "off-5202178080067": "558dc393025af1f479e1986592679e7cf53761015f9e5cd361955dea75d2d2bb"
+      },
+      "aliases": [
+        "Γάλα ζωής ελαφρύ 1.5% (Όλυμπος)",
+        "Ζωής γάλα 1.5% (Όλυμπος)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5949065020514",
+      "name": "Sweet corn",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5949065020514": "4004c02b61e516f55f006e7758d2b391949c37a4912d3c1560b4973e19480516",
+        "off-5205941019592": "7e81fadd02504ca8e5e1617449e39952903aea662ea840bfb5794939db91a688"
+      },
+      "expectedProducts": {
+        "off-5949065020514": "79d399458ce58dff404a67896a57ea022ced23ec411a0819458dcfcb198641e1",
+        "off-5205941019592": "0a036fb49bcd7930a9335134c696369d318005db050ca440832893eb152f8ade"
+      },
+      "expectedNutrition": {
+        "off-5949065020514": "3d5baa7623b20c4a2cd49bb56bd433e44f8cfa646cd45ea1b98b7994938c13e3",
+        "off-5205941019592": "842ac1078f7646847cf132e62eed8c520b88194b493a54a799640be55076dec6"
+      },
+      "aliases": [
+        "Sweet corn (Gustona)",
+        "Γλυκό καλαμπόκι",
+        "καλαμπόκι",
+        "Sweet corn"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5202077003969",
+      "name": "Turkey, smoked",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202077003969": "8724ecf8012b9325cee4173fac5a0bc4a073af9fc24e55cb04d78b80911dbeb3",
+        "off-5202077008728": "960eef1abb67ef1ae345ff0104f6f13df9d2ff046e44aeacb93de2579ac357fa"
+      },
+      "expectedProducts": {
+        "off-5202077003969": "722854c1ac81ad91c23ce2961ae512bf53ef864a0753a3ffee755600c8a44fc8",
+        "off-5202077008728": "a36a0dee619c591f967da8b270f9601b177f28a9c57c05c863da9f321920e266"
+      },
+      "expectedNutrition": {
+        "off-5202077003969": "139fe9775090a98b16ce5e2ed41b8f43da4d7885bbf91da82a6bb7eeec294d86",
+        "off-5202077008728": "6815c6eb1d3048202dcc847e3957c11a77d5b9d63006fa0ff9d29c3b20d4a671"
+      },
+      "aliases": [
+        "Γαλοπούλα καπνιστή (Μασούτης)",
+        "Γαλοπούλα καπνιστή (Nostimo)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5212010300512",
+      "name": "Oat flakes",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5212010300512": "f0c72db2b64812334fb6b7a505c1e2415d11f4511aece525452682a244e7b820",
+        "off-5200127871575": "dccda95f3a1706b49c5e5e0631233c49248096423d71ecdd5b10720667339406"
+      },
+      "expectedProducts": {
+        "off-5212010300512": "4fc06fc69fb5fcee6d8ecc09606d2c78e528df9471ba62bec9694cf099ab15b4",
+        "off-5200127871575": "0a7aa87b5db5cdc6a5674dae44df7205062fcd7240e54cb5630c76bf3bf70099"
+      },
+      "expectedNutrition": {
+        "off-5212010300512": "8d7b9bd76fe20a732aea98cda9189cdf36c269f5c1930940feaaecf3826bc120",
+        "off-5200127871575": "b23b79f5e986281594106061f7a4574d87ec994f5407bead54f9b95fb2d8c41c"
+      },
+      "aliases": [
+        "Νιφάδες βρώμης (Υάδες)",
+        "Νιφάδες βρώμης (BDL naturals)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201083325256",
+      "name": "Kefir, plain",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201083325256": "0317bc57838f1365f1cf65aa7b833ebee3a8aa735d7254d8fa9c107756c53db6",
+        "off-5208046258422": "05d48862b1407457c7aefed14854e53eb8b6a0ef7beccc6a2e8cfce2223109ed"
+      },
+      "expectedProducts": {
+        "off-5201083325256": "216257e4bfa08b6183f93d82bb290e22ecd44d0c404fb57ea33dfb4e282e6be0",
+        "off-5208046258422": "1feb3f2d6eaef12465225ad861e4b213807f5513b4530a277cadb59ef0e5be07"
+      },
+      "expectedNutrition": {
+        "off-5201083325256": "96ade63dc8147bfaa264d4815463cb90811477f9959ee24996c812bee8a0cf76",
+        "off-5208046258422": "671b6ee75c07cd5d5b6173608b0814ac84e4e874b9f686495335dac6733276dd"
+      },
+      "aliases": [
+        "Kefir (Mevgal)",
+        "Κεφίρ",
+        "Kefir (Marata)",
+        "ΚΕΦΙΡ"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5206546000503",
+      "name": "Gouda, light",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5206546000503": "56c6012eb4cf8e8e2ed9cec975226b57783bc3b0553340445499373733c8e721",
+        "off-5210044997678": "a92dbafbd9a551d62dc0815438b0ffbd84ad276b74e9de6e1e6d7e195ab204f5"
+      },
+      "expectedProducts": {
+        "off-5206546000503": "9207e4e9b9fd37c44f06f20fca4a6d05ee7f73b1a48bdec30fccfc47f8e0ff06",
+        "off-5210044997678": "2c9f9e0e6a41cff369dad34a4219429e78aec763daa2dfc7cd8133e44cc27217"
+      },
+      "expectedNutrition": {
+        "off-5206546000503": "ea575e9fbcfb3c546bb721e9dbc8d95f85294981259c498105dbe6dc27424819",
+        "off-5210044997678": "e2132405d7fe1e82102203b52ffe53ffbe37cb8b91a54bb6481de4d788f7fa09"
+      },
+      "aliases": [
+        "Gouda light (Royal By Artima)",
+        "γκούντα τυρί",
+        "Gouda light (Ok!)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5202575010520",
+      "name": "Salami, air-dried (Creta Farms)",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202575010520": "84e23f9c6d010c06ee486f1c39f10d517ffcdc9dd09995677602d0f22c8533dd",
+        "off-5202575010513": "2e3638bcc5c9dbd3fb3b26f17cad899b0c1d47e0b535145e3d4e29c05deec9b1"
+      },
+      "expectedProducts": {
+        "off-5202575010520": "a24f8ef97da0ffe3ef31d83a5ffbec0c2f9fdf1c8f8e47f3609558c608f2098e",
+        "off-5202575010513": "4c0d3a25551ed48528f7d9f8cf322756c03f671ad3889a353f3166c95079bebb"
+      },
+      "expectedNutrition": {
+        "off-5202575010520": "01b7f73c58406ac839ed3ae5fe7e9c2e5e76a967a9268d8f71f2660804521d7b",
+        "off-5202575010513": "ec59656f9dac39114929d010e0f6905d5f8b82831b8f472b95f6580f145be554"
+      },
+      "aliases": [
+        "Σαλάμι αέρος (Creta farm)",
+        "Σαλάμι αέρος (Creta Farms εν Ελλάδι)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5200101630068",
+      "name": "Filo pastry, country-style",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5200101630068": "ca3fbaeaddb014d6e4249ab27db9263247780ba2a526dfce227e1d205f9cd3bc",
+        "off-5200140100034": "8a8a26c8b1b8ff6d751b1641e1c4d62b7998424f33312cfa3bb0ee2baea3841c"
+      },
+      "expectedProducts": {
+        "off-5200101630068": "a07a0d976789720a54955f46d94f75dda3f9e3b7cb34994224186dc4cfbf26ed",
+        "off-5200140100034": "0e10e30dfa7772e6ff0069708e12e6b5d953b9a9d098f05570a5c11aa70d9b2d"
+      },
+      "expectedNutrition": {
+        "off-5200101630068": "84b4a995eac8c13a91bf771baeb18dc294921f4e7ba9462f17ec1fa74c4b4416",
+        "off-5200140100034": "5e52eb71d8735735d223be74f36def0dc14da563d62cfd0bb8df5018d097c202"
+      },
+      "aliases": [
+        "Fyllo kroustas xoriatiko (Geusi)",
+        "φύλλο κρούστας χωριάτικο",
+        "Fyllo kroustas xoriatiko (Margaritis)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201083328295",
+      "name": "Yogurt, cow milk, traditional",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201083328295": "e89f1a8672b87c1de1498923d1e14b0b9e5b68fd3fde626cfa5b8ed90ff9a920",
+        "off-5200385103265": "870cb2dc78e94b7453734132c1e02fac9b8243c895837ab573bbc8aa72f09194"
+      },
+      "expectedProducts": {
+        "off-5201083328295": "5393c5df641d0da5e4229f2cb4a4de6a46167ae00612fa0dabb821f6b15c3610",
+        "off-5200385103265": "c08357ff42f0b39c4e4551a2c1902604c171ab3d2776669201f5f2af2677ab58"
+      },
+      "expectedNutrition": {
+        "off-5201083328295": "69be4492f25a7c8c002ad22a210e1e4e1e06003fc618db58682b82a61456c6b4",
+        "off-5200385103265": "7ef849fc539c202a37cb146a226269e7fa07de8a1c42a26136914dc51534b2e8"
+      },
+      "aliases": [
+        "Παραδοσιακό αγελαδινό γιαούρτι (Μεβγάλ)",
+        "Παραδοσιακό αγελαδινό γιαούρτι (Οι Φάρμες Μας Βορείου Ελλάδος)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5200148780030",
+      "name": "Pudding, vanilla",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5200148780030": "79fd1fbbcd73e5d726d8a13c5abab404f0de1fa1e185ef39766225808bd9ff27",
+        "off-5203278062953": "8a5d40cdaa6588cfec7d2addab51fd37bb82bf2ca76c0a33b8f35bab9031fc7f"
+      },
+      "expectedProducts": {
+        "off-5200148780030": "0b0353a3deed36188c9784c128afb1300d4aa7e048e5c111cd79709afe5c1cc9",
+        "off-5203278062953": "6e3f825b6bcbdbc9bd0508325137d8ab5ecd9e6e6321435b36906b18c58c2255"
+      },
+      "expectedNutrition": {
+        "off-5200148780030": "1a7977e7a06cbf97e23008f5960aaf36cc9c57f090e8974f65f23c13180fee74",
+        "off-5203278062953": "b5d8c5d124947422ff4bd3f55393b5d7d36b09f49a2a07801873e9a8a70f715f"
+      },
+      "aliases": [
+        "Vanilla pudding (Θες γάλα)",
+        "βανίλια",
+        "Vanilla pudding (Μασουρης)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-4056489628897",
+      "name": "Milk, semi-skimmed, lactose-free, 1.5% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-4056489628897": "5f35b8c10b125f6e6a4874caaa0ae723c6ce0f128682c522f7ad4009763720bf",
+        "off-5212002255431": "10003bdf5d0f94b1b83ac4da86b91800ad9fbf04d72d401f08cfd4745011e112"
+      },
+      "expectedProducts": {
+        "off-4056489628897": "7c864da083a5ba77d6505537baecb554f45c8faae26f368577915191e99ad051",
+        "off-5212002255431": "3baede30b3794d720ec54d5c592eb8c453e238f46483e939f4c1c18ea46602b5"
+      },
+      "expectedNutrition": {
+        "off-4056489628897": "2987c979321938fc2e56eee9d2a1a40334a033b1f2ac999b20c70ed5bc96a508",
+        "off-5212002255431": "c55782c1eaacef0be83d983f4cb8a1b2db4f6e0c557208b7328a3a53a4675542"
+      },
+      "aliases": [
+        "Semi skimmed milk lactose free (Milbona)",
+        "ημιαποβουτυρωμένο γάλα χωρίς λακτόζη",
+        "γάλα",
+        "Semi-Skimmed milk without lactose (My Gusto)",
+        "Ημι αποβουτυρωμένο γάλα χωρίς λακτόζη"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201415204105",
+      "name": "Gouda, sliced",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201415204105": "110dd81aecf88e33695b49b5cd36cec3d8121507353e08934d1b07d926606e54",
+        "off-5212002255127": "1083d60d911c446b2f5061f50d52a573f671c27ca0c56df51e7294423033fb0b",
+        "off-5212002254984": "65d963f3f1447cec17182bd1ded81a0ecab42bda0b930907194e2f15ab964bc2"
+      },
+      "expectedProducts": {
+        "off-5201415204105": "678f7ff3729af67602ebe515caeb2f2345bd2b86dc249cd6d4643788058e79f9",
+        "off-5212002255127": "ea7247ee79399fb18400e2337397df093519bebcb7611fbb221ad4572296f4ca",
+        "off-5212002254984": "8f0eec2330f2fed21292f4866f8339d31296581181fc655a023cc49e647644fd"
+      },
+      "expectedNutrition": {
+        "off-5201415204105": "ff2a799e909e094c9500ab87f9765a5f2c3004cbae3e56a9a0186e9e972c99a9",
+        "off-5212002255127": "f78ddad133e3f572dbff0799eebf45156750b6676e16b6f1ccc4a529393c85e2",
+        "off-5212002254984": "ef0edfc61ef03e38ecdc6514169333f159b2d58435e9010a16abed340c281300"
+      },
+      "aliases": [
+        "Gouda slices (My Market)",
+        "γκούντα τυρί",
+        "Gouda in slices (Alta gusto)",
+        "Γκούντα σε φέτες",
+        "GOUDA φετες (My Gusto)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5202336155712",
+      "name": "Milk, cow, 1.5% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202336155712": "8a27fe863fe2f029c145c7ac774726f87ce00ef16015fa2badc65313d2888cc2",
+        "off-5202336155675": "dd6d71aa6b4299178cadcfeb5b85c752ef4bd26b34713df9532707aa7db06fdf",
+        "off-5201037509275": "c4e31b48000c157f7f649affc6906bef6a3dbc90d6900e423e445371f8ea5113"
+      },
+      "expectedProducts": {
+        "off-5202336155712": "9b6b5e9b65a2912ac00d1569c4f93946dfe32ad8e497e74f8b42a85650fe09ad",
+        "off-5202336155675": "10fb92205a2550103144012e66fc536e08ed778973f6c6008ccd9a1a6c4cf132",
+        "off-5201037509275": "58ae4dfa9f2d13b1db15b99b8b796fba887a48fb7dcd91dff7fe1aa40b181765"
+      },
+      "expectedNutrition": {
+        "off-5202336155712": "6e01999c559d4191cd9be1075afead2877a975a385e3285dac0b99855e2abaf0",
+        "off-5202336155675": "e1a563635582ce45546639cbe6a6df85af961565675fac591fa9adba1f0d9b14",
+        "off-5201037509275": "37ef151f54049fc8b5b05191ed27de36d4052217bcbf6569b2dfc95bb146ce48"
+      },
+      "aliases": [
+        "Milk 1.5% fat (AB)",
+        "Γάλα 1",
+        "5% λιπαρά",
+        "γάλα",
+        "Cow milk 1.5%",
+        "Αγελαδινό γάλα 1",
+        "Milk 1.5% tou topou mas (Delta)",
+        "5% Του Τόπου Μας",
+        "Του Τόπου Μας Γάλα 1",
+        "mmmMilk"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201106024562",
+      "name": "Corn oil",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201106024562": "699c2b530f1ae7e0f414733884735c4b308894e69a9715cd75bacfdb2d3e0e45",
+        "off-5202576303126": "be02718bbec714523b2f04e2cf62868631a834cef4059d3cfcbc0a451263850e"
+      },
+      "expectedProducts": {
+        "off-5201106024562": "cc9a10315c9d92c4a841f92ca9e6f961ae2a5637d6b18eb45a29cce914c8a359",
+        "off-5202576303126": "e425cbc5cd9c71887fd48ad2ed6b4c356ab75c203074ed6a7ff0a1cc92eaf2d8"
+      },
+      "expectedNutrition": {
+        "off-5201106024562": "b6dc0f70cdf356401a88aeb8aa6b288aa0129f75f3e3c03151fe4ee8e445da4e",
+        "off-5202576303126": "8a69388276545bf5107e8e688f2602f905fa87cb02b713be83edf15197d017a7"
+      },
+      "aliases": [
+        "Αραβοσιτελαιο (ΜΙΝΕΡΒΑ)",
+        "Αραβοσιτέλαιο - Μαράτα"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5200250880208",
+      "name": "Tortillas, wheat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5200250880208": "be2f967b324ccf458c7b6343121140f4aca407ff4255b34db99c2dbed544549a",
+        "off-5204647004703": "84b67bc46fa4226fde07b9e7e09ffe3604bfb65c896f9cfe3d9e66cb13a09781"
+      },
+      "expectedProducts": {
+        "off-5200250880208": "5f060fefc59c59af0ffd8536941ad6f315b80dd0f6512bcf11fed8f5c8d834b5",
+        "off-5204647004703": "ff6c1d82fe56718c23fd10bcea87d293f7734a0efc704854234b4501a77b5ee4"
+      },
+      "expectedNutrition": {
+        "off-5200250880208": "b4525befa0b97ae47113b06345e569fe0bdd952ea2dcbde9dc95575978bca7a6",
+        "off-5204647004703": "7e31214eca8712d08f3f1d2c9904fc6777e923e2f167565feb938f81062797ea"
+      },
+      "aliases": [
+        "Tortillas wheat (ALEXANDROS)",
+        "Τορτίγιες Σιτάρι",
+        "σιτάρι",
+        "Tortillas (Alibinissis)",
+        "Τορτίγιες"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201485009594",
+      "name": "Rusks, wheat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201485009594": "7c81b7301bdbd2c7b20b7ba3b7bd34ac236fd925a3582ba75be59e1f5e07e291",
+        "off-5202576203549": "367b7d1eaa7c0533ab4a39eb4668f0dc88c7037f2997aa062675a4b2ce8aa31e"
+      },
+      "expectedProducts": {
+        "off-5201485009594": "06c143d0d53f6b91e1df9730d5dc2f858c75f248bed80386b2de6193c8a59882",
+        "off-5202576203549": "894fd6d71ac9db9e9e907ac6794220ddc2dc8c03ab7a6972a005cf9d3c782f15"
+      },
+      "expectedNutrition": {
+        "off-5201485009594": "cc36c9a63237374c470076ce51913c47fd31d8a38948a88dff5a240cd37bbef9",
+        "off-5202576203549": "2c9e4ad4eb025270f8b5cb7df1430d72979769395f0f5e414e8af6ad0ac41ae6"
+      },
+      "aliases": [
+        "ELITE wheat rusks",
+        "Φρυγανιές Σιταριού",
+        "σιτάρι",
+        "Λίπος μπισκότου",
+        "Wheat rusks (Μαράτα)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5208120000206",
+      "name": "Dairy dessert, chocolate cream",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5208120000206": "22fd729c3eb1e7396db825fdd7ac916188f10d089148ff4a27536e62392282f9",
+        "off-5203149004228": "fe410b76a5ee3c19ac7b1f88d56cf2a585065f7ea8a189df60f3c94946e43a9d"
+      },
+      "expectedProducts": {
+        "off-5208120000206": "16de95b2c2d8a156913a78bd997a08f0d9047cdbc23742a519cedd90529ed9c4",
+        "off-5203149004228": "534c933ca893706df7790406655ba7bfe1c032526bca8b1fbf16eb174669ea4e"
+      },
+      "expectedNutrition": {
+        "off-5208120000206": "05b0105d571ba509ae9977461536a3b0ad12b6b6671b85f8f32ae180b68ef795",
+        "off-5203149004228": "fad5ed3bc4ca3e739f8f1dc759bc799d488164481f616f42856b3d4b5dc7904c"
+      },
+      "aliases": [
+        "ΑΓΝΟ κρέμα σοκολάτας",
+        "Chocolate cream (Rodopi)",
+        "Κρέμα σοκολάτας",
+        "σοκολάτα",
+        "κρέμα"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5206830111199",
+      "name": "Salmon, smoked, sliced",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5206830111199": "e185d17d8593e96570e69332cd91db429b4fb35df66d98c571a9f4b8299babd0",
+        "off-5744000640327": "5396b25a9a9d199c56f29341dd19297554a57928517401c1b6c9b37ff2a78a5b"
+      },
+      "expectedProducts": {
+        "off-5206830111199": "bec1adcff444f31e033557d1867296e7a8ff9dea11c4178d2292bc7596bb880f",
+        "off-5744000640327": "0cae982a1669cde34dd2e0c9d8fc03aa646ddf5b01ffec1fe164f44c595c2132"
+      },
+      "expectedNutrition": {
+        "off-5206830111199": "a56b614f1c567ba2b29151bf132045791b6ec1f71b45142b2ef1067041ef3983",
+        "off-5744000640327": "7303f68cd299cfd06ffbb935185efc9749545b830c73cdec410389401104de98"
+      },
+      "aliases": [
+        "Σολομός καπνιστής σε φέτες (Nordic Salmon)",
+        "Σολομός καπνιστός σε φέτες (Selected)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5202336156610",
+      "name": "Turkey, smoked, sliced (AB)",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202336156610": "00e0dca57bdbef03f54f4e54b1bcfbff871e21a8c840b82099569428a2790cba",
+        "off-5202336156634": "0674bce919acf0cea55be436f8d17cd212fda1995cdb2922d9107e075b71bd38"
+      },
+      "expectedProducts": {
+        "off-5202336156610": "714bfb177e0bd40ea88034c20cf11b4c85e159b4b59e9480710648860764cbb6",
+        "off-5202336156634": "5e68c62fb1c49a78e5acecea5e3f65a68bb4a8e4932fd6ca3610bf8dcdded320"
+      },
+      "expectedNutrition": {
+        "off-5202336156610": "e969a026170fea88e804f842a508ca57c51136652c7c5621ec21b7484d486fa9",
+        "off-5202336156634": "89f31a481ad6ae97b21984ea352a501f7370e99890330d43ecf91d9b28ebcf7b"
+      },
+      "aliases": [
+        "Καπνιστή γαλοπούλα σε φέτες (ΑΒ Βασιλόπουλος)",
+        "Smoked turkey (AB)",
+        "Καπνιστή γαλοπούλα",
+        "γαλοπούλα"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201673005452",
+      "name": "Tortillas, high protein",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201673005452": "f6f7a4113ea1520d684f124c2cac59a59d6f0275a6784900419eb569729ec60f",
+        "off-5203278064568": "494777da7a087b615fa8b119c98b234baa0d42918c95c6384adf7a1a807874a5"
+      },
+      "expectedProducts": {
+        "off-5201673005452": "83f6439167f375bec5d538d2d6c36c332e62a2bd49e02b04919ca32c681fb827",
+        "off-5203278064568": "8bdae83139d12e580aa185ac87e73ff8b6038191ff001d3562c397d3b0592d8d"
+      },
+      "expectedNutrition": {
+        "off-5201673005452": "e5644ccd92e94a826e01e4143969060d71eb45f4d3a97aaf55269f12ba55456b",
+        "off-5203278064568": "ed37aaf3609b7f5a757e2318ca4f66c1dfd8f97f427e9acbdd035d06b1bb045c"
+      },
+      "aliases": [
+        "High protein tortilla (Καραμολεγκος)",
+        "Τορτίγια με υψηλή περιεκτικότητα σε πρωτεΐνη",
+        "τορτίγια",
+        "High protein tortillas (Mr Grand)",
+        "Τορτίγιες με υψηλή περιεκτικότητα σε πρωτεΐνη"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-8002503241005",
+      "name": "Parmigiano Reggiano, grated",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-8002503241005": "b9a3ce4de2f07e033d736f7b9c25371ab364e5d167a9bf3e56cf7756ece95ad9",
+        "off-5202336157372": "69cf77bd8279bba449d4987974a951f7e6513e0a274850db9cae39086ead0fcd"
+      },
+      "expectedProducts": {
+        "off-8002503241005": "218bad00ac346018e1d2be3b50e4e70ad16ec6d25e1f7c48c50c2359c4b027d4",
+        "off-5202336157372": "d69bbf813dddd6ff10e70684f4482dd4011c09f18f8901444cce7fdbc66f1e5c"
+      },
+      "expectedNutrition": {
+        "off-8002503241005": "eb86c8f83fab7351f88f9a8fbaf028df4ad7544b7041103bb0d9ad0bd014fd54",
+        "off-5202336157372": "dc3d2a07762a0b387b4493162fada9cd7b559ec4973cde39aa713c15e71428ac"
+      },
+      "aliases": [
+        "Ambrosi parmeggiano reggiano grated",
+        "Τριμμένο",
+        "παρμεζάνα",
+        "ρετζιάνο",
+        "Τριμμένη parmigiano reggiano (ΑΒ)"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5700426231884",
+      "name": "Cream, 35% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5700426231884": "e0823c43c6e4609f18a5a74083f20ad79fa2c25a33772fd9b901768f5fae7e1e",
+        "off-5202336008087": "cc1efa80b8ce1a49e6b7c0b046914357fc331f0869fdc4f8fbb4bd77c30fbc3b"
+      },
+      "expectedProducts": {
+        "off-5700426231884": "6bd323f0380750180f776dc64541ecda372913ce287718702ae5e3cb19057a22",
+        "off-5202336008087": "60b804ac1e5e52ed80e3aa3534656a40cf3ba691964d314f03c1df34b1f775df"
+      },
+      "expectedNutrition": {
+        "off-5700426231884": "57bdb32d917862f0d4c304eb8e8e2fc43708e01f72467dd06298f169439c0a00",
+        "off-5202336008087": "57bdb32d917862f0d4c304eb8e8e2fc43708e01f72467dd06298f169439c0a00"
+      },
+      "aliases": [
+        "Κρέμα γάλακτος πλήρης 200g (Μαρατα)",
+        "Milk creme 35% (AB)",
+        "Κρέμα γάλακτος 35%",
+        "γάλα"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5208120000268",
+      "name": "Yogurt, goat milk, 4.6% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5208120000268": "3e2113ecb536c5fa414ccdcf914a1beba14882d74ff06482e4c82e49860bd933",
+        "off-5203149005362": "5d97eda648f21ce591c15c2d8af8929685aba528d045a1b464d1bc81ad9f54ca"
+      },
+      "expectedProducts": {
+        "off-5208120000268": "ecce9af115ca2d45ef66ae5f8d032870b41aad06a4360d3e05f4176b2730f314",
+        "off-5203149005362": "d96f7c87e28bc5e72e2238aaff776da4c0fc67abf774e68cd823a6474a8af200"
+      },
+      "expectedNutrition": {
+        "off-5208120000268": "95d7790fab194a3d56df70690fc044b4ab40f66284da9801e8c5b45e8c90e5fa",
+        "off-5203149005362": "95d7790fab194a3d56df70690fc044b4ab40f66284da9801e8c5b45e8c90e5fa"
+      },
+      "aliases": [
+        "Κατσικίσιο γιαούρτι (Αγνό)",
+        "Greek goat yogurt 4.6% (Κατσικίσιο)",
+        "γιαούρτι"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201168915020",
+      "name": "Halloumi",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201168915020": "e8e68ca5d9292bc03b25e16f1d0be5abc8036d75fe947b1b99980ffa418e0bc4",
+        "off-5202853322017": "89da8878a32dce84ddc504ccf27535a5d018cb4c99d96c1dd6429e96d6a2c469"
+      },
+      "expectedProducts": {
+        "off-5201168915020": "41cbd49468b8d03e29eff9d60dd0407951c6be729ed89e9a8ceee30c609c3f28",
+        "off-5202853322017": "14232eb167e8c81f0b69d8b46e7038ab36b5e38f012446991b2ed6084fdaeb3e"
+      },
+      "expectedNutrition": {
+        "off-5201168915020": "fa97aacc1d02fd3aca348c9f7417256222703fca0d50c18cb74f048f123c21e5",
+        "off-5202853322017": "c6e2a8134abbca45942273998100aacf1c2d11aaa5caf96f6aeddadb169eba06"
+      },
+      "aliases": [
+        "Halloumi (Dodoni)",
+        "Χαλούμι",
+        "Haloumi"
+      ],
+      "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    }
   ]
 }
