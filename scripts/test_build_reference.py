@@ -214,6 +214,63 @@ class ReferenceImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'generic no longer matches'):
             build.curate([brand], rules)
 
+    def test_profile_limit_covers_micros_small_values_zero_and_unknown(self):
+        canonical = self.normalize(calcium=100, vitaminB12=.01, fiber=0, salt=.01)
+        for changes, accepted in [({'calcium': 105}, True), ({'calcium': 105.01}, False),
+                                  ({'vitaminB12': .0106}, False), ({'salt': .02}, False),
+                                  ({'fiber': .1}, False), ({'fiber': None}, False)]:
+            other = ['usda', '2', 'Other brand', *self.normalize(
+                **{'calcium': 100, 'vitaminB12': .01, 'fiber': 0, 'salt': .01, **changes})[3:]]
+            rules = {'profileDuplicates': [{'canonical': 'usda-1', 'maxRelativeDifference': .05,
+                     'expectedRows': {f'{r[0]}-{r[1]}': build.row_fingerprint(r)
+                                      for r in [canonical, other]}}]}
+            with self.subTest(changes=changes):
+                if accepted:
+                    result = build.curate([canonical, other], rules)
+                    self.assertEqual(result, [canonical])
+                    self.assertEqual(build.curate(result, rules), result)
+                else:
+                    with self.assertRaisesRegex(ValueError, 'exceeds nutrient limit'):
+                        build.curate([canonical, other], rules)
+
+    def test_profile_groups_reject_chains_and_source_row_drift(self):
+        rows = [['usda', str(i), f'Brand {i}', *self.normalize(calcium=amount)[3:]]
+                for i, amount in enumerate([104, 100, 109], 1)]
+        rules = {'profileDuplicates': [{'canonical': 'usda-1', 'maxRelativeDifference': .05,
+                 'expectedRows': {f'{r[0]}-{r[1]}': build.row_fingerprint(r) for r in rows}}]}
+        with self.assertRaisesRegex(ValueError, 'exceeds nutrient limit: usda-2 -> usda-3'):
+            build.curate(rows, rules)
+        changed = [r[:] for r in rows]
+        changed[1][2] = 'Different preparation'
+        with self.assertRaisesRegex(ValueError, 'profile no longer matches'):
+            build.curate(changed, rules)
+        with self.assertRaisesRegex(ValueError, 'profile no longer matches'):
+            build.curate(rows[1:], rules)
+
+    def test_profile_titles_keep_reviewed_greek_and_original_brand_aliases(self):
+        canonical = self.normalize(calcium=100)
+        other = ['usda', '2', 'Other brand Gouda', *self.normalize(calcium=104)[3:]]
+        rules = {'profileDuplicates': [{'canonical': 'usda-1', 'name': 'Gouda, sliced',
+                 'aliases': ['Other brand Gouda', 'γκούντα σε φέτες'], 'maxRelativeDifference': .05,
+                 'expectedRows': {f'{r[0]}-{r[1]}': build.row_fingerprint(r)
+                                  for r in [canonical, other]}}]}
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'food_cleanup.json').write_text(json.dumps(rules))
+            (root / 'food_keywords.el.json').write_text(json.dumps({'foods': {}, 'reviewedFoods': {
+                'usda-1': {'name': canonical[2], 'keywords': ['τυρί γκούντα']}}}))
+            with patch.object(build, '__file__', str(root / 'build_reference.py')), \
+                 patch.object(build, 'usda', return_value=[canonical, other]), \
+                 patch.object(build, 'ciqual', return_value=[]), \
+                 patch.object(build, 'off', return_value=[]):
+                build.main(None, None, None, root / 'reference.json')
+            data = json.loads((root / 'reference.json').read_text())
+            self.assertEqual(data['foods'][0][2], 'Gouda, sliced')
+            self.assertEqual(data['foods'][0][4:], canonical[4:])
+            self.assertEqual(data['generics'], ['usda-1'])
+            self.assertIn('τυρί γκούντα', data['keywords']['usda-1'])
+            self.assertTrue(any('Other brand' in term for term in data['keywords']['usda-1']))
+
     def test_cut_groups_keep_listed_foods_and_rows_a_merge_retained(self):
         row = lambda food_id, group: ['usda', food_id, f'Food {food_id}', group, *self.normalize()[4:]]
         rules = {'dropGroups': {'usda': ['Baby Foods']}, 'keepFoods': ['usda-2'],
@@ -221,6 +278,27 @@ class ReferenceImportTests(unittest.TestCase):
         foods = [row('1', 'Baby Foods'), row('2', 'Baby Foods'), row('3', 'Baby Foods'), row('4', 'Dairy'), row('5', 'Dairy')]
         self.assertEqual([food[1] for food in build.curate(foods, rules)], ['2', '3', '4'])
         self.assertEqual(len(build.curate([['ciqual', *row('1', 'Baby Foods')[1:]]], rules)), 1)
+
+    def test_reviewed_exclusions_guard_identity_and_leave_other_baby_names(self):
+        row = lambda source, food_id, name: [source, food_id, name, *self.normalize()[3:]]
+        foods = [row('off', '1', 'Infant formula'), row('off', '2', 'Babybel'),
+                 row('off', '3', 'Baby carrots'), row('usda', '1', 'Milk')]
+        rules = {'excludeFoods': {'off-1': {'expectedName': 'Infant formula',
+                                           'reason': 'Infant food'}}}
+        result = build.curate(foods, rules)
+        self.assertEqual(result, foods[1:])
+        self.assertEqual(build.curate(result, rules), result)
+        with self.assertRaisesRegex(ValueError, 'exclusion no longer matches: off-1'):
+            build.curate([row('off', '1', 'Whey protein')], rules)
+
+    def test_excluding_a_canonical_does_not_uncover_its_merged_members(self):
+        canonical = self.normalize()
+        member = ['usda', '2', 'Other meat cut', *canonical[3:]]
+        rules = {'generics': [{'canonical': 'usda-1', 'name': 'Generic meat', 'members': ['usda-2']}],
+                 'excludeFoods': {'usda-1': {'expectedName': canonical[2], 'afterMerges': True}}}
+        self.assertEqual(build.curate([canonical, member], rules), [])
+        with self.assertRaisesRegex(ValueError, 'exclusion no longer matches'):
+            build.curate([['usda', '1', 'Changed source identity', *canonical[3:]], member], rules)
 
     def test_salted_rows_go_only_when_an_unsalted_twin_exists_and_they_are_not_kept(self):
         row = lambda food_id, name: ['usda', food_id, name, 'Vegetables', *self.normalize()[4:]]
@@ -435,7 +513,7 @@ class ReferenceImportTests(unittest.TestCase):
         self.assertIsNotNone(self.normalize(kcal=902, prot=0, fat=100, sat=40,
                                            mufa=50, pufa=5, carbs=0, sugar=0))
 
-    def off_rows(self, products, identities=None):
+    def off_rows(self, products, identities=None, nutrition_identities=None):
         columns = ['code', 'product_name', 'brands', 'generic_name', 'countries_tags',
                    'quantity', 'ingredients_text',
                    'data_quality_errors_tags', 'energy-kj_100g', 'energy-kcal_100g',
@@ -457,7 +535,24 @@ class ReferenceImportTests(unittest.TestCase):
                                'saturated-fat_100g': '1', 'sugars_100g': '4'})
                     row.update(product)
                     writer.writerow(row)
-            return [r for r in build.off(path, identities=identities) if r]
+            return [r for r in build.off(path, identities=identities,
+                                       nutrition_identities=nutrition_identities) if r]
+
+    def test_profile_guards_source_carbohydrates_and_ingredients(self):
+        products = [{'code': '1', 'product_name': 'Plain milk', 'ingredients_text': 'milk'},
+                    {'code': '2', 'product_name': 'Milk plain', 'ingredients_text': 'milk'}]
+        identities, nutrition = {}, {}
+        rows = self.off_rows(products, identities, nutrition)
+        rules = {'profileDuplicates': [{'canonical': 'off-1', 'maxRelativeDifference': .05,
+                 'expectedRows': {f'{r[0]}-{r[1]}': build.row_fingerprint(r) for r in rows},
+                 'expectedProducts': identities.copy(), 'expectedNutrition': nutrition.copy()}]}
+        self.assertEqual(build.curate(rows, rules, identities, nutrition), [rows[0]])
+        for change, field in [({'carbohydrates_100g': '16'}, 'expectedNutrition'),
+                              ({'ingredients_text': 'milk, lactase'}, 'expectedProducts')]:
+            changed = self.off_rows([products[0], {**products[1], **change}], identities, nutrition)
+            self.assertEqual(changed, rows)
+            with self.subTest(change=change), self.assertRaisesRegex(ValueError, field):
+                build.curate(changed, rules, identities, nutrition)
 
     def test_product_identity_guards_ingredients_even_when_nutrients_are_unchanged(self):
         products = [{'code': '1', 'product_name': 'Plain yogurt',
