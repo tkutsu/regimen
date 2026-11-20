@@ -2062,6 +2062,1346 @@
       "expectedName": "advance bio γιαούρτι (ΔΕΛΤΑ)",
       "reason": "Delta Advance toddler nutrition",
       "evidence": "https://www.delta.gr/wp-content/uploads/2024/12/DELTA-ESG-2023_GR.pdf"
+    },
+    "ciqual-18009": {
+      "expectedName": "Water, bottled, low mineral (average)",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "ciqual-18044": {
+      "expectedName": "Water, mineral, bottled (average)",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "ciqual-18045": {
+      "expectedName": "Water, mineral, non-carbonated, bottled (average)",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "ciqual-18046": {
+      "expectedName": "Water, mineral, carbonated, bottled (average)",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "ciqual-18066": {
+      "expectedName": "Water, municipal",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "ciqual-18430": {
+      "expectedName": "Water, bottled",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "usda-173647": {
+      "expectedName": "Beverages, water, tap, drinking",
+      "reason": "Plain water represented by one user-requested generic Water entry",
+      "evidence": "User instruction on 2026-11-19: just keep generic water. Retain usda-174158. Mineral profiles are not asserted equivalent within 5%.",
+      "afterMerges": true
+    },
+    "off-5206558810015": {
+      "expectedName": "Sugar",
+      "reason": "User requested removal of the suspect Sugar profile reporting 0.9 g salt/100 g",
+      "evidence": "User approved removal on 2026-11-19; source profile reports 396 kcal, 99 g sugar and 0.9 g salt per 100 g. Correctness not established; no substitute values inferred.",
+      "afterMerges": true
+    },
+    "usda-167771": {
+      "expectedName": "Apple juice, canned or bottled, unsweetened, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173933",
+        "expectedName": "Apple juice, canned or bottled, unsweetened, without added ascorbic acid"
+      }
+    },
+    "usda-167772": {
+      "expectedName": "Applesauce, canned, unsweetened, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-171695",
+        "expectedName": "Applesauce, canned, unsweetened, without added ascorbic acid (Includes foods for USDA's Food Distribution Program)"
+      }
+    },
+    "usda-167775": {
+      "expectedName": "Apple juice, frozen concentrate, unsweetened, diluted with 3 volume water, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173935",
+        "expectedName": "Apple juice, frozen concentrate, unsweetened, diluted with 3 volume water without added ascorbic acid"
+      }
+    },
+    "usda-167794": {
+      "expectedName": "Orange juice, chilled, includes from concentrate, with added calcium and vitamins A, D, E",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169100",
+        "expectedName": "Orange juice, chilled, includes from concentrate"
+      }
+    },
+    "usda-168186": {
+      "expectedName": "Pear nectar, canned, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169940",
+        "expectedName": "Pear nectar, canned, without added ascorbic acid"
+      }
+    },
+    "usda-168187": {
+      "expectedName": "Pineapple juice, canned or bottled, unsweetened, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169947",
+        "expectedName": "Pineapple juice, canned or bottled, unsweetened, without added ascorbic acid"
+      }
+    },
+    "usda-168188": {
+      "expectedName": "Apple juice, frozen concentrate, unsweetened, undiluted, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173934",
+        "expectedName": "Apple juice, frozen concentrate, unsweetened, undiluted, without added ascorbic acid"
+      }
+    },
+    "usda-168867": {
+      "expectedName": "Cornmeal, degermed, enriched, yellow",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168929",
+        "expectedName": "Cornmeal, degermed, unenriched, yellow"
+      }
+    },
+    "usda-168877": {
+      "expectedName": "Rice, white, long-grain, regular, raw, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169756",
+        "expectedName": "Rice, white, long-grain, regular, raw, unenriched"
+      }
+    },
+    "usda-168879": {
+      "expectedName": "Rice, white, medium-grain, raw, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169760",
+        "expectedName": "Rice, white, medium-grain, raw, unenriched"
+      }
+    },
+    "usda-168880": {
+      "expectedName": "Rice, white, medium-grain, enriched, cooked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168930",
+        "expectedName": "Rice, white, medium-grain, cooked, unenriched"
+      }
+    },
+    "usda-168881": {
+      "expectedName": "Rice, white, short-grain, enriched, uncooked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168931",
+        "expectedName": "Rice, white, short-grain, raw, unenriched"
+      }
+    },
+    "usda-168882": {
+      "expectedName": "Rice, white, short-grain, enriched, cooked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168932",
+        "expectedName": "Rice, white, short-grain, cooked, unenriched"
+      }
+    },
+    "usda-168919": {
+      "expectedName": "Noodles, egg, cooked, enriched, with added salt",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169762",
+        "expectedName": "Noodles, egg, cooked, unenriched, with added salt"
+      }
+    },
+    "usda-168922": {
+      "expectedName": "Cornmeal, degermed, enriched, white",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172015",
+        "expectedName": "Cornmeal, degermed, unenriched, white"
+      }
+    },
+    "usda-169101": {
+      "expectedName": "Orange juice, chilled, includes from concentrate, with added calcium and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169100",
+        "expectedName": "Orange juice, chilled, includes from concentrate"
+      }
+    },
+    "usda-169694": {
+      "expectedName": "Corn flour, masa, enriched, white",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169696",
+        "expectedName": "Corn flour, masa, unenriched, white"
+      }
+    },
+    "usda-169707": {
+      "expectedName": "Rice, white, long-grain, parboiled, enriched, dry",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169758",
+        "expectedName": "Rice, white, long-grain, parboiled, unenriched, dry"
+      }
+    },
+    "usda-169708": {
+      "expectedName": "Rice, white, long-grain, parboiled, enriched, cooked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169759",
+        "expectedName": "Rice, white, long-grain, parboiled, unenriched, cooked"
+      }
+    },
+    "usda-169715": {
+      "expectedName": "Semolina, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168933",
+        "expectedName": "Semolina, unenriched"
+      }
+    },
+    "usda-169731": {
+      "expectedName": "Noodles, egg, dry, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169755",
+        "expectedName": "Noodles, egg, dry, unenriched"
+      }
+    },
+    "usda-169736": {
+      "expectedName": "Pasta, dry, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168927",
+        "expectedName": "Pasta, dry, unenriched"
+      }
+    },
+    "usda-169737": {
+      "expectedName": "Pasta, cooked, enriched, without added salt",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168928",
+        "expectedName": "Pasta, cooked, unenriched, without added salt"
+      }
+    },
+    "usda-169751": {
+      "expectedName": "Pasta, cooked, enriched, with added salt",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172014",
+        "expectedName": "Pasta, cooked, unenriched, with added salt"
+      }
+    },
+    "usda-169753": {
+      "expectedName": "Rice, white, long-grain, regular, cooked, enriched, with salt",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168935",
+        "expectedName": "Rice, white, long-grain, regular, cooked, unenriched, with salt"
+      }
+    },
+    "usda-169754": {
+      "expectedName": "Wheat flour, white, all-purpose, enriched, calcium-fortified",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169761",
+        "expectedName": "Wheat flour, white, all-purpose, unenriched"
+      }
+    },
+    "usda-169868": {
+      "expectedName": "Milk, fluid, nonfat, calcium fortified (fat free or skim)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173432",
+        "expectedName": "Milk, nonfat, fluid, without added vitamin A and vitamin D (fat free or skim)"
+      }
+    },
+    "usda-169920": {
+      "expectedName": "Orange juice, chilled, includes from concentrate, with added calcium",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169100",
+        "expectedName": "Orange juice, chilled, includes from concentrate"
+      }
+    },
+    "usda-169921": {
+      "expectedName": "Orange juice, frozen concentrate, unsweetened, diluted with 3 volume water, with added calcium",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169102",
+        "expectedName": "Orange juice, frozen concentrate, unsweetened, diluted with 3 volume water"
+      }
+    },
+    "usda-169922": {
+      "expectedName": "Orange juice, frozen concentrate, unsweetened, undiluted, with added calcium",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169923",
+        "expectedName": "Orange juice, frozen concentrate, unsweetened, undiluted"
+      }
+    },
+    "usda-170249": {
+      "expectedName": "Snacks, pretzels, hard, plain, made with enriched flour, unsalted",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-170651",
+        "expectedName": "Snacks, pretzels, hard, plain, made with unenriched flour, unsalted"
+      }
+    },
+    "usda-170853": {
+      "expectedName": "Cheese, pasteurized process, American, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-171290",
+        "expectedName": "Cheese, pasteurized process, American, without added vitamin D"
+      }
+    },
+    "usda-170870": {
+      "expectedName": "Milk, reduced fat, fluid, 2% milkfat, with added nonfat milk solids and vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172205",
+        "expectedName": "Milk, reduced fat, fluid, 2% milkfat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-170871": {
+      "expectedName": "Milk, reduced fat, fluid, 2% milkfat, protein fortified, with added vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172205",
+        "expectedName": "Milk, reduced fat, fluid, 2% milkfat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-170876": {
+      "expectedName": "Milk, dry, whole, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173454",
+        "expectedName": "Milk, dry, whole, without added vitamin D"
+      }
+    },
+    "usda-171038": {
+      "expectedName": "Margarine-like, vegetable oil spread, 60% fat, tub, with salt, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173582",
+        "expectedName": "Margarine-like, vegetable oil spread, 60% fat, tub, with salt"
+      }
+    },
+    "usda-171040": {
+      "expectedName": "Margarine, regular, 80% fat, composite, stick, without salt, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173585",
+        "expectedName": "Margarine, regular, 80% fat, composite, stick, without salt"
+      }
+    },
+    "usda-171041": {
+      "expectedName": "Margarine-like, vegetable oil spread, 60% fat, stick/tub/bottle, without salt, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172350",
+        "expectedName": "Margarine-like, vegetable oil spread, 60% fat, stick/tub/bottle, without salt"
+      }
+    },
+    "usda-171252": {
+      "expectedName": "Cheese food, pasteurized process, American, vitamin D fortified",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-171291",
+        "expectedName": "Cheese food, pasteurized process, American, without added vitamin D"
+      }
+    },
+    "usda-171265": {
+      "expectedName": "Milk, whole, 3.25% milkfat, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172217",
+        "expectedName": "Milk, whole, 3.25% milkfat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-171267": {
+      "expectedName": "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172205",
+        "expectedName": "Milk, reduced fat, fluid, 2% milkfat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-171269": {
+      "expectedName": "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173432",
+        "expectedName": "Milk, nonfat, fluid, without added vitamin A and vitamin D (fat free or skim)"
+      }
+    },
+    "usda-171270": {
+      "expectedName": "Milk, nonfat, fluid, with added nonfat milk solids, vitamin A and vitamin D (fat free or skim)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173432",
+        "expectedName": "Milk, nonfat, fluid, without added vitamin A and vitamin D (fat free or skim)"
+      }
+    },
+    "usda-171272": {
+      "expectedName": "Milk, dry, nonfat, instant, with added vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172196",
+        "expectedName": "Milk, dry, nonfat, instant, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-171435": {
+      "expectedName": "Margarine, regular, 80% fat, composite, stick, with salt, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172346",
+        "expectedName": "Margarine, regular, 80% fat, composite, stick, with salt"
+      }
+    },
+    "usda-171436": {
+      "expectedName": "Margarine, regular, 80% fat, composite, tub, with salt, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172347",
+        "expectedName": "Margarine, regular, 80% fat, composite, tub, with salt"
+      }
+    },
+    "usda-171437": {
+      "expectedName": "Margarine-like, vegetable oil spread, 60% fat, stick, with salt, with added vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172348",
+        "expectedName": "Margarine-like, vegetable oil spread, 60% fat, stick, with salt"
+      }
+    },
+    "usda-172024": {
+      "expectedName": "Pasta, whole grain, 51% whole wheat, remaining enriched semolina, cooked (Includes foods for USDA's Food Distribution Program)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168916",
+        "expectedName": "Pasta, whole grain, 51% whole wheat, remaining unenriched semolina, cooked"
+      }
+    },
+    "usda-172025": {
+      "expectedName": "Pasta, whole grain, 51% whole wheat, remaining enriched semolina, dry (Includes foods for USDA's Food Distribution Program)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-168915",
+        "expectedName": "Pasta, whole grain, 51% whole wheat, remaining unenriched semolina, dry"
+      }
+    },
+    "usda-172193": {
+      "expectedName": "Milk, reduced fat, fluid, 2% milkfat, with added nonfat milk solids, without added vitamin A",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172205",
+        "expectedName": "Milk, reduced fat, fluid, 2% milkfat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-172195": {
+      "expectedName": "Milk, dry, nonfat, regular, with added vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-170877",
+        "expectedName": "Milk, dry, nonfat, regular, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-172218": {
+      "expectedName": "Yogurt, fruit, lowfat, with low calorie sweetener, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173451",
+        "expectedName": "Yogurt, fruit, lowfat, with low calorie sweetener"
+      }
+    },
+    "usda-172219": {
+      "expectedName": "Yogurt, vanilla, low fat, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-170888",
+        "expectedName": "Yogurt, vanilla, low fat."
+      }
+    },
+    "usda-172220": {
+      "expectedName": "Yogurt, vanilla or lemon flavor, nonfat milk, sweetened with low-calorie sweetener, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173445",
+        "expectedName": "Yogurt, vanilla or lemon flavor, nonfat milk, sweetened with low-calorie sweetener"
+      }
+    },
+    "usda-172221": {
+      "expectedName": "Yogurt, chocolate, nonfat milk, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172208",
+        "expectedName": "Yogurt, chocolate, nonfat milk"
+      }
+    },
+    "usda-172456": {
+      "expectedName": "Soymilk, original and vanilla, with added calcium, vitamins A and D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172446",
+        "expectedName": "Soymilk, original and vanilla, unfortified"
+      }
+    },
+    "usda-172459": {
+      "expectedName": "Peanut butter, smooth, vitamin and mineral fortified",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-174294",
+        "expectedName": "Peanut Butter, smooth (Includes foods for USDA's Food Distribution Program)"
+      }
+    },
+    "usda-172680": {
+      "expectedName": "Bread, raisin, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172817",
+        "expectedName": "Bread, raisin, unenriched"
+      }
+    },
+    "usda-172700": {
+      "expectedName": "Cake, coffeecake, cinnamon with crumb topping, commercially prepared, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-175052",
+        "expectedName": "Cake, coffeecake, cinnamon with crumb topping, commercially prepared, unenriched"
+      }
+    },
+    "usda-172716": {
+      "expectedName": "Cookies, chocolate chip, commercially prepared, regular, higher fat, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172820",
+        "expectedName": "Cookies, chocolate chip, commercially prepared, regular, higher fat, unenriched"
+      }
+    },
+    "usda-172753": {
+      "expectedName": "Danish pastry, cinnamon, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172824",
+        "expectedName": "Danish pastry, cinnamon, unenriched"
+      }
+    },
+    "usda-172758": {
+      "expectedName": "Doughnuts, yeast-leavened, glazed, enriched (includes honey buns)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-175062",
+        "expectedName": "Doughnuts, yeast-leavened, glazed, unenriched (includes honey buns)"
+      }
+    },
+    "usda-172792": {
+      "expectedName": "Popovers, dry mix, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-175066",
+        "expectedName": "Popovers, dry mix, unenriched"
+      }
+    },
+    "usda-173041": {
+      "expectedName": "Grape juice, canned or bottled, unsweetened, with added ascorbic acid",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173042",
+        "expectedName": "Grape juice, canned or bottled, unsweetened, without added ascorbic acid"
+      }
+    },
+    "usda-173457": {
+      "expectedName": "Yogurt, fruit, low fat, 10 grams protein per 8 ounce, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-171285",
+        "expectedName": "Yogurt, fruit, low fat, 10 grams protein per 8 ounce"
+      }
+    },
+    "usda-173458": {
+      "expectedName": "Yogurt, fruit variety, nonfat, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-169898",
+        "expectedName": "Yogurt, fruit variety, nonfat"
+      }
+    },
+    "usda-174151": {
+      "expectedName": "Beverages, Fruit punch drink, with added nutrients, canned",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-171914",
+        "expectedName": "Beverages, fruit punch drink, without added nutrients, canned"
+      }
+    },
+    "usda-174295": {
+      "expectedName": "Soymilk, chocolate, with added calcium, vitamins A and D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-174293",
+        "expectedName": "Soymilk, chocolate, unfortified"
+      }
+    },
+    "usda-174899": {
+      "expectedName": "Bagels, plain, enriched, with calcium propionate (includes onion, poppy, sesame)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-175050",
+        "expectedName": "Bagels, plain, unenriched, with calcium propionate (includes onion, poppy, sesame)"
+      }
+    },
+    "usda-174915": {
+      "expectedName": "Bread, pita, white, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172816",
+        "expectedName": "Bread, pita, white, unenriched"
+      }
+    },
+    "usda-174940": {
+      "expectedName": "Cake, pound, commercially prepared, other than all butter, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-175053",
+        "expectedName": "Cake, pound, commercially prepared, other than all butter, unenriched"
+      }
+    },
+    "usda-174950": {
+      "expectedName": "Cookies, butter, commercially prepared, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172819",
+        "expectedName": "Cookies, butter, commercially prepared, unenriched"
+      }
+    },
+    "usda-174994": {
+      "expectedName": "Muffins, English, plain, enriched, with ca prop (includes sourdough)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-172828",
+        "expectedName": "English muffins, plain, unenriched, with calcium propionate (includes sourdough)"
+      }
+    },
+    "usda-175011": {
+      "expectedName": "Pie, apple, commercially prepared, enriched flour",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173239",
+        "expectedName": "Pie, apple, commercially prepared, unenriched flour"
+      }
+    },
+    "usda-175063": {
+      "expectedName": "English muffins, plain, enriched, without calcium propionate(includes sourdough)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-173238",
+        "expectedName": "English muffins, plain, unenriched, without calcium propionate (includes sourdough)"
+      }
+    },
+    "ciqual-11058": {
+      "expectedName": "Salt, white (sea, igneous or rock), iodine added, no other enrichment",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-11017",
+        "expectedName": "Salt, white (sea, igneous or rock), no enrichment"
+      }
+    },
+    "ciqual-11096": {
+      "expectedName": "Salt, white (sea, igneous or rock), iodine added, fluoride added 25 mg/100 g",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-11017",
+        "expectedName": "Salt, white (sea, igneous or rock), no enrichment"
+      }
+    },
+    "ciqual-18167": {
+      "expectedName": "Cocoa or chocolate powder, for beverages, with sugar, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "ciqual-18168": {
+      "expectedName": "Cocoa or chocolate powder, for beverages, with sugar, fortified with vitamins",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "ciqual-18901": {
+      "expectedName": "Soy drink, plain, fortified with calcium, prepacked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18900",
+        "expectedName": "Soy drink, plain, prepacked"
+      }
+    },
+    "ciqual-19692": {
+      "expectedName": "Soy dessert, w fruits, sweet, fortified with calcium, prepacked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-19695",
+        "expectedName": "Soy dessert, w fruits, sweet, not fortified, prepacked"
+      }
+    },
+    "ciqual-19694": {
+      "expectedName": "Soy dessert, plain, fortified with calcium, prepacked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-19693",
+        "expectedName": "Soy dessert, plain, not fortified, prepacked"
+      }
+    },
+    "ciqual-20911": {
+      "expectedName": "Soy dessert, flavoured, sweet, fortified with calcium, prepacked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-20921",
+        "expectedName": "Soy dessert, flavoured, sweet, not fortified, prepacked"
+      }
+    },
+    "ciqual-32001": {
+      "expectedName": "Breakfast cereals, with chocolate, not filled, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32013",
+        "expectedName": "Breakfast cereals, with chocolate, not filled (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32005": {
+      "expectedName": "Breakfast cereals, corn flakes, plain, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32014",
+        "expectedName": "Breakfast cereals, corn flakes, plain (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32009": {
+      "expectedName": "Breakfast cereals, chocolate wheat grain flakes, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32011",
+        "expectedName": "Breakfast cereals, chocolate wheat grain flakes (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32016": {
+      "expectedName": "Breakfast cereals, filled with chocolate or chocolate-hazelnuts, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32017",
+        "expectedName": "Breakfast cereals, filled with chocolate or chocolate-hazelnuts"
+      }
+    },
+    "ciqual-32022": {
+      "expectedName": "Breakfast cereals, diet, with chocolate, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32028",
+        "expectedName": "Breakfast cereals, diet, with chocolate, not fortified"
+      }
+    },
+    "ciqual-32023": {
+      "expectedName": "Breakfast cereals, diet, with fruits, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32029",
+        "expectedName": "Breakfast cereals, diet, with fruits, not fortified"
+      }
+    },
+    "ciqual-32031": {
+      "expectedName": "Breakfast cereals, sweet, fortified with vitamins and chemical elements (average)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32032",
+        "expectedName": "Breakfast cereals, sweet, not fortified with vitamins and chemical elements (average)"
+      }
+    },
+    "ciqual-32110": {
+      "expectedName": "Muesli, flakes (Bircher-style), with fruits or dried fruits, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32138",
+        "expectedName": "Muesli, flakes (Bircher-style), with fruits or dried fruits (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32121": {
+      "expectedName": "Breakfast cereals, corn flakes, sugar iced, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32107",
+        "expectedName": "Breakfast cereals, corn flakes, sugar iced (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32131": {
+      "expectedName": "Breakfast cereals, chocolate puffed/popped rice, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32012",
+        "expectedName": "Breakfast cereals, chocolate puffed/popped rice (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32133": {
+      "expectedName": "Breakfast cereals, puffed/popped corn, with honey, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32129",
+        "expectedName": "Breakfast cereals, puffed/popped corn, with honey (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "ciqual-32139": {
+      "expectedName": "Muesli, flakes, fortified with vitamins and chemical elements (average food)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Source descriptors identify the same food type and preparation, differing in fortification/enrichment.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32141",
+        "expectedName": "Muesli, flakes, not fortified with vitamins and chemical elements (average food)"
+      }
+    },
+    "usda-167800": {
+      "expectedName": "Apple juice, canned or bottled, unsweetened, with added ascorbic acid, calcium, and potassium",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened bottled/canned apple juice, added vitamin C/calcium/potassium versus no added vitamin C.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-173933",
+        "expectedName": "Apple juice, canned or bottled, unsweetened, without added ascorbic acid"
+      }
+    },
+    "usda-168205": {
+      "expectedName": "Pineapple juice, canned, not from concentrate, unsweetened, with added vitamins A, C and E",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened canned pineapple juice, added vitamins versus the plain canned/bottled source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-169947",
+        "expectedName": "Pineapple juice, canned or bottled, unsweetened, without added ascorbic acid"
+      }
+    },
+    "usda-168878": {
+      "expectedName": "Rice, white, long-grain, regular, enriched, cooked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Cooked regular long-grain white rice; the plain source specifies no added salt.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-169757",
+        "expectedName": "Rice, white, long-grain, regular, unenriched, cooked without salt"
+      }
+    },
+    "usda-168894": {
+      "expectedName": "Wheat flour, white, all-purpose, enriched, bleached",
+      "reason": "Fortified/enriched product with an identified unfortified variant: White all-purpose wheat flour; retain the unfortified all-purpose profile, whose bleaching status is unspecified.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-169761",
+        "expectedName": "Wheat flour, white, all-purpose, unenriched"
+      }
+    },
+    "usda-168936": {
+      "expectedName": "Wheat flour, white, all-purpose, enriched, unbleached",
+      "reason": "Fortified/enriched product with an identified unfortified variant: White all-purpose wheat flour; retain the unfortified all-purpose profile, whose bleaching status is unspecified.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-169761",
+        "expectedName": "Wheat flour, white, all-purpose, unenriched"
+      }
+    },
+    "usda-168896": {
+      "expectedName": "Wheat flour, white, bread, enriched",
+      "reason": "Fortified/enriched product with an identified unfortified variant: White bread wheat flour; grammatical singular/plural difference in the plain descriptor.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-168913",
+        "expectedName": "Wheat flours, bread, unenriched"
+      }
+    },
+    "usda-169732": {
+      "expectedName": "Noodles, egg, enriched, cooked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Cooked egg noodles; the plain source explicitly specifies no added salt.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-168926",
+        "expectedName": "Noodles, egg, unenriched, cooked, without added salt"
+      }
+    },
+    "usda-170872": {
+      "expectedName": "Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Fluid cow milk at 1% fat, with added vitamins versus explicitly unfortified 1% milk.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-173441",
+        "expectedName": "Milk, fluid, 1% fat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-170873": {
+      "expectedName": "Milk, lowfat, fluid, 1% milkfat, with added nonfat milk solids, vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Fluid cow milk at 1% fat, added nonfat solids/vitamins versus explicitly unfortified 1% milk.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-173441",
+        "expectedName": "Milk, fluid, 1% fat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-171268": {
+      "expectedName": "Milk, lowfat, fluid, 1% milkfat, protein fortified, with added vitamin A and vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Explicitly protein/vitamin-fortified 1% cow milk versus unfortified 1% cow milk.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-173441",
+        "expectedName": "Milk, fluid, 1% fat, without added vitamin A and vitamin D"
+      }
+    },
+    "usda-171271": {
+      "expectedName": "Milk, nonfat, fluid, protein fortified, with added vitamin A and vitamin D (fat free and skim)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Explicitly protein/vitamin-fortified skim milk versus unfortified skim milk.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-173432",
+        "expectedName": "Milk, nonfat, fluid, without added vitamin A and vitamin D (fat free or skim)"
+      }
+    },
+    "usda-171276": {
+      "expectedName": "Milk, canned, evaporated, with added vitamin D and without added vitamin A",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened evaporated/condensed whole milk; added vitamins versus the plain composition-table profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-19026",
+        "expectedName": "Condensed milk, without sugar, whole"
+      }
+    },
+    "usda-172194": {
+      "expectedName": "Milk, canned, evaporated, with added vitamin A",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened evaporated/condensed whole milk; added vitamins versus the plain composition-table profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-19026",
+        "expectedName": "Condensed milk, without sugar, whole"
+      }
+    },
+    "usda-173456": {
+      "expectedName": "Yogurt, fruit, low fat, 9 grams protein per 8 ounce, fortified with vitamin D",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Fruit low-fat yogurt, 9 g protein per 8 oz; fortified versus the corresponding plain source row.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-170889",
+        "expectedName": "Yogurt, fruit, low fat,9 g protein/8 oz"
+      }
+    },
+    "ciqual-18106": {
+      "expectedName": "Boisson cacaotée ou au chocolat, instantanée, sucrée, enrichie en vitamines, prête à boire (reconstituée avec du lait demi-écrémé standard)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Same sweetened instant cocoa/chocolate drink reconstituted with standard semi-skimmed milk; French versus English source descriptors.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18104",
+        "expectedName": "Instant cocoa or chocolate beverage, with sugar, ready-to-drink (reconstituted with standard semi-skimmed milk)"
+      }
+    },
+    "ciqual-18903": {
+      "expectedName": "Soy drink, sweet, flavoured, enriched in calcium, prepacked",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Sweet flavoured soy drink; calcium enriched versus the ordinary sweet flavoured source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18902",
+        "expectedName": "Soy drink, sweet, flavoured, with sugar, prepacked"
+      }
+    },
+    "ciqual-31101": {
+      "expectedName": "Cereal bar with fruit, fortified with vitamins and minerals",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Fruit cereal bar; fortified versus the ordinary fruit cereal bar source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-31113",
+        "expectedName": "Cereal bar w fruit"
+      }
+    },
+    "ciqual-31102": {
+      "expectedName": "Cereal bar with chocolate, fortified with vitamins and minerals",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Chocolate cereal bar; fortified versus the ordinary chocolate cereal bar source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-31106",
+        "expectedName": "Chocolate cereal bar"
+      }
+    },
+    "ciqual-32111": {
+      "expectedName": "Muesli, crunchy, with fruits or dried fruits, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Crunchy muesli with fruit/dried fruit; fortified versus explicitly unfortified crunchy fruit muesli.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32108",
+        "expectedName": "Muesli, crunchy, with fruits and/or dried fruits, grains (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "off-5202178083747": {
+      "expectedName": "ALMOND DRINK UNSWEETENED (OLYMPUS)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened/no-added-sugar almond drink with added vitamins/minerals; retain an almond drink whose ingredient list has no added vitamins/minerals.",
+      "evidence": "Cached ingredient labels; Delta pack identity corroborated by https://www.delta.gr/fytika-proionta/amygdalo-rofima-sugar-free/",
+      "unfortifiedAlternative": {
+        "id": "off-8590421062692",
+        "expectedName": "Almond drink (Nature’s Promise)",
+        "expectedProduct": "b01e6a4f999fd17b50efb34b2d7250af6615d083e6812b117d099c92a1e7fd76"
+      }
+    },
+    "off-5201037507738": {
+      "expectedName": "Γάλα Αμυγδάλου (Χωρίς Προσθήκη Ζάχαρης) - Δέλτα",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened/no-added-sugar almond drink with added vitamins/minerals; retain an almond drink whose ingredient list has no added vitamins/minerals.",
+      "evidence": "Cached ingredient labels; Delta pack identity corroborated by https://www.delta.gr/fytika-proionta/amygdalo-rofima-sugar-free/",
+      "unfortifiedAlternative": {
+        "id": "off-8590421062692",
+        "expectedName": "Almond drink (Nature’s Promise)",
+        "expectedProduct": "b01e6a4f999fd17b50efb34b2d7250af6615d083e6812b117d099c92a1e7fd76"
+      }
+    },
+    "off-5201037509022": {
+      "expectedName": "Almond Without Added Sugar (ΔΕΛΤΑ)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened/no-added-sugar almond drink with added vitamins/minerals; retain an almond drink whose ingredient list has no added vitamins/minerals.",
+      "evidence": "Cached ingredient labels; Delta pack identity corroborated by https://www.delta.gr/fytika-proionta/amygdalo-rofima-sugar-free/",
+      "unfortifiedAlternative": {
+        "id": "off-8590421062692",
+        "expectedName": "Almond drink (Nature’s Promise)",
+        "expectedProduct": "b01e6a4f999fd17b50efb34b2d7250af6615d083e6812b117d099c92a1e7fd76"
+      }
+    },
+    "off-5201037510127": {
+      "expectedName": "ΑΜΥΓΔΑΛΟ (ΔΕΛΤΑ)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened/no-added-sugar almond drink with added vitamins/minerals; retain an almond drink whose ingredient list has no added vitamins/minerals.",
+      "evidence": "Cached ingredient labels; Delta pack identity corroborated by https://www.delta.gr/fytika-proionta/amygdalo-rofima-sugar-free/",
+      "unfortifiedAlternative": {
+        "id": "off-8590421062692",
+        "expectedName": "Almond drink (Nature’s Promise)",
+        "expectedProduct": "b01e6a4f999fd17b50efb34b2d7250af6615d083e6812b117d099c92a1e7fd76"
+      }
+    },
+    "off-5208046258088": {
+      "expectedName": "Almond milk (Marata)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened/no-added-sugar almond drink with added vitamins/minerals; retain an almond drink whose ingredient list has no added vitamins/minerals.",
+      "evidence": "Cached ingredient labels; Delta pack identity corroborated by https://www.delta.gr/fytika-proionta/amygdalo-rofima-sugar-free/",
+      "unfortifiedAlternative": {
+        "id": "off-8590421062692",
+        "expectedName": "Almond drink (Nature’s Promise)",
+        "expectedProduct": "b01e6a4f999fd17b50efb34b2d7250af6615d083e6812b117d099c92a1e7fd76"
+      }
+    },
+    "off-5411188124689": {
+      "expectedName": "Unsweetened Oat Drink (Danone Belux nv)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Plain no-added-sugar oat drink with added vitamins/minerals; retain the plain organic oat drink with an ingredient list without fortification.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-4335619337794",
+        "expectedName": "Oat Drink plant-based (Vemondo)",
+        "expectedProduct": "4ce6aafd9762abd02dde55ea7ce5b80e12731753bd46183167b490490f7a1afe"
+      }
+    },
+    "off-5201083347371": {
+      "expectedName": "μεβγαλ γάλα βρώμης",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Plain no-added-sugar oat drink with added vitamins/minerals; retain the plain organic oat drink with an ingredient list without fortification.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-4335619337794",
+        "expectedName": "Oat Drink plant-based (Vemondo)",
+        "expectedProduct": "4ce6aafd9762abd02dde55ea7ce5b80e12731753bd46183167b490490f7a1afe"
+      }
+    },
+    "off-5202178008269": {
+      "expectedName": "Carpos oat",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Plain no-added-sugar oat drink with added vitamins/minerals; retain the plain organic oat drink with an ingredient list without fortification.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-4335619337794",
+        "expectedName": "Oat Drink plant-based (Vemondo)",
+        "expectedProduct": "4ce6aafd9762abd02dde55ea7ce5b80e12731753bd46183167b490490f7a1afe"
+      }
+    },
+    "off-5411188081852": {
+      "expectedName": "Alpro vanilie (Alpro Vanilla Milk)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Sweet vanilla soy drink; vitamin/mineral-fortified versus ordinary Joya vanilla soy drink.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-9020200006917",
+        "expectedName": "Joya soya vanille drink",
+        "expectedProduct": "a9fe54b4458461351829d99b6cdfa1313aeed98f1601f2201e6c45dd255b52ff"
+      }
+    },
+    "off-5411188543381": {
+      "expectedName": "Soya (alpro)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Sweet plain soy drink; vitamin/mineral-fortified versus ordinary Vemondo sweet soy drink.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-4056489695370",
+        "expectedName": "Bio Soya Drink, Sweetened (Vemondo)",
+        "expectedProduct": "732d67e1b67954aedb21c521b3e57b5de812bfdd3c0ba88e3b4b4026644cfab2"
+      }
+    },
+    "off-5411188543398": {
+      "expectedName": "Alpro Soya Unsweetened",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Unsweetened plain soy drink; vitamin/mineral-fortified versus Joya soy drink made only from water and soybeans.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-9020200010907",
+        "expectedName": "Soja-Soya Organic (Joya)",
+        "expectedProduct": "655a3f800730f3e10f91ffaf432a0f262cb535a0b46899e2599af6827fd71eb7"
+      }
+    },
+    "off-5411188300328": {
+      "expectedName": "Alpro chocolate",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Sweet chocolate soy drink; vitamin/mineral-fortified versus the unfortified chocolate soy composition-table profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "usda-174293",
+        "expectedName": "Soymilk, chocolate, unfortified"
+      }
+    },
+    "off-5411188094159": {
+      "expectedName": "Alpro Dessert donkere chocolade smaak",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Chocolate soy dessert; vitamin/mineral-fortified versus The Bridge chocolate soy dessert without fortifying ingredients.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-8019428009146",
+        "expectedName": "Soya dessert chocolate (The Bridge)",
+        "expectedProduct": "ff894f34dd9a74c603c62908156eac741227603432b9f4b80158e3b374515b68"
+      }
+    },
+    "off-5411188102809": {
+      "expectedName": "Heidelbeere (alpro)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Fermented blueberry soy dessert; vitamin/mineral-fortified versus OLGA blueberry cultured soy dessert without fortifying ingredients.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "off-3273227083324",
+        "expectedName": "Blueberry soya (OLGA)",
+        "expectedProduct": "d19dfe46c8d7d564c6918f8ad73e452be744b53b503f8f57e272ab6837805a34"
+      }
+    },
+    "off-8000550502803": {
+      "expectedName": "Nesquik (Nestlé)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic sweetened cocoa beverage powder with added vitamins/minerals; retain the plain sweetened cocoa beverage powder source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "off-8000550502827": {
+      "expectedName": "Nesquik",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic sweetened cocoa beverage powder with added vitamins/minerals; retain the plain sweetened cocoa beverage powder source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "off-4056489009979": {
+      "expectedName": "Goody cao (Bellarom)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic sweetened cocoa beverage powder with added vitamins/minerals; retain the plain sweetened cocoa beverage powder source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "off-5201002005764": {
+      "expectedName": "Caotonic (Γιωτης)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic sweetened cocoa beverage powder with added vitamins/minerals; retain the plain sweetened cocoa beverage powder source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "off-5201002011031": {
+      "expectedName": "Cacaotonic (Γιώτης)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic sweetened cocoa beverage powder with added vitamins/minerals; retain the plain sweetened cocoa beverage powder source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-18101",
+        "expectedName": "Cocoa or chocolate powder, for beverages, with sugar"
+      }
+    },
+    "off-5050083935503": {
+      "expectedName": "Corn Flakes (Kellogg's)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic plain corn flakes with added vitamins/iron; retain explicitly unfortified plain corn flakes.",
+      "evidence": "Cached ingredients and https://www.kelloggs.gr/el_GR/products/corn-flakes-product.html",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32014",
+        "expectedName": "Breakfast cereals, corn flakes, plain (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "off-8410188012092": {
+      "expectedName": "Corn Flakes (KELLOGG ESPAÑA S.L.)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Classic plain corn flakes with added vitamins/iron; retain explicitly unfortified plain corn flakes.",
+      "evidence": "Cached ingredients and https://www.kelloggs.gr/el_GR/products/corn-flakes-product.html",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32014",
+        "expectedName": "Breakfast cereals, corn flakes, plain (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "off-5059319023281": {
+      "expectedName": "Zukaritas (Kellogg's)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Sugar-iced corn flakes with added vitamins/iron; retain explicitly unfortified sugar-iced corn flakes.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32107",
+        "expectedName": "Breakfast cereals, corn flakes, sugar iced (not fortified with vitamins and chemical elements)"
+      }
+    },
+    "off-3387390320008": {
+      "expectedName": "Chocolate Cereal Bar (Nestlé)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Milk-chocolate cereal bar with added vitamins/minerals; retain the ordinary chocolate cereal bar source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-31106",
+        "expectedName": "Chocolate cereal bar"
+      }
+    },
+    "off-5900020025395": {
+      "expectedName": "Milk Chocolate Fitness (Nestlé)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Milk-chocolate cereal bar with added vitamins/minerals; retain the ordinary chocolate cereal bar source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-31106",
+        "expectedName": "Chocolate cereal bar"
+      }
+    },
+    "off-5900020025401": {
+      "expectedName": "FITNESS Délice barres de céréales chocolat au lait (Nestlé)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Milk-chocolate cereal bar with added vitamins/minerals; retain the ordinary chocolate cereal bar source profile.",
+      "evidence": "Source food descriptions and ingredient lists.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-31106",
+        "expectedName": "Chocolate cereal bar"
+      }
+    },
+    "off-5202242000052": {
+      "expectedName": "Αυγά ωμέγα 3 (Αμερικανική γεωργική σχολής)",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Omega-3-enriched egg variant; retain ordinary whole eggs. The producer identifies the Omega-3 eggs as nutritionally enriched through the hens diet.",
+      "evidence": "https://afs.edu.gr/enischysi-tis-paragogis-o3-avgon-achyrona-stin-ags/",
+      "unfortifiedAlternative": {
+        "id": "off-5202336137176",
+        "expectedName": "Eggs Medium (AB)",
+        "expectedProduct": "0b9190d5bfa6b5573b771f0086c989462820b2cadd713d44f1f5c94cdf9e9237"
+      }
+    },
+    "usda-172460": {
+      "expectedName": "Peanut butter, chunky, vitamin and mineral fortified",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Chunky peanut butter; the ordinary salted chunky profile remains. The fortified profile also reports sodium/salt, so the unsalted variant is not selected.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "usda-174265",
+        "expectedName": "Peanut butter, chunk style, with salt"
+      }
+    },
+    "ciqual-32112": {
+      "expectedName": "Muesli, crunchy, with chocolate, with or without fruits, fortified with vitamins and chemical elements",
+      "reason": "Fortified/enriched product with an identified unfortified variant: Crunchy chocolate muesli; the explicitly unfortified chocolate profile remains. The fortified composition-table descriptor permits optional fruit.",
+      "evidence": "USDA/CIQUAL source food descriptions.",
+      "unfortifiedAlternative": {
+        "id": "ciqual-32109",
+        "expectedName": "Muesli, crunchy, with chocolate (not fortified with vitamins and chemical elements)"
+      }
     }
   },
   "names": {
@@ -6328,26 +7668,6 @@
       "reason": "The same product under several barcodes."
     },
     {
-      "canonical": "off-5202178083747",
-      "members": [
-        "off-5202178005640"
-      ],
-      "aliases": [
-        "Carpos Almond (Olympus)"
-      ],
-      "reason": "The same product under several barcodes."
-    },
-    {
-      "canonical": "off-5201037507738",
-      "members": [
-        "off-5201037509022"
-      ],
-      "aliases": [
-        "Almond Without Added Sugar (ΔΕΛΤΑ)"
-      ],
-      "reason": "The same product under several barcodes."
-    },
-    {
       "canonical": "off-5202178004964",
       "members": [
         "off-5202173015569"
@@ -6607,155 +7927,11 @@
       "reason": "The same product under several barcodes."
     },
     {
-      "canonical": "usda-173933",
-      "members": [
-        "usda-167771"
-      ],
-      "aliases": [
-        "Apple juice, canned or bottled, unsweetened, with added ascorbic acid"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-173935",
-      "members": [
-        "usda-167775"
-      ],
-      "aliases": [
-        "Apple juice, frozen concentrate, unsweetened, diluted with 3 volume water, with added ascorbic acid"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169940",
-      "members": [
-        "usda-168186"
-      ],
-      "aliases": [
-        "Pear nectar, canned, with added ascorbic acid"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169947",
-      "members": [
-        "usda-168187"
-      ],
-      "aliases": [
-        "Pineapple juice, canned or bottled, unsweetened, with added ascorbic acid"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-173934",
-      "members": [
-        "usda-168188"
-      ],
-      "aliases": [
-        "Apple juice, frozen concentrate, unsweetened, undiluted, with added ascorbic acid"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
       "canonical": "usda-173042",
       "members": [
-        "usda-168207",
-        "usda-173041"
+        "usda-168207"
       ],
-      "aliases": [
-        "Grape juice, canned or bottled, unsweetened, with added ascorbic acid and calcium",
-        "Grape juice, canned or bottled, unsweetened, with added ascorbic acid"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-168929",
-      "members": [
-        "usda-168867"
-      ],
-      "aliases": [
-        "Cornmeal, degermed, enriched, yellow"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169756",
-      "members": [
-        "usda-168877"
-      ],
-      "aliases": [
-        "Rice, white, long-grain, regular, raw, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169760",
-      "members": [
-        "usda-168879"
-      ],
-      "aliases": [
-        "Rice, white, medium-grain, raw, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-168930",
-      "members": [
-        "usda-168880"
-      ],
-      "aliases": [
-        "Rice, white, medium-grain, enriched, cooked"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-168932",
-      "members": [
-        "usda-168882"
-      ],
-      "aliases": [
-        "Rice, white, short-grain, enriched, cooked"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172015",
-      "members": [
-        "usda-168922"
-      ],
-      "aliases": [
-        "Cornmeal, degermed, enriched, white"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169736",
-      "members": [
-        "usda-168927"
-      ],
-      "aliases": [
-        "Pasta, dry, unenriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169715",
-      "members": [
-        "usda-168933"
-      ],
-      "aliases": [
-        "Semolina, unenriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-168935",
-      "members": [
-        "usda-169753"
-      ],
-      "aliases": [
-        "Rice, white, long-grain, regular, cooked, enriched, with salt"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
@@ -6763,9 +7939,7 @@
       "members": [
         "usda-168939"
       ],
-      "aliases": [
-        "Wheat flour, white (industrial), 11.5% protein, bleached, enriched"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
@@ -6773,19 +7947,7 @@
       "members": [
         "usda-168942"
       ],
-      "aliases": [
-        "Wheat flour, white (industrial), 13% protein, bleached, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169101",
-      "members": [
-        "usda-169920"
-      ],
-      "aliases": [
-        "Orange juice, chilled, includes from concentrate, with added calcium"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
@@ -6799,157 +7961,11 @@
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
-      "canonical": "usda-169696",
-      "members": [
-        "usda-169694"
-      ],
-      "aliases": [
-        "Corn flour, masa, enriched, white"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169758",
-      "members": [
-        "usda-169707"
-      ],
-      "aliases": [
-        "Rice, white, long-grain, parboiled, enriched, dry"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169759",
-      "members": [
-        "usda-169708"
-      ],
-      "aliases": [
-        "Rice, white, long-grain, parboiled, enriched, cooked"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-169755",
-      "members": [
-        "usda-169731"
-      ],
-      "aliases": [
-        "Noodles, egg, dry, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-170651",
-      "members": [
-        "usda-170249"
-      ],
-      "aliases": [
-        "Snacks, pretzels, hard, plain, made with enriched flour, unsalted"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-171290",
-      "members": [
-        "usda-170853"
-      ],
-      "aliases": [
-        "Cheese, pasteurized process, American, fortified with vitamin D"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172205",
-      "members": [
-        "usda-170870",
-        "usda-171267",
-        "usda-172193"
-      ],
-      "aliases": [
-        "Milk, reduced fat, fluid, 2% milkfat, with added nonfat milk solids and vitamin A and vitamin D",
-        "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
-        "Milk, reduced fat, fluid, 2% milkfat, with added nonfat milk solids, without added vitamin A"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-173454",
-      "members": [
-        "usda-170876"
-      ],
-      "aliases": [
-        "Milk, dry, whole, with added vitamin D"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-170877",
-      "members": [
-        "usda-172195"
-      ],
-      "aliases": [
-        "Milk, dry, nonfat, regular, with added vitamin A and vitamin D"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
       "canonical": "usda-170880",
       "members": [
         "usda-173450"
       ],
-      "aliases": [
-        "Milk, chocolate, fluid, commercial, reduced fat, with added calcium"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172217",
-      "members": [
-        "usda-171265"
-      ],
-      "aliases": [
-        "Milk, whole, 3.25% milkfat, with added vitamin D"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-173432",
-      "members": [
-        "usda-171269"
-      ],
-      "aliases": [
-        "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172196",
-      "members": [
-        "usda-171272"
-      ],
-      "aliases": [
-        "Milk, dry, nonfat, instant, with added vitamin A and vitamin D"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-171276",
-      "members": [
-        "usda-172194"
-      ],
-      "aliases": [
-        "Milk, canned, evaporated, with added vitamin A"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-171914",
-      "members": [
-        "usda-174151"
-      ],
-      "aliases": [
-        "Beverages, Fruit punch drink, with added nutrients, canned"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
@@ -6957,9 +7973,7 @@
       "members": [
         "usda-172016"
       ],
-      "aliases": [
-        "Wheat flour, white (industrial), 9% protein, bleached, enriched"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
@@ -6967,9 +7981,7 @@
       "members": [
         "usda-172018"
       ],
-      "aliases": [
-        "Wheat flour, white (industrial), 10% protein, bleached, enriched"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
@@ -6977,118 +7989,13 @@
       "members": [
         "usda-172021"
       ],
-      "aliases": [
-        "Wheat flour, white (industrial), 15% protein, bleached, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172817",
-      "members": [
-        "usda-172680"
-      ],
-      "aliases": [
-        "Bread, raisin, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-175052",
-      "members": [
-        "usda-172700"
-      ],
-      "aliases": [
-        "Cake, coffeecake, cinnamon with crumb topping, commercially prepared, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172820",
-      "members": [
-        "usda-172716"
-      ],
-      "aliases": [
-        "Cookies, chocolate chip, commercially prepared, regular, higher fat, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172824",
-      "members": [
-        "usda-172753"
-      ],
-      "aliases": [
-        "Danish pastry, cinnamon, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-175066",
-      "members": [
-        "usda-172792"
-      ],
-      "aliases": [
-        "Popovers, dry mix, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-174915",
-      "members": [
-        "usda-172816"
-      ],
-      "aliases": [
-        "Bread, pita, white, unenriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172819",
-      "members": [
-        "usda-174950"
-      ],
-      "aliases": [
-        "Cookies, butter, commercially prepared, enriched"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-172828",
-      "members": [
-        "usda-173238",
-        "usda-175063"
-      ],
-      "aliases": [
-        "English muffins, plain, unenriched, without calcium propionate (includes sourdough)",
-        "English muffins, plain, enriched, without calcium propionate(includes sourdough)"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-173239",
-      "members": [
-        "usda-175011"
-      ],
-      "aliases": [
-        "Pie, apple, commercially prepared, enriched flour"
-      ],
-      "reason": "Differs only by enrichment or added vitamins, not by macros."
-    },
-    {
-      "canonical": "usda-175053",
-      "members": [
-        "usda-174940"
-      ],
-      "aliases": [
-        "Cake, pound, commercially prepared, other than all butter, enriched"
-      ],
+      "aliases": [],
       "reason": "Differs only by enrichment or added vitamins, not by macros."
     },
     {
       "canonical": "off-5201010144776",
       "name": "Pasta, dry",
       "members": [
-        "usda-169736",
         "off-5201010144523",
         "off-5201010144721",
         "off-5201193106011",
@@ -7212,9 +8119,88 @@
         "Μαρατα",
         "ΜΑΡΑΤΑ",
         "νῶμα",
-        "ζυμαρικά"
+        "Fusilli (Misko)",
+        "Kritharaki (Misko)",
+        "Pâte (Misko)",
+        "ORZO (Melissa)",
+        "κριθαράκι (Melissa)",
+        "Spaghettini No. 3 (Barilla)",
+        "Spaghetti Nº5 (Barilla)",
+        "Rigatoni Penne Rigate Nº73 (Barilla)",
+        "Rigatoni n.89 (Barilla)",
+        "Fusilli n.98 (Barilla)",
+        "Durum Wheat Semolina Pasta (BARILLA)",
+        "Barilla Linguine n.13",
+        "Σπαγγέτι Νο10 (Μαράτα)",
+        "Penne rigate (Barilla)",
+        "Macaroni Pastitsio N°2 (Misko)",
+        "ΣΠΑΓΓΕΤΙ Νο6 (ΜΑΚΒΕΛ)",
+        "CASARECCE (MISKO)",
+        "Spaghetti Stella 6",
+        "Spaghetti n6 (Melissa)",
+        "Matsata (Misko)",
+        "Λαζανάκι (Melissa)",
+        "Σπαγγετίνη (Melissa)",
+        "Melissa Μακαρόνια Τρυπητά No3",
+        "Pâtes maccheroni 44 (Barilla)",
+        "Linguini Al Bronzo",
+        "Spaghetti (Primo gusto)",
+        "Pâte grecque (Stella)",
+        "ΜΙΣΚΟ ΣΠΑΓΓΕΤΙΝΙ No 10 (MISKO)",
+        "Penne",
+        "Orzo",
+        "Spaghetti (Melissa)",
+        "Farfalle (Melissa)",
+        "Pâtes",
+        "Penne Rigate (Misko)",
+        "Σπαγγετίνη No 10, Combino",
+        "Pennes (Combino)",
+        "Lasagna (Target is)",
+        "Βίδες (My Market)",
+        "Spaghetti n. 06 (Μαρατα)",
+        "Spaghetti (Misko)",
+        "Lasagne (Melissa)",
+        "Λαζανάκι (ΜΑΚΒΕΛ)",
+        "Μακαρονια",
+        "Σπαγγέτι (Miami)",
+        "Ζυμαρικά σέλινο",
+        "Spaghetti",
+        "Tortiglioni (stella)",
+        "Fiogkakia (Bow-tie Pasta) (Misko)",
+        "Κριθαράκι μέτριο",
+        "Σπαγγετίνη Νο 6 (ΜΑΚΒΕΛ)",
+        "κοφτα (Combino)",
+        "PENNE RIGATE (WORLD'S MARKET)",
+        "Coral pasta (Melissa)",
+        "Spaghettini No.10 (Worlds Market)",
+        "Ταλιατέλλες (Misko)",
+        "Αχιβάδα (Μέλισσα)",
+        "Μακαρονακι Κοφτό (Επιλογή Μου)",
+        "spaghetti no6 (combini)",
+        "Βίδες (My Gusto)",
+        "Cannelloni (MISKO)",
+        "Μακαρόνια Νο6 (Γαλαξίας)",
+        "Πένες Ριγέ (Γαλαξίας)",
+        "Κριθαράκι Μέτριο (Γαλαξίας)",
+        "Ριγκατόνι (Melissa)",
+        "Spaghetti No 6 (My Kouzina)",
+        "Spaghetti (Galaxias)",
+        "Linguine al bronzo (World's market)",
+        "ΜΑΚΑΡΟΝΙΑ ΝΟ3 (ΜΑΡΑΤΑ)",
+        "Σπαγγέτι Νο 6 (Ελληνικός Sitos)",
+        "Φιδές Ψηλός (Μαράτα)",
+        "Rigatoni (MISKO)",
+        "Σπαγγέτι Νο6 (Μαράτα)",
+        "Spaghetti Number 10 (MyKouzina)",
+        "Skioufixta pasta (νῶμα)",
+        "Κριθαράκι (Μαρατα)",
+        "Πενες ριγε (Μακβελ)",
+        "Ζυμαρικά (Nostimon)",
+        "Κριθαράκι μέτριο (Eurimac)",
+        "Pasta shapes represented: fusilli, spaghetti, spaghettini, penne rigate, rigatoni, linguine, farfalle, orzo (kritharaki), macaroni/pastitsio, lasagne, tagliatelle, cannelloni, casarecce, matsata, tortiglioni, short macaroni, small shells, fides and skioufixta. Dry weight."
       ],
-      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable.",
+      "note": "Pasta shapes represented: fusilli, spaghetti, spaghettini, penne rigate, rigatoni, linguine, farfalle, orzo (kritharaki), macaroni/pastitsio, lasagne, tagliatelle, cannelloni, casarecce, matsata, tortiglioni, short macaroni, small shells, fides and skioufixta. Dry weight."
     },
     {
       "canonical": "off-5208046088289",
@@ -7273,15 +8259,47 @@
         "Μαράτα",
         "ΜΑΡΑΤΑ",
         "Σκλαβενίτης",
-        "κριθαράκι μέτριο ολικής άλεσης"
+        "κριθαράκι μέτριο ολικής άλεσης",
+        "Kritharaki metrico olikis alesis (ΜΑΡΑΤΑ)",
+        "whole wheat orzo medio (Melissa)",
+        "Spaghettis complètes (Barilla)",
+        "Whole Wheat Penne Rigate (Barilla)",
+        "Whole Wheat Spaghetti (Melissa)",
+        "INTEGRALE LINGUINE (Barilla)",
+        "Lasagne (Primo Gusto)",
+        "Pennes Riges Olikhs (Melissa)",
+        "Whole wheat macaroni (Melissa)",
+        "Spaghetti complete (Misko)",
+        "Pâtes blé complet (Melissa)",
+        "Σπαγγέτι ολικής άλεσης Νο. 7 (Μαράτα)",
+        "Penne rigate (Misko)",
+        "Linguine While Wheat (Misko)",
+        "Spaghettini No.10 Whole wheat (MISKO)",
+        "linguine Ολικής (Μαράτα)",
+        "Whole Wheat Fusilli (Melissa)",
+        "Whole Wheat Farfalle (Melissa)",
+        "Penne Ολικής (Μαράτα)",
+        "Spaghettini No 10 (AB)",
+        "Μακαρόνια ολικής (Ελλήνων Στάχη)",
+        "Wholegrain Penne (Combino)",
+        "Πένες Ριγκατε Ολικής Άλεσης (Combino)",
+        "Penne (Marata)",
+        "Σπαγγέτι Νο7 Ολικής Άλεσης (Μαράτα)",
+        "Spaghetti whole wheat (Ελληνική Σπορα)",
+        "Μαράτα Σπαγγέτι Νο10 ολικής άλεσης (Σκλαβενίτης)",
+        "Linguini Whole Wheat (Melissa)",
+        "Σπαγγέτι Ολικής (Pasta manía)",
+        "Πένες ριγέ ολικής άλεσης (Eurimac)",
+        "Spaghetti - Whole Wheat (Combino Lidl)",
+        "Whole-wheat pasta shapes represented: orzo (kritharaki), spaghetti, spaghettini, penne rigate, linguine, lasagne, fusilli, farfalle and macaroni. Dry weight."
       ],
-      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable.",
+      "note": "Whole-wheat pasta shapes represented: orzo (kritharaki), spaghetti, spaghettini, penne rigate, linguine, lasagne, fusilli, farfalle and macaroni. Dry weight."
     },
     {
       "canonical": "off-5202336155699",
       "name": "Milk, whole 3.5%",
       "members": [
-        "usda-172217",
         "off-20119867",
         "off-5201083335231",
         "off-5202178001208",
@@ -7693,7 +8711,6 @@
       "canonical": "off-5212002222884",
       "name": "Flour, white wheat",
       "members": [
-        "usda-169761",
         "off-5203064042404",
         "off-6203875489565",
         "off-20212599",
@@ -7728,7 +8745,6 @@
       "canonical": "off-5202576250024",
       "name": "Rice, white, dry",
       "members": [
-        "usda-169756",
         "off-5200315716015",
         "off-8002130203292",
         "off-5201502110074",
@@ -7801,9 +8817,47 @@
         "ΟΜΟΣΠΟΝΔΙΑ",
         "Σκλαβενίτης",
         "Σκλαβενιτης",
-        "Χαλκιαδάκης"
+        "Χαλκιαδάκης",
+        "Ρυζι Γλασε (Σκλαβενιτης)",
+        "GREEK PARBOILED RICE «BONNET» (ΟΜΟΣΠΟΝΔΙΑ)",
+        "Arborio rice (Riseria Vignola Giovanni S.p.A.)",
+        "Jasmine Rice (Agrino)",
+        "Ρύζι μπασμάτι (Σκλαβενίτης)",
+        "Ρύζι Basmati (3αλφα)",
+        "Riz",
+        "Ρύζι Νυχάκι (Σκλαβενίτης)",
+        "Jasmine Rice (ΑΒ)",
+        "Rice Parboiled (Agrino)",
+        "Parboiled Rice (3alfa)",
+        "Nihaki rice (AB)",
+        "Ρύζι Jasmine (3 ΑΛΦΑ)",
+        "Paarboiled Rice (Lidl)",
+        "Long grain parboiled rice from Thessaloniki (Lidl Επιλογής)",
+        "Ρύζι Μπονέτ (Από Τον Τόπο Μας)",
+        "Agrinio Basmati Rice",
+        "Ρυζι Parboiled (Νωμα)",
+        "Jasmine Rice (Golden Sun)",
+        "Rice Basmati (Golden Sun)",
+        "Rise from Serres (Agrimon)",
+        "Rice Parboiled (AB)",
+        "Ρύζι Καρολίνα (ΑΒ Βασιλόπουλος)",
+        "Basmati Rice (World's market)",
+        "Jasmine Rice (Skalvenhths)",
+        "Basmati Rice (Ελομάς)",
+        "Ρύζι Γλασέ (Νώμα)",
+        "Medium Grain Rice (Επιλογής)",
+        "Ρύζι Γλασέ (Χαλκιαδάκης)",
+        "Sushi Rice",
+        "Ρύζι parboiled (OLA BIO)",
+        "Ρύζι Νυχάκι Θεσσαλονίκης (LIDL)",
+        "Greek Rice Carolina (Sklavenitis)",
+        "ρύζι parboiled Μακρύκοκκο ελληνικό (ΑΒ Επιλογή)",
+        "Medium grain rice from Serres (Lidl)",
+        "Ρύζι γλασέ (Μασούτης)",
+        "White-rice varieties represented: glase, Carolina, nihaki, basmati, jasmine, arborio, sushi rice, parboiled/Bonnet and long- or medium-grain rice. Dry weight."
       ],
-      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable."
+      "reason": "One type: every macro within 10% of this row, or within label rounding. Brands stay searchable.",
+      "note": "White-rice varieties represented: glase, Carolina, nihaki, basmati, jasmine, arborio, sushi rice, parboiled/Bonnet and long- or medium-grain rice. Dry weight."
     },
     {
       "canonical": "off-5202646001136",
@@ -7887,7 +8941,6 @@
       "members": [
         "off-5201458094565",
         "off-5202930972401",
-        "off-5202242000052",
         "off-0940664141360",
         "off-5202930120055",
         "off-5202336163281",
@@ -15617,6 +16670,36 @@
         "κοκκινιστό"
       ],
       "reason": "US meat cuts of one animal, cut and raw or cooked state, every macro within 10%"
+    },
+    {
+      "canonical": "usda-174158",
+      "members": [],
+      "name": "Water",
+      "aliases": [
+        "Beverages, water, tap, drinking",
+        "Ποτά",
+        "νερό",
+        "βρύση",
+        "πόσιμο",
+        "Water, bottled, generic",
+        "Νερό",
+        "εμφιαλωμένο",
+        "γενόσημο",
+        "Water, bottled, low mineral (average)",
+        "χαμηλής περιεκτικότητας σε μέταλλα μέσος όρος",
+        "Water, mineral, bottled (average)",
+        "μεταλλικό",
+        "εμφιαλωμένο μέσος όρος",
+        "Water, mineral, non-carbonated, bottled (average)",
+        "μη ανθρακούχο",
+        "Water, mineral, carbonated, bottled (average)",
+        "ανθρακούχο",
+        "Water, municipal",
+        "δημοτικό",
+        "Water, bottled",
+        "average"
+      ],
+      "reason": "User requested one generic plain-water entry on 2026-11-19. Retain the complete generic bottled-water source profile; no averaging. Mineral and carbonation variants are intentionally omitted, outside the 5% rule."
     }
   ],
   "dropGroups": {
@@ -16022,7 +17105,103 @@
     "usda-175062",
     "usda-175097",
     "usda-175098",
-    "usda-175112"
+    "usda-175112",
+    "ciqual-11017",
+    "ciqual-18101",
+    "ciqual-18104",
+    "ciqual-18900",
+    "ciqual-18902",
+    "ciqual-19026",
+    "ciqual-19693",
+    "ciqual-19695",
+    "ciqual-20921",
+    "ciqual-31106",
+    "ciqual-31113",
+    "ciqual-32011",
+    "ciqual-32012",
+    "ciqual-32013",
+    "ciqual-32014",
+    "ciqual-32017",
+    "ciqual-32028",
+    "ciqual-32029",
+    "ciqual-32032",
+    "ciqual-32107",
+    "ciqual-32108",
+    "ciqual-32129",
+    "ciqual-32138",
+    "ciqual-32141",
+    "off-3273227083324",
+    "off-4056489695370",
+    "off-4335619337794",
+    "off-8019428009146",
+    "off-8590421062692",
+    "off-9020200006917",
+    "off-9020200010907",
+    "usda-168913",
+    "usda-168915",
+    "usda-168916",
+    "usda-168926",
+    "usda-168927",
+    "usda-168928",
+    "usda-168929",
+    "usda-168930",
+    "usda-168931",
+    "usda-168932",
+    "usda-168933",
+    "usda-168935",
+    "usda-169100",
+    "usda-169102",
+    "usda-169696",
+    "usda-169755",
+    "usda-169756",
+    "usda-169757",
+    "usda-169758",
+    "usda-169759",
+    "usda-169760",
+    "usda-169761",
+    "usda-169762",
+    "usda-169898",
+    "usda-169923",
+    "usda-169940",
+    "usda-169947",
+    "usda-170651",
+    "usda-170877",
+    "usda-170888",
+    "usda-170889",
+    "usda-171285",
+    "usda-171290",
+    "usda-171291",
+    "usda-171695",
+    "usda-171914",
+    "usda-172014",
+    "usda-172015",
+    "usda-172196",
+    "usda-172205",
+    "usda-172208",
+    "usda-172217",
+    "usda-172348",
+    "usda-172350",
+    "usda-172446",
+    "usda-172816",
+    "usda-172820",
+    "usda-172824",
+    "usda-173042",
+    "usda-173238",
+    "usda-173432",
+    "usda-173441",
+    "usda-173445",
+    "usda-173451",
+    "usda-173454",
+    "usda-173582",
+    "usda-173585",
+    "usda-173933",
+    "usda-173934",
+    "usda-173935",
+    "usda-174293",
+    "usda-174294",
+    "usda-175052",
+    "usda-175066",
+    "ciqual-32109"
   ],
   "profileDuplicates": [
     {
@@ -16600,6 +17779,405 @@
         "Haloumi"
       ],
       "reason": "User-approved similar product type; all 45 reported catalogue nutrients and source fat/carbohydrate within 5%, checked pairwise. Keep one complete profile."
+    },
+    {
+      "canonical": "off-5201673011576",
+      "name": "Bread rolls, wheat, sandwich, with sesame",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201673011576": "117aa3ce0c589be9f349dcdd65b1d36bb172a37ed21c65dbbc0b6b2378e395d0",
+        "off-5208046088586": "28011bf0977c03cac17f01c4c863ecbebe6f0c3ae7aa3fb5f9ac165eccb055f5"
+      },
+      "expectedProducts": {
+        "off-5201673011576": "3fd840152dfc61ca531dcf90942d60e570a791f28d8ec2f17742ed1cd6a9c97f",
+        "off-5208046088586": "e3c5c92ec19f667e7f832457c4d76b0944e857969405e29fd172d9a3c1cd581b"
+      },
+      "expectedNutrition": {
+        "off-5201673011576": "d9cf2ef51f1a825222e91136cdbcdecb13333b2f5d69f36448fc4d470cd1830e",
+        "off-5208046088586": "cfa169e0c70f6e17bada830ddbd17cd01035c4e9c6c9603f0bd9193b3cec1938"
+      },
+      "aliases": [
+        "Laxtatista psomakia (Karamolegkos)",
+        "ψωμάκια",
+        "Ψωμάκια σταρενια (Μαρατα)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Same wheat sandwich rolls with sesame; product photo and Marata own-label ingredient list confirm the shared type.",
+      "evidence": "https://www.sklavenitis.gr/eidi-artozacharoplasteioy/psomi-typopoiimeno/psomi-gia-santouits-berger-pinsetta-focaccia/marata-psomakia-gia-santouits-6tem-480gr-1495237/"
+    },
+    {
+      "canonical": "off-5202336109852",
+      "name": "Bread, white wheat, sliced, for toast",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202336109852": "58f78fa1b70ece108db20852fcb4e89f8197b2965e95de261d1b8bc666530a83",
+        "off-5203278022759": "ac6ca8c0676d8dec4cba9071bdff8e66a6eaad80cee0b1a5726872e01ca44805"
+      },
+      "expectedProducts": {
+        "off-5202336109852": "7d9c3c80aaf0f5dcbe5a7572f3917c7988f09a8ae158e033c94014cc675f0555",
+        "off-5203278022759": "ea77ddf93c6dd63b3ee4c4d92e54a9a935f7526904c27d64443531e8e304dc39"
+      },
+      "expectedNutrition": {
+        "off-5202336109852": "796597e0ba7243ae7b569a3a300a671188b993adf109f4c89d6cc4f43a8e91b0",
+        "off-5203278022759": "352a80995b6b0e7348d389dfd71c15a4154f988dc5adead93d9177280b1345a1"
+      },
+      "aliases": [
+        "Soft white medium sliced bread, 680 g, ab (ΑΒ Βασιλόπουλος)",
+        "Μαλακό λευκό ψωμί σε μέτριες φέτες",
+        "ψωμί",
+        "Toast bread starenio (Mr. Grand)",
+        "Ψωμί του τοστ σταρένιο"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both explicitly identify white wheat toast bread, with identical reported nutrition; no conflicting formulation is reported."
+    },
+    {
+      "canonical": "off-5201882005731",
+      "name": "Rusks, wheat, Kythira-style, with olive oil",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201882005731": "f34f3807857a3477bf67bba259322f19f6260109f938861d7e9b48f01a972116",
+        "off-5208046088937": "78543a4040fe3a868205f35e5d01a8eb98952c6f0787f98cee858bc33fd5d24b"
+      },
+      "expectedProducts": {
+        "off-5201882005731": "3eecd61b0a8e2688419b8559ec28925fe5eaa08bc3e411aafe5beac355287535",
+        "off-5208046088937": "f8b320c8aaf295526d88ad9c92ecf70a02cd99eaf62708d005ad19eedb0d0aad"
+      },
+      "expectedNutrition": {
+        "off-5201882005731": "3749e8a72a4bec90cb4ab39b02e6f4e530c1925aad3922622ff670536e3a24c4",
+        "off-5208046088937": "8e1baf9f44078a0a07369b6085246e3cd397aebefec8d4bd650fe730b368f200"
+      },
+      "aliases": [
+        "Το μάννα (Τσατσαρωνάκη)",
+        "Paksadakia typou kithiron πακιμαδακια τυπου κυθηρων (Marata)",
+        "Πακσαδάκια Τύπου Κιθήρων Κόστα Ρίκα"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both are Kythira-style olive-oil wheat rusks; source photos and the own-label ingredient list confirm wheat flour and 14% olive oil.",
+      "evidence": "https://www.sklavenitis.gr/eidi-artozacharoplasteioy/kritsinia-paximadia-bake-rolls/paximadia-ladioy-sitoy/marata-paximadakia-ladiou-tupou-kuthiron-400gr-1550884/"
+    },
+    {
+      "canonical": "off-5203064009285",
+      "name": "Rusks, wheat, sliced",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5203064009285": "2c3dcfd9e7df16956ec822f2cf6c75b8805111f0b6d484263c47b3ea049e83e1",
+        "off-5203278035193": "f8794b5cf335d3371662906ad4be1a57507cd122c50eacfbf22a4a10a3e7c41f"
+      },
+      "expectedProducts": {
+        "off-5203064009285": "c5e24bd61b277f5f5d20c6565fcd467eb0c6cf88f403f9a5f734572e21a845c7",
+        "off-5203278035193": "992f6f5d8a85a58777a4bdd2e43f94e82033df94e69ae2a0de26cd194810bb63"
+      },
+      "expectedNutrition": {
+        "off-5203064009285": "f410e4df4a0f886f674984079c013211898282a8bb576449f23ce0c901a0dd21",
+        "off-5203278035193": "51c7140684b0b2b4754f21ecbf0b3772be82dec14396d45166dfe83b055f7273"
+      },
+      "aliases": [
+        "Φρυγανιές σταριενες (Forma)",
+        "Φρηγανιες σιτου (Wheat Rusks)",
+        "σιτάρι"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both source titles and package photos identify sliced wheat rusks. Matching unknown nutrients remain unknown."
+    },
+    {
+      "canonical": "off-5203278054798",
+      "name": "Breadsticks, wheat, with sunflower seeds",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5203278054798": "5d344d6809444d38eb542e6f34bc885194c0f100098f0a19c242017c844a5e47",
+        "off-5208046041154": "71c8af08cee0f78a82ebf8a130c1754995ee3b3051fa7b380ada9d0cad5ea111"
+      },
+      "expectedProducts": {
+        "off-5203278054798": "30808f6c3a61a9bfe95257b35ff99f1ec5df20c649a5f6c95ae049ca73df9274",
+        "off-5208046041154": "a886294ba605b3f6a5ff1968bdfbb03ed3ab0e5de5b092d5f700b66f23ba2429"
+      },
+      "expectedNutrition": {
+        "off-5203278054798": "89b70d397e68aed6df3715c6116ba0c77b0400cffb432265323162d7ec137b54",
+        "off-5208046041154": "4d5d1f81ec9c1a310b8df7b24b68785c14e93d8f4cf82c9682794445dfe7374a"
+      },
+      "aliases": [
+        "Κριτσίνια ηλιόσπορου (Μασούτης)",
+        "Wheat breadsticks with sunflower seeds (Marata)",
+        "Κριτσίνια σιταριού με ηλιόσπορους",
+        "σιτάρι",
+        "ηλιόσποροι"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both explicitly identify wheat breadsticks with sunflower seeds; no conflicting formulation is reported."
+    },
+    {
+      "canonical": "off-5201415201197",
+      "name": "Edam, sliced",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201415201197": "670350af8e0affab6bbcef1e13d51cdc5ac3839404edd1bba35ce0113994b19a",
+        "off-5212002255110": "19232ed93ed2277a68592edb3f97162f350befedd7d82508b4fb5b46d035e0cf"
+      },
+      "expectedProducts": {
+        "off-5201415201197": "318e1ee71e221b93675c964b57a92fecbc5aed06f37791bcc82734b5c47a201d",
+        "off-5212002255110": "15d417ff77884fb61f7e6f9f8f21b4a042e4cc3705d89165960f2d9ecd1b6b57"
+      },
+      "expectedNutrition": {
+        "off-5201415201197": "4b51f50e2efccf1030ab5aac96f836f94f32f7d6b6968f86321164f9ac9fbaf1",
+        "off-5212002255110": "61b08fa801822a057ffe2b47d998bb8191f2503b50ee0a92f46024cd3517762a"
+      },
+      "aliases": [
+        "Edam cheese (Adoro)",
+        "Τυρί",
+        "Edam in slices (Alta Historie)",
+        "Adam",
+        "ένταμ τυρί"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. The Adoro package photo confirms slices, matching the explicit sliced Edam title of the other product."
+    },
+    {
+      "canonical": "off-5206546002248",
+      "name": "Cream cheese, light",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5206546002248": "b1c52aad60147cee2d541819d688c0aa23df2d93199847c2f23789efeddf4a7b",
+        "off-5202336157495": "fad32a1a09b2240b15d23f40c4fea3c2f691eabb98f9dc35208894e394c3d2a1"
+      },
+      "expectedProducts": {
+        "off-5206546002248": "1e365f9a3fbdb674e54bad1417b8130eff9cefa8e4d5bcc4e61d953ccf227248",
+        "off-5202336157495": "15e848d0bfbb22bf3ce9d460e90967770c5c27073e122afafdb7b9dbe4254ca1"
+      },
+      "expectedNutrition": {
+        "off-5206546002248": "8640c86421daa64680eaaec8964029721b09de9d62d32aa49111905d70767453",
+        "off-5202336157495": "8640c86421daa64680eaaec8964029721b09de9d62d32aa49111905d70767453"
+      },
+      "aliases": [
+        "Tyro krema - cream cheese (Royal)",
+        "τυρί κρέμα",
+        "Cream cheese light (AB Vasilopoulos)",
+        "Κρέμα Τυρί",
+        "τυρί",
+        "κρέμα"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both package photos explicitly identify light cream cheese; all reported nutrition is identical."
+    },
+    {
+      "canonical": "off-5208086450893",
+      "name": "Yogurt, cow milk, 3.9% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5208086450893": "b598a64389d914d580c739668cdd448bbac8c7870c557fc15c6686670aa4ce83",
+        "off-5212002254939": "02d48fe2089339af5955463e60bf0d7e411ae894c57adfbcbee64ea4bc7be428"
+      },
+      "expectedProducts": {
+        "off-5208086450893": "4bd2f703731cc0b3d971d27387d79959c0839831fbe8948005cbf014312a5b33",
+        "off-5212002254939": "aa42b20c95e144e780ce91662ece7380265a7775b2246132d6e95b5ca112441e"
+      },
+      "expectedNutrition": {
+        "off-5208086450893": "21a31034ed3c1a36fd9249156f5c417e088e10e008382aa1cb198d15229ff676",
+        "off-5212002254939": "21a31034ed3c1a36fd9249156f5c417e088e10e008382aa1cb198d15229ff676"
+      },
+      "aliases": [
+        "Cow yogurt (H Strougga)",
+        "Αγελαδινό γιαούρτι",
+        "γιαούρτι",
+        "Greek yogurt 3.9% (MyGusto)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. The cow-milk yogurt package confirms 3.9% fat, matching the other title and source total fat; all reported nutrition is identical."
+    },
+    {
+      "canonical": "off-5201037711807",
+      "name": "Yogurt, strained, 10% fat (Delta)",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201037711807": "2ea390bf7d20646ee81470a1f488cbcd07a5cfb804f5900129ef0794f7431cb5",
+        "off-5201033274573": "d32d869bbbf86f3a00e0e76db7386ce5351e8e23b192add9aca6b241b96c36dc"
+      },
+      "expectedProducts": {
+        "off-5201037711807": "d64a210111d55bec57a49032140ec3e0fac282ba94309a1b2fa2e60f4d4d9f72",
+        "off-5201033274573": "86008702b2f272458079b931dd5c77dc9d34312d426ad4cbc8a438709e2fac26"
+      },
+      "expectedNutrition": {
+        "off-5201037711807": "0262ec05cb01fbcf8094348a1664fb78004af8744acca3b12145d5e589e7b49d",
+        "off-5201033274573": "9021a00b52a1078d0e5b4308f0659c2c510f7cba8aa6685c2981803710ac915a"
+      },
+      "aliases": [
+        "Straggisto mikres oikogeneiakes farmes (Delta)",
+        "στραγγιστό γιαούρτι",
+        "Yaourt grec (Delta grand frais)",
+        "Ελληνικό γιαούρτι"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Two Delta plain Greek/strained yogurt listings with identical reported nutrition and 10% source fat. Preserve the brand-specific shared profile."
+    },
+    {
+      "canonical": "off-5202336111480",
+      "name": "Yogurt, strained, 0% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202336111480": "c459a37425f69a142e74ef238d788b37e5e6c4b65ccad1364d34f9556af54733",
+        "off-4056489603542": "5f798c439b0d650965329b073a94f3c4a654d4b77d3c4c50aa2cd1f4bbaf7825"
+      },
+      "expectedProducts": {
+        "off-5202336111480": "1c92253b285774b953eac8610c5be43f5ca35e8c140cfde41d8495f05547d742",
+        "off-4056489603542": "6264e151a4118127d69d1757ad93d8989ea95762ff8c2a5a9ac759d0f5deb196"
+      },
+      "expectedNutrition": {
+        "off-5202336111480": "8c59f98a1471cc4874e5dad13ce2b5aabe8d2a55fd965273f5470908c28981f2",
+        "off-4056489603542": "114a3f90319b9a463e9ef250cd093db826b1ee42892856a2b33b52106ad1247e"
+      },
+      "aliases": [
+        "Yogurt, strained 0%",
+        "στραγγιστό γιαούρτι 0%",
+        "γιαούρτι 0%",
+        "greek 0%",
+        "Dodoni",
+        "FAGE",
+        "Fage Total",
+        "Galaos",
+        "ΑΒ",
+        "Δέλτα",
+        "Μασούτις",
+        "Φάγε",
+        "Στραγγιστό γιαούρτι (ΓΑΛΠΟ)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both explicitly identify plain strained yogurt with zero source fat; retain the separately labelled high-protein product."
+    },
+    {
+      "canonical": "off-5202336035700",
+      "name": "Yogurt, cow milk, 2% fat",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5202336035700": "22af1b488fe0d782fb130d6d6c83ed4f865a71f0f002998dc6e7ccd265550ab0",
+        "off-5212002254915": "6b756cc20a9376992f9baac0d217b1f8844262bf252ecb9028ae51e789ab4d58"
+      },
+      "expectedProducts": {
+        "off-5202336035700": "6c8585355faf402f71bd481bfb0f36e992d76d2316ef5fb991d9cd8993ac2575",
+        "off-5212002254915": "c8e593f38ad424229d93c4d2ec43f3b7efb373af34b23e17a94af179281b2a28"
+      },
+      "expectedNutrition": {
+        "off-5202336035700": "b778ca98b5d8f908252d40145b5c0dce69c1f14f23b599c14d42f3f9fa222641",
+        "off-5212002254915": "c368439f36e7a2fd58a62d7db25c6f393e40263f1fe58c850f8567fe9a95d9c8"
+      },
+      "aliases": [
+        "Αβ γιαούρτι αγελαδος 2% 3Χ200γρ.",
+        "Γιαούρτι αγελάδος (My Gusto)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both explicitly identify plain cow-milk yogurt with 2% source fat. Lactose-free products remain separate."
+    },
+    {
+      "canonical": "off-8718114721019",
+      "name": "Peanut butter, sweetened (Calve)",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-8718114721019": "41d7625af51861c9ab02d15f32be4d2096257fc1ae12fb97dd1b041c2884ddeb",
+        "off-8720182365163": "77d0ea7f171557aebb92edb7bcc6969f556ecc0a4d3109d459db8e1626ef1e3d"
+      },
+      "expectedProducts": {
+        "off-8718114721019": "b5009a3a2f8ddbf807dc6e9374261c9778c9532dd4d302cf21f00a38e43942e7",
+        "off-8720182365163": "46e7c661b53c27695346c50acb2135862ee2e88f854259b3e0e67f17c40da801"
+      },
+      "expectedNutrition": {
+        "off-8718114721019": "d41dd24725554fc9b58a8bc1017fdefe616e31d572cd51599cf6da175778fa6b",
+        "off-8720182365163": "8bfb71c3f1c42ab3d9f764ed0d6d1261566149a4eba3df1ee3fd2c1d671310f5"
+      },
+      "aliases": [
+        "Peanut butter (Calvé)",
+        "Φιστικοβούτυρο",
+        "βούτυρο",
+        "αράπικο φιστίκι",
+        "αραχίδα",
+        "Beurre de cacahuètes (Calvé)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Two plain Calve peanut-butter listings with matching profiles; retain this added-sugar/oil formulation separately from 100% peanut butter."
+    },
+    {
+      "canonical": "off-5200112241055",
+      "name": "Peanut butter, 100% peanuts, smooth",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5200112241055": "26e8095e517c2f8a1dfd108007ab0ecfe84022d069b93340710b2c8af32bb1c9",
+        "off-5200112412912": "66ca1b514c7619dcb594957977c4af16155fc2ed3a0e13db6803354d7225941e"
+      },
+      "expectedProducts": {
+        "off-5200112241055": "d13f6a52c8ffd09438b377fb0f4b3d0f426ffc0c1429daa83c5e9e2199ad93ad",
+        "off-5200112412912": "be9ddd19fc333527fe55ead2fd7209e1353d7e8dd5cf61c5ddd9ca1cc1971929"
+      },
+      "expectedNutrition": {
+        "off-5200112241055": "8509a27110f382ec360eaf7e83848b124c268dd4c2aebef8ce1bcdd07218b3dd",
+        "off-5200112412912": "ff555816e22a2b0dc445e812e6611d3ede69b51cd15e85eb9cb4959c44418054"
+      },
+      "aliases": [
+        "Peanut butter (Ellinikos Karpos)",
+        "Φυστικοβούτυρο",
+        "βούτυρο",
+        "αράπικο φιστίκι",
+        "αραχίδα",
+        "φιστικοβούτυρο",
+        "Erdnussmuß (Noiothts)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Exact-barcode retailer records and the retained product photo identify 300 g and 1 kg packs of Ellinikos Karpos smooth 100% peanut butter; the removed source brand is incorrect.",
+      "evidence": "https://biomesogeios.com/fystikoboytyro-300gr-ellinikos-karpos-60-063 ; https://nutsbox.gr/product/fystikovoutyro-ellinikos-karpos/"
+    },
+    {
+      "canonical": "off-5201049211425",
+      "name": "Tahini, wholegrain",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5201049211425": "47f9098ef938409823f871ac10c28c0f1350eadaffbf64b9c1336bfdd791eddc",
+        "off-5208046089996": "71d65cdbf9f8c4b1af85b2aab6e5aef4c552fa1d96f183015025af14f5f6593e"
+      },
+      "expectedProducts": {
+        "off-5201049211425": "55995f77671d15d58aad1fec113766c9bcbd6894137f7949ff6da9450b1960c4",
+        "off-5208046089996": "e0ad6e4070be45c6daf2e4af71ebf07e0930f9d7b06e474bf7bbb1af3c76c593"
+      },
+      "expectedNutrition": {
+        "off-5201049211425": "de73033bbb13e8f2b8694565c76d53fba0cf2f0c953484a3c5b9a297a0eadfbf",
+        "off-5208046089996": "0598f57c01dd7e393ec0ceb16ab8fc2f0fac77b375e7346d87d5d8e4886127ba"
+      },
+      "aliases": [
+        "Tahini (Makedoniko)",
+        "Ταχίνι",
+        "Wholegrain tahini (Μαρετα)",
+        "ταχίνι"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. The first source explicitly lists 100% unhulled sesame; the other explicitly identifies wholegrain tahini. Plain hulled tahini remains separate."
+    },
+    {
+      "canonical": "off-5207066113186",
+      "name": "Tahini, with honey",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5207066113186": "a729b7f6eb5e189d9824d2e60d994e9e5d37deb22abe84068d7ba8a87e35624e",
+        "off-5208086441068": "05532b08711607a42641c35025e1af8c992826f18c9ca23362566561e1133ffb"
+      },
+      "expectedProducts": {
+        "off-5207066113186": "f33a9d0b55ab6256d6722c2f28c7ba41e080c8c2955eedf97f9abb1e1e3be605",
+        "off-5208086441068": "91e147969ef1a341fa2fae74d8b994daf96aac613054e2f888705bc7c8093a02"
+      },
+      "expectedNutrition": {
+        "off-5207066113186": "2f540e3e26c625def7d673ec3ad5ee0963e46613f429ef22dec9cbd5e6484168",
+        "off-5208086441068": "3a6065d77c87edb1810bf6c5a39cd2bde951ecb8ea1c0c052bbaf0d591ee7163"
+      },
+      "aliases": [
+        "Tahini au miel (Mon choix)",
+        "ταχίνι",
+        "Ταχίνι με μέλι"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both explicitly identify honey tahini and have identical reported profiles; retain plain and other flavours separately."
+    },
+    {
+      "canonical": "off-5200385114186",
+      "name": "Hilopites, with milk and eggs, dry",
+      "maxRelativeDifference": 0.05,
+      "expectedRows": {
+        "off-5200385114186": "12dfb77da4c133e6cccf80ba0bf874547063074d5ec45e8e11fc6bd024725ef2",
+        "off-5202706010016": "71b29df48a9405d948cea25ab3a98ef101e00e24e094b9583d7ea2b3bae55bde"
+      },
+      "expectedProducts": {
+        "off-5200385114186": "753691d0767ee8aaaafa2af2d0a86feffee75774176406124bd64e94e79292f8",
+        "off-5202706010016": "a5a365955f61e0ab3638f0b5bd442d607a133271364ee431ba71962d5602991b"
+      },
+      "expectedNutrition": {
+        "off-5200385114186": "09caf3068b5bb6e4ecd81567e8e76dbb04eb0bee678ca70ae3108af4a472bc18",
+        "off-5202706010016": "167463dc833de6a8bbd7f9b6f50bd0fd8f65add04dca6f87ec0cb2a853710c37"
+      },
+      "aliases": [
+        "Χυλοπίτες με γάλα και αυγά (Ελλήνων στάχυ)",
+        "Χυλοπίτες (Της Γιαγιάς)"
+      ],
+      "reason": "User approved on 2026-11-19, retaining the 5% limit for every nutrient. Both identify hilopites with milk and eggs. The source label and Tis Giagias manufacturer ingredient list agree on semolina, milk and eggs. Couscous and other pasta shapes remain separate.",
+      "evidence": "https://tisgiagias.gr/product/tis-giagias-xylopites-500gr/"
     }
   ]
 }

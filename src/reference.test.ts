@@ -1,6 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Food } from "./domain/types";
-import { copiedFrom } from "./reference";
+import { copiedFrom, useReference } from "./reference";
+import { searchFoods } from "./domain/search";
+
+const setFoods = vi.hoisted(() => vi.fn());
+vi.mock("react", () => ({
+  useEffect: (effect: () => void) => effect(),
+  useState: () => [[], setFoods],
+}));
 
 const food = (note: string, basis: Food["basis"] = "100g"): Food => ({ id: "kiwi", name: "kiwi", basis, group: "", fav: false, note, kcal: 61 });
 
@@ -21,4 +28,26 @@ describe("copiedFrom", () => {
   it("leaves the row pickable when the food is per item", () => {
     expect(copiedFrom(food("source: USDA FDC 174915", "item"))).toBeUndefined();
   });
+});
+
+it("loads variant notes and searchable aliases while preserving source identity and unknown nutrients", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ json: async () => ({
+    sources: {},
+    foods: [["usda", "1", "Pasta, dry", "Pasta", 350, 12, null],
+            ["usda", "2", "Rice, dry", "Rice", 360, 7]],
+    notes: { "usda-1": "Pasta shapes: fusilli, penne, orzo." },
+    keywords: { "usda-1": ["fusilli", "penne", "orzo"] },
+  }) }));
+  try {
+    useReference(true);
+    await vi.waitFor(() => expect(setFoods).toHaveBeenCalledOnce());
+    const foods = setFoods.mock.calls[0][0] as Food[];
+    expect(foods[0].note).toBe("source: USDA FDC 1\nPasta shapes: fusilli, penne, orzo.");
+    expect(foods[1].note).toBe("source: USDA FDC 2");
+    expect(copiedFrom(foods[0])).toBe("usda-1");
+    expect(foods[0].fiber).toBeUndefined();
+    expect(searchFoods(foods, "orzo").map(food => food.id)).toEqual(["usda-1"]);
+  } finally {
+    vi.unstubAllGlobals();
+  }
 });

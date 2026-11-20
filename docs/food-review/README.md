@@ -2,7 +2,7 @@
 
 Reviewed on 2026-11-18. The translation and sugar review covered 13,662 foods: 3,808 USDA, 2,116 CIQUAL and 7,738 Open Food Facts entries. Title and translation change lists describe that review snapshot; the missing-sugar list covers the current catalogue.
 
-A [follow-up relevance review](catalogue-relevance.md), updated on 2026-11-19, excluded 401 entries, including infant foods, industrial ingredients, low-priority regional meats and the additional candidates approved for removal. An [additional review](catalogue-followup.md) also consolidated 50 similar product records into 24 profiles using a 5% limit for every reported nutrient. The current catalogue contains 13,235 foods. Thirty-six excluded or merged records had no reported sugar value; the remaining 1,508 missing-sugar entries keep their existing estimates.
+A [follow-up relevance review](catalogue-relevance.md), updated on 2026-11-19, excluded 401 entries, including infant foods, industrial ingredients, low-priority regional meats and the additional candidates approved for removal. An [additional review](catalogue-followup.md) consolidated 50 similar product records into 24 profiles using a 5% limit for every reported nutrient. The subsequent [generic staple review](generic-staples.md) retained one Water profile, excluded seven water alternatives and the suspect sugar entry, and consolidated another 32 records into 16 profiles under the same 5% limit. The subsequent [fortification review](fortification-review.md) adds 142 conditional exclusions, restores plain profiles hidden by earlier merges and adds searchable pasta/rice variant notes. Explicit exclusions total 551. The current catalogue contains 13,119 foods. The [merge commit audit](merge-audit.md) confirms that older rules still violate the current 5% policy and contain meaningful identity differences; those older problems remain to be repaired.
 
 The scan covered every row. Corrections address repeated translation errors, missing food descriptors, capitalization, and the order of standalone fat and cooking qualifiers. It does not certify every remaining machine translation. Product names that need a label or a more precise identification are listed separately.
 
@@ -13,12 +13,12 @@ The scan covered every row. Corrections address repeated translation errors, mis
 | Normalized titles | 5,478 |
 | Corrected or supplemented Greek search terms | 1,183 |
 | Added confirmed sugar values | 3 |
-| Remaining missing sugar values | 1,508 |
+| Remaining missing sugar values | 1,503 |
 | Names needing further review | 163 |
 
 The translation and sugar review preserved all food IDs, source groups and existing nutrient values. The later relevance exclusions are listed separately. The three sugar additions are the only nutrient changes.
 
-Titles use sentence case, retaining brand spellings, recognized proper names and scientific identifiers. Composition-table titles put identifying details first, then standalone fat/lean content, cooking status/method, and salt/draining qualifiers. Packaged product descriptions retain their original clause order. Leading dairy fat percentages move after the food name; chocolate percentages retain their meaning. Preparation, cultivar, flavour, fat, lactose and source distinctions remain in the titles.
+Titles use sentence case, retaining brand spellings, recognized proper names and scientific identifiers. Composition-table titles put identifying details first, then standalone fat/lean content, cooking status/method, and salt/draining qualifiers. Packaged product descriptions retain their original clause order. Leading dairy fat percentages move after the food name; chocolate percentages retain their meaning. Title normalization retains identifying preparation, cultivar, flavour, fat, lactose and source wording. The separate commit audit documents where older merge rules had already removed distinctions between source profiles.
 
 Examples of translation corrections include hash browns, poultry drumsticks, moringa leaves/pods, radishes, caraway versus cumin, and currants versus raisins. Freshwater drum now includes its English species name and Aplodinotus grunniens, rather than only a generic freshwater-fish description. The scientific identity is supported by the [USGS species record](https://nas.er.usgs.gov/queries/FactSheet.aspx?SpeciesID=946). English identifiers remain where a dependable everyday Greek name was not established.
 
@@ -34,7 +34,7 @@ All values below are grams per 100 g. Each correction checks the complete prior 
 
 ## Missing sugar estimates
 
-[Download the complete list](missing-sugar.csv). Every unresolved food has an ID, title, source annotation, estimate method and explanation. There are 1,497 tentative estimates and 11 entries without enough product information for a useful guess. Estimates remain outside the app database.
+[Download the complete list](missing-sugar.csv). Every unresolved food has an ID, title, source annotation, estimate method and explanation. There are 1,492 tentative estimates and 11 entries without enough product information for a useful guess. Estimates remain outside the app database.
 
 | Evidence or estimate method | Entries |
 | --- | ---: |
@@ -42,8 +42,8 @@ All values below are grams per 100 g. Each correction checks the complete prior 
 | Source upper bounds, including the reviewed Super Fresco limit | 71 |
 | Unquantified source traces | 45 |
 | Incomplete sums of individual USDA sugars | 7 |
-| Comparable catalogue foods | 460 |
-| Food-category estimates, including unidentified products | 919 |
+| Comparable catalogue foods | 456 |
+| Food-category estimates, including unidentified products | 918 |
 
 Guesses and illustrative ranges use g/100 g. They are capped at the source's reported carbohydrate value where available. Comparison estimates use the median of up to three foods with matching identifying terms, compatible preparation and similar energy/protein. Their illustrative range extends the observed values by the larger of 0.5 g or 30% of the median. This is not a statistical confidence interval. Category estimates are broader working guesses.
 
@@ -75,6 +75,6 @@ The importer regression checks passed: 46 tests. The full application suite pass
 
 The catalogue was rebuilt from the cached USDA, CIQUAL and Greece OFF exports. Corrections are maintained in `scripts/food_cleanup.json` and the guarded `reviewedFoods` section of `scripts/food_keywords.el.json`; title normalization runs after identity curation and translation lookup.
 
-The frontend production build passed. An independent rebuild is byte-identical to `public/reference.json`, and the built `dist/reference.json` matches it. Catalogue SHA-256: `55518d9956921cce0e4942129869c638ad7abb16ada5d7b04748dcc2546d7618`.
+The current frontend production build passed. An independent rebuild is byte-identical to `public/reference.json`, and the built `dist/reference.json` matches it. Catalogue SHA-256: `ddb263aba129a5b02d8b70adc90f0862f2943edd4c237424c6ce16b106c58c50`. Current targeted test and search results are in the [fortification review](fortification-review.md#sugar-queue-and-verification).
 
-No technical blockers remain. Conflicting labels, incomplete product identities, uncertain Greek terminology and beverage units remain documented review items.
+No technical blockers remain. Older invalid merges, conflicting labels, incomplete product identities, uncertain Greek terminology and beverage units remain documented review items.

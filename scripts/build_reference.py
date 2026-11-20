@@ -376,6 +376,8 @@ def merge_profiles(rows, merges, product_identities, nutrition_identities):
 
 def curate(foods, corrections, product_identities=None, nutrition_identities=None):
     """Apply reviewed product exclusions, names and equivalent-food merges on rebuild."""
+    foods = list(foods)
+    source_names = {f"{food[0]}-{food[1]}": food[2] for food in foods}
     excluded = set(corrections.get("excludeNames", []))
     names = corrections.get("names", {})
     rows, excluded_after_merges = {}, set()
@@ -442,7 +444,16 @@ def curate(foods, corrections, product_identities=None, nutrition_identities=Non
         if kept is not None and generic.get("name"):
             kept[2] = generic["name"]
     merge_profiles(rows, corrections.get("profileDuplicates", []), product_identities, nutrition_identities)
-    return [row for key, row in drop_unused(rows, corrections).items() if key not in excluded_after_merges]
+    rows = {key: row for key, row in drop_unused(rows, corrections).items() if key not in excluded_after_merges}
+    for key, exclusion in corrections.get("excludeFoods", {}).items():
+        alternative = exclusion.get("unfortifiedAlternative")
+        if alternative and key in source_names and (
+                alternative["id"] not in rows or
+                source_names.get(alternative["id"]) != alternative["expectedName"] or
+                (alternative.get("expectedProduct") and
+                 (product_identities or {}).get(alternative["id"]) != alternative["expectedProduct"])):
+            raise ValueError(f"Unfortified alternative no longer matches: {key}")
+    return list(rows.values())
 
 
 def drop_unused(rows, corrections):
@@ -591,6 +602,8 @@ def main(usda_zip, ciqual_zip, off_csv, out):
                             [*corrections.get("generics", []), *profiles.values()]
                             if generic.get("name") and generic["canonical"] in kept_ids}),
         "keywords": keywords,
+        "notes": {generic["canonical"]: generic["note"] for generic in corrections.get("generics", [])
+                  if generic.get("note") and generic["canonical"] in kept_ids},
         "foods": foods,
     }
     with open(out, "w") as f:
