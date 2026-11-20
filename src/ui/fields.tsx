@@ -152,8 +152,7 @@ export function Info({ id, label, hint, className = "relative", wide = false, ch
   const helpId = id ?? generatedId;
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
-  const pinned = useRef(false);
-  const close = () => { pinned.current = false; setOpen(false); };
+  const close = () => setOpen(false);
 
   useEffect(() => {
     if (!open) return;
@@ -172,7 +171,9 @@ export function Info({ id, label, hint, className = "relative", wide = false, ch
       ref={root}
       className={`${children ? "flex" : "inline-flex"} shrink-0 font-normal tracking-normal normal-case ${className}`}
       onPointerEnter={(e) => e.pointerType === "mouse" && setOpen(true)}
-      onPointerLeave={() => { if (!pinned.current && !root.current?.contains(document.activeElement)) setOpen(false); }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === "mouse" && !root.current?.querySelector(":focus-visible")) close();
+      }}
     >
       <button
         type="button"
@@ -180,10 +181,10 @@ export function Info({ id, label, hint, className = "relative", wide = false, ch
         aria-expanded={open}
         aria-controls={helpId}
         aria-describedby={helpId}
-        onFocus={() => setOpen(true)}
+        onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) setOpen(true); }}
         onBlur={close}
-        onClick={() => { pinned.current = !pinned.current; setOpen(pinned.current); }}
-        className={`flex min-h-11 items-center gap-2 rounded-lg text-muted outline-none hover:text-accent focus-visible:ring-2 focus-visible:ring-accent ${children ? "w-full justify-between px-3 text-left" : "min-w-11 justify-center"}`}
+        onClick={(e) => setOpen(e.nativeEvent instanceof PointerEvent && e.nativeEvent.pointerType === "mouse" ? true : !open)}
+        className={`flex min-h-11 items-center gap-2 rounded-lg text-muted outline-none focus-visible:ring-2 focus-visible:ring-accent ${children ? "w-full justify-between px-3 text-left" : "min-w-11 justify-center"}`}
       >
         {children}
         <svg aria-hidden viewBox="0 0 20 20" className="size-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
