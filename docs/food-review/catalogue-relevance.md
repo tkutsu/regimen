@@ -2,7 +2,7 @@
 
 Reviewed on 2026-11-18 for adults tracking food intake, weight and training, with packaged foods sold in Greece. Updated on 2026-11-19 after the user approved the 220 remaining candidates and a further 79 exclusions.
 
-Excluded 401 reference entries. After the [additional exclusions and product consolidations](catalogue-followup.md), the catalogue now contains 13,235 foods: 3,527 USDA, 2,022 CIQUAL and 7,686 Open Food Facts entries. [Download the exact exclusions and evidence](excluded-foods.csv).
+There are 551 explicit reference exclusions, including seven water alternatives removed after the user requested one generic Water profile, the suspect sugar profile reporting 0.9 g salt/100 g and 142 fortified variants with identified plain counterparts. After the [additional exclusions and product consolidations](catalogue-followup.md), [generic staple review](generic-staples.md) and [fortification review](fortification-review.md), the catalogue contains 13,119 foods: 3,483 USDA, 1,990 CIQUAL and 7,646 Open Food Facts entries. [Download the exact exclusions and evidence](excluded-foods.csv).
 
 The first pass removed 23 entries around infant feeding. The broader pass removed another 79 after checking the composition-table groups, product-title patterns and the packaged-food source categories. A further 220 entries were removed on explicit user approval. The [additional review](catalogue-followup.md) removed another 79 and consolidated 26 redundant product records under 24 retained profiles. These are catalogue relevance decisions for the intended audience; the excluded profiles still describe distinct source foods.
 
@@ -29,7 +29,7 @@ The first table covers the earlier 322 exclusions; [the additional 79 exclusions
 
 Baby carrots, baby potatoes, salad leaves and Babybel remain. Children's ordinary milk, yogurt and cocoa milk also remain useful food profiles. Frezylac corn-heart snacks stay because the [manufacturer explicitly includes adults](https://www.frezyderm.gr/paidikh-brefikh-diatrofh/viologika-snak-frezylac-/frezylac-the-snack-viologikes-kardies-kalampokiou/).
 
-Sports supplements, meal replacements and the adult diabetes nutrition supplement remain relevant to tracking intake. Rabbit, wild boar, deer, goat, ostrich, seafood and edible offal remain. Offal can be part of Greek dishes; broad rules for organs or game would remove useful foods. Ordinary cooking oils, lard, tallow, household shortening, dairy fat percentages and preparation differences remain.
+Sports supplements, meal replacements and the adult diabetes nutrition supplement remain relevant to tracking intake. Rabbit, wild boar, deer, goat, ostrich, seafood and edible offal remain. Offal can be part of Greek dishes; broad rules for organs or game would remove useful foods. Ordinary cooking oils, lard, tallow and household shortening remain. The [commit audit](merge-audit.md) identifies older merges that incorrectly cross dairy fat percentages or other identity distinctions.
 
 ## Approved additional removals
 
@@ -48,6 +48,6 @@ No other whole source group was selected for removal. The remaining broad groups
 
 The exclusions affect the bundled reference catalogue, which supplies foods to copy into a personal list. No personal event logs, saved foods, recipes or meal entries were edited.
 
-All retained nutrient values are unchanged. The additional review changed 24 shared display titles and retained their original product names and Greek terms as aliases. Other retained names and keywords are unchanged. Thirty-six excluded or consolidated records had missing sugar; the current list contains 1,508 unresolved foods with unchanged retained guesses. Earlier title and name-review lists remain historical records and may mention an excluded food.
+All retained nutrient values are unchanged. The additional review changed 24 shared display titles and retained their original product names and Greek terms as aliases. The later generic staple review changed another 16 shared titles plus Water and is documented separately. The current list contains 1,503 unresolved foods, with unchanged retained guesses and three additional low-confidence estimates for restored plain profiles. The fortification review describes the changes. Earlier title and name-review lists remain historical records and may mention an excluded food.
 
-The importer checks passed (52 tests), including exclusion identity drift, exclusions of retained IDs, the strict 5% profile limit and preservation of Babybel and baby carrots. All 177 application checks passed. Two rebuilds from cached source exports produced identical catalogue bytes. Native Linux and Android installation results are reported separately at release time.
+The importer checks passed (52 tests), including exclusion identity drift, exclusions of retained IDs, the strict 5% profile limit and preservation of Babybel and baby carrots. All 177 application checks passed. Two rebuilds from cached source exports produced identical catalogue bytes. Those checks describe the earlier exclusion pass. Current verification is in the fortification review. Native Linux and Android installation results are reported separately at release time.

@@ -300,6 +300,22 @@ class ReferenceImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'exclusion no longer matches'):
             build.curate([['usda', '1', 'Changed source identity', *canonical[3:]], member], rules)
 
+    def test_fortification_exclusion_requires_a_retained_matching_plain_variant(self):
+        fortified = ['off', '1', 'Milk, fortified', *self.normalize()[3:]]
+        plain = ['off', '2', 'Milk, plain', *self.normalize()[3:]]
+        rules = {'excludeFoods': {'off-1': {'expectedName': fortified[2],
+                 'unfortifiedAlternative': {'id': 'off-2', 'expectedName': plain[2],
+                                           'expectedProduct': 'plain-label'}}}}
+        self.assertEqual(build.curate(iter([fortified, plain]), rules, {'off-2': 'plain-label'}), [plain])
+        for rows, products in [([fortified], {'off-2': 'plain-label'}),
+                               ([fortified, ['off', '2', 'Milk, fortified too', *plain[3:]]], {'off-2': 'plain-label'}),
+                               ([fortified, plain], {'off-2': 'changed-ingredients'})]:
+            with self.assertRaisesRegex(ValueError, 'Unfortified alternative no longer matches'):
+                build.curate(rows, rules, products)
+        rules['excludeFoods']['off-2'] = {'expectedName': plain[2]}
+        with self.assertRaisesRegex(ValueError, 'Unfortified alternative no longer matches'):
+            build.curate([fortified, plain], rules, {'off-2': 'plain-label'})
+
     def test_salted_rows_go_only_when_an_unsalted_twin_exists_and_they_are_not_kept(self):
         row = lambda food_id, name: ['usda', food_id, name, 'Vegetables', *self.normalize()[4:]]
         foods = [row('1', 'Beets, boiled, with salt'), row('2', 'Beets, boiled, without salt'),

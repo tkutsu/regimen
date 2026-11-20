@@ -3,7 +3,7 @@ import { NUTRIENTS } from "./domain/nutrition";
 import type { Food } from "./domain/types";
 
 type Row = [source: string, id: string, name: string, group: string, kcal: number, ...values: (number | null)[]];
-type Data = { sources: Record<string, string>; foods: Row[]; estimatedUnsatFat?: string[]; generics?: string[]; keywords?: Record<string, string[]> };
+type Data = { sources: Record<string, string>; foods: Row[]; estimatedUnsatFat?: string[]; generics?: string[]; keywords?: Record<string, string[]>; notes?: Record<string, string> };
 
 const LABELS: Record<string, string> = { usda: "USDA FDC", ciqual: "CIQUAL", off: "Open Food Facts" };
 
@@ -21,7 +21,8 @@ function loadReference(): Promise<Food[]> {
       data.generics?.forEach((id) => genericIds.add(id));
       return data.foods.map(([source, id, name, group, kcal, ...values]): Food => {
         const note = `source: ${LABELS[source] ?? source} ${id}` +
-          (estimates.has(`${source}-${id}`) ? "\nunsaturated fat estimate: total fat minus saturated fat" : "");
+          (estimates.has(`${source}-${id}`) ? "\nunsaturated fat estimate: total fat minus saturated fat" : "") +
+          (data.notes?.[`${source}-${id}`] ? `\n${data.notes[`${source}-${id}`]}` : "");
         const food: Food = { id: `${source}-${id}`, name, basis: "100g", group, fav: false, note, kcal };
         if (data.keywords?.[food.id]?.length) food.keywords = data.keywords[food.id];
         // null (no value in the source) stays unknown rather than becoming 0

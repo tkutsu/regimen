@@ -1,6 +1,6 @@
 # Additional catalogue review
 
-Reviewed on 2026-11-19. The user approved this review on 2026-11-19. The bundled catalogue now contains 13,235 foods; 401 reference entries are excluded in total.
+Reviewed on 2026-11-19. The user approved this review on 2026-11-19. This pass left 13,235 foods and 401 explicit reference exclusions. The later [generic staple review](generic-staples.md), including water and suspect sugar exclusions, left 13,211 foods and 409 exclusions. The subsequent [fortification review](fortification-review.md) leaves 13,119 foods and 551 exclusions. A [commit audit](merge-audit.md) identifies older policy violations that remain unrepaired.
 
 This pass applied 79 additional relevance exclusions and consolidated 50 product records into 24 retained profiles, removing 26 redundant rows. Personal foods, recipes and meal history are outside these removals and merges.
 
@@ -40,15 +40,15 @@ The difference is `abs(a - b) / min(a, b)`. A zero can match only zero. There is
 
 The groups include plain milk with matching fat percentages, lactose-free milk, kefir, traditional cow-milk yogurt, goat-milk yogurt, sliced Gouda, light Gouda, grated Parmigiano Reggiano, halloumi, corn oil, oat flakes, wheat tortillas, protein tortillas, wheat rusks, country-style filo, smoked salmon, smoked turkey, salami, vanilla pudding and chocolate dairy desserts.
 
-The review screened 173 candidate pairs using names, Greek search terms and nutrition. Matching nutrition alone is insufficient: different flavours, cuts, cooking methods, lactose status, fortification and declared ingredient formulations remain separate. For example, the two Hellmann's light mayonnaises have matching displayed nutrients but different oil and egg formulations, so they are excluded from the merge groups. Pasta shapes and grated versus sliced cheese also remain distinct. Products without enough identifying detail remain unresolved.
+The review screened 173 candidate pairs using names, Greek search terms and nutrition. Matching nutrition alone is insufficient: different flavours, cuts, cooking methods, lactose status, fortification and declared ingredient formulations remain separate. For example, the two Hellmann's light mayonnaises have matching displayed nutrients but different oil and egg formulations, so they are excluded from the merge groups. This pass kept pasta shapes and grated versus sliced cheese distinct. The user later accepted shared pasta shapes and rice varieties; their searchable notes are documented in the fortification review. Products without enough identifying detail remain unresolved.
 
-Each group keeps one complete source profile, with no averaging or nutrient filling. The shared display titles describe the shared food; original product names and Greek terms remain searchable. Exact source-row, product-identity and raw source-nutrition guards stop a rebuild when reviewed source data changes. The new 5% limit applies to this review; older, separately approved consolidations are unchanged.
+Each group keeps one complete source profile, with no averaging or nutrient filling. The shared display titles describe the shared food; original product names and Greek terms remain searchable. Exact source-row, product-identity and raw source-nutrition guards stop a rebuild when reviewed source data changes. This pass enforced the 5% limit on its new groups only. The later commit audit confirms that inherited rules do not satisfy that limit; their earlier approval does not establish compliance with the current policy.
 
 ## Verification and release
 
-The catalogue contains 3,527 USDA, 2,022 CIQUAL and 7,686 Open Food Facts entries. All retained nutrient values are unchanged. Only the 24 shared display names and their search aliases changed; other retained names and keywords are unchanged.
+After this pass the catalogue contained 3,527 USDA, 2,022 CIQUAL and 7,686 Open Food Facts entries. All retained nutrient values were unchanged. Only the 24 shared display names and their search aliases changed; other retained names and keywords were unchanged. The later water review is documented separately.
 
-The missing-sugar list now contains 1,508 foods, including 1,497 tentative guesses and 11 entries without enough identity information for a useful estimate. Nineteen removed records disappeared from this list in this pass. Retained guesses are unchanged; comparison IDs follow merged profiles where applicable.
+After this pass the missing-sugar list contained 1,508 foods, including 1,497 tentative guesses and 11 entries without enough identity information for a useful estimate. Nineteen removed records disappeared from this list in this pass. The later [generic staple review](generic-staples.md) reduced the list to 1,507. Retained guesses are unchanged; comparison IDs follow merged profiles where applicable.
 
 The 52 importer tests and 177 application tests passed. Importer checks cover the exact 5% boundary, micronutrients, small amounts, zero versus unknown, transitive chains, source changes, exclusions of retained IDs and aliases alongside reviewed Greek terms. Two complete rebuilds from cached source archives produced identical catalogue bytes. Search checks cover the merged names and brands.
 

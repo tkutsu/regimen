@@ -9,7 +9,7 @@ import { Segmented, TrendChart } from "./TrendChart";
 
 const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
-const AVERAGES = [2, 4, 8];
+const AVERAGES = [1, 2, 4];
 const format = (kg: number) => `${Math.round(kg).toLocaleString()} kg`;
 
 /** Daily completed-set volume and its rolling average, with the same phases as Weight. */
