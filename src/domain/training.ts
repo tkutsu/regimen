@@ -9,11 +9,11 @@ export function weekStart(date: string): string {
   return shiftDate(date, -((new Date(`${date}T12:00:00`).getDay() + 6) % 7));
 }
 
-export type VolumePoint = { date: string; kg: number; avg: number; missingBodyweight: number };
+export type VolumePoint = { date: string; kg: number; avg?: number; missingBodyweight: number };
 
 /**
  * Done sets as reps times load, summed per day from the first session to `to`, rest days included.
- * `avg` is the mean of the last `weeks` weeks of days, so rest days pull it down.
+ * `avg` is the daily mean over `weeks` weeks, available only once that full window exists.
  */
 export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[] {
   const sessions = [...state.sessions.values()].filter((s) => s.date <= to && s.sets.some((set) => set.done && (set.reps ?? 0) > 0)).sort((a, b) => a.date.localeCompare(b.date));
@@ -39,7 +39,8 @@ export function volumeSeries(state: State, to: string, weeks = 4): VolumePoint[]
   for (let date = sessions[0].date; date <= to; date = shiftDate(date, 1)) {
     const total = totals.get(date) ?? { kg: 0, missingBodyweight: 0 };
     const window = [...points.slice(Math.max(0, points.length - weeks * 7 + 1)), total];
-    points.push({ date, ...total, avg: window.reduce((sum, p) => sum + p.kg, 0) / window.length });
+    const avg = window.length === weeks * 7 ? window.reduce((sum, p) => sum + p.kg, 0) / window.length : undefined;
+    points.push({ date, ...total, avg });
   }
   return points;
 }

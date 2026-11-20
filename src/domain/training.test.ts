@@ -138,7 +138,7 @@ describe("daily volume", () => {
   it("flags bodyweight without a prior weigh-in and retains added load; legacy exercises default to 0%", () => {
     const state = history();
     state.sessions.set("a", session("a", "2026-10-25", [set("dips", 10, 20), set("bench", 8, 60), set("unweighted", 12)]));
-    expect(volumeSeries(state, "2026-10-25")).toEqual([{ date: "2026-10-25", kg: 680, avg: 680, missingBodyweight: 1 }]);
+    expect(volumeSeries(state, "2026-10-25")).toEqual([{ date: "2026-10-25", kg: 680, avg: undefined, missingBodyweight: 1 }]);
   });
 
   it("includes rest days and averages over the last weeks of days before range filtering", () => {
@@ -148,11 +148,22 @@ describe("daily volume", () => {
     const series = volumeSeries(state, "2026-11-02", 2);
     expect(series).toHaveLength(22);
     expect(series.filter((p) => p.kg).map((p) => [p.date, p.kg])).toEqual([["2026-10-12", 1000], ["2026-10-26", 2000]]);
-    expect(series.map((p) => p.avg).slice(0, 3)).toEqual([1000, 500, 1000 / 3]);
+    expect(series.slice(0, 13).every((p) => p.avg === undefined)).toBe(true);
     // 14 days back from 10-25 still holds the first session; from 10-26 it has dropped out.
     expect(series[13].avg).toBe(1000 / 14);
     expect(series[14].avg).toBe(2000 / 14);
     expect(volumeSeries(state, "2026-11-02", 1)[7].avg).toBe(0);
+  });
+
+  it.each([1, 2, 4])("waits for a full %i-week window before averaging daily volume", (weeks) => {
+    const state = history();
+    state.sessions.set("a", session("a", "2026-10-12", [set("bench", 10, 140)]));
+    const series = volumeSeries(state, "2026-11-09", weeks);
+    const days = weeks * 7;
+    expect(series.slice(0, days - 1).map((p) => p.avg)).toEqual(Array(days - 1).fill(undefined));
+    expect(series[0].kg).toBe(1400);
+    expect(series[days - 1].avg).toBe(1400 / days);
+    expect(series[days].avg).toBe(0);
   });
 
   it("has no series for planned sets or completed sets without reps", () => {

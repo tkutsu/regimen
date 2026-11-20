@@ -17,5 +17,7 @@ describe("training volume average controls", () => {
     const html = renderToStaticMarkup(<TrainingVolume state={state} />);
     const weeks = [...html.matchAll(/>(\d+w)<\/button>/g)].map((match) => match[1]);
     expect(weeks).toEqual(["1w", "2w", "4w"]);
+    expect(html).toContain("needs 28 days of history");
+    expect(html).not.toMatch(/NaN|undefined/);
   });
 });
