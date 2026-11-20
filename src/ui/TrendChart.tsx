@@ -36,7 +36,7 @@ const STRIP = { gap: 4, height: 5 };
 
 type Band = { phase: Phase; from: string; to: string };
 
-type Point = { date: string; kg: number; avg: number; note?: string };
+type Point = { date: string; kg: number; avg?: number; note?: string };
 type ChartProps = {
   points: Point[];
   bands: Band[];
@@ -63,7 +63,7 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
 
   const first = points[0].date;
   const span = Math.max(1, daysBetween(first, to ?? points.at(-1)!.date));
-  const values = points.flatMap((p) => [p.kg, p.avg]);
+  const values = points.flatMap((p) => p.avg === undefined ? [p.kg] : [p.kg, p.avg]);
   const max = Math.max(...values);
   const [lo, hi] = volume ? [0, Math.max(1, max * 1.1)] : [Math.min(...values) - 0.2, max + 0.2];
   const magnitude = 10 ** Math.floor(Math.log10(hi / 4));
@@ -76,7 +76,8 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
   const x = (date: string) => left + (daysBetween(first, date) / span) * innerW;
   const y = (kg: number) => PAD.top + ((hi - kg) / (hi - lo)) * (H - PAD.top - PAD.bottom);
   const xTicks = [...new Set([0, 1 / 3, 2 / 3, 1].map((f) => points[Math.round(f * (points.length - 1))].date))];
-  const line = points.map((p, i) => `${i ? "L" : "M"}${x(p.date).toFixed(1)},${y(p.avg).toFixed(1)}`).join("");
+  const line = points.map((p, i) => p.avg === undefined ? "" :
+    `${i && points[i - 1].avg !== undefined ? "L" : "M"}${x(p.date).toFixed(1)},${y(p.avg).toFixed(1)}`).join("");
   const read = points[Math.min(hover ?? points.length - 1, points.length - 1)];
   const readPhase = bands.find((band) => band.from <= read.date && read.date <= band.to)?.phase;
   const halfDay = innerW / span / 2;
@@ -122,7 +123,7 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
         </span>
         <span>
           <span className="font-medium">{format(read.kg)}</span>
-          <span className="text-muted"> · avg {format(read.avg)}</span>
+          {read.avg !== undefined && <span className="text-muted"> · avg {format(read.avg)}</span>}
         </span>
       </p>
       {read.note && <p className="mb-1 text-xs text-muted">{read.note}</p>}
@@ -131,7 +132,7 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
           onPointerCancel={() => { press.current = undefined; }} onPointerLeave={() => setHover(undefined)}
           tabIndex={0} role="slider" aria-label={`${valueLabel} history; use arrow keys to read values${onRegion ? ", with Shift to select a stretch" : ""}`}
           aria-valuemin={0} aria-valuemax={points.length - 1} aria-valuenow={Math.min(hover ?? points.length - 1, points.length - 1)}
-          aria-valuetext={`${short(read.date)}: ${format(read.kg)}, ${averageLabel} ${format(read.avg)}`}
+          aria-valuetext={`${short(read.date)}: ${format(read.kg)}${read.avg === undefined ? "" : `, ${averageLabel} ${format(read.avg)}`}`}
           onKeyDown={(e) => {
             if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
             e.preventDefault();
@@ -177,11 +178,11 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
           {points.map((p) => (
             <circle key={p.date} cx={x(p.date)} cy={y(p.kg)} r={2} className="fill-muted" opacity={0.45} />
           ))}
-          <path d={line} fill="none" className="stroke-accent" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+          {line && <path d={line} fill="none" className="stroke-accent" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />}
           {region && (
             <line x1={x(region.from)} x2={x(region.to)} y1={y(region.fromKg)} y2={y(region.toKg)} className="stroke-fg" strokeWidth={2} strokeDasharray="5 3" strokeLinecap="round" />
           )}
-          <circle cx={x(read.date)} cy={y(read.avg)} r={4} className="fill-accent stroke-surface" strokeWidth={2} />
+          {read.avg !== undefined && <circle cx={x(read.date)} cy={y(read.avg)} r={4} className="fill-accent stroke-surface" strokeWidth={2} />}
         </svg>
       )}
       <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">

@@ -39,7 +39,9 @@ export function TrainingVolume({ state }: { state: State }) {
               <span className="text-3xl font-semibold">{format(latest.kg)}</span>
               <span className="text-sm text-muted">today</span>
             </div>
-            <p className="mt-1 text-sm text-muted">{weeks}-week average: {format(latest.avg)}</p>
+            <p className="mt-1 text-sm text-muted">
+              {weeks}-week average: {latest.avg === undefined ? `needs ${weeks * 7} days of history` : format(latest.avg)}
+            </p>
             <div className="mt-4 flex gap-2 text-sm">
               <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
               <Segmented options={AVERAGES} value={weeks} onChange={setWeeks} label={(n) => `${n}w`} className="flex-[2]" />
