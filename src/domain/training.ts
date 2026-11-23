@@ -176,10 +176,29 @@ export function supersets(sets: SetLog[], linked: string[] = []): { exerciseId: 
   return blocks;
 }
 
-/** The session with the sets not done dropped; undefined when none were, as there's nothing to keep. */
-export function finish(session: Session): Session | undefined {
-  const sets = session.sets.filter((set) => set.done);
-  return sets.length ? { ...session, sets, finished: true } : undefined;
+/**
+ * The day's workout: the session on that date, or an empty one written on its first change.
+ * Its id is the date, so two devices starting the same day write the same session.
+ */
+export function workoutOn(sessions: Iterable<Session>, date: string): Session {
+  for (const session of sessions) if (session.date === date) return session;
+  return { id: date, date, name: "Workout", sets: [] };
+}
+
+/** `more`'s sets after `session`'s, under `session`'s id and date. An empty session takes `more`'s name. */
+export function merge(session: Session, more: Session): Session {
+  const empty = !session.sets.length;
+  const { linked: _, note: __, ...rest } = session;
+  const linked = [...new Set([...(session.linked ?? []), ...(more.linked ?? [])])];
+  const note = [session.note, more.note].filter(Boolean).join("\n");
+  return {
+    ...rest,
+    name: empty ? more.name : [...new Set([session.name, more.name])].join(" + "),
+    workoutId: empty ? more.workoutId : session.workoutId,
+    sets: [...session.sets, ...more.sets],
+    ...(linked.length && { linked }),
+    ...(note && { note }),
+  };
 }
 
 /** Exercises that a workout or a session uses, which can't be deleted. */

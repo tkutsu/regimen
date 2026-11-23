@@ -130,7 +130,7 @@ export function Today({ state, commit }: Props) {
 }
 
 /** Change days with buttons, a horizontal swipe/drag, or vertical wheel input over the bar. */
-function DateNav({ date, onChange }: { date: string; onChange: (date: string) => void }) {
+export function DateNav({ date, onChange }: { date: string; onChange: (date: string) => void }) {
   const bar = useRef<HTMLElement>(null);
   const drag = useRef<{ pointer: number; x: number; y: number }>(undefined);
   const dragged = useRef(false);

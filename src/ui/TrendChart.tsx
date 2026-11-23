@@ -45,19 +45,28 @@ type ChartProps = {
   format: (value: number) => string;
   volume?: boolean;
   to?: string;
-  /** The picked stretch, with its best fit line's ends, and `onRegion` to let a drag pick one. */
+  /**
+   * The ends of a stretch, as dates, and `onEdges` to let taps pick them: the first tap or drag
+   * places one end, the next the other, and holding an end moves it.
+   */
+  edges?: string[];
+  onEdges?: (edges: string[]) => void;
+  /** The picked stretch's best fit line. */
   region?: { from: string; to: string; fromKg: number; toKg: number };
-  onRegion?: (range?: { from: string; to: string }) => void;
 };
 
 /** A press that travels no further than this is a tap. */
 const TAP = 6;
+/** How near a press must land to an end to hold it. */
+const GRAB = 20;
 
 /** Raw values and a rolling average, with daily phase strips and pointer, touch, or arrow-key readings. */
-export function TrendChart({ points, bands, averageLabel, valueLabel, format, volume = false, to, region, onRegion }: ChartProps) {
+export function TrendChart({ points, bands, averageLabel, valueLabel, format, volume = false, to, edges = [], onEdges, region }: ChartProps) {
   const [ref, width] = useWidth<HTMLDivElement>();
   const [hover, setHover] = useState<number>();
-  const press = useRef<{ px: number; from: number; to: number; moved: boolean }>(undefined);
+  const [nearEdge, setNearEdge] = useState(false);
+  /** Which end the press holds, once it has one. */
+  const press = useRef<{ px: number; edge?: number; moved: boolean }>(undefined);
   const keyAnchor = useRef<number>(undefined);
   const left = volume ? 44 : PAD.left;
 
@@ -83,35 +92,49 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
   const halfDay = innerW / span / 2;
   const clampX = (px: number) => Math.min(Math.max(px, left), width - PAD.right);
 
-  const pick = (a: number, b: number) =>
-    onRegion?.(a === b ? undefined : { from: points[Math.min(a, b)].date, to: points[Math.max(a, b)].date });
   const nearest = (e: React.PointerEvent<SVGSVGElement>) => {
     const px = e.clientX - e.currentTarget.getBoundingClientRect().left;
     let best = 0;
     points.forEach((p, i) => Math.abs(x(p.date) - px) < Math.abs(x(points[best].date) - px) && (best = i));
     return { px, best };
   };
+  /** The end within reach of px, the closer of the two if both are. */
+  const grabbed = (px: number) => {
+    const reach = edges.map((date) => Math.abs(x(date) - px));
+    const i = reach.indexOf(Math.min(...reach));
+    return reach[i] <= GRAB ? i : undefined;
+  };
+  const place = (edge: number, at: number) => {
+    if (edges[edge] === points[at].date) return;
+    const next = [...edges];
+    next[edge] = points[at].date;
+    onEdges?.(next);
+  };
   const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
     const { px, best } = nearest(e);
     setHover(best);
-    if (!onRegion || e.button !== 0 || !e.isPrimary) return;
-    press.current = { px, from: best, to: best, moved: false };
+    if (!onEdges || e.button !== 0 || !e.isPrimary) return;
+    press.current = { px, edge: grabbed(px), moved: false };
     e.currentTarget.setPointerCapture(e.pointerId);
   };
   const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const { px, best } = nearest(e);
     setHover(best);
     const held = press.current;
-    if (!held) return;
+    if (!held) return setNearEdge(onEdges !== undefined && grabbed(px) !== undefined);
     held.moved ||= Math.abs(px - held.px) > TAP;
-    if (!held.moved || best === held.to) return;
-    held.to = best;
-    pick(held.from, best);
+    if (!held.moved) return;
+    // A drag away from both ends places the next one, while one is still to place.
+    if (held.edge === undefined && edges.length < 2) held.edge = edges.length;
+    if (held.edge !== undefined) place(held.edge, best);
   };
-  const onPointerUp = () => {
-    // A tap clears what's picked, and a drag back onto its start has already.
-    if (press.current && !press.current.moved) onRegion?.(undefined);
+  const onPointerUp = (e: React.PointerEvent<SVGSVGElement>) => {
+    const held = press.current;
     press.current = undefined;
+    if (!held || held.moved || held.edge !== undefined || edges.length >= 2) return;
+    // A tap places the next end; a second tap on the first is no stretch.
+    const { best } = nearest(e);
+    if (edges[0] !== points[best].date) place(edges.length, best);
   };
 
   return (
@@ -130,7 +153,7 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
       {width > 0 && (
         <svg width={width} height={H} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp}
           onPointerCancel={() => { press.current = undefined; }} onPointerLeave={() => setHover(undefined)}
-          tabIndex={0} role="slider" aria-label={`${valueLabel} history; use arrow keys to read values${onRegion ? ", with Shift to select a stretch" : ""}`}
+          tabIndex={0} role="slider" aria-label={`${valueLabel} history; use arrow keys to read values${onEdges ? ", with Shift to select a stretch" : ""}`}
           aria-valuemin={0} aria-valuemax={points.length - 1} aria-valuenow={Math.min(hover ?? points.length - 1, points.length - 1)}
           aria-valuetext={`${short(read.date)}: ${format(read.kg)}${read.avg === undefined ? "" : `, ${averageLabel} ${format(read.avg)}`}`}
           onKeyDown={(e) => {
@@ -140,9 +163,9 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
             const next = e.key === "Home" ? 0 : e.key === "End" ? points.length - 1 : Math.max(0, Math.min(points.length - 1, at + (e.key === "ArrowLeft" ? -1 : 1)));
             setHover(next);
             keyAnchor.current = e.shiftKey ? (keyAnchor.current ?? at) : undefined;
-            if (keyAnchor.current !== undefined) pick(keyAnchor.current, next);
+            if (keyAnchor.current !== undefined) onEdges?.([points[keyAnchor.current].date, points[next].date]);
           }}
-          className="touch-pan-y outline-none select-none">
+          className={`touch-pan-y outline-none select-none ${nearEdge ? "cursor-ew-resize" : ""}`}>
           {region && (
             <rect x={x(region.from)} width={x(region.to) - x(region.from)} y={PAD.top} height={H - PAD.top - PAD.bottom} className="fill-accent" opacity={0.14} />
           )}
@@ -182,6 +205,12 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
           {region && (
             <line x1={x(region.from)} x2={x(region.to)} y1={y(region.fromKg)} y2={y(region.toKg)} className="stroke-fg" strokeWidth={2} strokeDasharray="5 3" strokeLinecap="round" />
           )}
+          {edges.map((date, i) => (
+            <g key={i} className="fill-accent stroke-accent">
+              <line x1={x(date)} x2={x(date)} y1={PAD.top} y2={H - PAD.bottom} strokeWidth={1.5} />
+              <rect x={x(date) - 3} y={(PAD.top + H - PAD.bottom) / 2 - 10} width={6} height={20} rx={3} stroke="none" />
+            </g>
+          ))}
           {read.avg !== undefined && <circle cx={x(read.date)} cy={y(read.avg)} r={4} className="fill-accent stroke-surface" strokeWidth={2} />}
         </svg>
       )}

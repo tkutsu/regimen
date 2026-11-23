@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
 import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Region, type Stretch } from "../domain/weight";
@@ -21,12 +21,23 @@ export function Weight({ state, commit }: Props) {
   const today = localDate();
   const [range, setRange] = useRemembered<keyof typeof RANGES>("weight.range", "3M", RANGE_NAMES);
   const [days, setDays] = useRemembered("weight.average", 7, AVERAGES);
-  const [picked, setPicked] = useState<{ from: string; to: string }>();
+  const [edges, setEdges] = useState<string[]>([]);
+  const picker = useRef<HTMLDivElement>(null);
   const series = useMemo(() => weightSeries(state, days), [state, days]);
   const phases = useMemo(() => stretches(state, today), [state, today]);
   const shown = series.filter((p) => daysBetween(p.date, today) < RANGES[range]);
   const bands = shown.length ? phaseRuns(state, shown[0].date, shown.at(-1)!.date) : [];
-  const region = useMemo(() => picked && regionReading(state, picked.from, picked.to), [state, picked]);
+  const [from, to] = [...edges].sort();
+  const region = useMemo(() => to && from !== to ? regionReading(state, from, to) : undefined, [state, from, to]);
+  const clear = () => setEdges([]);
+
+  // A press anywhere outside the chart and its reading lets go of the stretch.
+  useEffect(() => {
+    if (!edges.length) return;
+    const away = (e: PointerEvent) => !picker.current?.contains(e.target as Node) && clear();
+    document.addEventListener("pointerdown", away);
+    return () => document.removeEventListener("pointerdown", away);
+  }, [edges.length]);
   const onUse = (tdee: number) => commit({ type: "settings", settings: { tdee } });
 
   const latest = series.at(-1);
@@ -56,18 +67,31 @@ export function Weight({ state, commit }: Props) {
           </span>
         </div>
         <div className="mt-4 flex gap-2 text-sm">
-          <Segmented options={RANGE_NAMES} value={range} onChange={(next) => { setRange(next); setPicked(undefined); }} label={(name) => name} className="flex-[3]" />
+          <Segmented options={RANGE_NAMES} value={range} onChange={(next) => { setRange(next); clear(); }} label={(name) => name} className="flex-[3]" />
           <Segmented options={AVERAGES} value={days} onChange={setDays} label={(n) => `${n}d`} className="flex-[2]" />
         </div>
         {shown.length > 1 ? (
-          <TrendChart points={shown} bands={bands} averageLabel={`${days}-day average`} valueLabel="weigh-in" format={(kg) => `${kg.toFixed(1)}kg`} region={region} onRegion={setPicked} />
+          <div ref={picker}>
+            <TrendChart points={shown} bands={bands} averageLabel={`${days}-day average`} valueLabel="weigh-in" format={(kg) => `${kg.toFixed(1)}kg`} edges={edges} onEdges={setEdges} region={region} />
+            {region ? (
+              <RegionReading region={region} tdee={state.settings.tdee} onUse={onUse} onClear={clear} />
+            ) : (
+              <div className="mt-2 flex items-baseline justify-between gap-3 text-xs text-muted">
+                <span>
+                  {!edges.length ? "Tap or drag on the chart to mark where a stretch starts, then where it ends, to read maintenance over it."
+                    : edges.length === 1 ? `From ${short(edges[0])}: tap the other end. Hold an end to move it.`
+                    : "Fewer than two weigh-ins between the ends. Hold an end to move it."}
+                </span>
+                {edges.length > 0 && (
+                  <button onClick={clear} aria-label="Clear the selected stretch" className="shrink-0 text-sm text-accent">
+                    Clear
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         ) : (
           <p className="py-6 text-center text-sm text-muted">Not enough weigh-ins in this range.</p>
-        )}
-        {region ? (
-          <RegionReading region={region} tdee={state.settings.tdee} onUse={onUse} onClear={() => setPicked(undefined)} />
-        ) : (
-          shown.length > 1 && <p className="mt-2 text-xs text-muted">Drag across the chart to read maintenance over that stretch.</p>
         )}
       </section>
 

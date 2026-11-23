@@ -4,9 +4,9 @@ import {
   addDrop,
   addSet,
   byExercise,
-  finish,
   formatAmount,
   lastSets,
+  merge,
   muscleSets,
   newestFirst,
   planExercise,
@@ -16,6 +16,7 @@ import {
   usedExercises,
   volumeSeries,
   weekStart,
+  workoutOn,
 } from "./training";
 import type { Session, SetLog, Workout } from "./types";
 
@@ -230,10 +231,32 @@ describe("editing a session", () => {
     expect(supersets(sets, ["bench"])).toHaveLength(4);
   });
 
-  it("finishing drops the sets not done, and the session when none were", () => {
-    const open: Session = { id: "s", date: "2026-11-01", name: "Push", sets: [set("bench", 8, 60), set("bench", 8, 60, false)] };
-    expect(finish(open)).toMatchObject({ finished: true, sets: [{ done: true }] });
-    expect(finish({ ...open, sets: [set("bench", 8, 60, false)] })).toBeUndefined();
+});
+
+describe("a day's workout", () => {
+  it("is the session on that date, or an empty one keyed by the date", () => {
+    const sessions = [session("a", "2026-11-01", [set("bench", 8, 60)])];
+    expect(workoutOn(sessions, "2026-11-01").id).toBe("a");
+    expect(workoutOn(sessions, "2026-11-02")).toEqual({ id: "2026-11-02", date: "2026-11-02", name: "Workout", sets: [] });
+  });
+
+  it("merges another session's sets after its own, joining different names, links and notes", () => {
+    const morning: Session = { ...session("a", "2026-11-23", [set("bench", 8, 60)]), linked: ["row"], note: "felt good" };
+    const evening: Session = { ...session("b", "2026-11-23", [set("curl", 12, 12)]), name: "Arms", linked: ["curl"] };
+    expect(merge(morning, evening)).toEqual({
+      ...morning,
+      name: "a + Arms",
+      sets: [set("bench", 8, 60), set("curl", 12, 12)],
+      linked: ["row", "curl"],
+      note: "felt good",
+    });
+    expect(merge(morning, { ...evening, name: "a", linked: undefined }).name).toBe("a");
+  });
+
+  it("takes a template's name when it adds to an empty day", () => {
+    const day = workoutOn([], "2026-11-23");
+    const planned = startSession(push, [], day.date, day.id);
+    expect(merge(day, planned)).toMatchObject({ id: "2026-11-23", name: "Push", workoutId: "push", sets: planned.sets });
   });
 });
 

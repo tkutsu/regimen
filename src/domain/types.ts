@@ -157,15 +157,15 @@ export type Target = Amount & {
   drop?: true;
 };
 
-/** A template, started whenever you like. */
+/** A template: its exercises can be added to any day's workout. */
 export type Workout = { id: string; name: string; targets: Target[]; note?: string };
 
 /** A set not ticked yet is still the plan. A drop set follows the set before it with no rest. */
 export type SetLog = Amount & { exerciseId: string; done: boolean; drop?: true };
 
 /**
- * One time a workout was done. Its sets are copied in when it starts and its name with them,
- * so editing or deleting the workout later leaves it alone. Finishing drops the sets not done.
+ * The workout of one day, one per date, open until the day is over. A template's sets and name
+ * are copied in when it's added, so editing or deleting the template later leaves it alone.
  */
 export type Session = {
   id: string;
@@ -176,6 +176,7 @@ export type Session = {
   sets: SetLog[];
   /** Exercises in a superset with the exercise shown above them, as their workout lines were. */
   linked?: string[];
+  /** Written by older builds, which finished a session by hand. */
   finished?: boolean;
   note?: string;
 };

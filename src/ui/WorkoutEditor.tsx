@@ -51,12 +51,12 @@ export function WorkoutEditor({ workout, saved, exercises, onSave, onDelete, onC
   const save = () => valid && onSave({ id: workout.id, name: name.trim(), targets: lines.map(({ key: _, ...target }) => target), note: note.trim() || undefined });
 
   return (
-    <Dialog label="Workout" onClose={onClose}>
+    <Dialog label="Template" onClose={onClose}>
       <header className="flex items-center justify-between border-b border-line p-3">
         <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
           Cancel
         </button>
-        <h2 className="font-medium">{saved ? "Edit workout" : "New workout"}</h2>
+        <h2 className="font-medium">{saved ? "Edit template" : "New template"}</h2>
         <button disabled={!valid} onClick={save} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
           Save
         </button>
@@ -108,7 +108,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSave, onDelete, onC
 
           {saved && (
             <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
-              {confirming ? "Tap again to delete" : "Delete workout"}
+              {confirming ? "Tap again to delete" : "Delete template"}
             </button>
           )}
         </div>

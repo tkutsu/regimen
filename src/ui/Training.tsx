@@ -1,57 +1,54 @@
 import { useMemo, useState } from "react";
-import { localDate } from "../domain/day";
+import { localDate, shiftDate } from "../domain/day";
 import { newId, type State } from "../domain/state";
-import { finish, newestFirst, startSession } from "../domain/training";
+import { merge, newestFirst, startSession, workoutOn } from "../domain/training";
 import type { Session, Workout } from "../domain/types";
 import type { Commit } from "../store";
+import { Calendar } from "./Calendar";
+import { DayWorkout } from "./DayWorkout";
 import { Section } from "./fields";
-import { SessionView } from "./SessionView";
+import { transition } from "./motion";
+import { DateNav } from "./Today";
 import { WorkoutEditor } from "./WorkoutEditor";
 import { TrainingVolume } from "./TrainingVolume";
 
 type Props = { state: State; commit: Commit };
 
-const RECENT = 10;
-
-/** Sessions still going, your workouts to start, and what you did. */
+/** One workout a day, like Today's food: always open, done once the day is over. */
 export function Training({ state, commit }: Props) {
+  const [date, setDate] = useState(localDate);
   const [editing, setEditing] = useState<{ workout: Workout; saved: boolean }>();
-  const [openId, setOpenId] = useState<string>();
-  const [allRecent, setAllRecent] = useState(false);
 
   const sessions = useMemo(() => newestFirst(state.sessions.values()), [state.sessions]);
-  const going = sessions.filter((session) => !session.finished);
-  const finished = sessions.filter((session) => session.finished);
+  const doneOn = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const session of sessions) counts.set(session.date, (counts.get(session.date) ?? 0) + session.sets.filter((set) => set.done).length);
+    return counts;
+  }, [sessions]);
   const workouts = useMemo(() => [...state.workouts.values()].sort((a, b) => a.name.localeCompare(b.name)), [state.workouts]);
   const today = localDate();
-  const shown = openId ? state.sessions.get(openId) : undefined;
+  const day = workoutOn(sessions, date);
 
   const put = (session: Session) => commit({ type: "session.upsert", session });
-  const start = async (session: Session) => {
-    if (await put(session)) setOpenId(session.id);
-  };
-  const close = () => setOpenId(undefined);
+  const go = (next: string) => transition(() => setDate(next));
 
   return (
     <div className="flex flex-col gap-6 pb-8">
-      {going.map((session) => {
-        const done = session.sets.filter((set) => set.done).length;
-        return (
-          <button key={session.id} onClick={() => setOpenId(session.id)} className="rounded-2xl border border-accent bg-surface px-4 py-3 text-left">
-            <span className="block text-xs font-medium tracking-wide text-accent uppercase">Going · {dayLabel(session.date, today)}</span>
-            <span className="block text-lg font-medium">{session.name}</span>
-            <span className="block text-sm text-muted">
-              {done} {done === 1 ? "set" : "sets"} done
-            </span>
-          </button>
-        );
-      })}
+      <div className="flex flex-col gap-4">
+        <DateNav date={date} onChange={go} />
+        <DayWorkout
+          key={date}
+          session={day}
+          sessions={sessions}
+          exercises={state.exercises}
+          onChange={put}
+          onDelete={state.sessions.has(day.id) ? () => commit({ type: "session.delete", sessionId: day.id }) : undefined}
+        />
+      </div>
 
-      <TrainingVolume state={state} />
-
-      <Section title="Workouts">
+      <Section title="Templates">
         {workouts.map((workout) => {
-          const last = finished.find((session) => session.workoutId === workout.id);
+          const last = sessions.find((session) => session.workoutId === workout.id);
           const count = new Set(workout.targets.map((target) => target.exerciseId)).size;
           return (
             <div key={workout.id} className="flex items-center gap-3 px-4 py-2.5">
@@ -63,48 +60,37 @@ export function Training({ state, commit }: Props) {
                 </span>
               </button>
               <button
-                onClick={() => start(startSession(workout, sessions, today, newId()))}
-                aria-label={`Start ${workout.name}`}
+                onClick={() => put(merge(day, startSession(workout, sessions, date, day.id)))}
+                aria-label={`Add ${workout.name} to ${dayLabel(date, today)}`}
                 className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-bg"
               >
-                Start
+                Add
               </button>
             </div>
           );
         })}
-        {workouts.length === 0 && <p className="px-4 py-3 text-sm text-muted">A workout is a list of exercises, started whenever you like. Each time starts from what you did last.</p>}
-        <div className="flex items-center justify-between px-4 py-2.5">
-          <button onClick={() => setEditing({ workout: { id: newId(), name: "", targets: [] }, saved: false })} className="text-accent">
-            + New workout
-          </button>
-          <button onClick={() => start({ id: newId(), date: today, name: "Training", sets: [] })} className="text-sm text-muted">
-            Start empty
-          </button>
-        </div>
+        {workouts.length === 0 && <p className="px-4 py-3 text-sm text-muted">A template is a list of exercises to add to a day. Each set starts from what you did last.</p>}
+        <button onClick={() => setEditing({ workout: { id: newId(), name: "", targets: [] }, saved: false })} className="px-4 py-2.5 text-left text-accent">
+          + New template
+        </button>
       </Section>
 
-      {finished.length > 0 && (
-        <Section
-          title="Done"
-          aside={
-            finished.length > RECENT && (
-              <button onClick={() => setAllRecent(!allRecent)} className="tracking-normal normal-case">
-                {allRecent ? "Recent" : `All ${finished.length}`}
-              </button>
-            )
-          }
-        >
-          {(allRecent ? finished : finished.slice(0, RECENT)).map((session) => (
-            <button key={session.id} onClick={() => setOpenId(session.id)} className="flex w-full items-baseline gap-3 px-4 py-2.5 text-left">
-              <span className="w-24 shrink-0 text-sm text-muted">{dayLabel(session.date, today)}</span>
-              <span className="min-w-0 flex-1 truncate">{session.name}</span>
-              <span className="text-sm text-muted">
-                {session.sets.length} {session.sets.length === 1 ? "set" : "sets"}
-              </span>
-            </button>
-          ))}
-        </Section>
-      )}
+      <section>
+        <h2 className="mb-2 px-1 text-xs font-medium tracking-wide text-muted uppercase">History</h2>
+        <Calendar
+          key={date.slice(0, 7)}
+          today={today}
+          picked={date}
+          cell={(d) => doneOn.get(d) || undefined}
+          onPick={(d) => {
+            go(d);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          label={(d) => `${dayLabel(d, today)}, ${doneOn.get(d) ?? 0} sets done`}
+        />
+      </section>
+
+      <TrainingVolume state={state} />
 
       {editing && (
         <WorkoutEditor
@@ -120,23 +106,6 @@ export function Training({ state, commit }: Props) {
           onClose={() => setEditing(undefined)}
         />
       )}
-      {shown && (
-        <SessionView
-          key={shown.id}
-          session={shown}
-          sessions={sessions}
-          exercises={state.exercises}
-          onChange={put}
-          onFinish={async () => {
-            const done = finish(shown);
-            if (await commit(done ? { type: "session.upsert", session: done } : { type: "session.delete", sessionId: shown.id })) close();
-          }}
-          onDelete={async () => {
-            if (await commit({ type: "session.delete", sessionId: shown.id })) close();
-          }}
-          onClose={close}
-        />
-      )}
     </div>
   );
 }
@@ -149,8 +118,7 @@ function ago(date: string, today: string) {
 }
 
 function dayLabel(date: string, today: string) {
-  const days = daysBetween(date, today);
-  if (days === 0) return "Today";
-  if (days === 1) return "Yesterday";
+  if (date === today) return "today";
+  if (date === shiftDate(today, -1)) return "yesterday";
   return new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 }

@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { addDrop, addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
-import { Dialog } from "./Dialog";
 import { AmountFields, ExerciseDetails, ExerciseSearch, LinkToggle } from "./exercises";
 import { Remove, TextInput, Tick } from "./fields";
 import { box } from "./FoodEditor";
-import { transition } from "./motion";
 
 type Props = {
   session: Session;
@@ -14,13 +12,12 @@ type Props = {
   exercises: Map<string, Exercise>;
   /** Every edit is written as it's made, like Today. */
   onChange: (session: Session) => void;
-  onFinish: () => void;
-  onDelete: () => void;
-  onClose: () => void;
+  /** Missing while the day has nothing saved. */
+  onDelete?: () => void;
 };
 
-/** The sets of one session, grouped by exercise and superset: tick each as it's done. */
-export function SessionView({ session, sessions, exercises, onChange, onFinish, onDelete, onClose }: Props) {
+/** A day's workout, grouped by exercise and superset: tick each set as it's done. */
+export function DayWorkout({ session, sessions, exercises, onChange, onDelete }: Props) {
   const [confirming, setConfirming] = useState(false);
   const [note, setNote] = useState(session.note ?? "");
   const linked = session.linked ?? [];
@@ -33,76 +30,58 @@ export function SessionView({ session, sessions, exercises, onChange, onFinish, 
   const done = session.sets.filter((set) => set.done).length;
 
   return (
-    <Dialog label="Session" onClose={onClose}>
-      <header className="flex items-center justify-between border-b border-line p-3">
-        <button onClick={() => transition(onClose)} className="px-2 py-2 text-muted">
-          Close
-        </button>
-        <h2 className="font-medium">
-          {done} {done === 1 ? "set" : "sets"} done
-        </h2>
-        {session.finished ? (
-          <span className="w-14" />
-        ) : (
-          <button onClick={onFinish} className="px-2 py-2 font-medium text-accent">
-            {done ? "Finish" : "Discard"}
-          </button>
-        )}
-      </header>
-
-      <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto flex max-w-md flex-col gap-4 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <div className="flex gap-2">
-            <TextInput value={session.name} onCommit={(name) => onChange({ ...session, name })} aria-label="Name" className={`${box} min-w-0 flex-1 border-line text-lg`} />
-            <input
-              type="date"
-              value={session.date}
-              onChange={(e) => e.target.value && onChange({ ...session, date: e.target.value })}
-              aria-label="Date"
-              className={`${box} border-line text-sm`}
-            />
-          </div>
-
-          {supersets(session.sets, session.linked).map((block, b) => (
-            <section key={block[0].exerciseId} className={`rounded-2xl border bg-surface ${block.length > 1 ? "border-accent/60" : "border-line"}`}>
-              {block.length > 1 && <p className="px-4 pt-3 text-xs font-medium tracking-wide text-accent uppercase">Superset · no rest between</p>}
-              {block.map(({ exerciseId, at }, g) => (
-                <div key={exerciseId} className={g > 0 ? "border-t border-line" : ""}>
-                  <ExerciseSets
-                    session={session}
-                    sessions={sessions}
-                    exercise={exercises.get(exerciseId)}
-                    at={at}
-                    linked={b > 0 || g > 0 ? g > 0 : undefined}
-                    onToggleLink={() => setLinked(g > 0 ? linked.filter((id) => id !== exerciseId) : [...linked, exerciseId])}
-                    onEditSet={editSet}
-                    onRemoveSet={(i) => setSets(session.sets.filter((_, j) => j !== i))}
-                    onAddSet={() => setSets(addSet(session.sets, exerciseId))}
-                    onAddDrop={() => setSets(addDrop(session.sets, exerciseId))}
-                  />
-                </div>
-              ))}
-            </section>
-          ))}
-
-          <div className="overflow-hidden rounded-2xl border border-line bg-surface">
-            <ExerciseSearch exercises={exercises} onPick={add} />
-          </div>
-
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            onBlur={() => note.trim() !== (session.note ?? "") && onChange({ ...session, note: note.trim() || undefined })}
-            placeholder="Note"
-            className={`${box} w-full border-line text-sm`}
-          />
-
-          <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
-            {confirming ? "Tap again to delete" : "Delete session"}
-          </button>
+    <section aria-label="Workout" className="flex flex-col gap-4">
+      {session.sets.length > 0 ? (
+        <div>
+          <TextInput value={session.name} onCommit={(name) => onChange({ ...session, name })} aria-label="Name" className={`${box} w-full border-line text-lg`} />
+          <p className="mt-1 px-1 text-sm text-muted">
+            {done} of {session.sets.length} {session.sets.length === 1 ? "set" : "sets"} done
+          </p>
         </div>
+      ) : (
+        <p className="rounded-2xl border border-line bg-surface px-4 py-3 text-sm text-muted">Nothing logged. Add a template or an exercise.</p>
+      )}
+
+      {supersets(session.sets, session.linked).map((block, b) => (
+        <section key={block[0].exerciseId} className={`rounded-2xl border bg-surface ${block.length > 1 ? "border-accent/60" : "border-line"}`}>
+          {block.length > 1 && <p className="px-4 pt-3 text-xs font-medium tracking-wide text-accent uppercase">Superset · no rest between</p>}
+          {block.map(({ exerciseId, at }, g) => (
+            <div key={exerciseId} className={g > 0 ? "border-t border-line" : ""}>
+              <ExerciseSets
+                session={session}
+                sessions={sessions}
+                exercise={exercises.get(exerciseId)}
+                at={at}
+                linked={b > 0 || g > 0 ? g > 0 : undefined}
+                onToggleLink={() => setLinked(g > 0 ? linked.filter((id) => id !== exerciseId) : [...linked, exerciseId])}
+                onEditSet={editSet}
+                onRemoveSet={(i) => setSets(session.sets.filter((_, j) => j !== i))}
+                onAddSet={() => setSets(addSet(session.sets, exerciseId))}
+                onAddDrop={() => setSets(addDrop(session.sets, exerciseId))}
+              />
+            </div>
+          ))}
+        </section>
+      ))}
+
+      <div className="overflow-hidden rounded-2xl border border-line bg-surface">
+        <ExerciseSearch exercises={exercises} onPick={add} />
       </div>
-    </Dialog>
+
+      <textarea
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        onBlur={() => note.trim() !== (session.note ?? "") && onChange({ ...session, note: note.trim() || undefined })}
+        placeholder="Note"
+        className={`${box} w-full border-line text-sm`}
+      />
+
+      {onDelete && (
+        <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
+          {confirming ? "Tap again to clear" : "Clear this day"}
+        </button>
+      )}
+    </section>
   );
 }
 
