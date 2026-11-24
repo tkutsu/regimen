@@ -5,7 +5,7 @@ import { muscleSets, volumeSeries } from "../domain/training";
 import { daysBetween, phaseRuns } from "../domain/weight";
 import { Info } from "./fields";
 import { useRemembered } from "./look";
-import { Segmented, TrendChart } from "./TrendChart";
+import { Cycle, Segmented, TrendChart } from "./TrendChart";
 
 const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
@@ -40,11 +40,10 @@ export function TrainingVolume({ state }: { state: State }) {
               <span className="text-sm text-muted">today</span>
             </div>
             <p className="mt-1 text-sm text-muted">
-              {weeks}-week average: {latest.avg === undefined ? `needs ${weeks * 7} days of history` : format(latest.avg)}
+              <Cycle options={AVERAGES} value={weeks} onChange={setWeeks} label={(n) => `${n}-week average`} />: {latest.avg === undefined ? `needs ${weeks * 7} days of history` : format(latest.avg)}
             </p>
             <div className="mt-4 flex gap-2 text-sm">
-              <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-[3]" />
-              <Segmented options={AVERAGES} value={weeks} onChange={setWeeks} label={(n) => `${n}w`} className="flex-[2]" />
+              <Segmented options={RANGE_NAMES} value={range} onChange={setRange} label={(name) => name} className="flex-1" />
             </div>
             <TrendChart points={shown} bands={bands} averageLabel={`${weeks}-week average`} valueLabel="daily volume" format={format} volume to={today} />
           </>

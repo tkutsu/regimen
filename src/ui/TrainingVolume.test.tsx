@@ -6,7 +6,7 @@ import { TrainingVolume } from "./TrainingVolume";
 afterEach(() => vi.useRealTimers());
 
 describe("training volume average controls", () => {
-  it("offers 1w, 2w and 4w averages", () => {
+  it("steps from the 4-week average to 1 week", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
     const state = fold([]);
@@ -15,8 +15,7 @@ describe("training volume average controls", () => {
       sets: [{ exerciseId: "bench", reps: 10, kg: 70, done: true }],
     });
     const html = renderToStaticMarkup(<TrainingVolume state={state} />);
-    const weeks = [...html.matchAll(/>(\d+w)<\/button>/g)].map((match) => match[1]);
-    expect(weeks).toEqual(["1w", "2w", "4w"]);
+    expect(html).toContain('aria-label="4-week average. Change to 1-week average"');
     expect(html).toContain("needs 28 days of history");
     expect(html).not.toMatch(/NaN|undefined/);
   });

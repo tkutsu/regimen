@@ -5,7 +5,7 @@ import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Re
 import type { Commit } from "../store";
 import { Info } from "./fields";
 import { useRemembered } from "./look";
-import { Segmented, TrendChart } from "./TrendChart";
+import { Cycle, Segmented, TrendChart } from "./TrendChart";
 
 /** `children` go between the readings and the notes. */
 type Props = { state: State; commit: Commit; children?: ReactNode };
@@ -23,6 +23,12 @@ export function Weight({ state, commit, children }: Props) {
   const [range, setRange] = useRemembered<keyof typeof RANGES>("weight.range", "3M", RANGE_NAMES);
   const [days, setDays] = useRemembered("weight.average", 7, AVERAGES);
   const [edges, setEdges] = useState<string[]>([]);
+  // How to pick a stretch is explained until the first time one is picked.
+  const [hinted, setHinted] = useRemembered("weight.hinted", 0, [0, 1]);
+  const pick = (next: string[]) => {
+    setEdges(next);
+    if (next.length) setHinted(1);
+  };
   const picker = useRef<HTMLDivElement>(null);
   const series = useMemo(() => weightSeries(state, days), [state, days]);
   const phases = useMemo(() => stretches(state, today), [state, today]);
@@ -63,24 +69,23 @@ export function Weight({ state, commit, children }: Props) {
             <span className="text-lg font-normal text-muted">kg</span>
           </span>
           <span className="text-sm text-muted">
-            {days}-day average
+            <Cycle options={AVERAGES} value={days} onChange={setDays} label={(n) => `${n}-day average`} />
             {change !== undefined &&
               (Math.abs(change) < 0.05 ? " · steady this week" : ` · ${change > 0 ? "+" : ""}${change.toFixed(1)} this week`)}
           </span>
         </div>
         <div className="mt-4 flex gap-2 text-sm">
-          <Segmented options={RANGE_NAMES} value={range} onChange={(next) => { setRange(next); clear(); }} label={(name) => name} className="flex-[3]" />
-          <Segmented options={AVERAGES} value={days} onChange={setDays} label={(n) => `${n}d`} className="flex-[2]" />
+          <Segmented options={RANGE_NAMES} value={range} onChange={(next) => { setRange(next); clear(); }} label={(name) => name} className="flex-1" />
         </div>
         {shown.length > 1 ? (
           <div ref={picker}>
-            <TrendChart points={shown} bands={bands} averageLabel={`${days}-day average`} valueLabel="weigh-in" format={(kg) => `${kg.toFixed(1)}kg`} edges={edges} onEdges={setEdges} region={region} />
+            <TrendChart points={shown} bands={bands} averageLabel={`${days}-day average`} valueLabel="weigh-in" format={(kg) => `${kg.toFixed(1)}kg`} edges={edges} onEdges={pick} region={region} />
             {region ? (
               <RegionReading region={region} tdee={state.settings.tdee} onUse={onUse} onClear={clear} />
             ) : (
               <div className="mt-2 flex items-baseline justify-between gap-3 text-xs text-muted">
                 <span>
-                  {!edges.length ? "Tap or drag on the chart to mark where a stretch starts, then where it ends, to read maintenance over it."
+                  {!edges.length ? (hinted ? "" : "Tap or drag on the chart to mark where a stretch starts, then where it ends, to read maintenance over it.")
                     : edges.length === 1 ? `From ${short(edges[0])}: tap the other end. Hold an end to move it.`
                     : "Fewer than two weigh-ins between the ends. Hold an end to move it."}
                 </span>

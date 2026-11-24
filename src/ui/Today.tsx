@@ -284,7 +284,7 @@ function EntryRow({ entry, food, shown, onChange, hold, dragging }: RowProps) {
   const unit = food?.basis === "item" ? "×" : "g";
   return (
     <li data-row={hold && entry.id} className={`border-b border-line last:border-b-0 ${dragging ? "bg-line/40" : ""}`}>
-      <div className={`flex items-center gap-3 px-3 py-2 ${entry.done ? "" : "text-muted"}`}>
+      <div className={`flex items-center gap-3 px-3 py-2.5 ${entry.done ? "" : "text-muted"}`}>
         <Tick done={entry.done} onClick={() => onChange({ ...entry, done: !entry.done })} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
         <button {...hold} onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left select-none">
           <span className="truncate">
@@ -300,7 +300,7 @@ function EntryRow({ entry, food, shown, onChange, hold, dragging }: RowProps) {
             </span>
           )}
         </button>
-        <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label={`Remove ${food?.name ?? "food"}`} className="px-1 text-muted">
+        <button onClick={() => onChange({ ...entry, amount: 0 })} aria-label={`Remove ${food?.name ?? "food"}`} className="-my-2 -mr-2 grid size-10 shrink-0 place-items-center text-muted">
           ×
         </button>
       </div>

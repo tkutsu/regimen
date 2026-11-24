@@ -254,7 +254,7 @@ export function Switch({ checked, label, onChange }: { checked: boolean; label: 
 
 export function Remove({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <button onClick={onClick} aria-label={`Remove ${label}`} className="-mr-1 w-6 text-center text-lg leading-none text-muted">
+    <button onClick={onClick} aria-label={`Remove ${label}`} className="-my-2 -mr-2.5 grid size-10 shrink-0 place-items-center text-lg leading-none text-muted">
       ×
     </button>
   );

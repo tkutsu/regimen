@@ -29,6 +29,16 @@ export function Segmented<T extends string | number>({ options, value, onChange,
   );
 }
 
+/** A rarely changed choice inside a line of text: each tap steps to the next option. */
+export function Cycle<T extends string | number>({ options, value, onChange, label }: Omit<SegmentedProps<T>, "className">) {
+  const next = options[(options.indexOf(value) + 1) % options.length];
+  return (
+    <button onClick={() => onChange(next)} aria-label={`${label(value)}. Change to ${label(next)}`} className="text-accent underline decoration-accent/40 decoration-dotted underline-offset-4">
+      {label(value)}
+    </button>
+  );
+}
+
 const H = 180;
 const PAD = { top: 12, right: 8, bottom: 30, left: 34 };
 /** The phase strip sits between the plot and the date labels. */
