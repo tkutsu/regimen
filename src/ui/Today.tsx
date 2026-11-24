@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { dayOf, entriesOn, intake, listedEntries, localDate, missingStaples, ratesOn, shiftDate, targets, trendWeight } from "../domain/day";
+import { dayOf, entriesOn, intake, listedEntries, localDate, missingStaples, ratesOn, shiftDate, targets, toggleDone, trendWeight } from "../domain/day";
 import { allFoods, entryFood, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
@@ -65,6 +65,7 @@ export function Today({ state, commit, date, onDate, onTraining }: Props) {
     const save: Change[] = foods.has(food.id) ? [] : [{ type: "food.upsert", food }];
     if (await commit(...save, { type: "entry.upsert", entry })) setPicking(false);
   };
+  const tick = (entry: Entry) => commit(...toggleDone(state, entry).map((entry): Change => ({ type: "entry.upsert", entry })));
   const show = (key: keyof Nutrients) => transition(() => setShown(shown === key ? undefined : key));
   const copyYesterday = () =>
     commit(...yesterday.map((entry): Change => ({ type: "entry.upsert", entry: { ...entry, id: newId(), date, done: false } })));
@@ -125,10 +126,10 @@ export function Today({ state, commit, date, onDate, onTraining }: Props) {
 
       <ul ref={planned.holdList} className="flow overflow-hidden rounded-2xl border border-line bg-surface">
         {planned.shown.map((entry) => (
-          <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} hold={planned.hold(entry)} dragging={planned.dragging === entry.id} />
+          <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} onTick={tick} hold={planned.hold(entry)} dragging={planned.dragging === entry.id} />
         ))}
         {entries.filter((entry) => entry.done).map((entry) => (
-          <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} />
+          <EntryRow key={entry.id} entry={entry} food={entryFood(entry, foods)} shown={shown} onChange={putEntry} onTick={tick} />
         ))}
         {onlyStaples && (entries.length === 0 || yesterday.length > 0) && (
           <li className="flex items-center justify-between px-4 py-3 text-sm text-muted">
@@ -273,19 +274,20 @@ type RowProps = {
   food?: Food;
   shown?: keyof Nutrients;
   onChange: (entry: Entry) => void;
+  onTick: (entry: Entry) => void;
   /** Given to planned rows, which can be held and dragged. */
   hold?: ReturnType<ReturnType<typeof useReorder<Entry>>["hold"]>;
   dragging?: boolean;
 };
 
 /** An entry's food and amount, or with `shown`, its share of that total. */
-function EntryRow({ entry, food, shown, onChange, hold, dragging }: RowProps) {
+function EntryRow({ entry, food, shown, onChange, onTick, hold, dragging }: RowProps) {
   const [open, setOpen] = useState(false);
   const unit = food?.basis === "item" ? "×" : "g";
   return (
-    <li data-row={hold && entry.id} className={`border-b border-line last:border-b-0 ${dragging ? "bg-line/40" : ""}`}>
+    <li data-row={hold && entry.id} data-glide className={`border-b border-line last:border-b-0 ${dragging ? "bg-line/40" : ""}`}>
       <div className={`flex items-center gap-3 px-3 py-2.5 ${entry.done ? "" : "text-muted"}`}>
-        <Tick done={entry.done} onClick={() => onChange({ ...entry, done: !entry.done })} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
+        <Tick done={entry.done} onClick={() => onTick(entry)} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
         <button {...hold} onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left select-none">
           <span className="truncate">
             {usedName(food)}

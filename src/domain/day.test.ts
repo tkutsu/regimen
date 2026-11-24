@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dayOf, intake, kcalTarget, listedEntries, missingStaples, shiftDate, targets, trendWeight } from "./day";
+import { dayOf, intake, kcalTarget, listedEntries, missingStaples, shiftDate, targets, toggleDone, trendWeight } from "./day";
 import { recipeAsFood } from "./nutrition";
 import { applyEvents, defaultSettings, fold, stamp, type State } from "./state";
 import type { Change, Food } from "./types";
@@ -33,6 +33,24 @@ describe("listedEntries", () => {
   it("keeps the dragged order, with new entries after it and eaten ones last", () => {
     const s = state(entry("eaten", true, 0), entry("a", false, 1), entry("new", false), entry("b", false, 0), entry("newer", false));
     expect(listedEntries(s, "2026-11-09").map((e) => e.id)).toEqual(["b", "a", "new", "newer", "eaten"]);
+  });
+});
+
+describe("toggleDone", () => {
+  const entry = (id: string, done: boolean, order?: number): Change => ({ type: "entry.upsert", entry: { id, date: "2026-11-09", foodId: "oats", amount: 1, done, order } });
+  const toggle = (s: State, id: string) => applyEvents(s, toggleDone(s, s.entries.get(id)!).map((e) => stamp({ type: "entry.upsert", entry: e }, "desktop", new Date(Date.UTC(2026, 0, 2, 0, 0, clock++)))));
+  const listed = (s: State) => listedEntries(s, "2026-11-09").map((e) => `${e.id}${e.done ? "✓" : ""}`);
+
+  it("moves a ticked entry to the top of what's eaten, just below what's planned", () => {
+    const s = state(entry("a", false, 0), entry("b", false, 1), entry("c", false), entry("x", true, 0), entry("y", true));
+    const once = toggle(s, "a");
+    expect(listed(once)).toEqual(["b", "c", "a✓", "x✓", "y✓"]);
+    expect(listed(toggle(once, "c"))).toEqual(["b", "c✓", "a✓", "x✓", "y✓"]);
+  });
+
+  it("moves an unticked entry to the bottom of what's planned, even below unnumbered ones", () => {
+    const s = state(entry("a", false, 0), entry("new", false), entry("x", true, -1), entry("y", true, 3));
+    expect(listed(toggle(s, "y"))).toEqual(["a", "new", "y", "x✓"]);
   });
 });
 

@@ -100,6 +100,23 @@ export function listedEntries(state: State, date: string): Entry[] {
 }
 
 /**
+ * Ticks or unticks an entry, moving it as little as it can: to the top of what's eaten,
+ * or the bottom of what's planned. Unnumbered planned entries sort last, so they're
+ * numbered first to stay above it. Returns every entry to write.
+ */
+export function toggleDone(state: State, entry: Entry): Entry[] {
+  const others = listedEntries(state, entry.date).filter((other) => other.id !== entry.id);
+  if (!entry.done) {
+    const eaten = others.flatMap((other) => (other.done && other.order !== undefined ? [other.order] : []));
+    return [{ ...entry, done: true, order: Math.min(0, ...eaten) - 1 }];
+  }
+  const planned = others.filter((other) => !other.done);
+  let next = Math.max(-1, ...planned.map((other) => other.order ?? -1)) + 1;
+  const numbered = planned.filter((other) => other.order === undefined).map((other) => ({ ...other, order: next++ }));
+  return [...numbered, { ...entry, done: false, order: next }];
+}
+
+/**
  * Staple entries the day doesn't have yet: from the day a staple was added on, and
  * never again on a day it was removed from. The id is fixed per staple and day, so two
  * devices planning the same day write the same entry.
