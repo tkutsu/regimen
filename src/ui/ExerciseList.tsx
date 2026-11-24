@@ -10,9 +10,9 @@ import { box } from "./FoodEditor";
 
 type Props = { state: State; commit: Commit };
 
-/** Saved exercises and a bundled library; library entries become editable personal copies. */
+/** Saved exercises and a bundled catalogue; catalogue entries become editable personal copies. */
 export function Exercises({ state, commit }: Props) {
-  const [source, setSource] = useState<"mine" | "library">("mine");
+  const [source, setSource] = useState<"mine" | "catalogue">("mine");
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<"" | NonNullable<Exercise["kind"]>>("");
   const [editing, setEditing] = useState<Exercise>();
@@ -27,7 +27,7 @@ export function Exercises({ state, commit }: Props) {
   return (
     <div className="flex flex-col gap-3 pb-24">
       <div className="flex rounded-xl bg-line/50 p-1 text-sm" role="group" aria-label="Exercise lists">
-        {(["mine", "library"] as const).map((value) => (
+        {(["mine", "catalogue"] as const).map((value) => (
           <button key={value} onClick={() => setSource(value)} aria-pressed={source === value}
             className={`min-h-10 flex-1 rounded-lg capitalize ${source === value ? "bg-surface font-medium shadow-sm" : "text-muted"}`}>
             {value} ({value === "mine" ? mine.length : exerciseLibrary.length})
@@ -44,7 +44,7 @@ export function Exercises({ state, commit }: Props) {
           <option value="isolation">Isolation</option>
         </select>
       </label>
-      {source === "library" && <p className="px-1 text-xs text-muted">An offline starter library. Open an exercise to save your own copy and set how its load counts toward volume.</p>}
+      {source === "catalogue" && <p className="px-1 text-xs text-muted">An offline starter catalogue. Open an exercise to save your own copy and set how its load counts toward volume.</p>}
       {shown.length > 0 && (
         <ul className="flow divide-y divide-line overflow-hidden rounded-2xl border border-line bg-surface">
           {shown.map((exercise) => {
@@ -67,9 +67,9 @@ export function Exercises({ state, commit }: Props) {
         </ul>
       )}
       {shown.length === 0 && <p className="px-4 py-6 text-center text-sm text-muted">
-        {source === "mine" && mine.length === 0 ? "Save exercises from the library or create your own, then select them in workouts and sessions." : "No exercises match your search and type filter."}
+        {source === "mine" && mine.length === 0 ? "Save exercises from the catalogue or create your own, then select them in workouts and sessions." : "No exercises match your search and type filter."}
       </p>}
-      <div className="page-actions fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto max-w-md">
+      <div className="page-actions fixed right-4 bottom-[calc(var(--tabs)+0.75rem)] left-4 z-[2] mx-auto max-w-md">
         <button data-enter onClick={() => setEditing({ id: newId(), name: "", measure: "reps" })}
           className="w-full rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg">New exercise</button>
       </div>

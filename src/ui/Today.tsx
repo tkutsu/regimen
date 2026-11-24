@@ -7,6 +7,7 @@ import type { Change, Day, Entry, Food, Nutrients, Phase, Variant } from "../dom
 import type { Commit } from "../store";
 import { NumberField, Tick } from "./fields";
 import { FoodPicker } from "./FoodPicker";
+import { SettingsButton } from "./Header";
 import { transition } from "./motion";
 import { Remaining } from "./Remaining";
 import { useReorder } from "./reorder";
@@ -111,7 +112,7 @@ export function Today({ state, commit }: Props) {
       <button
         data-enter
         onClick={() => setPicking(true)}
-        className="page-actions fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-[2] mx-auto max-w-md rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg"
+        className="page-actions fixed right-4 bottom-[calc(var(--tabs)+0.75rem)] left-4 z-[2] mx-auto max-w-md rounded-2xl bg-accent py-3.5 font-medium text-bg shadow-lg"
       >
         Add food
       </button>
@@ -129,7 +130,11 @@ export function Today({ state, commit }: Props) {
   );
 }
 
-/** Change days with buttons, a horizontal swipe/drag, or vertical wheel input over the bar. */
+/**
+ * The screen's header: the day as its title, the arrows together so they stay put as the
+ * title changes width. Change days with them, a horizontal swipe/drag, or vertical wheel
+ * input over the bar; the title goes back to today.
+ */
 export function DateNav({ date, onChange }: { date: string; onChange: (date: string) => void }) {
   const bar = useRef<HTMLElement>(null);
   const drag = useRef<{ pointer: number; x: number; y: number }>(undefined);
@@ -170,7 +175,7 @@ export function DateNav({ date, onChange }: { date: string; onChange: (date: str
       ref={bar}
       aria-label="Day"
       title="Swipe or drag left/right, or scroll up/down to change days"
-      className="flex touch-pan-y cursor-grab items-center justify-between select-none active:cursor-grabbing"
+      className="flex min-h-12 touch-pan-y cursor-grab items-center gap-1 select-none active:cursor-grabbing"
       onPointerDown={(e) => {
         if (e.button !== 0 || !e.isPrimary) return;
         dragged.current = false;
@@ -204,15 +209,18 @@ export function DateNav({ date, onChange }: { date: string; onChange: (date: str
         e.stopPropagation();
       }}
     >
-      <button aria-label="Previous day" onClick={() => onChange(shiftDate(date, -1))} className="px-3 py-1 text-2xl text-muted">
+      <h1 className="min-w-0 flex-1 truncate text-2xl font-semibold">
+        <button onClick={() => onChange(today)} aria-live="polite" aria-atomic="true">
+          {label}
+        </button>
+      </h1>
+      <button aria-label="Previous day" onClick={() => onChange(shiftDate(date, -1))} className="grid size-11 place-items-center text-2xl text-muted">
         ‹
       </button>
-      <button onClick={() => onChange(today)} className="text-lg font-semibold" aria-live="polite" aria-atomic="true">
-        {label}
-      </button>
-      <button aria-label="Next day" onClick={() => onChange(shiftDate(date, 1))} className="px-3 py-1 text-2xl text-muted">
+      <button aria-label="Next day" onClick={() => onChange(shiftDate(date, 1))} className="grid size-11 place-items-center text-2xl text-muted">
         ›
       </button>
+      <SettingsButton />
     </nav>
   );
 }

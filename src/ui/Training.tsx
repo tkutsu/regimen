@@ -10,7 +10,6 @@ import { Section } from "./fields";
 import { transition } from "./motion";
 import { DateNav } from "./Today";
 import { WorkoutEditor } from "./WorkoutEditor";
-import { TrainingVolume } from "./TrainingVolume";
 
 type Props = { state: State; commit: Commit };
 
@@ -89,8 +88,6 @@ export function Training({ state, commit }: Props) {
           label={(d) => `${dayLabel(d, today)}, ${doneOn.get(d) ?? 0} sets done`}
         />
       </section>
-
-      <TrainingVolume state={state} />
 
       {editing && (
         <WorkoutEditor

@@ -7,21 +7,27 @@ import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, S
 import type { Commit, Config, Peers } from "../store";
 import { NumberInput, OptionalNumberInput, Remove, Section, TextInput } from "./fields";
 import { FoodPicker } from "./FoodPicker";
+import { Header } from "./Header";
 import { useReorder } from "./reorder";
 import { System } from "./System";
 
-type Props = { state: State; commit: Commit; config: Config; peers: Peers; onSaveConfig: (config: Config) => Promise<void> };
+type Props = { state: State; commit: Commit; config: Config; peers: Peers; onSaveConfig: (config: Config) => Promise<void>; onDone: () => void };
 
 /** Writes only what changed, so another device's edit to the rest stays. */
 type Set = (patch: SettingsPatch) => Promise<boolean>;
 
-export function Settings({ state, commit, config, peers, onSaveConfig }: Props) {
+export function Settings({ state, commit, config, peers, onSaveConfig, onDone }: Props) {
   const settings = state.settings;
   const set: Set = (patch) => commit({ type: "settings", settings: patch });
   const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
 
   return (
     <div className="flex flex-col gap-6">
+      <Header title="Settings">
+        <button onClick={onDone} className="-mr-2 min-h-11 px-2 font-medium text-accent">
+          Done
+        </button>
+      </Header>
       <Section title="Targets">
         <Row label="Maintenance" unit="kcal">
           <NumberInput value={settings.tdee} onCommit={(tdee) => set({ tdee })} className="w-20 text-right" />

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
 import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Region, type Stretch } from "../domain/weight";
@@ -7,7 +7,8 @@ import { Info } from "./fields";
 import { useRemembered } from "./look";
 import { Segmented, TrendChart } from "./TrendChart";
 
-type Props = { state: State; commit: Commit };
+/** `children` go between the readings and the notes. */
+type Props = { state: State; commit: Commit; children?: ReactNode };
 
 const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
@@ -17,7 +18,7 @@ const AVERAGES = [3, 7, 14];
 const STEADY_SPAN = 14;
 const short = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
-export function Weight({ state, commit }: Props) {
+export function Weight({ state, commit, children }: Props) {
   const today = localDate();
   const [range, setRange] = useRemembered<keyof typeof RANGES>("weight.range", "3M", RANGE_NAMES);
   const [days, setDays] = useRemembered("weight.average", 7, AVERAGES);
@@ -48,6 +49,7 @@ export function Weight({ state, commit }: Props) {
   if (!latest) return (
     <div className="flex flex-col gap-4 pb-6">
       <p className="py-6 text-center text-sm text-muted">No weigh-ins yet. Add one on Today.</p>
+      {children}
       {notes}
     </div>
   );
@@ -96,6 +98,7 @@ export function Weight({ state, commit }: Props) {
       </section>
 
       <Maintenance phases={phases} tdee={state.settings.tdee} settleDays={state.settings.settleDays} onUse={onUse} />
+      {children}
 
       {notes}
     </div>

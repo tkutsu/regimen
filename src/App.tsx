@@ -1,64 +1,73 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useRegimen } from "./store";
-import { Foods } from "./ui/Foods";
-import { Exercises } from "./ui/ExerciseList";
+import { OpenSettings } from "./ui/Header";
 import { useKeys } from "./ui/keys";
+import { Library } from "./ui/Library";
 import { useLook, useRemembered } from "./ui/look";
 import { transition } from "./ui/motion";
+import { Progress } from "./ui/Progress";
 import { Settings } from "./ui/Settings";
 import { Setup } from "./ui/Sync";
 import { Today } from "./ui/Today";
 import { Training } from "./ui/Training";
-import { Weight } from "./ui/Weight";
 
-const SCREENS = { today: Today, training: Training, exercises: Exercises, weight: Weight, foods: Foods };
-type Tab = keyof typeof SCREENS | "settings";
-const TABS: Tab[] = ["today", "training", "weight", "exercises", "foods", "settings"];
+const SCREENS = { today: Today, training: Training, progress: Progress, library: Library };
+type Tab = keyof typeof SCREENS;
+const TABS = Object.keys(SCREENS) as Tab[];
 const TAB_ICONS = {
   today: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 10h18m-13 5 3 3 5-5" /></>,
-  foods: <path d="M5 3v7m3-7v7M2 3v7c0 3 6 3 6 0M5 12v9M20 3c-4 2-5 7-5 10h5V3Zm0 10v8" />,
-  weight: <><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M7 9a5 5 0 0 1 10 0M12 10l2-3" /></>,
   training: <path d="M7 12h10M3 9v6m4-9v12m10-12v12m4-9v6M3 12h4m10 0h4" />,
-  exercises: <><rect x="5" y="4" width="16" height="17" rx="2" /><path d="M9 4V2m8 2V2M9 9h8m-8 4h8m-8 4h5M2 7v11" /></>,
-  settings: <><path d="M3 6h8m4 0h6M3 12h2m4 0h12M3 18h12m4 0h2" /><circle cx="13" cy="6" r="2" /><circle cx="7" cy="12" r="2" /><circle cx="17" cy="18" r="2" /></>,
+  progress: <path d="M3 3v18h18M7 15l4-4 3 3 6-6" />,
+  library: <><rect x="3" y="4" width="5" height="16" rx="1" /><rect x="9.5" y="4" width="5" height="16" rx="1" /><path d="m16 5.5 3.4-1 2.8 14.6-3.4 1z" /></>,
 };
 
 export default function App() {
   const { config, state, peers, error, saveError, reload, commit, retrySave, dismissSaveError, saveConfig } = useRegimen();
   const [tab, setTab] = useRemembered<Tab>("last-tab", "today", TABS);
-  const go = useCallback((next: Tab) => transition(() => setTab(next)), [setTab]);
+  // Settings opens over whichever tab you were on; any tab, or Done, leaves it.
+  const [settings, setSettings] = useState(false);
+  const go = useCallback((next: Tab) => transition(() => { setSettings(false); setTab(next); }), [setTab]);
+  const openSettings = useCallback(() => transition(() => setSettings(true)), []);
   useLook(state?.settings);
   useKeys(TABS, tab, go);
 
   if (config === null) return <Setup onSave={saveConfig} />;
   if (error) return config ? <Setup saved={config} error={error} onSave={saveConfig} onRetry={() => reload()} /> : <p className="p-4 text-bad">{error}</p>;
   if (!config || !state || !peers) return null;
-  const Screen = tab === "settings" ? undefined : SCREENS[tab];
+  const Screen = SCREENS[tab];
   return (
-    <div data-app className="mx-auto min-h-dvh max-w-md p-4 pt-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
-      {/* Each tab grows into the space beside it, so a tap anywhere on the row lands on one. The
-          end tabs take half a share and sit flush, keeping the labels evenly spaced. */}
-      <nav aria-label="Screens" className="sticky top-0 z-[2] -mx-4 mb-4 flex gap-1 bg-bg px-4 pt-[max(0.5rem,env(safe-area-inset-top))] text-xs min-[360px]:text-sm">
-        {TABS.map((name) => (
-          <button
-            key={name}
-            data-tab={name}
-            onClick={() => go(name)}
-            aria-current={tab === name ? "page" : undefined}
-            className={`flex grow justify-center py-2 capitalize transition-colors first:grow-[0.5] first:justify-start last:grow-[0.5] last:justify-end ${tab === name ? "font-medium" : "text-muted"}`}
-          >
-            <span className="flex flex-col items-center gap-1">
-              <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                {TAB_ICONS[name]}
-              </svg>
-              <span>{name}</span>
-            </span>
-          </button>
-        ))}
-      </nav>
+    <div data-app className="mx-auto min-h-dvh max-w-md px-4 pt-[max(0.5rem,env(safe-area-inset-top))] pb-[calc(var(--tabs)+2rem)]">
       <main>
-        {Screen ? <Screen state={state} commit={commit} /> : <Settings state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} />}
+        <OpenSettings.Provider value={settings ? undefined : openSettings}>
+          {settings ? (
+            <Settings state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} onDone={() => transition(() => setSettings(false))} />
+          ) : (
+            <Screen state={state} commit={commit} />
+          )}
+        </OpenSettings.Provider>
       </main>
+      {/* At the bottom, in reach of a thumb. Each tab takes an equal share of the row. */}
+      <nav aria-label="Screens" data-tabs className="fixed inset-x-0 bottom-0 z-[2] border-t border-line bg-bg pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto flex h-14 max-w-md px-2">
+          {TABS.map((name) => {
+            const current = !settings && tab === name;
+            return (
+              <button
+                key={name}
+                data-tab={name}
+                onClick={() => go(name)}
+                aria-current={current ? "page" : undefined}
+                className={`flex flex-1 flex-col items-center justify-center gap-1 text-xs capitalize transition-colors ${current ? "font-medium text-accent" : "text-muted"}`}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  {TAB_ICONS[name]}
+                </svg>
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
       {saveError && <SaveFailed message={saveError.message} onRetry={retrySave} onDismiss={dismissSaveError} />}
     </div>
   );

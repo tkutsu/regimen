@@ -5,7 +5,8 @@ import { useEffect } from "react";
  * move between the controls on the screen by where they are. Up and Down go to the
  * nearest row above or below, staying in the same column; Left and Right move along
  * the row, and leave a text field only from its start or end; in a note, so do Up and
- * Down. Up from the top reaches the screen tabs, where Left and Right switch screens. A
+ * Down. Down from the bottom reaches the screen tabs, where Left and Right switch screens
+ * and Up goes back to the screen's last control. A
  * select passes the arrows on too, and opens with Space or Enter to change its value. An
  * open dialog keeps the arrows inside it and Tab to itself. Enter with nothing selected
  * presses the screen's [data-enter] control.
@@ -119,10 +120,13 @@ export function useKeys<T extends string>(tabs: readonly T[], tab: T, setTab: (t
         document.querySelector<HTMLElement>(`[data-tab="${next}"]`)?.focus();
         return;
       }
-      const items = [...root.querySelectorAll<HTMLElement>(FOCUSABLE)];
-      const from = focused && root.contains(focused) ? focused : last?.isConnected && root.contains(last) ? last : undefined;
-      // With nothing to start from, start in the screen, not on its tabs.
-      const next = from ? target(items, from, e.key) : target(items.filter((el) => !el.closest("nav")), undefined, e.key);
+      // The tabs are pinned over the page's bottom edge, so they'd sit nearer than rows
+      // scrolled out of view below: the arrows reach them only past the screen's end.
+      const items = [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].filter((el) => !el.closest("[data-tabs]"));
+      const onTab = Boolean(focused?.dataset.tab);
+      if (onTab && e.key === "ArrowDown") return;
+      const from = !onTab && focused && root.contains(focused) ? focused : !onTab && last?.isConnected && root.contains(last) && !last.dataset.tab ? last : undefined;
+      const next = (from ? target(items, from, e.key) : target(items, undefined, e.key)) ?? (e.key === "ArrowDown" && !dialog ? document.querySelector<HTMLElement>(`[data-tab="${tab}"]`) : undefined);
       if (!next) return;
       e.preventDefault();
       document.documentElement.setAttribute("data-keys", "");

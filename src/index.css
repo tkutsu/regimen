@@ -21,6 +21,8 @@
 
 :root {
   color-scheme: light dark;
+  /* The screen tabs pinned to the bottom; floating actions and the fade sit above them. */
+  --tabs: calc(3.5rem + 1px + env(safe-area-inset-bottom));
 }
 :root[data-theme="light"] {
   color-scheme: light;
@@ -58,28 +60,19 @@ body::before {
   background: var(--color-bg);
 }
 
-/* Content fades below the pinned tabs and at the bottom, beneath floating actions and dialogs. */
-[data-app] > nav::after,
+/* Content fades out above the tabs, beneath floating actions and dialogs. */
 [data-app]::after {
   content: "";
   pointer-events: none;
-  background: linear-gradient(var(--color-bg), transparent);
-}
-[data-app] > nav::after {
-  position: absolute;
-  inset: 100% 0 auto;
-  height: 1rem;
-}
-[data-app]::after {
   position: fixed;
-  inset: auto 0 0;
+  inset: auto 0 var(--tabs);
   z-index: 1;
-  height: calc(2rem + env(safe-area-inset-bottom));
+  height: 2rem;
   background: linear-gradient(transparent, var(--color-bg));
 }
 html {
-  scroll-padding-top: calc(5.5rem + env(safe-area-inset-top));
-  scroll-padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  scroll-padding-top: calc(1rem + env(safe-area-inset-top));
+  scroll-padding-bottom: calc(var(--tabs) + 5rem);
 }
 
 /*
@@ -121,8 +114,8 @@ html {
   [role="dialog"]:not(:has([role="dialog"])) .flow > :not([role="dialog"]) {
     view-transition-name: match-element;
   }
-  /* Row snapshots escape scroll clipping; keep the visible header, the bottom fade and the
-     floating actions above them. */
+  /* Row snapshots escape scroll clipping; keep the tabs, a dialog's header, the bottom fade
+     and the floating actions above them. */
   :root:not(:has([role="dialog"])) [data-app] > nav,
   [role="dialog"]:not(:has([role="dialog"])) > header {
     view-transition-name: page-header;
