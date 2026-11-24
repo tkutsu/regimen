@@ -24,6 +24,15 @@
   /* The screen tabs pinned to the bottom; floating actions and the fade sit above them. */
   --tabs: calc(3.5rem + 1px + env(safe-area-inset-bottom));
 }
+/* While the on-screen keyboard is up (src/ui/keyboard.ts), the tabs and floating actions
+   give their room to what's being typed. */
+:root[data-keyboard] {
+  --tabs: 0px;
+}
+:root[data-keyboard] [data-tabs],
+:root[data-keyboard] .page-actions {
+  display: none;
+}
 :root[data-theme="light"] {
   color-scheme: light;
 }

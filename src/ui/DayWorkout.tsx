@@ -92,7 +92,7 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
       />
 
       {onDelete && (
-        <button onClick={onDelete} className="mx-auto min-h-11 px-4 text-sm text-muted">
+        <button onClick={onDelete} className="mx-auto min-h-11 px-4 text-sm text-bad">
           Clear this day's workout
         </button>
       )}
