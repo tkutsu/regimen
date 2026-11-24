@@ -7,15 +7,15 @@ import type { Commit } from "../store";
 import { Calendar } from "./Calendar";
 import { DayWorkout } from "./DayWorkout";
 import { Section } from "./fields";
-import { transition } from "./motion";
 import { DateNav } from "./Today";
+import { useOfferUndo } from "./undo";
 import { WorkoutEditor } from "./WorkoutEditor";
 
-type Props = { state: State; commit: Commit };
+/** The day is shared with Today, so switching tabs keeps it. */
+type Props = { state: State; commit: Commit; date: string; onDate: (date: string) => void };
 
 /** One workout a day, like Today's food: always open, done once the day is over. */
-export function Training({ state, commit }: Props) {
-  const [date, setDate] = useState(localDate);
+export function Training({ state, commit, date, onDate: go }: Props) {
   const [editing, setEditing] = useState<{ workout: Workout; saved: boolean }>();
 
   const sessions = useMemo(() => newestFirst(state.sessions.values()), [state.sessions]);
@@ -28,8 +28,11 @@ export function Training({ state, commit }: Props) {
   const today = localDate();
   const day = workoutOn(sessions, date);
 
+  const offerUndo = useOfferUndo();
   const put = (session: Session) => commit({ type: "session.upsert", session });
-  const go = (next: string) => transition(() => setDate(next));
+  const clear = async () => {
+    if (await commit({ type: "session.delete", sessionId: day.id })) offerUndo(`Cleared ${dayLabel(date, today)}'s workout`, { type: "session.upsert", session: day });
+  };
 
   return (
     <div className="flex flex-col gap-6 pb-8">
@@ -41,7 +44,7 @@ export function Training({ state, commit }: Props) {
           sessions={sessions}
           exercises={state.exercises}
           onChange={put}
-          onDelete={state.sessions.has(day.id) ? () => commit({ type: "session.delete", sessionId: day.id }) : undefined}
+          onDelete={state.sessions.has(day.id) ? clear : undefined}
         />
       </div>
 

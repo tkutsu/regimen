@@ -3,6 +3,7 @@ import { dayOf, entriesOn, intake, listedEntries, localDate, missingStaples, rat
 import { allFoods, entryFood, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
+import { newestFirst, workoutOn } from "../domain/training";
 import type { Change, Day, Entry, Food, Nutrients, Phase, Variant } from "../domain/types";
 import type { Commit } from "../store";
 import { NumberField, Tick } from "./fields";
@@ -11,12 +12,17 @@ import { SettingsButton } from "./Header";
 import { transition } from "./motion";
 import { Remaining } from "./Remaining";
 import { useReorder } from "./reorder";
+import { useOfferUndo } from "./undo";
 
-type Props = { state: State; commit: Commit };
+/** The day is shared with Training; `onTraining` opens its workout there. */
+type Props = { state: State; commit: Commit; date: string; onDate: (date: string) => void; onTraining: () => void };
 
-export function Today({ state, commit }: Props) {
-  const [date, setDate] = useState(localDate);
+export function Today({ state, commit, date, onDate, onTraining }: Props) {
   const [picking, setPicking] = useState(false);
+  // The phase changes rarely, so its control opens from the line under the date.
+  const [phasing, setPhasing] = useState(false);
+  const [extras, setExtras] = useState(false);
+  const offerUndo = useOfferUndo();
   const [shown, setShown] = useState<keyof Nutrients>();
 
   const foods = useMemo(() => allFoods(state), [state]);
@@ -32,6 +38,11 @@ export function Today({ state, commit }: Props) {
   const yesterday = entriesOn(state, shiftDate(date, -1)).filter((entry) => !entry.staple);
   const onlyStaples = entries.every((entry) => entry.staple);
   const trend = trendWeight(state, date);
+  const target = targets(state, date);
+  const workout = useMemo(() => workoutOn(newestFirst(state.sessions.values()), date), [state.sessions, date]);
+  const setsDone = workout.sets.filter((set) => set.done).length;
+  const customOffset = day.offset !== undefined && day.offset !== ratesOn(state, date).phaseOffsets[day.phase] ? day.offset : undefined;
+  const showExtras = extras || day.extraKcal !== 0 || (day.rolloverKcal ?? 0) !== 0;
 
   // Today and later days get their staples when opened; past days stay as they were.
   useEffect(() => {
@@ -41,8 +52,13 @@ export function Today({ state, commit }: Props) {
   }, [state, date, commit]);
 
   const setDay = (patch: Partial<Day>) => commit({ type: "day.upsert", day: { ...day, ...patch } });
-  const putEntry = (entry: Entry) =>
-    commit(entry.amount > 0 ? { type: "entry.upsert", entry } : { type: "entry.delete", entryId: entry.id });
+  const putEntry = async (entry: Entry) => {
+    if (entry.amount > 0) return commit({ type: "entry.upsert", entry });
+    const before = state.entries.get(entry.id);
+    if ((await commit({ type: "entry.delete", entryId: entry.id })) && before) {
+      offerUndo(`Removed ${usedName(entryFood(before, foods))}`, { type: "entry.upsert", entry: before });
+    }
+  };
   const add = async (food: Food, amount: number, done: boolean, variant?: Variant) => {
     const entry = { id: newId(), date, foodId: food.id, amount, done, variant: variant?.name, factor: variant?.factor };
     // A reference-table food becomes one of yours, synced like any other.
@@ -55,40 +71,57 @@ export function Today({ state, commit }: Props) {
 
   return (
     <div className="flex flex-col gap-4 pb-24">
-      <DateNav date={date} onChange={(next) => transition(() => setDate(next))} />
-
-      <div className="flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
-        {(["cut", "maintain", "bulk"] as Phase[]).map((phase) => (
-          <button
-            key={phase}
-            onClick={() => setDay({ phase, offset: undefined })}
-            className={`flex-1 rounded-lg py-1.5 capitalize transition-colors ${day.phase === phase ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
-          >
-            {phase}
-          </button>
-        ))}
+      <div>
+        <DateNav date={date} onChange={onDate} />
+        <button onClick={() => transition(() => setPhasing(!phasing))} aria-expanded={phasing} aria-label={`Phase: ${day.phase}`} className="-mt-1 flex min-h-8 items-center gap-1 text-sm text-muted">
+          <span className="capitalize">{day.phase}</span>
+          {customOffset !== undefined && ` ${customOffset > 0 ? "+" : ""}${customOffset}`} · {Math.round(target.kcal)} kcal
+          <svg aria-hidden="true" viewBox="0 0 24 24" className={`size-4 transition-transform ${phasing ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
+        {phasing && (
+          <div className="rise mt-2 flex gap-1 rounded-xl bg-line/50 p-1 text-sm">
+            {(["cut", "maintain", "bulk"] as Phase[]).map((phase) => (
+              <button
+                key={phase}
+                onClick={() => {
+                  setDay({ phase, offset: undefined });
+                  transition(() => setPhasing(false));
+                }}
+                aria-pressed={day.phase === phase}
+                className={`min-h-9 flex-1 rounded-lg capitalize transition-colors ${day.phase === phase ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+              >
+                {phase}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-      {day.offset !== undefined && day.offset !== ratesOn(state, date).phaseOffsets[day.phase] && (
-        <p className="-mt-2 text-center text-xs text-muted">
-          custom offset {day.offset > 0 ? "+" : ""}
-          {day.offset}kcal
-        </p>
-      )}
 
-      <Remaining target={targets(state, date)} eaten={intake(state, date, true)} planned={intake(state, date, false)} shown={shown} onShow={show} />
+      <Remaining target={target} eaten={intake(state, date, true)} planned={intake(state, date, false)} shown={shown} onShow={show} />
 
       <div className="grid grid-cols-2 gap-2">
         <NumberField
-          label="weight"
+          label={state.weights.has(date) || trend === undefined ? "weight" : "weight · trend"}
           unit="kg"
           value={state.weights.get(date)}
           placeholder={trend?.toFixed(1)}
           onCommit={(kg) => kg > 0 && commit({ type: "weight", date, kg })}
         />
         <NumberField label="steps" unit="k" value={day.steps / 1000} onCommit={(k) => setDay({ steps: Math.round(k * 1000) })} />
-        <NumberField label="extra burned" unit="kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} hint="Calories burned today beyond your steps." />
-        <NumberField label="rollover" unit="kcal" value={day.rolloverKcal ?? 0} onCommit={(rolloverKcal) => setDay({ rolloverKcal })} hint="Calories moved from the previous day. Negative if you went over." />
+        {showExtras && (
+          <>
+            <NumberField label="extra burned" unit="kcal" value={day.extraKcal} onCommit={(extraKcal) => setDay({ extraKcal })} hint="Calories burned today beyond your steps." />
+            <NumberField label="rollover" unit="kcal" value={day.rolloverKcal ?? 0} onCommit={(rolloverKcal) => setDay({ rolloverKcal })} hint="Calories moved from the previous day. Negative if you went over." />
+          </>
+        )}
       </div>
+      {!showExtras && (
+        <button onClick={() => transition(() => setExtras(true))} className="-mt-3 min-h-9 self-start px-1 text-sm text-accent">
+          + Extra burned or rollover
+        </button>
+      )}
 
       <ul ref={planned.holdList} className="flow overflow-hidden rounded-2xl border border-line bg-surface">
         {planned.shown.map((entry) => (
@@ -108,6 +141,16 @@ export function Today({ state, commit }: Props) {
           </li>
         )}
       </ul>
+
+      <button onClick={onTraining} className="flex min-h-11 items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-2.5 text-left">
+        <span className="min-w-0 flex-1">
+          <span className="block text-xs text-muted">Workout</span>
+          <span className={`block truncate ${workout.sets.length ? "" : "text-muted"}`}>
+            {workout.sets.length ? `${workout.name} · ${setsDone} of ${workout.sets.length} ${workout.sets.length === 1 ? "set" : "sets"} done` : "Nothing logged"}
+          </span>
+        </span>
+        <span aria-hidden className="text-2xl leading-none text-muted">›</span>
+      </button>
 
       <button
         data-enter

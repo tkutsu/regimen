@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { addDrop, addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
-import { AmountFields, ExerciseDetails, ExerciseSearch, LinkToggle } from "./exercises";
+import { AmountFields, ExerciseDetails, ExercisePicker, LinkToggle } from "./exercises";
 import { Remove, TextInput, Tick } from "./fields";
 import { box } from "./FoodEditor";
+import { useOfferUndo } from "./undo";
 
 type Props = {
   session: Session;
@@ -12,14 +13,15 @@ type Props = {
   exercises: Map<string, Exercise>;
   /** Every edit is written as it's made, like Today. */
   onChange: (session: Session) => void;
-  /** Missing while the day has nothing saved. */
+  /** Missing while the day has nothing saved. The caller offers Undo. */
   onDelete?: () => void;
 };
 
 /** A day's workout, grouped by exercise and superset: tick each set as it's done. */
 export function DayWorkout({ session, sessions, exercises, onChange, onDelete }: Props) {
-  const [confirming, setConfirming] = useState(false);
+  const [picking, setPicking] = useState(false);
   const [note, setNote] = useState(session.note ?? "");
+  const offerUndo = useOfferUndo();
   const linked = session.linked ?? [];
   // An exercise taken out of the session leaves its superset too.
   const setSets = (sets: SetLog[]) => onChange({ ...session, sets, linked: only(linked.filter((id) => sets.some((set) => set.exerciseId === id))) });
@@ -55,7 +57,10 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
                 linked={b > 0 || g > 0 ? g > 0 : undefined}
                 onToggleLink={() => setLinked(g > 0 ? linked.filter((id) => id !== exerciseId) : [...linked, exerciseId])}
                 onEditSet={editSet}
-                onRemoveSet={(i) => setSets(session.sets.filter((_, j) => j !== i))}
+                onRemoveSet={(i) => {
+                  setSets(session.sets.filter((_, j) => j !== i));
+                  offerUndo(`Removed a ${exercises.get(exerciseId)?.name ?? "deleted exercise"} set`, { type: "session.upsert", session });
+                }}
                 onAddSet={() => setSets(addSet(session.sets, exerciseId))}
                 onAddDrop={() => setSets(addDrop(session.sets, exerciseId))}
               />
@@ -64,9 +69,19 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
         </section>
       ))}
 
-      <div className="overflow-hidden rounded-2xl border border-line bg-surface">
-        <ExerciseSearch exercises={exercises} onPick={add} />
-      </div>
+      <button onClick={() => setPicking(true)} className="min-h-11 rounded-2xl border border-line bg-surface px-4 py-2.5 text-left text-accent">
+        + Add exercise
+      </button>
+      {picking && (
+        <ExercisePicker
+          exercises={exercises}
+          onPick={(id) => {
+            add(id);
+            setPicking(false);
+          }}
+          onClose={() => setPicking(false)}
+        />
+      )}
 
       <textarea
         value={note}
@@ -77,8 +92,8 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
       />
 
       {onDelete && (
-        <button onClick={() => (confirming ? onDelete() : setConfirming(true))} className="rounded-xl border border-line py-3 text-bad">
-          {confirming ? "Tap again to clear" : "Clear this day"}
+        <button onClick={onDelete} className="mx-auto min-h-11 px-4 text-sm text-muted">
+          Clear this day's workout
         </button>
       )}
     </section>
