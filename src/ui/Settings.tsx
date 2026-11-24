@@ -5,30 +5,101 @@ import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, SettingsPatch, Staple } from "../domain/types";
 import type { Commit, Config, Peers } from "../store";
+import { useBack } from "./Dialog";
 import { NumberInput, OptionalNumberInput, Remove, Section, TextInput } from "./fields";
 import { FoodPicker } from "./FoodPicker";
 import { Header } from "./Header";
+import { transition } from "./motion";
 import { useReorder } from "./reorder";
-import { System } from "./System";
+import { Appearance, SyncDevices } from "./System";
 
 type Props = { state: State; commit: Commit; config: Config; peers: Peers; onSaveConfig: (config: Config) => Promise<void>; onDone: () => void };
 
 /** Writes only what changed, so another device's edit to the rest stays. */
 type Set = (patch: SettingsPatch) => Promise<boolean>;
 
+const PAGES = { targets: "Targets", limits: "Limits", staples: "Staples", containers: "Containers", look: "Appearance", sync: "Sync & devices" };
+type Page = keyof typeof PAGES;
+
+/** A list of pages, each opening on its own; Back steps out of a page, then out of Settings. */
 export function Settings({ state, commit, config, peers, onSaveConfig, onDone }: Props) {
+  const [page, setPage] = useState<Page>();
+  useBack(onDone);
   const settings = state.settings;
   const set: Set = (patch) => commit({ type: "settings", settings: patch });
-  const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
+  const open = (next?: Page) =>
+    transition(() => {
+      setPage(next);
+      window.scrollTo(0, 0);
+    });
+  const done = (
+    <button onClick={onDone} className="-mr-2 min-h-11 px-2 font-medium text-accent">
+      Done
+    </button>
+  );
 
+  if (page)
+    return (
+      <Subpage title={PAGES[page]} done={done} onBack={() => open()}>
+        {page === "targets" && <Targets settings={settings} set={set} />}
+        {page === "limits" && <Limits limits={settings.limits} set={set} />}
+        {page === "staples" && <Staples state={state} commit={commit} />}
+        {page === "containers" && <Containers containers={settings.containers} set={set} />}
+        {page === "look" && <Appearance theme={settings.theme} set={set} />}
+        {page === "sync" && <SyncDevices config={config} peers={peers} onSaveConfig={onSaveConfig} />}
+      </Subpage>
+    );
+
+  const bounds = LIMITED.filter((key) => settings.limits[key].min !== undefined || settings.limits[key].max !== undefined).length;
+  const row = (name: Page, summary: string) => <PageRow key={name} label={PAGES[name]} summary={summary} onOpen={() => open(name)} />;
   return (
     <div className="flex flex-col gap-6">
-      <Header title="Settings">
-        <button onClick={onDone} className="-mr-2 min-h-11 px-2 font-medium text-accent">
-          Done
+      <Header title="Settings">{done}</Header>
+      <Section title="Food">
+        {row("targets", `${settings.tdee} kcal maintenance`)}
+        {row("limits", `${bounds} ${bounds === 1 ? "nutrient" : "nutrients"}`)}
+        {row("staples", `${settings.staples.length} planned daily`)}
+        {row("containers", `${settings.containers.length}`)}
+      </Section>
+      <Section title="App">
+        {row("look", settings.theme[0].toUpperCase() + settings.theme.slice(1))}
+        {row("sync", config.device)}
+      </Section>
+    </div>
+  );
+}
+
+function PageRow({ label, summary, onOpen }: { label: string; summary: string; onOpen: () => void }) {
+  return (
+    <button onClick={onOpen} className="flex min-h-11 w-full items-center gap-3 px-4 py-2.5 text-left">
+      <span className="flex-1">{label}</span>
+      <span className="min-w-0 truncate text-sm text-muted">{summary}</span>
+      <span aria-hidden className="text-xl leading-none text-muted">›</span>
+    </button>
+  );
+}
+
+function Subpage({ title, done, onBack, children }: { title: string; done: React.ReactNode; onBack: () => void; children: React.ReactNode }) {
+  useBack(onBack);
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <button onClick={onBack} className="-ml-1 flex min-h-9 items-center gap-1 px-1 text-accent">
+          <span aria-hidden className="text-xl leading-none">‹</span> Settings
         </button>
-      </Header>
-      <Section title="Targets">
+        <Header title={title}>{done}</Header>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/** Calories per phase, and what the maintenance reading leaves out. */
+function Targets({ settings, set }: { settings: SettingsT; set: Set }) {
+  const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
+  return (
+    <>
+      <Section title="Calories">
         <Row label="Maintenance" unit="kcal">
           <NumberInput value={settings.tdee} onCommit={(tdee) => set({ tdee })} className="w-20 text-right" />
         </Row>
@@ -47,12 +118,7 @@ export function Settings({ state, commit, config, peers, onSaveConfig, onDone }:
           <NumberInput value={settings.settleDays} onCommit={(days) => set({ settleDays: Math.max(0, Math.round(days)) })} className="w-20 text-right" />
         </Row>
       </Section>
-
-      <Limits limits={settings.limits} set={set} />
-      <Staples state={state} commit={commit} />
-      <Containers containers={settings.containers} set={set} />
-      <System state={state} commit={commit} config={config} peers={peers} onSaveConfig={onSaveConfig} />
-    </div>
+    </>
   );
 }
 
@@ -63,7 +129,7 @@ function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {
   const setRange = (key: Limited, patch: Range) => set({ limits: { [key]: { ...limits[key], ...patch } } });
   return (
     <Section
-      title="Limits"
+      title="Per day"
       aside={
         <span className="flex pr-3 text-xs text-muted normal-case">
           <span className="w-16 text-right">min</span>
@@ -93,7 +159,7 @@ function Staples({ state, commit }: { state: State; commit: Commit }) {
   const save = (next: Staple[], ...also: Change[]) => commit(...also, { type: "settings", settings: { staples: next } });
 
   return (
-    <Section title="Staples" aside={<span className="text-xs text-muted normal-case">planned every day</span>}>
+    <Section title="Planned every day">
       {staples.map((staple) => {
         const food = foods.get(staple.foodId);
         return (
@@ -151,7 +217,7 @@ function Containers({ containers, set }: { containers: Container[]; set: Set }) 
   };
 
   return (
-    <Section title="Containers">
+    <Section title="Empty weights">
       {shown.map((c) => (
         <div key={c.id} data-row={c.id} className={`flex items-center gap-2 py-2 pr-4 pl-2 ${dragging === c.id ? "bg-line/40" : ""}`}>
           <button {...handle(c, c.name)} />

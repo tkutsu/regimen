@@ -1,39 +1,26 @@
-import type { State } from "../domain/state";
 import type { SettingsPatch, Theme } from "../domain/types";
-import type { Commit, Config, Peers } from "../store";
+import type { Config, Peers } from "../store";
 import { Section } from "./fields";
 import { Devices, SyncForm } from "./Sync";
 
-type Props = {
-  state: State;
-  commit: Commit;
-  config: Config;
-  peers: Peers;
-  onSaveConfig: (config: Config) => Promise<void>;
-};
-
 type Set = (patch: SettingsPatch) => Promise<boolean>;
 
-/** Appearance, devices and sync controls at the end of Settings. */
-export function System({ state, commit, config, peers, onSaveConfig }: Props) {
-  const set: Set = (patch) => commit({ type: "settings", settings: patch });
+/** This device's sync folder and name, and the devices seen in it. */
+export function SyncDevices({ config, peers, onSaveConfig }: { config: Config; peers: Peers; onSaveConfig: (config: Config) => Promise<void> }) {
   return (
-    <div className="flex flex-col gap-6">
-      <Look theme={state.settings.theme} set={set} />
-
+    <>
       <Devices config={config} peers={peers} />
-
       <section>
         <h2 className="mb-2 px-1 text-xs font-medium tracking-wide text-muted uppercase">Sync</h2>
         <SyncForm key={`${config.dir}|${config.device}`} saved={config} initial={config} action="Save" onSave={onSaveConfig} />
       </section>
-    </div>
+    </>
   );
 }
 
 const THEMES: Theme[] = ["system", "light", "dark"];
 
-function Look({ theme, set }: { theme: Theme; set: Set }) {
+export function Appearance({ theme, set }: { theme: Theme; set: Set }) {
   return (
     <Section title="Look">
       <div className="flex items-center gap-3 px-4 py-2.5">
@@ -43,7 +30,8 @@ function Look({ theme, set }: { theme: Theme; set: Set }) {
             <button
               key={name}
               onClick={() => set({ theme: name })}
-              className={`rounded-lg px-3 py-1 capitalize ${theme === name ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+              aria-pressed={theme === name}
+              className={`min-h-9 rounded-lg px-3 capitalize ${theme === name ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
             >
               {name}
             </button>
