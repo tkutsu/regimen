@@ -45,7 +45,7 @@ export default function App() {
   const screen = settings ? (
     <Settings state={state} commit={commit} config={config} peers={peers} onSaveConfig={saveConfig} onDone={() => transition(() => setSettings(false))} />
   ) : tab === "today" ? (
-    <Today state={state} commit={commit} date={date} onDate={pickDate} onTraining={() => go("training")} />
+    <Today state={state} commit={commit} date={date} onDate={pickDate} />
   ) : tab === "training" ? (
     <Training state={state} commit={commit} date={date} onDate={pickDate} />
   ) : tab === "progress" ? (

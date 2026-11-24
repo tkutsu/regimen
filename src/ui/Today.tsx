@@ -3,7 +3,6 @@ import { dayOf, entriesOn, intake, listedEntries, localDate, missingStaples, rat
 import { allFoods, entryFood, parseAmount, pickableFoods, scale, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
-import { newestFirst, workoutOn } from "../domain/training";
 import type { Change, Day, Entry, Food, Nutrients, Phase, Variant } from "../domain/types";
 import type { Commit } from "../store";
 import { NumberField, Tick } from "./fields";
@@ -14,10 +13,10 @@ import { Remaining } from "./Remaining";
 import { useReorder } from "./reorder";
 import { useOfferUndo } from "./undo";
 
-/** The day is shared with Training; `onTraining` opens its workout there. */
-type Props = { state: State; commit: Commit; date: string; onDate: (date: string) => void; onTraining: () => void };
+/** The day is shared with Training. */
+type Props = { state: State; commit: Commit; date: string; onDate: (date: string) => void };
 
-export function Today({ state, commit, date, onDate, onTraining }: Props) {
+export function Today({ state, commit, date, onDate }: Props) {
   const [picking, setPicking] = useState(false);
   // The phase changes rarely, so its control opens from the line under the date.
   const [phasing, setPhasing] = useState(false);
@@ -39,8 +38,6 @@ export function Today({ state, commit, date, onDate, onTraining }: Props) {
   const onlyStaples = entries.every((entry) => entry.staple);
   const trend = trendWeight(state, date);
   const target = targets(state, date);
-  const workout = useMemo(() => workoutOn(newestFirst(state.sessions.values()), date), [state.sessions, date]);
-  const setsDone = workout.sets.filter((set) => set.done).length;
   const customOffset = day.offset !== undefined && day.offset !== ratesOn(state, date).phaseOffsets[day.phase] ? day.offset : undefined;
   const showExtras = extras || day.extraKcal !== 0 || (day.rolloverKcal ?? 0) !== 0;
 
@@ -142,16 +139,6 @@ export function Today({ state, commit, date, onDate, onTraining }: Props) {
           </li>
         )}
       </ul>
-
-      <button onClick={onTraining} className="flex min-h-11 items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-2.5 text-left">
-        <span className="min-w-0 flex-1">
-          <span className="block text-xs text-muted">Workout</span>
-          <span className={`block truncate ${workout.sets.length ? "" : "text-muted"}`}>
-            {workout.sets.length ? `${workout.name} · ${setsDone} of ${workout.sets.length} ${workout.sets.length === 1 ? "set" : "sets"} done` : "Nothing logged"}
-          </span>
-        </span>
-        <span aria-hidden className="text-2xl leading-none text-muted">›</span>
-      </button>
 
       <button
         data-enter
@@ -285,7 +272,7 @@ function EntryRow({ entry, food, shown, onChange, onTick, hold, dragging }: RowP
   const [open, setOpen] = useState(false);
   const unit = food?.basis === "item" ? "×" : "g";
   return (
-    <li data-row={hold && entry.id} data-glide className={`border-b border-line last:border-b-0 ${dragging ? "bg-line/40" : ""}`}>
+    <li data-row={hold && entry.id} data-glide className={`border-b border-line last:border-b-0 ${dragging ? "relative z-10 bg-surface shadow-lg" : ""}`}>
       <div className={`flex items-center gap-3 px-3 py-2.5 ${entry.done ? "" : "text-muted"}`}>
         <Tick done={entry.done} onClick={() => onTick(entry)} label={`${entry.done ? "Unmark" : "Mark"} ${food?.name ?? "food"} eaten`} />
         <button {...hold} onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-baseline gap-2 text-left select-none">
