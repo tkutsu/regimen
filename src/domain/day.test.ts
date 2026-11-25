@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { dayOf, intake, kcalTarget, listedEntries, missingStaples, shiftDate, targets, toggleDone, trendWeight } from "./day";
-import { recipeAsFood } from "./nutrition";
+import { LIMITED, recipeAsFood } from "./nutrition";
 import { applyEvents, defaultSettings, fold, stamp, type State } from "./state";
 import type { Change, Food } from "./types";
 
@@ -73,22 +73,22 @@ describe("intake", () => {
       { type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "oats", amount: 50, factor: 2, done: true } },
       { type: "entry.upsert", entry: { id: "2", date: "2026-10-31", foodId: "omega3", amount: 1, done: false } },
     );
-    expect(intake(s, "2026-10-31", true)).toMatchObject({ sugar: 2, sugarIncomplete: false });
-    expect(intake(s, "2026-10-31", false)).toMatchObject({ sugar: 0, sugarIncomplete: true });
-    expect(intake(s, "2026-10-31")).toMatchObject({ sugar: 2, sugarIncomplete: true });
-    expect(intake(s, "2026-10-30").sugarIncomplete).toBe(false);
+    expect(intake(s, "2026-10-31", true)).toMatchObject({ sugar: 2, incomplete: [] });
+    expect(intake(s, "2026-10-31", false)).toMatchObject({ sugar: 0, incomplete: ["sugar"] });
+    expect(intake(s, "2026-10-31")).toMatchObject({ sugar: 2, incomplete: ["sugar"] });
+    expect(intake(s, "2026-10-30").incomplete).toEqual([]);
     s.foods.set("omega3", omega3);
-    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(false);
+    expect(intake(s, "2026-10-31").incomplete).toEqual([]);
   });
 
   it("flags missing foods, but ignores zero amounts and zero factors", () => {
     const s = state({ type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "gone", amount: 1, done: true } });
-    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(true);
+    expect(intake(s, "2026-10-31").incomplete).toEqual(LIMITED);
     s.entries.get("1")!.amount = 0;
-    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(false);
+    expect(intake(s, "2026-10-31").incomplete).toEqual([]);
     s.entries.get("1")!.amount = 1;
     s.entries.get("1")!.factor = 0;
-    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(false);
+    expect(intake(s, "2026-10-31").incomplete).toEqual([]);
   });
 
   it("flags a recipe whose ingredients lack sugar", () => {
@@ -97,9 +97,22 @@ describe("intake", () => {
       { type: "recipe.upsert", recipe: { id: "r", name: "porridge", ingredients: [{ foodId: "oats", amount: 60 }], totalG: 200, containerG: 0 } },
       { type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "r", amount: 100, done: true } },
     );
-    expect(intake(s, "2026-10-31").sugarIncomplete).toBe(true);
+    expect(intake(s, "2026-10-31").incomplete).toEqual(["sugar"]);
     s.foods.set("oats", { ...oats, sugar: 2 });
-    expect(intake(s, "2026-10-31")).toMatchObject({ sugar: 0.6, sugarIncomplete: false });
+    expect(intake(s, "2026-10-31")).toMatchObject({ sugar: 0.6, incomplete: [] });
+  });
+
+  it("treats every nutrient alike: unknown protein is flagged, a real zero is not", () => {
+    const s = state(
+      { type: "food.upsert", food: { ...oats, prot: undefined } },
+      { type: "recipe.upsert", recipe: { id: "r", name: "porridge", ingredients: [{ foodId: "oats", amount: 60 }], totalG: 200, containerG: 0 } },
+      { type: "entry.upsert", entry: { id: "1", date: "2026-10-31", foodId: "r", amount: 100, done: true } },
+    );
+    expect(recipeAsFood(s.recipes.get("r")!, s.foods).prot).toBeUndefined();
+    expect(intake(s, "2026-10-31")).toMatchObject({ prot: 0, incomplete: ["prot"] });
+    s.foods.set("oats", { ...oats, prot: 0 });
+    expect(recipeAsFood(s.recipes.get("r")!, s.foods).prot).toBe(0);
+    expect(intake(s, "2026-10-31")).toMatchObject({ prot: 0, incomplete: [] });
   });
 });
 

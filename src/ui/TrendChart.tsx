@@ -1,6 +1,7 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { Phase } from "../domain/types";
 import { daysBetween } from "../domain/weight";
+import { useWidth } from "./measure";
 
 /** Phases marked under the chart; maintenance is the unmarked baseline. */
 const MARKED = ["cut", "bulk"] as const;
@@ -9,35 +10,6 @@ const PHASE_BG: Partial<Record<Phase, string>> = { cut: "bg-cut", bulk: "bg-bulk
 
 const short = (date: string, weekday = false) =>
   new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", ...(weekday && { weekday: "short" }) });
-
-type SegmentedProps<T> = { options: readonly T[]; value: T; onChange: (value: T) => void; label: (value: T) => string; className?: string };
-
-export function Segmented<T extends string | number>({ options, value, onChange, label, className = "" }: SegmentedProps<T>) {
-  return (
-    <div className={`flex gap-1 rounded-xl bg-line/50 p-1 ${className}`}>
-      {options.map((option) => (
-        <button
-          key={option}
-          onClick={() => onChange(option)}
-          aria-pressed={value === option}
-          className={`flex-1 rounded-lg py-1 ${value === option ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
-        >
-          {label(option)}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-/** A rarely changed choice inside a line of text: each tap steps to the next option. */
-export function Cycle<T extends string | number>({ options, value, onChange, label }: Omit<SegmentedProps<T>, "className">) {
-  const next = options[(options.indexOf(value) + 1) % options.length];
-  return (
-    <button onClick={() => onChange(next)} aria-label={`${label(value)}. Change to ${label(next)}`} className="text-accent underline decoration-accent/40 decoration-dotted underline-offset-4">
-      {label(value)}
-    </button>
-  );
-}
 
 const H = 180;
 const PAD = { top: 12, right: 8, bottom: 30, left: 34 };
@@ -244,17 +216,4 @@ export function TrendChart({ points, bands, averageLabel, valueLabel, format, vo
       </div>
     </div>
   );
-}
-
-function useWidth<T extends Element>() {
-  const ref = useRef<T>(null);
-  const [width, setWidth] = useState(0);
-  useLayoutEffect(() => {
-    if (!ref.current) return;
-    setWidth(ref.current.getBoundingClientRect().width);
-    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
-    observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-  return [ref, width] as const;
 }

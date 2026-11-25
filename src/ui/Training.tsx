@@ -7,7 +7,7 @@ import type { Commit } from "../store";
 import { Calendar } from "./Calendar";
 import { DayWorkout } from "./DayWorkout";
 import { Section } from "./fields";
-import { DateNav } from "./Today";
+import { DateNav } from "./Header";
 import { useOfferUndo } from "./undo";
 import { WorkoutEditor } from "./WorkoutEditor";
 

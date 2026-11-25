@@ -56,6 +56,17 @@ describe("recipe values", () => {
     expect(recipeAsFood(recipe, known).sugar).toBeUndefined();
   });
 
+  it("keeps any nutrient unknown that an ingredient lacks, and all of them until it can be divided", () => {
+    const known = new Map<string, Food>([...foods].map(([id, food]) => [id, { ...food, fiber: 1 }]));
+    known.set("oil", { ...known.get("oil")!, fiber: undefined });
+    expect(recipeAsFood(recipe, known).prot).toBeCloseTo(6.5);
+    expect(recipeAsFood(recipe, known).fiber).toBeUndefined();
+    known.set("oil", { ...known.get("oil")!, fiber: 0 });
+    expect(recipeAsFood(recipe, known).fiber).toBeCloseTo((3 + 2) / 8);
+    const undivided = recipeAsFood({ ...recipe, basis: "item", items: 0 }, known);
+    expect([undivided.kcal, undivided.prot, undivided.fiber]).toEqual([0, undefined, undefined]);
+  });
+
   it("uses the values written by hand while it has no ingredients", () => {
     const byHand: Recipe = { ...recipe, ingredients: [], values: { kcal: 245, prot: 12 }, note: "350 g a slice" };
     const food = recipeAsFood(byHand, foods);

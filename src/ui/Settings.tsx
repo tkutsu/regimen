@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { LIMIT_UNITS, localDate } from "../domain/day";
-import { allFoods, LABELS, pickableFoods, toggleFav, usedName } from "../domain/nutrition";
+import { allFoods, LABELS, LIMITED, pickableFoods, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
 import type { Change, Container, Limited, Phase, Range, Settings as SettingsT, SettingsPatch, Staple } from "../domain/types";
@@ -121,8 +121,6 @@ function Targets({ settings, set }: { settings: SettingsT; set: Set }) {
     </>
   );
 }
-
-const LIMITED: Limited[] = ["prot", "fiber", "satFat", "unsatFat", "salt", "sugar"];
 
 /** A lower and an upper bound per nutrient; either can be blank. */
 function Limits({ limits, set }: { limits: SettingsT["limits"]; set: Set }) {

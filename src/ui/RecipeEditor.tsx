@@ -3,9 +3,9 @@ import { LABELS, NUTRIENTS, parseAmount, recipeAsFood, recipeTotals, scale, used
 import { fromRecipeForm, toRecipeForm, type RecipeForm } from "../domain/recipeForm";
 import type { Container, Food, Nutrients, Recipe } from "../domain/types";
 import { Dialog } from "./Dialog";
-import { box, Heading, KeywordsField, ValueFields } from "./FoodEditor";
+import { KeywordsField, ValueFields } from "./FoodEditor";
 import { FoodPicker } from "./FoodPicker";
-import { blurOnEnter } from "./fields";
+import { blurOnEnter, box, Heading, useSaving } from "./fields";
 import { transition } from "./motion";
 
 type Props = {
@@ -19,8 +19,8 @@ type Props = {
   /** Entries and staples that use this recipe. */
   uses: number;
   /** `added` are reference foods picked as ingredients, to become yours with the recipe. */
-  onSave: (recipe: Recipe, added: Food[]) => void;
-  onDelete: () => void;
+  onSave: (recipe: Recipe, added: Food[]) => Promise<void>;
+  onDelete: () => Promise<void>;
   onToggleFav: (food: Food) => void;
   onClose: () => void;
 };
@@ -34,6 +34,7 @@ export function RecipeEditor(props: Props) {
   const [form, setForm] = useState(() => toRecipeForm(recipe));
   const [picking, setPicking] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [saving, whileSaving] = useSaving();
   const [shown, setShown] = useState<keyof Nutrients>("kcal");
   // Reference foods picked so far count as yours until the recipe is saved or dropped.
   const [picked, setPicked] = useState<Food[]>([]);
@@ -53,7 +54,7 @@ export function RecipeEditor(props: Props) {
   };
   const totals = recipeTotals(draft, foods);
   const perUnit = recipeAsFood(draft, foods);
-  const save = (recipe: Recipe) => onSave(recipe, picked.filter((food) => recipe.ingredients.some((i) => i.foodId === food.id)));
+  const save = (recipe: Recipe) => whileSaving(() => onSave(recipe, picked.filter((food) => recipe.ingredients.some((i) => i.foodId === food.id))));
   const byHand = !form.ingredients.length;
   const item = form.basis === "item";
   const presets = containers.some((c) => c.grams === form.containerG) || !form.containerG ? containers : [...containers, { id: "other", name: "other", grams: form.containerG }];
@@ -65,7 +66,7 @@ export function RecipeEditor(props: Props) {
           Cancel
         </button>
         <h2 className="font-medium">{saved ? "Edit recipe" : "New recipe"}</h2>
-        <button disabled={!result} onClick={() => result && save(result)} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
+        <button disabled={!result || saving} onClick={() => result && save(result)} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
           Save
         </button>
       </header>

@@ -5,22 +5,27 @@ import { zero } from "../domain/nutrition";
 import { fold } from "../domain/state";
 import { Remaining } from "./Remaining";
 
-describe("daily sugar display", () => {
-  const complete: Intake = { ...zero(), sugar: 5, sugarIncomplete: false };
+describe("incomplete totals", () => {
+  const complete: Intake = { ...zero(), sugar: 5, incomplete: [] };
   const target = targets(fold([]), "2026-10-31");
   const render = (eaten: Intake, planned: Intake) => renderToStaticMarkup(<Remaining target={target} eaten={eaten} planned={planned} onShow={() => {}} />);
 
-  it("labels the known subtotal when either eaten or planned sugar is incomplete", () => {
-    const incomplete = { ...complete, sugarIncomplete: true };
+  it("labels the known subtotal when either eaten or planned food lacks a value", () => {
+    const incomplete: Intake = { ...complete, incomplete: ["sugar"] };
     for (const html of [render(incomplete, complete), render(complete, incomplete)]) {
-      expect(html).toContain("at least 10");
-      expect(html).toContain("Sugar total is incomplete.");
+      expect(html).toContain("≥ 10 /");
+      expect(html).toContain("no sugar value, so that total may");
     }
+  });
+
+  it("names every incomplete nutrient", () => {
+    const html = render({ ...complete, incomplete: ["prot"] }, { ...complete, incomplete: ["sugar"] });
+    expect(html.match(/≥ \d/g)).toHaveLength(2);
+    expect(html).toContain("no protein or sugar value, so those totals may");
   });
 
   it("leaves complete totals unqualified", () => {
     const html = render(complete, complete);
-    expect(html).not.toContain("at least");
-    expect(html).not.toContain("Sugar total is incomplete.");
+    expect(html).not.toContain("≥");
   });
 });

@@ -272,3 +272,64 @@ export function Section({ title, aside, children }: { title: string; aside?: Rea
     </section>
   );
 }
+
+/** A bordered input or text area in a form. */
+export const box = "rounded-xl border bg-surface px-3 py-2 outline-none focus:border-accent";
+
+/** A form section's title, with an optional hint across from it. */
+export function Heading({ hint, children }: { hint?: string; children: React.ReactNode }) {
+  return (
+    <h3 className="mb-2 flex justify-between px-1 text-xs text-muted">
+      <span className="font-medium tracking-wide uppercase">{children}</span>
+      {hint}
+    </h3>
+  );
+}
+
+type SegmentedProps<T> = { options: readonly T[]; value: T; onChange: (value: T) => void; label: (value: T) => string; className?: string };
+
+/** A row of exclusive choices; the chosen one shows pressed. */
+export function Segmented<T extends string | number>({ options, value, onChange, label, className = "" }: SegmentedProps<T>) {
+  return (
+    <div className={`flex gap-1 rounded-xl bg-line/50 p-1 ${className}`}>
+      {options.map((option) => (
+        <button
+          key={option}
+          onClick={() => onChange(option)}
+          aria-pressed={value === option}
+          className={`flex-1 rounded-lg py-1 ${value === option ? "bg-surface font-medium shadow-sm" : "text-muted"}`}
+        >
+          {label(option)}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** A rarely changed choice inside a line of text: each tap steps to the next option. */
+export function Cycle<T extends string | number>({ options, value, onChange, label }: Omit<SegmentedProps<T>, "className">) {
+  const next = options[(options.indexOf(value) + 1) % options.length];
+  return (
+    <button onClick={() => onChange(next)} aria-label={`${label(value)}. Change to ${label(next)}`} className="text-accent underline decoration-accent/40 decoration-dotted underline-offset-4">
+      {label(value)}
+    </button>
+  );
+}
+
+/**
+ * Runs an editor's save one at a time: `saving` holds while it writes, so Save can't
+ * send it twice. A save that fails leaves the editor open to try again.
+ */
+export function useSaving() {
+  const [saving, setSaving] = useState(false);
+  const run = async (save: () => Promise<void>) => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      await save();
+    } finally {
+      setSaving(false);
+    }
+  };
+  return [saving, run] as const;
+}

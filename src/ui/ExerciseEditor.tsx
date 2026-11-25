@@ -3,9 +3,7 @@ import { targets } from "../domain/exerciseLibrary";
 import { searchMuscles } from "../domain/muscles";
 import type { Exercise } from "../domain/types";
 import { Dialog, useBack } from "./Dialog";
-import { blurOnEnter, NumberInput, OptionalNumberInput, Remove, SearchInput, Section, Switch } from "./fields";
-import { box } from "./FoodEditor";
-import { Segmented } from "./TrendChart";
+import { blurOnEnter, box, NumberInput, OptionalNumberInput, Remove, SearchInput, Section, Segmented, Switch, useSaving } from "./fields";
 
 type Props = {
   exercise: Exercise;
@@ -25,27 +23,23 @@ const KINDS = {
 export function ExerciseEditor({ exercise, saved, used, onSave, onDelete, onClose }: Props) {
   const [draft, setDraft] = useState<Exercise>(() => ({ ...exercise, ...targets(exercise) }));
   const [confirming, setConfirming] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [saving, whileSaving] = useSaving();
   const set = (patch: Partial<Exercise>) => setDraft({ ...draft, ...patch });
   const primary = draft.muscles ?? [];
   const secondary = draft.secondary ?? {};
   const taken = [...primary, ...Object.keys(secondary)];
   const title = saved ? "Edit exercise" : "New exercise";
 
-  const save = async () => {
-    setSaving(true);
-    try {
-      await onSave({
+  const save = () =>
+    whileSaving(() =>
+      onSave({
         ...draft,
         name: draft.name.trim(),
         muscles: primary.length || draft.libraryId ? primary : undefined,
         secondary: Object.keys(secondary).length ? secondary : undefined,
         lengthened: draft.lengthened || undefined,
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
+      }),
+    );
 
   return (
     <Dialog label={title} onClose={onClose}>

@@ -1,7 +1,10 @@
 import type { State } from "./state";
-import type { Change, Entry, Food, Frozen, Nutrients, Recipe, Values } from "./types";
+import type { Change, Entry, Food, Frozen, Limited, Nutrients, Recipe, Values } from "./types";
 
 export const NUTRIENTS = ["kcal", "prot", "fiber", "satFat", "unsatFat", "salt", "sugar"] as const;
+
+/** Every nutrient but kcal: the ones with a settable range, and the ones a food may not know. */
+export const LIMITED = NUTRIENTS.filter((key): key is Limited => key !== "kcal");
 
 export const LABELS: Record<keyof Nutrients, string> = {
   kcal: "kcal",
@@ -53,14 +56,21 @@ export function recipeTotals(recipe: Recipe, foods: Map<string, Food>) {
   return { total, rawG, cookedG: cookedG > 0 ? cookedG : rawG, weighed: cookedG > 0 };
 }
 
-/** Per item or 100 g: divided batch totals, or values written by hand without ingredients. */
+/**
+ * Per item or 100 g: divided batch totals, or values written by hand without ingredients.
+ * A nutrient stays unknown while any ingredient that's used, or gone, has no value for it;
+ * nothing is known until the batch can be divided, except kcal, which reads 0.
+ */
 export function recipeValues(recipe: Recipe, foods: Map<string, Food>): Values {
   if (!recipe.ingredients.length && recipe.values) return recipe.values;
   const { total, cookedG } = recipeTotals(recipe, foods);
   const divisor = recipe.basis === "item" ? recipe.items ?? 0 : cookedG / 100;
-  const values: Values = zero();
-  for (const key of NUTRIENTS) values[key] = divisor > 0 ? total[key] / divisor : 0;
-  if (!(divisor > 0) || recipe.ingredients.some(({ foodId, amount }) => amount > 0 && foods.get(foodId)?.sugar === undefined)) delete values.sugar;
+  if (!(divisor > 0)) return { kcal: 0 };
+  const used = recipe.ingredients.filter(({ amount }) => amount > 0).map(({ foodId }) => foods.get(foodId));
+  const values: Values = { kcal: total.kcal / divisor };
+  for (const key of LIMITED) {
+    if (used.every((food) => food?.[key] !== undefined)) values[key] = total[key] / divisor;
+  }
   return values;
 }
 

@@ -2,10 +2,10 @@ import type { State } from "../domain/state";
 import type { Commit } from "../store";
 import { Exercises } from "./ExerciseList";
 import { Foods } from "./Foods";
+import { Segmented } from "./fields";
 import { Header } from "./Header";
 import { useRemembered } from "./look";
 import { transition } from "./motion";
-import { Segmented } from "./TrendChart";
 
 type Props = { state: State; commit: Commit };
 

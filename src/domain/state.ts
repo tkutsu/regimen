@@ -141,7 +141,7 @@ export function applyEvents(state: State, events: Event[]): State {
   return next;
 }
 
-export function apply(state: State, event: Event): void {
+function apply(state: State, event: Event): void {
   switch (event.type) {
     case "food.upsert":
       state.foods.set(event.food.id, event.food);

@@ -3,9 +3,9 @@ import { localDate } from "../domain/day";
 import type { State } from "../domain/state";
 import { muscleSets, volumeSeries } from "../domain/training";
 import { daysBetween, phaseRuns } from "../domain/weight";
-import { Info } from "./fields";
+import { Cycle, Info, Segmented } from "./fields";
 import { useRemembered } from "./look";
-import { Cycle, Segmented, TrendChart } from "./TrendChart";
+import { TrendChart } from "./TrendChart";
 
 const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];

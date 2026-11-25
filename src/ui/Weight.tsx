@@ -3,9 +3,9 @@ import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
 import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Region, type Stretch } from "../domain/weight";
 import type { Commit } from "../store";
-import { Info } from "./fields";
+import { Cycle, Info, Segmented } from "./fields";
 import { useRemembered } from "./look";
-import { Cycle, Segmented, TrendChart } from "./TrendChart";
+import { TrendChart } from "./TrendChart";
 
 /** `children` go between the readings and the notes. */
 type Props = { state: State; commit: Commit; children?: ReactNode };

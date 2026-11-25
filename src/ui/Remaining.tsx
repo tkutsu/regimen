@@ -1,8 +1,6 @@
 import type { Intake, Targets } from "../domain/day";
-import { LABELS } from "../domain/nutrition";
+import { LABELS, LIMITED } from "../domain/nutrition";
 import type { Limited, Nutrients, Range } from "../domain/types";
-
-const LIMITED: Limited[] = ["prot", "fiber", "satFat", "unsatFat", "salt", "sugar"];
 const DIGITS: Record<Limited, number> = { prot: 0, fiber: 0, satFat: 1, unsatFat: 0, salt: 1, sugar: 0 };
 
 type Props = {
@@ -18,7 +16,7 @@ type Props = {
 export function Remaining({ target, eaten, planned, shown, onShow }: Props) {
   const total = eaten.kcal + planned.kcal;
   const left = target.kcal - total;
-  const sugarIncomplete = eaten.sugarIncomplete || planned.sugarIncomplete;
+  const incomplete = LIMITED.filter((key) => eaten.incomplete.includes(key) || planned.incomplete.includes(key));
   return (
     <section className="rounded-2xl border border-line bg-surface p-4">
       <button onClick={() => onShow("kcal")} aria-pressed={shown === "kcal"} className="block w-full text-left">
@@ -35,13 +33,19 @@ export function Remaining({ target, eaten, planned, shown, onShow }: Props) {
       </button>
       <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
         {LIMITED.map((key) => (
-          <Macro key={key} name={key} range={target[key]} eaten={eaten[key]} planned={planned[key]} incomplete={key === "sugar" && sugarIncomplete} shown={shown === key} onShow={() => onShow(key)} />
+          <Macro key={key} name={key} range={target[key]} eaten={eaten[key]} planned={planned[key]} incomplete={incomplete.includes(key)} shown={shown === key} onShow={() => onShow(key)} />
         ))}
       </div>
-      {sugarIncomplete && <p className="mt-3 text-xs text-muted">Sugar total is incomplete. Some foods or recipe ingredients have unknown sugar.</p>}
+      {incomplete.length > 0 && (
+        <p className="mt-3 text-xs text-muted">
+          ≥ means some foods or recipe ingredients have no {list.format(incomplete.map((key) => LABELS[key]))} value, so {incomplete.length === 1 ? "that total" : "those totals"} may be higher.
+        </p>
+      )}
     </section>
   );
 }
+
+const list = new Intl.ListFormat("en", { type: "disjunction" });
 
 /** A nutrient's name and amount over its bar; the bar's colour says over or enough. */
 function Macro({ name, range, eaten, planned, incomplete, shown, onShow }: { name: Limited; range: Range; eaten: number; planned: number; incomplete: boolean; shown: boolean; onShow: () => void }) {
@@ -50,10 +54,10 @@ function Macro({ name, range, eaten, planned, incomplete, shown, onShow }: { nam
   const bounds = [min, max].filter((n) => n !== undefined).map((n) => n.toFixed(DIGITS[name]));
   return (
     <button onClick={onShow} aria-pressed={shown} className="block text-left">
-      <span className={`flex justify-between text-xs transition-colors ${shown ? "text-accent" : "text-muted"}`}>
+      <span className={`flex justify-between gap-2 text-xs transition-colors ${shown ? "text-accent" : "text-muted"}`}>
         <span>{LABELS[name]}</span>
         <span>
-          {incomplete && "at least "}
+          {incomplete && "≥ "}
           {total.toFixed(DIGITS[name])}
           {bounds.length > 0 && ` / ${bounds.join("–")}`}g
         </span>

@@ -10,7 +10,7 @@ const egg: Food = { id: "egg", name: "Egg", basis: "item", group: "", fav: false
 const recipe: Recipe = { id: "r", name: "Egg bites", ingredients: [{ foodId: "egg", amount: 4 }], totalG: 200, containerG: 0 };
 const render = (recipe: Recipe, saved = true) => renderToStaticMarkup(
   <RecipeEditor recipe={recipe} saved={saved} foods={new Map([[egg.id, egg]])} recentIds={[]} containers={[]} uses={0}
-    onSave={() => {}} onDelete={() => {}} onToggleFav={() => {}} onClose={() => {}} />,
+    onSave={async () => {}} onDelete={async () => {}} onToggleFav={() => {}} onClose={() => {}} />,
 );
 
 describe("recipe basis controls", () => {

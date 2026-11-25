@@ -15,7 +15,7 @@ const FRESH = 2 * 24 * 3600;
 const LIVE = 15 * 60;
 
 /** A readable folder: `content://…/tree/primary%3A_Files%2Fregimen` reads as `_Files/regimen`. */
-export function folderLabel(dir: string) {
+function folderLabel(dir: string) {
   const tree = dir.match(/\/tree\/([^/]+)/);
   if (tree) return decodeURIComponent(tree[1]).replace(/^primary:/, "");
   return dir.replace(/^\/home\/[^/]+/, "~");

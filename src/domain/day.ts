@@ -1,4 +1,4 @@
-import { add, allFoods, entryFood, scale, zero } from "./nutrition";
+import { add, allFoods, entryFood, LIMITED, scale, zero } from "./nutrition";
 import type { State } from "./state";
 import type { Day, Entry, Food, Limited, Nutrients, Range } from "./types";
 
@@ -44,7 +44,7 @@ export function trendWeight(state: State, date: string): number | undefined {
  * Maintenance as it was set on that date, so past targets stay what they were
  * when the setting changes. Before the first change, the first value set.
  */
-export function tdeeOn(state: State, date: string): number {
+function tdeeOn(state: State, date: string): number {
   const history = state.tdeeHistory;
   return history.findLast((change) => change.date <= date)?.tdee ?? history[0]?.tdee ?? state.settings.tdee;
 }
@@ -137,14 +137,19 @@ export function missingStaples(state: State, date: string): Entry[] {
     .filter((entry) => !state.entries.has(entry.id) && !state.removed.has(entry.id));
 }
 
-export type Intake = Nutrients & { sugarIncomplete: boolean };
+/** `incomplete` lists the nutrients whose total is only what's known so far. */
+export type Intake = Nutrients & { incomplete: Limited[] };
 
-/** Logged totals and whether sugar is only a known subtotal; `done` picks eaten or planned. */
+/**
+ * Logged totals; `done` picks eaten or planned. A nutrient is incomplete when food that
+ * counts, or food that's gone, has no value for it.
+ */
 export function intake(state: State, date: string, done?: boolean): Intake {
   const entries = entriesOn(state, date).filter((entry) => done === undefined || entry.done === done);
   const foods = allFoods(state);
-  const sugarIncomplete = entries.some((entry) => entry.amount * (entry.factor ?? 1) > 0 && entryFood(entry, foods)?.sugar === undefined);
-  return { ...sum(entries, foods), sugarIncomplete };
+  const counted = entries.filter((entry) => entry.amount * (entry.factor ?? 1) > 0).map((entry) => entryFood(entry, foods));
+  const incomplete = LIMITED.filter((key) => counted.some((food) => food?.[key] === undefined));
+  return { ...sum(entries, foods), incomplete };
 }
 
 /** What the entries add up to; one whose food is gone counts as nothing. */

@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addDrop, addSet, lastSets, planExercise, summarize, supersets } from "../domain/training";
 import type { Exercise, Session, SetLog } from "../domain/types";
 import { AmountFields, ExerciseDetails, ExercisePicker, LinkToggle } from "./exercises";
-import { Remove, TextInput, Tick } from "./fields";
-import { box } from "./FoodEditor";
+import { box, Remove, TextInput, Tick } from "./fields";
 import { useOfferUndo } from "./undo";
 
 type Props = {
@@ -11,8 +10,8 @@ type Props = {
   /** Every session, newest first, for what each exercise was last time. */
   sessions: Session[];
   exercises: Map<string, Exercise>;
-  /** Every edit is written as it's made, like Today. */
-  onChange: (session: Session) => void;
+  /** Every edit is written as it's made, like Today; resolves once it's saved and shown. */
+  onChange: (session: Session) => Promise<unknown>;
   /** Missing while the day has nothing saved. The caller offers Undo. */
   onDelete?: () => void;
 };
@@ -22,20 +21,42 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
   const [picking, setPicking] = useState(false);
   const [note, setNote] = useState(session.note ?? "");
   const offerUndo = useOfferUndo();
-  const linked = session.linked ?? [];
+
+  // Each edit builds on the newest session, including one still being written, so two
+  // quick ticks don't each save their own copy of the session on screen.
+  const latest = useRef(session);
+  const writing = useRef(0);
+  useEffect(() => {
+    if (!writing.current) latest.current = session;
+  }, [session]);
+  const edit = async (change: (session: Session) => Session) => {
+    latest.current = change(latest.current);
+    writing.current++;
+    try {
+      await onChange(latest.current);
+    } finally {
+      writing.current--;
+    }
+  };
+
   // An exercise taken out of the session leaves its superset too.
-  const setSets = (sets: SetLog[]) => onChange({ ...session, sets, linked: only(linked.filter((id) => sets.some((set) => set.exerciseId === id))) });
-  const setLinked = (next: string[]) => onChange({ ...session, linked: only(next) });
-  const editSet = (i: number, changes: Partial<SetLog>) => setSets(session.sets.map((set, j) => (i === j ? { ...set, ...changes } : set)));
+  const editSets = (change: (sets: SetLog[]) => SetLog[]) =>
+    edit((session) => {
+      const sets = change(session.sets);
+      const linked = (session.linked ?? []).filter((id) => sets.some((set) => set.exerciseId === id));
+      return { ...session, sets, linked: only(linked) };
+    });
+  const editLinked = (change: (linked: string[]) => string[]) => edit((session) => ({ ...session, linked: only(change(session.linked ?? [])) }));
+  const editSet = (i: number, changes: Partial<SetLog>) => editSets((sets) => sets.map((set, j) => (i === j ? { ...set, ...changes } : set)));
   const add = (exerciseId: string) =>
-    setSets(session.sets.some((set) => set.exerciseId === exerciseId) ? addSet(session.sets, exerciseId) : [...session.sets, ...planExercise(sessions, exerciseId, session.id)]);
+    editSets((sets) => (sets.some((set) => set.exerciseId === exerciseId) ? addSet(sets, exerciseId) : [...sets, ...planExercise(sessions, exerciseId, session.id)]));
   const done = session.sets.filter((set) => set.done).length;
 
   return (
     <section aria-label="Workout" className="flex flex-col gap-4">
       {session.sets.length > 0 ? (
         <div>
-          <TextInput value={session.name} onCommit={(name) => onChange({ ...session, name })} aria-label="Name" className={`${box} w-full border-line text-lg`} />
+          <TextInput value={session.name} onCommit={(name) => edit((session) => ({ ...session, name }))} aria-label="Name" className={`${box} w-full border-line text-lg`} />
           <p className="mt-1 px-1 text-sm text-muted">
             {done} of {session.sets.length} {session.sets.length === 1 ? "set" : "sets"} done
           </p>
@@ -47,25 +68,31 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
       {supersets(session.sets, session.linked).map((block, b) => (
         <section key={block[0].exerciseId} className={`rounded-2xl border bg-surface ${block.length > 1 ? "border-accent/60" : "border-line"}`}>
           {block.length > 1 && <p className="px-4 pt-3 text-xs font-medium tracking-wide text-accent uppercase">Superset · no rest between</p>}
-          {block.map(({ exerciseId, at }, g) => (
-            <div key={exerciseId} className={g > 0 ? "border-t border-line" : ""}>
-              <ExerciseSets
-                session={session}
-                sessions={sessions}
-                exercise={exercises.get(exerciseId)}
-                at={at}
-                linked={b > 0 || g > 0 ? g > 0 : undefined}
-                onToggleLink={() => setLinked(g > 0 ? linked.filter((id) => id !== exerciseId) : [...linked, exerciseId])}
-                onEditSet={editSet}
-                onRemoveSet={(i) => {
-                  setSets(session.sets.filter((_, j) => j !== i));
-                  offerUndo(`Removed a ${exercises.get(exerciseId)?.name ?? "deleted exercise"} set`, { type: "session.upsert", session });
-                }}
-                onAddSet={() => setSets(addSet(session.sets, exerciseId))}
-                onAddDrop={() => setSets(addDrop(session.sets, exerciseId))}
-              />
-            </div>
-          ))}
+          {block.map(({ exerciseId, at }, g) => {
+            // The session's first exercise has nothing above it to link to.
+            const first = b === 0 && g === 0;
+            const linked = g > 0;
+            return (
+              <div key={exerciseId} className={linked ? "border-t border-line" : ""}>
+                <ExerciseSets
+                  session={session}
+                  sessions={sessions}
+                  exercise={exercises.get(exerciseId)}
+                  at={at}
+                  linked={first ? undefined : linked}
+                  onToggleLink={() => editLinked((ids) => (linked ? ids.filter((id) => id !== exerciseId) : [...ids, exerciseId]))}
+                  onEditSet={editSet}
+                  onRemoveSet={(i) => {
+                    const before = latest.current;
+                    editSets((sets) => sets.filter((_, j) => j !== i));
+                    offerUndo(`Removed a ${exercises.get(exerciseId)?.name ?? "deleted exercise"} set`, { type: "session.upsert", session: before });
+                  }}
+                  onAddSet={() => editSets((sets) => addSet(sets, exerciseId))}
+                  onAddDrop={() => editSets((sets) => addDrop(sets, exerciseId))}
+                />
+              </div>
+            );
+          })}
         </section>
       ))}
 
@@ -86,7 +113,7 @@ export function DayWorkout({ session, sessions, exercises, onChange, onDelete }:
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        onBlur={() => note.trim() !== (session.note ?? "") && onChange({ ...session, note: note.trim() || undefined })}
+        onBlur={() => note.trim() !== (latest.current.note ?? "") && edit((session) => ({ ...session, note: note.trim() || undefined }))}
         placeholder="Note"
         className={`${box} w-full border-line text-sm`}
       />

@@ -26,7 +26,7 @@ type Props = {
 export function FoodPicker({ foods, recentIds, containers, onAdd, onToggleFav, onClose, addLabel }: Props) {
   const [query, setQuery] = useState("");
   const [picked, setPicked] = useState<Food>();
-  const reference = useReference(true);
+  const reference = useReference();
 
   const sections = useMemo((): [string, Food[]][] => {
     const available = [...foods.values()].filter((food) => !food.archived);

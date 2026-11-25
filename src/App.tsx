@@ -28,7 +28,7 @@ export default function App() {
   const [tab, setTab] = useRemembered<Tab>("last-tab", "today", TABS);
   // Settings opens over whichever tab you were on; any tab, or Done, leaves it.
   const [settings, setSettings] = useState(false);
-  // Today and Training show the same day, so a workout card on Today opens that day's workout.
+  // Today and Training show the same day, so switching tabs keeps it.
   const [date, setDate] = useState(localDate);
   const [undo, setUndo] = useState<Undoable>();
   const go = useCallback((next: Tab) => transition(() => { setSettings(false); setTab(next); }), [setTab]);

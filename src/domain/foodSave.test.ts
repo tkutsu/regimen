@@ -26,7 +26,7 @@ describe("saving a food", () => {
     const next = save(state, { ...oats, kcal: 300, sugar: undefined });
     expect(intake(next, yesterday)).toEqual(intake(state, yesterday));
     expect(intake(next, today).kcal).toBe(300);
-    expect(intake(next, today).sugarIncomplete).toBe(true);
+    expect(intake(next, today).incomplete).toContain("sugar");
     expect(next.entries.get("milk-past")?.frozen).toBeUndefined();
   });
 

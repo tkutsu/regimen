@@ -76,7 +76,7 @@ describe("deleting a recipe", () => {
 
   it("offers deletion when the recipe is used", () => {
     const html = renderToStaticMarkup(<RecipeEditor recipe={recipe} saved foods={state.foods} recentIds={[]} containers={[]} uses={2}
-      onSave={() => {}} onDelete={() => {}} onToggleFav={() => {}} onClose={() => {}} />);
+      onSave={async () => {}} onDelete={async () => {}} onToggleFav={() => {}} onClose={() => {}} />);
     expect(html).toContain(">Delete recipe</button>");
   });
 });
@@ -101,7 +101,7 @@ describe("deleting a used food", () => {
   });
 
   it("offers deletion even when the food is used more than once", () => {
-    const html = renderToStaticMarkup(<FoodEditor food={oats} groups={[]} uses={6} onSave={() => {}} onDelete={() => {}} onClose={() => {}} />);
+    const html = renderToStaticMarkup(<FoodEditor food={oats} groups={[]} uses={6} onSave={async () => {}} onDelete={async () => {}} onClose={() => {}} />);
     expect(html).toContain(">Delete food</button>");
     expect(html).toContain("Deleting it keeps existing logs, recipes and staples.");
     expect(html).not.toContain("everywhere");

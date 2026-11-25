@@ -39,7 +39,7 @@ it("loads variant notes and searchable aliases while preserving source identity 
     keywords: { "usda-1": ["fusilli", "penne", "orzo"] },
   }) }));
   try {
-    useReference(true);
+    useReference();
     await vi.waitFor(() => expect(setFoods).toHaveBeenCalledOnce());
     const foods = setFoods.mock.calls[0][0] as Food[];
     expect(foods[0].note).toBe("source: USDA FDC 1\nPasta shapes: fusilli, penne, orzo.");

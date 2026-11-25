@@ -33,11 +33,11 @@ function loadReference(): Promise<Food[]> {
   return loading;
 }
 
-export function useReference(enabled: boolean): Food[] {
+export function useReference(): Food[] {
   const [foods, setFoods] = useState<Food[]>([]);
   useEffect(() => {
-    if (enabled) loadReference().then(setFoods, () => setFoods([]));
-  }, [enabled]);
+    loadReference().then(setFoods, () => setFoods([]));
+  }, []);
   return foods;
 }
 

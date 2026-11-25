@@ -4,8 +4,7 @@ import type { Exercise, Target, Workout } from "../domain/types";
 import { Dialog } from "./Dialog";
 import { dropsOf } from "../domain/training";
 import { AmountFields, ExerciseDetails, ExerciseSearch, fieldBox, LinkToggle } from "./exercises";
-import { NumberInput, OptionalNumberInput, Remove } from "./fields";
-import { box, Heading } from "./FoodEditor";
+import { box, Heading, NumberInput, OptionalNumberInput, Remove, useSaving } from "./fields";
 import { transition } from "./motion";
 import { useReorder } from "./reorder";
 
@@ -14,8 +13,8 @@ type Props = {
   /** The workout is already saved, not a draft. */
   saved: boolean;
   exercises: Map<string, Exercise>;
-  onSave: (workout: Workout) => void;
-  onDelete: () => void;
+  onSave: (workout: Workout) => Promise<void>;
+  onDelete: () => Promise<void>;
   onClose: () => void;
 };
 
@@ -25,7 +24,11 @@ type Line = Target & { key: string };
 /** Lines in blocks, each linked line with the one above: a block of more than one is a superset. */
 function blocks(lines: Line[]): Line[][] {
   const out: Line[][] = [];
-  lines.forEach((line, i) => (i > 0 && line.linked ? out.at(-1)!.push(line) : out.push([line])));
+  for (const line of lines) {
+    const above = out.at(-1);
+    if (above && line.linked) above.push(line);
+    else out.push([line]);
+  }
   return out;
 }
 
@@ -38,6 +41,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSave, onDelete, onC
   const [lines, setLines] = useState<Line[]>(() => workout.targets.map((target) => ({ ...target, drop: undefined, drops: dropsOf(target) || undefined, key: newId() })));
   const [note, setNote] = useState(workout.note ?? "");
   const [confirming, setConfirming] = useState(false);
+  const [saving, whileSaving] = useSaving();
   // A superset moves as one; an exercise leaves or joins one with its link.
   const { shown, dragging, handle } = useReorder(
     blocks(lines),
@@ -48,7 +52,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSave, onDelete, onC
   const remove = (key: string) => setLines(unblock(blocks(lines).map((block) => block.filter((line) => line.key !== key))));
   const add = (exerciseId: string) => transition(() => setLines([...lines, { key: newId(), exerciseId, sets: 3 }]));
   const valid = name.trim() !== "" && lines.length > 0;
-  const save = () => valid && onSave({ id: workout.id, name: name.trim(), targets: lines.map(({ key: _, ...target }) => target), note: note.trim() || undefined });
+  const save = () => valid && whileSaving(() => onSave({ id: workout.id, name: name.trim(), targets: lines.map(({ key: _, ...target }) => target), note: note.trim() || undefined }));
 
   return (
     <Dialog label="Template" onClose={onClose}>
@@ -57,7 +61,7 @@ export function WorkoutEditor({ workout, saved, exercises, onSave, onDelete, onC
           Cancel
         </button>
         <h2 className="font-medium">{saved ? "Edit template" : "New template"}</h2>
-        <button disabled={!valid} onClick={save} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
+        <button disabled={!valid || saving} onClick={save} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
           Save
         </button>
       </header>

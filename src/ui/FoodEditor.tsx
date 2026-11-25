@@ -4,7 +4,7 @@ import { LABELS, NUTRIENTS } from "../domain/nutrition";
 import { newId } from "../domain/state";
 import type { Food } from "../domain/types";
 import { Dialog } from "./Dialog";
-import { blurOnEnter } from "./fields";
+import { blurOnEnter, box, Heading, useSaving } from "./fields";
 import { transition } from "./motion";
 
 type Props = {
@@ -12,12 +12,11 @@ type Props = {
   groups: string[];
   /** Entries, recipe ingredients and staples that use the food. */
   uses: number;
-  onSave: (food: Food) => void;
-  onDelete?: () => void;
+  onSave: (food: Food) => Promise<void>;
+  onDelete?: () => Promise<void>;
   onClose: () => void;
 };
 
-export const box = "rounded-xl border bg-surface px-3 py-2 outline-none focus:border-accent";
 const border = (text: string) => (Number.isNaN(readValue(text)) ? "border-bad" : "border-line");
 
 /** Edits a food, or creates one when none is given. Nothing is written until Save. */
@@ -25,6 +24,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
   const [id] = useState(() => food?.id ?? newId());
   const [form, setForm] = useState(() => toForm(food));
   const [confirming, setConfirming] = useState(false);
+  const [saving, whileSaving] = useSaving();
   const saved = fromForm(form, id);
   const patch = (changes: Partial<FoodForm>) => setForm({ ...form, ...changes });
   const setVariant = (i: number, changes: Partial<FoodForm["variants"][number]>) =>
@@ -37,7 +37,7 @@ export function FoodEditor({ food, groups, uses, onSave, onDelete, onClose }: Pr
           Cancel
         </button>
         <h2 className="font-medium">{food ? "Edit food" : "New food"}</h2>
-        <button disabled={!saved} onClick={() => saved && onSave(saved)} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
+        <button disabled={!saved || saving} onClick={() => saved && whileSaving(() => onSave(saved))} className="px-2 py-2 font-medium text-accent disabled:opacity-40">
           Save
         </button>
       </header>
@@ -178,7 +178,7 @@ export function KeywordsField({ value, onChange }: { value: string; onChange: (v
 }
 
 /** Suggestions stay in the page: Android's native datalist can lose its background while editing. */
-export function GroupInput({ value, onChange, groups }: { value: string; onChange: (value: string) => void; groups: string[] }) {
+function GroupInput({ value, onChange, groups }: { value: string; onChange: (value: string) => void; groups: string[] }) {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -263,14 +263,5 @@ export function ValueFields({ values, onChange }: { values: ValueTexts; onChange
         </label>
       ))}
     </div>
-  );
-}
-
-export function Heading({ hint, children }: { hint?: string; children: React.ReactNode }) {
-  return (
-    <h3 className="mb-2 flex justify-between px-1 text-xs text-muted">
-      <span className="font-medium tracking-wide uppercase">{children}</span>
-      {hint}
-    </h3>
   );
 }

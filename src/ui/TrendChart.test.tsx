@@ -3,11 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { TrendChart } from "./TrendChart";
 
-// Supply a measured width so server rendering includes the real SVG.
-vi.mock("react", async (importOriginal) => {
-  const react = await importOriginal<typeof import("react")>();
-  return { ...react, useState: (initial: unknown) => initial === 0 ? [400, vi.fn()] : react.useState(initial) };
-});
+// Server rendering lays nothing out, so supply the width the chart would measure.
+vi.mock("./measure", () => ({ useWidth: () => [{ current: null }, 400] }));
 
 const render = (points: ComponentProps<typeof TrendChart>["points"], volume = true) => renderToStaticMarkup(
   <TrendChart points={points} bands={[]} averageLabel="average" valueLabel="volume" format={(kg) => `${kg} kg`} volume={volume} />,
