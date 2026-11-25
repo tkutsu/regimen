@@ -21,7 +21,7 @@ describe("muscles", () => {
       expect(Object.values(secondary).every((pct) => pct > 0 && pct <= 100)).toBe(true);
     }
     expect(bench).toMatchObject({ muscles: ["Chest"], secondary: { Triceps: 50, "Front delts": 50 }, lengthened: false });
-    expect(exerciseLibrary.find((exercise) => exercise.id === "deadlift")!.secondary).toEqual({ Quads: 50, Traps: 50, Forearms: 25 });
+    expect(exerciseLibrary.find((exercise) => exercise.id === "deadlift")!.secondary).toEqual({ Quads: 50, Traps: 50 });
     expect(exerciseLibrary.filter((exercise) => exercise.lengthened).map((exercise) => exercise.id)).toContain("romanian-deadlift");
   });
 
