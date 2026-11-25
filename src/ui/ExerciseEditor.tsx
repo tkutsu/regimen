@@ -93,6 +93,8 @@ export function ExerciseEditor({ exercise, saved, used, onSave, onDelete, onClos
             <AddMuscle role="secondary" taken={taken} onAdd={(muscle) => set({ secondary: { ...secondary, [muscle]: 50 } })} />
           </Section>
 
+          <p className="px-1 text-xs text-muted">Muscle set credits are estimates. Catalogue defaults count primary muscles as one set and secondary muscles as half a set, not measured activation percentages.</p>
+
           <Section title="Loading">
             <Toggle label="Lengthened bias" hint="Hardest where the muscle is most stretched, like Romanian deadlifts or overhead extensions."
               checked={!!draft.lengthened} onChange={(lengthened) => set({ lengthened })} />

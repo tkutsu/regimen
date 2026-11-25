@@ -12,25 +12,27 @@ export type LibraryExercise = {
 export type Targets = { muscles: string[]; secondary: Record<string, number>; lengthened: boolean };
 
 /**
- * Muscles are written as sentences ("Chest", "triceps, front delts 25") and stored as names.
+ * Muscles are written as sentences ("Chest", "triceps, front delts") and stored as names.
  * A secondary muscle counts 50% of each set unless a percentage follows it.
+ * Bundled credits use primary = 100%, secondary = 50% as tracking estimates, not measured activation.
+ * Evidence, technique assumptions and unresolved cases: docs/exercise-muscle-credits.md.
  */
 type Row = [id: string, name: string, primary: string, secondary: string, equipment: string, aliases?: string];
 
 // An authored starter library of common names, without copied descriptions or prescribed loads.
 const compound: Row[] = [
-  ["barbell-squat", "Barbell back squat", "Quads, glutes", "adductors, lower back 25", "Barbell", "squats legs"],
-  ["front-squat", "Front squat", "Quads", "glutes, upper back 25", "Barbell", "legs"],
-  ["goblet-squat", "Goblet squat", "Quads", "glutes", "Dumbbell or kettlebell", "legs"],
-  ["bodyweight-squat", "Bodyweight squat", "Quads", "glutes", "Bodyweight", "air squat legs"],
-  ["leg-press", "Leg press", "Quads", "glutes, adductors 25", "Machine", "legs"],
-  ["hack-squat", "Hack squat", "Quads", "glutes", "Machine", "legs"],
+  ["barbell-squat", "Barbell back squat", "Quads, glutes", "adductors", "Barbell", "squats legs"],
+  ["front-squat", "Front squat", "Quads", "glutes, adductors", "Barbell", "legs"],
+  ["goblet-squat", "Goblet squat", "Quads", "glutes, adductors", "Dumbbell or kettlebell", "legs"],
+  ["bodyweight-squat", "Bodyweight squat", "Quads", "glutes, adductors", "Bodyweight", "air squat legs"],
+  ["leg-press", "Leg press", "Quads", "glutes, adductors", "Machine", "legs"],
+  ["hack-squat", "Hack squat", "Quads", "glutes, adductors", "Machine", "legs"],
   ["bulgarian-split-squat", "Bulgarian split squat", "Quads, glutes", "adductors", "Dumbbells", "rear foot elevated legs"],
   ["split-squat", "Split squat", "Quads, glutes", "adductors", "Dumbbells", "legs"],
   ["walking-lunge", "Walking lunge", "Quads, glutes", "adductors", "Dumbbells", "legs lunges"],
   ["reverse-lunge", "Reverse lunge", "Glutes, quads", "adductors", "Dumbbells", "legs lunges"],
   ["step-up", "Step-up", "Quads, glutes", "", "Dumbbells", "legs step up"],
-  ["deadlift", "Conventional deadlift", "Glutes, hamstrings, lower back", "quads, traps, forearms 25", "Barbell"],
+  ["deadlift", "Conventional deadlift", "Glutes, hamstrings, lower back", "quads, traps", "Barbell"],
   ["sumo-deadlift", "Sumo deadlift", "Glutes, quads, adductors", "hamstrings, lower back", "Barbell"],
   ["romanian-deadlift", "Romanian deadlift", "Hamstrings, glutes", "lower back, adductors", "Barbell", "RDL legs"],
   ["dumbbell-romanian-deadlift", "Dumbbell Romanian deadlift", "Hamstrings, glutes", "lower back, adductors", "Dumbbells", "RDL legs"],
@@ -47,6 +49,7 @@ const compound: Row[] = [
   ["barbell-overhead-press", "Barbell overhead press", "Front delts", "triceps, side delts", "Barbell", "OHP military press delts"],
   ["dumbbell-shoulder-press", "Dumbbell shoulder press", "Front delts", "triceps, side delts", "Dumbbells", "overhead delts"],
   ["machine-shoulder-press", "Machine shoulder press", "Front delts", "triceps, side delts", "Machine", "overhead delts"],
+  ["upright-row", "Barbell upright row", "Side delts, traps", "biceps", "Barbell", "upright row shoulders delts"],
   ["pull-up", "Pull-up", "Lats", "biceps, upper back", "Pull-up bar", "pullup pull up lats bodyweight"],
   ["chin-up", "Chin-up", "Lats", "biceps, upper back", "Pull-up bar", "chinup chin up lats bodyweight"],
   ["lat-pulldown", "Lat pulldown", "Lats", "biceps, upper back", "Cable machine", "pull down lats"],
@@ -66,29 +69,29 @@ const isolation: Row[] = [
   ["seated-calf-raise", "Seated calf raise", "Calves", "", "Machine", "legs calf"],
   ["hip-abduction", "Hip abduction", "Glutes", "", "Machine", "abductor legs"],
   ["hip-adduction", "Hip adduction", "Adductors", "", "Machine", "adductor legs inner thigh"],
-  ["cable-glute-kickback", "Cable glute kickback", "Glutes", "hamstrings 25", "Cable machine"],
-  ["hip-thrust", "Barbell hip thrust", "Glutes", "hamstrings 25", "Barbell"],
-  ["glute-bridge", "Glute bridge", "Glutes", "hamstrings 25", "Bodyweight"],
-  ["dumbbell-fly", "Dumbbell chest fly", "Chest", "front delts 25", "Dumbbells", "flyes pecs"],
-  ["cable-fly", "Cable chest fly", "Chest", "front delts 25", "Cable machine", "crossover flyes pecs"],
-  ["pec-deck", "Pec deck", "Chest", "front delts 25", "Machine", "butterfly fly pecs"],
-  ["lateral-raise", "Dumbbell lateral raise", "Side delts", "", "Dumbbells", "side delts"],
-  ["cable-lateral-raise", "Cable lateral raise", "Side delts", "", "Cable machine", "side delts"],
+  ["cable-glute-kickback", "Cable glute kickback", "Glutes", "hamstrings", "Cable machine"],
+  ["hip-thrust", "Barbell hip thrust", "Glutes", "", "Barbell"],
+  ["glute-bridge", "Glute bridge", "Glutes", "", "Bodyweight"],
+  ["dumbbell-fly", "Dumbbell chest fly", "Chest", "front delts", "Dumbbells", "flyes pecs"],
+  ["cable-fly", "Cable chest fly", "Chest", "front delts", "Cable machine", "crossover flyes pecs"],
+  ["pec-deck", "Pec deck", "Chest", "front delts", "Machine", "butterfly fly pecs"],
+  ["lateral-raise", "Dumbbell lateral raise", "Side delts", "traps", "Dumbbells", "side delts"],
+  ["cable-lateral-raise", "Cable lateral raise", "Side delts", "traps", "Cable machine", "side delts"],
   ["front-raise", "Dumbbell front raise", "Front delts", "", "Dumbbells", "delts"],
   ["reverse-fly", "Reverse dumbbell fly", "Rear delts", "upper back", "Dumbbells", "rear delts"],
   ["reverse-pec-deck", "Reverse pec deck", "Rear delts", "upper back", "Machine", "rear delts fly"],
-  ["barbell-curl", "Barbell biceps curl", "Biceps", "forearms 25", "Barbell", "arms"],
-  ["dumbbell-curl", "Dumbbell biceps curl", "Biceps", "forearms 25", "Dumbbells", "arms"],
+  ["barbell-curl", "Barbell biceps curl", "Biceps", "forearms", "Barbell", "arms"],
+  ["dumbbell-curl", "Dumbbell biceps curl", "Biceps", "forearms", "Dumbbells", "arms"],
   ["hammer-curl", "Hammer curl", "Biceps", "forearms", "Dumbbells", "arms"],
-  ["preacher-curl", "Preacher curl", "Biceps", "", "EZ bar", "arms"],
-  ["cable-curl", "Cable biceps curl", "Biceps", "forearms 25", "Cable machine", "arms"],
+  ["preacher-curl", "Preacher curl", "Biceps", "forearms", "EZ bar", "arms"],
+  ["cable-curl", "Cable biceps curl", "Biceps", "forearms", "Cable machine", "arms"],
   ["triceps-pushdown", "Triceps pushdown", "Triceps", "", "Cable machine", "pressdown rope arms"],
   ["overhead-triceps-extension", "Overhead triceps extension", "Triceps", "", "Cable machine", "arms"],
   ["skull-crusher", "Skull crusher", "Triceps", "", "EZ bar", "lying extension arms"],
   ["triceps-kickback", "Dumbbell triceps kickback", "Triceps", "", "Dumbbell", "arms"],
   ["straight-arm-pulldown", "Straight-arm pulldown", "Lats", "", "Cable machine", "lats"],
   ["dumbbell-pullover", "Dumbbell pullover", "Lats", "chest", "Dumbbell", "lats"],
-  ["shrug", "Dumbbell shrug", "Traps", "forearms 25", "Dumbbells", "back"],
+  ["shrug", "Dumbbell shrug", "Traps", "", "Dumbbells", "back"],
   ["crunch", "Crunch", "Abs", "", "Bodyweight", "abdominals core"],
   ["cable-crunch", "Cable crunch", "Abs", "", "Cable machine", "abdominals core"],
 ];
