@@ -119,12 +119,17 @@ export function ExerciseSearch({ exercises, onPick }: { exercises: Map<string, E
 
   return (
     <div>
-      <input
+      <SearchInput
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={setQuery}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter" || e.nativeEvent.isComposing || !name || !matches[0]) return;
+          e.preventDefault();
+          pick(matches[0].id);
+        }}
+        label="Add exercise"
         placeholder="Search saved exercises"
-        aria-label="Add exercise"
-        className="w-full bg-transparent px-4 py-2.5 outline-none placeholder:text-accent"
+        className="p-2"
       />
       {matches.map((exercise) => (
         <button key={exercise.id} onClick={() => pick(exercise.id)} className="block w-full border-t border-line px-4 py-2 text-left text-sm">
