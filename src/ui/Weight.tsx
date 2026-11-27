@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { localDate, shiftDate } from "../domain/day";
 import type { State } from "../domain/state";
-import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Region, type Stretch } from "../domain/weight";
+import { daysBetween, phaseRuns, regionReading, stretches, weightSeries, type Reading, type Region, type Stretch } from "../domain/weight";
 import type { Commit } from "../store";
 import { Cycle, Info, Segmented } from "./fields";
 import { useRemembered } from "./look";
@@ -14,8 +14,8 @@ const RANGES = { "1M": 31, "3M": 92, All: Infinity };
 const RANGE_NAMES = Object.keys(RANGES) as (keyof typeof RANGES)[];
 /** Days the average line spans. */
 const AVERAGES = [3, 7, 14];
-/** Days a picked stretch should span before its reading means much; less is mostly water. */
-const STEADY_SPAN = 14;
+/** The most uncertainty, in kcal, a reading can carry and still be offered as maintenance. */
+const CONFIDENT = 150;
 const short = (date: string) => new Date(`${date}T12:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 
 export function Weight({ state, commit, children }: Props) {
@@ -146,16 +146,37 @@ const kcal = (n: number) => Math.round(n / 10) * 10;
 const trend = (kgPerWeek: number) =>
   Math.abs(kgPerWeek) < 0.005 ? "held steady" : `went ${kgPerWeek > 0 ? "up" : "down"} ${Math.abs(kgPerWeek).toFixed(2)} kg a week`;
 
+/** A reading's maintenance and how far off it could be. */
+function Estimate({ reading }: { reading: Reading }) {
+  return (
+    <span className="text-3xl font-semibold">
+      ≈ {kcal(reading.tdee)}
+      <span className="text-base font-normal text-muted"> kcal ± {kcal(reading.spread)}</span>
+    </span>
+  );
+}
+
+/** Says why an unsure reading sits near the setting, or offers a sure one that differs from it. */
+function UseReading({ reading, tdee, onUse }: { reading: Reading; tdee: number; onUse: (tdee: number) => void }) {
+  const value = kcal(reading.tdee);
+  if (reading.spread > CONFIDENT) return (
+    <p className="mt-1 text-xs text-muted">
+      Too few weigh-ins to be sure: alone they say {kcal(reading.measured)}, so this leans on your setting.
+    </p>
+  );
+  return Math.abs(value - tdee) >= 30 && (
+    <button onClick={() => onUse(value)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
+      Use {value} as maintenance
+    </button>
+  );
+}
+
 /** The maintenance a stretch picked on the chart implies, updating as the drag goes. */
 function RegionReading({ region, tdee, onUse, onClear }: { region: Region; tdee: number; onUse: (tdee: number) => void; onClear: () => void }) {
-  const reading = kcal(region.tdee);
   return (
     <div className="mt-3 border-t border-line pt-3">
       <div className="flex items-baseline justify-between">
-        <span className="text-3xl font-semibold">
-          ≈ {reading}
-          <span className="text-base font-normal text-muted">kcal</span>
-        </span>
+        <Estimate reading={region} />
         <button onClick={onClear} aria-label="Clear the selected stretch" className="text-sm text-accent">
           Clear
         </button>
@@ -165,13 +186,8 @@ function RegionReading({ region, tdee, onUse, onClear }: { region: Region; tdee:
       </p>
       <p className="mt-1 text-xs text-muted">
         {region.weighIns} weigh-ins over {region.days} days, food ticked on {region.logged}.
-        {region.days < STEADY_SPAN && " Under two weeks, water can swamp this."}
       </p>
-      {Math.abs(reading - tdee) >= 30 && (
-        <button onClick={() => onUse(reading)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
-          Use {reading} as maintenance
-        </button>
-      )}
+      <UseReading reading={region} tdee={tdee} onUse={onUse} />
     </div>
   );
 }
@@ -180,7 +196,7 @@ function RegionReading({ region, tdee, onUse, onClear }: { region: Region; tdee:
 function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; tdee: number; settleDays: number; onUse: (tdee: number) => void }) {
   const current = phases.at(-1);
   if (!current) return null;
-  const reading = current.tdee && kcal(current.tdee);
+  const { reading } = current;
   const counted = Math.max(0, daysBetween(current.fitFrom, current.to) + 1);
   const logged = counted > 0 ? ` over the last ${counted === 1 ? "day" : `${counted} days`}. Food ticked on ${current.logged}; the rest count as on target.` : ".";
   const skipped = settleDays > 0 ? ` Skips the first ${settleDays === 1 ? "day" : `${settleDays} days`} of each phase for water weight.` : "";
@@ -191,25 +207,17 @@ function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; t
           <span className="font-medium tracking-wide uppercase">Real maintenance</span>
         </Info>
       </h2>
-      {reading && current.kgPerWeek !== undefined ? (
+      {reading ? (
         <>
           <div className="mt-1 flex items-baseline justify-between">
-            <span className="text-3xl font-semibold">
-              ≈ {reading}
-              <span className="text-base font-normal text-muted">kcal</span>
-            </span>
+            <Estimate reading={reading} />
             <span className="text-sm text-muted">setting {tdee}</span>
           </div>
           <p className="mt-2 text-sm">
-            <span className="capitalize">{current.phase}</span> since {short(current.from)}. Eating {Math.round(current.intake)} kcal a day from{" "}
-            {short(current.fitFrom)}, weight{" "}
-            {trend(current.kgPerWeek)}.
+            <span className="capitalize">{current.phase}</span> since {short(current.from)}. Eating {Math.round(reading.intake)} kcal a day from{" "}
+            {short(current.fitFrom)}, weight {trend(reading.kgPerWeek)}.
           </p>
-          {Math.abs(reading - tdee) >= 30 && (
-            <button onClick={() => onUse(reading)} className="mt-3 w-full rounded-xl border border-line py-2.5 text-accent">
-              Use {reading} as maintenance
-            </button>
-          )}
+          <UseReading reading={reading} tdee={tdee} onUse={onUse} />
         </>
       ) : (
         <p className="mt-1 text-sm">
@@ -226,10 +234,10 @@ function Maintenance({ phases, tdee, settleDays, onUse }: { phases: Stretch[]; t
                 <span>
                   <span className="capitalize">{phase.phase}</span>
                   <span className="block text-xs text-muted">
-                    {short(phase.from)} – {short(phase.to)} · {phase.days} days{phase.tdee && ` · eating ${kcal(phase.intake)}`}
+                    {short(phase.from)} – {short(phase.to)} · {phase.days} days{phase.reading && ` · eating ${kcal(phase.reading.intake)}`}
                   </span>
                 </span>
-                {phase.tdee ? <span className="font-medium">≈ {kcal(phase.tdee)}</span> : <span className="text-xs text-muted">too short</span>}
+                {phase.reading ? <span className="font-medium">≈ {kcal(phase.reading.tdee)}</span> : <span className="text-xs text-muted">too short</span>}
               </li>
             ))}
         </ul>

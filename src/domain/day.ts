@@ -44,7 +44,7 @@ export function trendWeight(state: State, date: string): number | undefined {
  * Maintenance as it was set on that date, so past targets stay what they were
  * when the setting changes. Before the first change, the first value set.
  */
-function tdeeOn(state: State, date: string): number {
+export function tdeeOn(state: State, date: string): number {
   const history = state.tdeeHistory;
   return history.findLast((change) => change.date <= date)?.tdee ?? history[0]?.tdee ?? state.settings.tdee;
 }

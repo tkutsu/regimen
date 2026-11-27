@@ -29,15 +29,25 @@ describe("regionReading", () => {
     expect(region.days).toBe(7);
     expect(region.weighIns).toBe(7);
     expect(region.intake).toBeCloseTo(2000);
-    expect(region.tdee).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
+    expect(region.measured).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
     expect(region.kgPerWeek).toBeCloseTo(-0.35);
     expect(region.fromKg).toBeCloseTo(80.3);
     expect(region.toKg).toBeCloseTo(80);
   });
 
+  it("leans on the maintenance set until the weigh-ins are sure", () => {
+    const short = regionReading(steady, shiftDate(END, -2), END)!;
+    expect(short.measured).toBeCloseTo(2385);
+    expect(short.tdee).toBeCloseTo(2500, -1);
+    expect(short.spread).toBeGreaterThan(250);
+    const long = regionReading(steady, shiftDate(END, -41), END)!;
+    expect(long.tdee).toBeCloseTo(long.measured, -1);
+    expect(long.spread).toBeLessThan(50);
+  });
+
   it("matches a phase's reading over the same days", () => {
     const [cut] = stretches(steady, END);
-    expect(regionReading(steady, cut.fitFrom, END)!.tdee).toBeCloseTo(cut.tdee!);
+    expect(regionReading(steady, cut.fitFrom, END)!.tdee).toBeCloseTo(cut.reading!.tdee);
   });
 
   it("needs two weigh-ins", () => {
@@ -52,27 +62,40 @@ describe("stretches", () => {
     const [cut] = stretches(s, END);
     expect(cut.days).toBe(60);
     expect(cut.fitFrom).toBe(shiftDate(END, -41));
-    expect(cut.intake).toBeCloseTo(2000);
-    expect(cut.kgPerWeek).toBeCloseTo(-0.35);
-    expect(cut.tdee).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
+    expect(cut.reading!.intake).toBeCloseTo(2000);
+    expect(cut.reading!.kgPerWeek).toBeCloseTo(-0.35);
+    expect(cut.reading!.measured).toBeCloseTo(2000 + 0.05 * KCAL_PER_KG);
   });
 
   it("uses logged intake and takes earned steps kcal out", () => {
+    const eve = shiftDate(END, -1);
     const s = state(
       settings,
       since("2026-08-01", "maintain"),
       ...weighIns(60, () => 80),
       { type: "food.upsert", food: meal },
-      { type: "entry.upsert", entry: { id: "1", date: END, foodId: "meal", amount: 1.5, done: true } },
+      { type: "entry.upsert", entry: { id: "1", date: eve, foodId: "meal", amount: 1.5, done: true } },
       // planned and never ticked: not eaten, on either day
-      { type: "entry.upsert", entry: { id: "2", date: END, foodId: "meal", amount: 0.25, done: false } },
-      { type: "entry.upsert", entry: { id: "3", date: shiftDate(END, -1), foodId: "meal", amount: 1, done: false } },
-      { type: "day.upsert", day: { date: END, phase: "maintain", steps: 10_000, extraKcal: 0, offset: 0 } },
+      { type: "entry.upsert", entry: { id: "2", date: eve, foodId: "meal", amount: 0.25, done: false } },
+      { type: "entry.upsert", entry: { id: "3", date: shiftDate(END, -2), foodId: "meal", amount: 1, done: false } },
+      { type: "day.upsert", day: { date: eve, phase: "maintain", steps: 10_000, extraKcal: 0, offset: 0 } },
     );
     const [maintain] = stretches(s, END);
     expect(maintain.logged).toBe(1);
-    // 41 days at 2500, one logged day at 3000 minus 370 earned
-    expect(maintain.intake).toBeCloseTo((41 * 2500 + 3000 - 370) / 42);
+    // 40 days at 2500, one logged day at 3000 minus 370 earned
+    expect(maintain.reading!.intake).toBeCloseTo((40 * 2500 + 3000 - 370) / 41);
+  });
+
+  it("counts only the food the weigh-ins saw", () => {
+    const s = state(
+      settings,
+      since("2026-08-01", "maintain"),
+      ...weighIns(60, () => 80),
+      { type: "food.upsert", food: meal },
+      // eaten after the last weigh-in, so no weigh-in reflects it yet
+      { type: "entry.upsert", entry: { id: "1", date: END, foodId: "meal", amount: 3, done: true } },
+    );
+    expect(stretches(s, END)[0].reading!.intake).toBeCloseTo(2500);
   });
 
   it("keeps maintenance correct when unused calories are eaten the next day", () => {
@@ -91,8 +114,9 @@ describe("stretches", () => {
     }
     const [cut] = stretches(state(...changes), END);
     expect(cut.logged).toBe(42);
-    expect(cut.intake).toBeCloseTo(2000);
-    expect(cut.tdee).toBeCloseTo(2500);
+    // the 41 days between the first and last weigh-in: 21 at 1800, 20 at 2200
+    expect(cut.reading!.intake).toBeCloseTo((21 * 1800 + 20 * 2200) / 41);
+    expect(cut.reading!.measured).toBeCloseTo(2500);
   });
 
   it("includes rollover once when assuming an unlogged day was eaten to target", () => {
@@ -100,11 +124,11 @@ describe("stretches", () => {
       settings,
       since("2026-08-01", "maintain"),
       ...weighIns(60, () => 80),
-      { type: "day.upsert", day: { date: END, phase: "maintain", steps: 1000, extraKcal: 100, rolloverKcal: 200 } },
+      { type: "day.upsert", day: { date: shiftDate(END, -1), phase: "maintain", steps: 1000, extraKcal: 100, rolloverKcal: 200 } },
     );
     const [maintain] = stretches(s, END);
     expect(maintain.logged).toBe(0);
-    expect(maintain.intake).toBeCloseTo((41 * 2500 + 2700) / 42);
+    expect(maintain.reading!.intake).toBeCloseTo((40 * 2500 + 2700) / 41);
   });
 
   it("gives each phase its own maintenance and leaves out the water drop", () => {
@@ -121,8 +145,8 @@ describe("stretches", () => {
     );
     const [maintain, cut] = stretches(s, END);
     expect([maintain.phase, maintain.to, cut.phase, cut.from]).toEqual(["maintain", "2026-09-30", "cut", cutFrom]);
-    expect(maintain.tdee).toBeCloseTo(2500);
-    expect(cut.tdee).toBeCloseTo(2200);
+    expect(maintain.reading!.measured).toBeCloseTo(2500);
+    expect(cut.reading!.measured).toBeCloseTo(2200);
   });
 
   it("doesn't split a phase for a refeed shorter than a week", () => {
@@ -166,9 +190,9 @@ describe("stretches", () => {
   it("waits for two weeks of weigh-ins after a phase starts", () => {
     const s = state(settings, since("2026-08-01", "maintain"), since("2026-10-14", "bulk"), ...weighIns(60, () => 80));
     const early = stretches(s, "2026-10-30").at(-1)!;
-    expect(early.tdee).toBeUndefined();
+    expect(early.reading).toBeUndefined();
     expect(early.readyOn).toBe(END);
-    expect(stretches(s, END).at(-1)!.tdee).toBeCloseTo(2700);
+    expect(stretches(s, END).at(-1)!.reading!.measured).toBeCloseTo(2700);
   });
 
   it("skips the set number of days after a phase starts", () => {
