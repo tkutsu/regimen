@@ -3,7 +3,13 @@ import { allFoods } from "./nutrition";
 import type { State } from "./state";
 import type { Day, Entry, Phase } from "./types";
 
+/** The usual rule of thumb for a kg gained or lost, used until body fat is set. */
 export const KCAL_PER_KG = 7700;
+/** Metabolizable energy of a kg of body fat and of lean tissue with its water (Hall 2008: 39.5 and 7.6 MJ/kg). */
+const FAT_KCAL = 9440;
+const LEAN_KCAL = 1820;
+/** Forbes: of a kg gained or lost, 10.4 / (10.4 + kg of body fat) is lean tissue. */
+const FORBES = 10.4;
 /** The fit reads the last six weeks of a phase, so a long cut shows where maintenance ended up. */
 const WINDOW = 42;
 /** A phase shorter than this between two of the same kind (a refeed) doesn't split them. */
@@ -51,6 +57,20 @@ export type Stretch = {
   /** When a phase still too short for a reading should first get one. */
   readyOn: string;
 };
+
+/**
+ * Energy in a kg gained or lost at this weight and body fat percent. The leaner you are, the more
+ * of it is lean tissue, which holds a fifth of what fat does; above about 30 kg of fat it nears 7700.
+ */
+export function kcalPerKg(kg: number, bodyFat?: number): number {
+  if (bodyFat === undefined) return KCAL_PER_KG;
+  const lean = FORBES / (FORBES + (kg * bodyFat) / 100);
+  return lean * LEAN_KCAL + (1 - lean) * FAT_KCAL;
+}
+
+/** Body fat as entered by that date; before the first entry, the first one, as the best guess there is. */
+const bodyFatOn = (state: State, date: string) =>
+  (state.bodyFatHistory.findLast((entry) => entry.date <= date) ?? state.bodyFatHistory[0])?.pct;
 
 export const daysBetween = (from: string, to: string) =>
   Math.round((Date.parse(`${to}T12:00:00Z`) - Date.parse(`${from}T12:00:00Z`)) / 86_400_000);
@@ -120,8 +140,10 @@ function read(state: State, phase: Phase, from: string, to: string, log: Log): S
 
 /**
  * The reading over exactly `log`'s days; none under two weigh-ins.
- * Weight follows cumulative intake minus maintenance, at 7700 kcal per kg:
- * kg − Σintake / 7700 = c − maintenance / 7700 × day, so maintenance is the slope.
+ * Energy stored in the body is cumulative intake minus maintenance:
+ * stored − Σintake = c − maintenance × day, so maintenance is the slope.
+ * Each step between weigh-ins is stored at the kcal per kg of its own date and weight, so a new
+ * body fat entry changes readings from its date on; only the first stands in for the time before it.
  * Only entries ticked as eaten count; days with none count as eaten to target, as in the sheet.
  * Rollover changes that assumed intake, but is never counted as energy burned.
  * A few days of weigh-ins are mostly water, so the measured slope and the maintenance set
@@ -130,21 +152,28 @@ function read(state: State, phase: Phase, from: string, to: string, log: Log): S
 function fit(state: State, log: Log) {
   const rows: { t: number; kg: number; y: number; eaten: number }[] = [];
   let eaten = 0;
+  let stored = 0;
+  let perKg = KCAL_PER_KG;
   let logged = 0;
   for (const [t, { day, kcal }] of log.entries()) {
     // a morning weigh-in reflects what was eaten up to the day before
     const kg = state.weights.get(day.date);
-    if (kg !== undefined) rows.push({ t, kg, y: kg - eaten / KCAL_PER_KG, eaten });
+    if (kg !== undefined) {
+      const before = rows.at(-1)?.kg ?? kg;
+      perKg = kcalPerKg((kg + before) / 2, bodyFatOn(state, day.date));
+      stored += (kg - before) * perKg;
+      rows.push({ t, kg, y: stored - eaten, eaten });
+    }
     logged += Number(kcal !== undefined);
     eaten += (kcal ?? kcalTarget(state, day)) - ((day.steps / 1000) * ratesOn(state, day.date).kcalPer1kSteps + day.extraKcal);
   }
   if (rows.length < 2) return { rows, logged };
 
   const [first, last] = [rows[0], rows.at(-1)!];
-  const energy = lineThrough(rows.map(({ t, y }) => ({ t, y })));
-  const weight = lineThrough(rows.map(({ t, kg }) => ({ t, y: kg })));
-  const measured = -energy.slope * KCAL_PER_KG;
-  const [trust, prior] = [(energy.slopeError * KCAL_PER_KG) ** -2, SETTING_SPREAD ** -2];
+  const energy = lineThrough(rows.map(({ t, y }) => ({ t, y })), WEIGH_IN_SCATTER * perKg);
+  const weight = lineThrough(rows.map(({ t, kg }) => ({ t, y: kg })), WEIGH_IN_SCATTER);
+  const measured = -energy.slope;
+  const [trust, prior] = [energy.slopeError ** -2, SETTING_SPREAD ** -2];
   const reading: Reading = {
     // only the food between the first and last weigh-in moved the scale
     intake: (last.eaten - first.eaten) / (last.t - first.t),
@@ -158,9 +187,9 @@ function fit(state: State, log: Log) {
 
 /**
  * The least-squares line, as its slope, the slope's standard error and the value at `t`; two or more
- * distinct `t` needed. The scatter behind the error is never taken as less than a day's usual water swing.
+ * distinct `t` needed. The scatter behind the error is never taken as less than `least`.
  */
-function lineThrough(rows: { t: number; y: number }[]) {
+function lineThrough(rows: { t: number; y: number }[], least: number) {
   const t0 = rows.reduce((sum, r) => sum + r.t, 0) / rows.length;
   const y0 = rows.reduce((sum, r) => sum + r.y, 0) / rows.length;
   const num = rows.reduce((sum, r) => sum + (r.t - t0) * (r.y - y0), 0);
@@ -168,7 +197,7 @@ function lineThrough(rows: { t: number; y: number }[]) {
   const slope = num / den;
   const at = (t: number) => y0 + slope * (t - t0);
   const scatter = rows.length > 2 ? Math.sqrt(rows.reduce((sum, r) => sum + (r.y - at(r.t)) ** 2, 0) / (rows.length - 2)) : 0;
-  return { slope, at, slopeError: Math.max(scatter, WEIGH_IN_SCATTER) / Math.sqrt(den) };
+  return { slope, at, slopeError: Math.max(scatter, least) / Math.sqrt(den) };
 }
 
 /** A span picked by hand: every day of it counts, with no settling days or window. */

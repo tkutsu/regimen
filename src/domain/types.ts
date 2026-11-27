@@ -113,6 +113,8 @@ export type Settings = {
   kcalPer1kSteps: number;
   /** Days after a phase starts that real maintenance leaves out, while water and glycogen still move the scale. */
   settleDays: number;
+  /** Percent; sets how much energy a kg gained or lost holds. Unset until entered. */
+  bodyFat?: number;
   limits: Record<Limited, Range>;
   containers: Container[];
   staples: Staple[];

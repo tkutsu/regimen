@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { shiftDate } from "./day";
 import { fold, stamp } from "./state";
 import type { Change, Food, Phase } from "./types";
-import { daysBetween, KCAL_PER_KG, regionReading, stretches, weightSeries } from "./weight";
+import { daysBetween, KCAL_PER_KG, kcalPerKg, regionReading, stretches, weightSeries } from "./weight";
 
 const END = "2026-10-31";
 const meal: Food = { id: "meal", name: "meal", basis: "item", group: "", fav: false, note: "", kcal: 2000 };
@@ -204,6 +204,35 @@ describe("stretches", () => {
     expect(skipping(0).fitFrom).toBe("2026-10-01");
     expect(skipping(10).fitFrom).toBe("2026-10-11");
     expect(skipping(10).readyOn).toBe("2026-10-24");
+  });
+});
+
+describe("body fat", () => {
+  const bodyFat = (pct: number): Change => ({ type: "settings", settings: { bodyFat: pct } });
+  const cut = (d: string) => 80 + daysBetween(d, END) * 0.05;
+
+  it("puts less energy in a kg the leaner you are", () => {
+    expect(kcalPerKg(66)).toBe(KCAL_PER_KG);
+    expect(kcalPerKg(66, 15)).toBeGreaterThan(5400);
+    expect(kcalPerKg(66, 15)).toBeLessThan(5700);
+    // the rule of thumb holds for about 40 kg of fat
+    expect(kcalPerKg(100, 40)).toBeCloseTo(KCAL_PER_KG, -3);
+  });
+
+  it("reads maintenance at the kcal per kg it sets", () => {
+    const s = state(settings, bodyFat(15), since("2026-08-01", "cut"), ...weighIns(60, cut));
+    const region = regionReading(s, shiftDate(END, -41), END)!;
+    expect(region.measured).toBeCloseTo(2000 + 0.05 * kcalPerKg(81, 15), -1);
+  });
+
+  it("changes readings only from the date of a new entry", () => {
+    const later = stamp(bodyFat(10), "desktop", new Date(Date.UTC(2026, 9, 1, 12)));
+    const before = state(settings, bodyFat(25), since("2026-08-01", "cut"), ...weighIns(91, cut));
+    const after = fold([...[settings, bodyFat(25), since("2026-08-01", "cut"), ...weighIns(91, cut)].map((c, i) => stamp(c, "desktop", new Date(Date.UTC(2026, 0, 1, 0, 0, i)))), later]);
+    const august = (s: typeof before) => regionReading(s, "2026-08-02", "2026-08-31")!.measured;
+    const october = (s: typeof before) => regionReading(s, "2026-10-02", END)!.measured;
+    expect(august(after)).toBeCloseTo(august(before));
+    expect(october(after)).toBeLessThan(october(before) - 50);
   });
 });
 

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { LIMIT_UNITS, localDate } from "../domain/day";
+import { LIMIT_UNITS, localDate, trendWeight } from "../domain/day";
+import { kcalPerKg } from "../domain/weight";
 import { allFoods, LABELS, LIMITED, pickableFoods, toggleFav, usedName } from "../domain/nutrition";
 import { recentFoodIds } from "../domain/search";
 import { newId, type State } from "../domain/state";
@@ -41,7 +42,7 @@ export function Settings({ state, commit, config, peers, onSaveConfig, onDone }:
   if (page)
     return (
       <Subpage title={PAGES[page]} done={done} onBack={() => open()}>
-        {page === "targets" && <Targets settings={settings} set={set} />}
+        {page === "targets" && <Targets settings={settings} set={set} kg={trendWeight(state, localDate())} />}
         {page === "limits" && <Limits limits={settings.limits} set={set} />}
         {page === "staples" && <Staples state={state} commit={commit} />}
         {page === "containers" && <Containers containers={settings.containers} set={set} />}
@@ -94,8 +95,8 @@ function Subpage({ title, done, onBack, children }: { title: string; done: React
   );
 }
 
-/** Calories per phase, and what the maintenance reading leaves out. */
-function Targets({ settings, set }: { settings: SettingsT; set: Set }) {
+/** Calories per phase, and what the maintenance reading leaves out and assumes; `kg` is the trend weight now. */
+function Targets({ settings, set, kg }: { settings: SettingsT; set: Set; kg?: number }) {
   const setOffset = (phase: Phase, offset: number) => set({ phaseOffsets: { ...settings.phaseOffsets, [phase]: offset } });
   return (
     <>
@@ -113,9 +114,18 @@ function Targets({ settings, set }: { settings: SettingsT; set: Set }) {
         </Row>
       </Section>
 
-      <Section title="Real maintenance" aside={<span className="text-xs text-muted normal-case">at the start of each phase</span>}>
-        <Row label="Skipped days" unit="days">
+      <Section title="Real maintenance">
+        <Row label="Skipped days" unit="days" hint="per phase">
           <NumberInput value={settings.settleDays} onCommit={(days) => set({ settleDays: Math.max(0, Math.round(days)) })} className="w-20 text-right" />
+        </Row>
+        <Row label="Body fat" unit="%" hint={kg === undefined ? undefined : `${Math.round(kcalPerKg(kg, settings.bodyFat) / 10) * 10} kcal/kg`}>
+          <OptionalNumberInput
+            value={settings.bodyFat}
+            onCommit={(pct) => pct !== undefined && pct > 0 && pct < 70 && set({ bodyFat: pct })}
+            placeholder="–"
+            aria-label="Body fat"
+            className="w-20 text-right"
+          />
         </Row>
       </Section>
     </>

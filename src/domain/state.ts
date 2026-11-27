@@ -15,6 +15,8 @@ export type State = {
   tdeeHistory: { date: string; tdee: number }[];
   /** Phase offsets and kcal per 1000 steps with the local date they were set, oldest first. */
   rateHistory: ({ date: string } & Pick<Settings, "phaseOffsets" | "kcalPer1kSteps">)[];
+  /** Every body fat entry with the local date it was made, oldest first. */
+  bodyFatHistory: { date: string; pct: number }[];
   /** Deleted entries, so a staple removed from a day isn't planned there again. */
   removed: Set<string>;
 };
@@ -90,6 +92,7 @@ export function fold(events: Event[]): State {
     settings: defaultSettings,
     tdeeHistory: [],
     rateHistory: [{ date: "", phaseOffsets: defaultSettings.phaseOffsets, kcalPer1kSteps: defaultSettings.kcalPer1kSteps }],
+    bodyFatHistory: [],
     removed: new Set(),
   };
   for (const event of events) {
@@ -112,7 +115,7 @@ const TOUCHES: Record<Event["type"], (keyof State)[]> = {
   weight: ["weights"],
   "recipe.upsert": ["recipes"],
   "recipe.delete": ["recipes"],
-  settings: ["tdeeHistory", "rateHistory"],
+  settings: ["tdeeHistory", "rateHistory", "bodyFatHistory"],
   "exercise.upsert": ["exercises"],
   "exercise.delete": ["exercises"],
   "workout.upsert": ["workouts"],
@@ -195,6 +198,7 @@ function apply(state: State, event: Event): void {
       state.settings = { ...state.settings, ...patch, limits };
       const date = localDate(new Date(event.t));
       if (patch.tdee !== undefined) state.tdeeHistory.push({ date, tdee: patch.tdee });
+      if (patch.bodyFat !== undefined) state.bodyFatHistory.push({ date, pct: patch.bodyFat });
       if (patch.phaseOffsets !== undefined || patch.kcalPer1kSteps !== undefined) {
         const { phaseOffsets, kcalPer1kSteps } = state.settings;
         state.rateHistory.push({ date, phaseOffsets, kcalPer1kSteps });
